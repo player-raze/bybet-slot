@@ -18,8 +18,7 @@ const { translate } = useSiteLocale()
         :style="{ color: category.accentColor }"
         :size="12"
         :stroke-width="2.2"
-        fill="currentColor"
-        fill-opacity="0.28"
+        fill="none"
         aria-hidden="true"
       />
       <span>{{ translate(category.label) }}</span>
@@ -39,8 +38,7 @@ const { translate } = useSiteLocale()
         :style="{ color: category.accentColor }"
         :size="14"
         :stroke-width="2.2"
-        fill="currentColor"
-        fill-opacity="0.28"
+        fill="none"
         aria-hidden="true"
       />
       <span>{{ translate(category.label) }}</span>
