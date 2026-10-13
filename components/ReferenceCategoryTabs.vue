@@ -94,15 +94,36 @@ const { translate } = useSiteLocale()
     transform 160ms ease;
 }
 
+.category-tabs a > * {
+  position: relative;
+  z-index: 1;
+}
+
 .category-tabs a::before {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   top: 0;
   right: 7%;
   left: 7%;
   height: 48%;
   border-radius: 0 0 50% 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent);
+  content: '';
+  pointer-events: none;
+}
+
+.category-tabs a::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(95% 80% at 0% 0%, rgba(255, 255, 255, 0.34), transparent 58%),
+    radial-gradient(70% 55% at 100% 0%, rgba(255, 255, 255, 0.14), transparent 52%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 28%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.22),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.04);
   content: '';
   pointer-events: none;
 }
@@ -121,6 +142,13 @@ const { translate } = useSiteLocale()
   transform: translateY(-1px);
 }
 
+.category-tabs a:hover::after {
+  background:
+    radial-gradient(95% 80% at 0% 0%, rgba(255, 255, 255, 0.42), transparent 58%),
+    radial-gradient(70% 55% at 100% 0%, rgba(255, 255, 255, 0.2), transparent 52%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, transparent 30%);
+}
+
 .category-icon {
   flex: 0 0 auto;
 }
@@ -136,6 +164,16 @@ const { translate } = useSiteLocale()
     inset 0 -1px rgba(0, 28, 19, 0.34),
     0 0.22rem 0.62rem rgba(3, 98, 66, 0.26),
     0 0 0.55rem rgba(50, 212, 154, 0.1);
+}
+
+.category-tabs .category-tab--active::after {
+  background:
+    radial-gradient(95% 80% at 0% 0%, rgba(255, 255, 255, 0.38), transparent 58%),
+    radial-gradient(70% 55% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 52%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, transparent 28%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.28),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.06);
 }
 
 @media (min-width: 48rem) {

@@ -28,6 +28,8 @@ const { getDisplayCount } = useRumblingPlayerCount(
   () => gameTitles.value,
   () => sectionKey.value,
 )
+
+const externalSiteUrl = 'https://bybet.com/'
 </script>
 
 <template>
@@ -43,13 +45,15 @@ const { getDisplayCount } = useRumblingPlayerCount(
     </header>
 
     <div class="reference-game-row">
-      <NuxtLink
+      <a
         v-for="game in games"
         :key="game.title"
-        :to="to"
         class="reference-game"
         :class="{ 'reference-game--fallback': game.image === '/brand/bybet-logo.png' }"
-        :aria-label="`Browse ${game.title} by ${game.provider}`"
+        :href="externalSiteUrl"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        :aria-label="`${translate('Play Real')} — ${game.title} by ${game.provider} on ByBet`"
       >
         <picture>
           <source
@@ -78,13 +82,15 @@ const { getDisplayCount } = useRumblingPlayerCount(
           aria-hidden="true"
         >
           <span class="popular-hover-heading">{{ game.title }}</span>
-          <span class="popular-hover-action">{{ translate('Play Real') }}</span>
+          <span class="popular-hover-action">
+            {{ translate('Play Real') }}
+          </span>
           <span class="popular-hover-players">
             <UsersRound :size="11" />
             <span class="popular-hover-players-count">{{ getDisplayCount(game.title) }}</span>
           </span>
         </span>
-      </NuxtLink>
+      </a>
     </div>
   </section>
 </template>
@@ -192,6 +198,8 @@ const { getDisplayCount } = useRumblingPlayerCount(
   overflow: hidden;
   border: 1px solid rgba(50, 212, 154, 0.1);
   border-radius: 0.3rem;
+  color: inherit;
+  text-decoration: none;
   background:
     linear-gradient(132deg, transparent 0 45%, rgba(0, 45, 31, 0.2) 45.5% 69%, transparent 69.5%),
     radial-gradient(ellipse 110% 82% at 0% 0%, rgba(3, 98, 66, 0.5), rgba(1, 50, 35, 0.22) 52%, transparent 76%),
@@ -290,6 +298,8 @@ const { getDisplayCount } = useRumblingPlayerCount(
 
 .popular-hover-action {
   display: inline-flex;
+  position: relative;
+  z-index: 4;
   min-width: 62%;
   min-height: clamp(1.25rem, 2.6vw, 1.8rem);
   align-items: center;
@@ -300,12 +310,24 @@ const { getDisplayCount } = useRumblingPlayerCount(
   color: #ffffff;
   font-size: clamp(0.42rem, 0.9vw, 0.62rem);
   font-weight: 850;
+  line-height: 1;
+  text-decoration: none;
   text-shadow: 0 1px 0 rgba(0, 34, 23, 0.45);
   background: linear-gradient(145deg, rgba(10, 151, 103, 0.82), rgba(3, 98, 66, 0.68));
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.18),
     inset 0 -1px rgba(0, 52, 35, 0.3),
     0 0.18rem 0.5rem rgba(0, 52, 35, 0.3);
+  transition:
+    border-color 160ms ease,
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.popular-hover-action:hover {
+  border-color: rgba(130, 242, 200, 0.78);
+  filter: brightness(1.04);
+  transform: translateY(-1px);
 }
 
 .popular-hover-players {
