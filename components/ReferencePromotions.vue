@@ -348,7 +348,7 @@ const { translate } = useSiteLocale()
   padding: 0.14rem clamp(0.78rem, 1.12vw, 1rem);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 0.38rem;
-  font-size: clamp(0.4rem, 0.58vw, 0.52rem);
+  font-size: clamp(0.4rem, 1vw, 0.55rem);
   font-weight: 800;
   line-height: 1;
   text-transform: none;

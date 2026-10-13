@@ -20,6 +20,14 @@ const sectionIcons: Record<Props['variant'], Component> = {
   new: Star,
   recommended: ThumbsUp,
 }
+
+const gameTitles = computed(() => props.games.map((game) => game.title))
+const sectionKey = computed(() => props.id)
+
+const { getDisplayCount } = useRumblingPlayerCount(
+  () => gameTitles.value,
+  () => sectionKey.value,
+)
 </script>
 
 <template>
@@ -73,7 +81,7 @@ const sectionIcons: Record<Props['variant'], Component> = {
           <span class="popular-hover-action">{{ translate('Play Real') }}</span>
           <span class="popular-hover-players">
             <UsersRound :size="11" />
-            156k
+            <span class="popular-hover-players-count">{{ getDisplayCount(game.title) }}</span>
           </span>
         </span>
       </NuxtLink>
@@ -287,16 +295,17 @@ const sectionIcons: Record<Props['variant'], Component> = {
   align-items: center;
   justify-content: center;
   padding: 0.2rem 0.5rem;
-  border: 1px solid rgba(255, 245, 183, 0.9);
+  border: 1px solid rgba(91, 230, 179, 0.52);
   border-radius: 0.38rem;
-  color: #4b2b00;
+  color: #ffffff;
   font-size: clamp(0.42rem, 0.9vw, 0.62rem);
   font-weight: 850;
-  background: linear-gradient(180deg, #fff3a8 0%, #ffc743 48%, #d88a08 100%);
+  text-shadow: 0 1px 0 rgba(0, 34, 23, 0.45);
+  background: linear-gradient(145deg, rgba(10, 151, 103, 0.82), rgba(3, 98, 66, 0.68));
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.7),
-    0 0.18rem 0.5rem rgba(0, 0, 0, 0.42),
-    0 0 0.5rem rgba(255, 190, 49, 0.25);
+    inset 0 1px rgba(255, 255, 255, 0.18),
+    inset 0 -1px rgba(0, 52, 35, 0.3),
+    0 0.18rem 0.5rem rgba(0, 52, 35, 0.3);
 }
 
 .popular-hover-players {
@@ -310,6 +319,11 @@ const sectionIcons: Record<Props['variant'], Component> = {
   font-weight: 700;
   text-shadow: 0 1px 0.2rem rgba(0, 0, 0, 0.9);
   gap: 0.16rem;
+}
+
+.popular-hover-players-count {
+  font-variant-numeric: tabular-nums;
+  transition: opacity 160ms ease;
 }
 
 .reference-section--popular .reference-game:focus-visible .popular-hover-overlay,
