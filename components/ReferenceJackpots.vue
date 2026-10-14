@@ -120,7 +120,7 @@ const { translate } = useSiteLocale()
   overflow: hidden;
   border: 1px solid rgba(214, 232, 222, 0.17);
   border-radius: 999px;
-  color: #91a39a;
+  color: #ffffff;
   font-size: 0.37rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.13), transparent 52%),

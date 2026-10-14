@@ -115,7 +115,7 @@ const { translate } = useSiteLocale()
   overflow: hidden;
   border: 1px solid rgba(214, 232, 222, 0.17);
   border-radius: 999px;
-  color: #91a39a;
+  color: #ffffff;
   font-size: 0.36rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.13), transparent 52%),
@@ -329,7 +329,7 @@ const { translate } = useSiteLocale()
   background: linear-gradient(180deg, #fff7bd 0%, #ffd653 46%, #f2a719 100%);
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: #f1c72e8f;
 }
 
 .promotion-copy em {
