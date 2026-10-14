@@ -72,7 +72,7 @@ const isNavigationItemActive = (destination: string): boolean => {
     justify-content: center;
     flex-direction: column;
     border-radius: 0.38rem;
-    color: #91a39a;
+    color: #ffffff;
     font-size: 0.4rem;
     font-weight: 650;
     line-height: 1;
