@@ -23,6 +23,7 @@ import {
 
 export interface RailSubItem {
   label: string
+  underMaintenance?: boolean
   icon?: Component
   iconImage?: string
   to: string
@@ -93,7 +94,7 @@ export const railItems: RailItem[] = [
     sectionId: null,
     children: [
       { label: 'Live Casino', iconImage: '/icons/entertainment/live-casino.png', to: '/explore/entertainment/live-casino', accentColor: '#e2c37b' },
-      { label: 'Gaming', iconImage: '/icons/entertainment/gaming.png', to: '/explore/entertainment/gaming', accentColor: '#777cff' },
+      { label: 'Gaming', iconImage: '/icons/entertainment/gaming.png', to: '/explore/entertainment/gaming', accentColor: '#777cff', underMaintenance: true },
     ],
   },
   {
@@ -118,14 +119,14 @@ export const railItems: RailItem[] = [
       { label: 'Home', iconImage: '/icons/live-plaza/home.png', to: '/explore/live-plaza/home', accentColor: '#ff9f2f' },
       { label: 'Streamer', iconImage: '/icons/live-plaza/streamer.png', to: '/explore/live-plaza/streamer', accentColor: '#ff9f2f' },
       { label: 'Expert Predictions', iconImage: '/icons/live-plaza/expert-predictions.png', to: '/explore/live-plaza/expert-predictions', accentColor: '#55aef7' },
-      { label: 'Funds', iconImage: '/icons/live-plaza/funds.png', to: '/explore/live-plaza/funds', accentColor: '#f1644d' },
+      { label: 'Funds', iconImage: '/icons/live-plaza/funds.png', to: 'https://bybet.com/login', accentColor: '#f1644d' }, //explore/live-plaza/funds
     ],
   },
   { label: 'Me', icon: UserRound, sectionId: null, to: '/explore/account/me' },
-  { label: 'Deposit', icon: BadgeDollarSign, sectionId: null, to: '/explore/account/deposit' },
-  { label: 'Withdraw', icon: CreditCard, sectionId: null, to: '/explore/account/withdraw' },
-  { label: 'VIP', icon: Crown, sectionId: null, to: '/explore/account/vip' },
-  { label: 'History', icon: NotebookTabs, sectionId: null, to: '/explore/account/history' },
+  { label: 'Deposit', icon: BadgeDollarSign, sectionId: null, to: 'https://bybet.com/login' }, ///explore/account/deposit
+  { label: 'Withdraw', icon: CreditCard, sectionId: null, to: 'https://bybet.com/login' }, //explore/account/withdraw
+  { label: 'VIP', icon: Crown, sectionId: null, to: 'https://bybet.com/login' }, //explore/account/vip
+  { label: 'History', icon: NotebookTabs, sectionId: null, to: 'https://bybet.com/login' }, // explore/account/history
   { label: 'English', icon: Globe, sectionId: null, control: 'language', surface: true },
   { label: 'Auto', icon: Moon, sectionId: null, control: 'theme', surface: true },
 ]

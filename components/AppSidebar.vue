@@ -1,7 +1,8 @@
 ﻿<script setup lang="ts">
-import { Check, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { Check, ChevronLeft, ChevronRight, Wrench } from 'lucide-vue-next'
+import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
 import { railItems } from '~/data/homepage'
-import type { RailItem } from '~/data/homepage'
+import type { RailItem, RailSubItem } from '~/data/homepage'
 import type { LanguageOption, ThemePreference } from '~/composables/useSitePreferences'
 
 const props = defineProps<{
@@ -18,6 +19,7 @@ const emit = defineEmits<{
 const route = useRoute()
 const nuxtLinkComponent = resolveComponent('NuxtLink')
 const activeItemLabel = ref('Home')
+const maintenanceOpen = ref(false)
 const expandedMenus = ref(
   railItems
     .filter(item => item.defaultExpanded)
@@ -100,8 +102,12 @@ const handleItemClick = (item: RailItem): void => {
   emit('close')
 }
 
-const handleSubmenuNavigation = (label: string): void => {
-  activeItemLabel.value = label
+const handleSubmenuNavigation = (item: RailSubItem): void => {
+  if (item.underMaintenance) {
+    maintenanceOpen.value = true
+    return
+  }
+  activeItemLabel.value = item.label
   emit('close')
 }
 
@@ -190,13 +196,17 @@ onBeforeUnmount(() => {
             class="rail-submenu"
             :aria-label="`${translate(item.label)} submenu`"
           >
-            <NuxtLink
+            <component
+              :is="childItem.underMaintenance ? 'button' : nuxtLinkComponent"
               v-for="childItem in item.children"
               :key="childItem.to"
-              :to="childItem.to"
+              v-bind="childItem.underMaintenance ? { type: 'button' } : { to: childItem.to }"
               class="rail-submenu-link"
-              :class="{ 'rail-submenu-link--active': route.path === childItem.to }"
-              @click="handleSubmenuNavigation(childItem.label)"
+              :class="{ 'rail-submenu-link--active': !childItem.underMaintenance && route.path === childItem.to, 'rail-submenu-link--maintenance': childItem.underMaintenance }"
+              :aria-label="childItem.underMaintenance ? `${translate(childItem.label)} — Under maintenance` : undefined"
+              :aria-haspopup="childItem.underMaintenance ? 'dialog' : undefined"
+              :title="childItem.underMaintenance ? 'Under maintenance' : undefined"
+              @click="handleSubmenuNavigation(childItem)"
             >
               <img
                 v-if="childItem.iconImage"
@@ -218,7 +228,8 @@ onBeforeUnmount(() => {
                 aria-hidden="true"
               />
               <span>{{ translate(childItem.label) }}</span>
-            </NuxtLink>
+              <Wrench v-if="childItem.underMaintenance" class="maintenance-indicator" :size="15" aria-hidden="true" />
+            </component>
           </div>
 
           <div
@@ -272,6 +283,7 @@ onBeforeUnmount(() => {
       </button>
     </div>
   </aside>
+  <UnderMaintenance v-if="maintenanceOpen" @close="maintenanceOpen = false" />
 </template>
 
 <style scoped>
@@ -427,6 +439,19 @@ onBeforeUnmount(() => {
   width: 0.85rem;
   height: 0.85rem;
   flex: 0 0 auto;
+}
+
+.rail-submenu-link--maintenance {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.maintenance-indicator {
+  margin-left: auto;
 }
 
 .rail-submenu-icon-image {
