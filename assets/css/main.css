@@ -25,7 +25,7 @@
   --text: #f4f7f5;
   --secondary: #9eaea5;
   --border: rgba(255, 255, 255, 0.08);
-  --header-height: 1.8rem;
+  --header-height: 3rem;
   --sidebar-width: 2.8rem;
   --page-padding: clamp(0.38rem, 1vw, 0.72rem);
   --card-gap: clamp(0.22rem, 0.45vw, 0.4rem);
@@ -72,13 +72,17 @@ html[data-theme='dark'] {
 html {
   min-width: 20rem;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-height) + 1rem);
+  scroll-padding-top: calc(var(--header-height) + 0.65rem);
   background: var(--page);
 }
 
 @media (min-width: 48rem) {
   html {
     font-size: clamp(1.1875rem, 2.15vw, 1.5rem);
+  }
+
+  :root {
+    --header-height: 3rem;
   }
 }
 
@@ -506,7 +510,7 @@ input {
 
 @media (max-width: 35rem) {
   :root {
-    --header-height: 2.75rem;
+    --header-height: 3rem;
     --page-padding: 0.75rem;
     --card-gap: 0.55rem;
   }
