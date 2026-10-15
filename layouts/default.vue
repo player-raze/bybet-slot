@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .site-shell {
   --content-gutter: 0.5rem;
-  --sidebar-width: 8.75rem;
+  --sidebar-width: 175px;
 
   position: relative;
   width: 100%;

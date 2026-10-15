@@ -14,7 +14,7 @@ const externalSiteUrl = 'https://bybet.com/'
 </script>
 
 <template>
-  <header class="app-header">
+  <header class="app-header-shell">
     <button
       class="menu-button"
       type="button"
@@ -39,23 +39,59 @@ const externalSiteUrl = 'https://bybet.com/'
     </NuxtLink>
 
     <div class="header-actions">
-      <a class="header-icon-button" :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer" aria-label="Open ByBet notifications in a new tab">
-        <Bell :size="14" />
+      <a
+        class="header-glass-icon"
+        :href="externalSiteUrl"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        aria-label="Open ByBet notifications in a new tab"
+      >
+        <Bell :size="15" :stroke-width="2" />
       </a>
-      <a class="header-icon-button" :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer" aria-label="Open ByBet support in a new tab">
-        <Headphones :size="14" />
+      <a
+        class="header-glass-icon"
+        :href="externalSiteUrl"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        aria-label="Open ByBet support in a new tab"
+      >
+        <Headphones :size="15" :stroke-width="2" />
       </a>
-      <a class="login-button" :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer">{{ translate('Login') }}</a>
-      <a class="signup-button" :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer">{{ translate('Sign Up') }}</a>
-      <a class="profile-button" :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer" aria-label="Open ByBet profile in a new tab">
-        <UserRound :size="14" fill="currentColor" />
+      <a
+        class="header-glass-button header-glass-button--login"
+        :href="externalSiteUrl"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+      >
+        {{ translate('Login') }}
+      </a>
+      <a
+        class="header-glass-button header-glass-button--signup"
+        :href="externalSiteUrl"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+      >
+        {{ translate('Sign Up') }}
+      </a>
+      <a
+        class="header-glass-icon header-glass-icon--profile"
+        :href="externalSiteUrl"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        aria-label="Open ByBet profile in a new tab"
+      >
+        <UserRound :size="15" :stroke-width="2" />
       </a>
     </div>
   </header>
 </template>
 
 <style scoped>
-.app-header {
+.app-header-shell {
+  --header-control-size: 32px;
+  --header-button-radius: 7px;
+  --header-action-gap: 6px;
+
   display: flex;
   position: fixed;
   z-index: 50;
@@ -65,16 +101,13 @@ const externalSiteUrl = 'https://bybet.com/'
   height: var(--header-height);
   align-items: center;
   padding:
-    0 max(0.45rem, calc((100vw - var(--site-max-width)) / 2 + 0.45rem))
-    0 max(0.8rem, calc((100vw - var(--site-max-width)) / 2 + 0.8rem));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  background:
-    linear-gradient(180deg, #036242, #036242);
+    0 max(0.55rem, calc((100vw - var(--site-max-width)) / 2 + 0.55rem))
+    0 max(0.85rem, calc((100vw - var(--site-max-width)) / 2 + 0.85rem));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #036242;
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.12),
-    0 0.2rem 0.8rem rgba(0, 25, 17, 0.22);
-  backdrop-filter: blur(16px) saturate(1.25);
-  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    0 0.18rem 0.65rem rgba(0, 16, 11, 0.22);
 }
 
 .brand {
@@ -84,7 +117,7 @@ const externalSiteUrl = 'https://bybet.com/'
 
 .brand img {
   display: block;
-  width: 3.5rem;
+  width: 3.35rem;
   height: auto;
 }
 
@@ -92,113 +125,153 @@ const externalSiteUrl = 'https://bybet.com/'
   display: flex;
   align-items: center;
   margin-left: auto;
-  gap: 0.3rem;
+  gap: var(--header-action-gap);
 }
 
-.header-actions a,
+.header-glass-icon,
+.header-glass-button,
 .menu-button {
-  display: grid;
   position: relative;
-  min-width: 1.55rem;
-  height: 1.45rem;
+  isolation: isolate;
+  overflow: hidden;
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+
+.header-glass-icon {
+  display: grid;
+  width: var(--header-control-size);
+  height: var(--header-control-size);
   place-items: center;
-  padding: 0 0.35rem;
-  border: 0;
-  border-radius: 0.3rem;
-  color: #d7e5de;
-  font-size: 0.52rem;
-  font-weight: 700;
-  background: transparent;
-}
-
-.header-actions a:hover {
-  border-color: rgba(255, 255, 255, 0.78);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.18);
-}
-
-.header-actions .header-icon-button,
-.header-actions .profile-button {
-  min-width: 1.35rem;
-  width: 1.35rem;
-  height: 1.35rem;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: 50%;
-  color: white;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(0, 35, 24, 0.14));
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.2),
-    0 0.16rem 0.38rem rgba(0, 33, 23, 0.16);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.header-actions .profile-button {
-  border-width: 2px;
-}
-
-.header-actions .header-icon-button svg,
-.header-actions .profile-button svg {
-  width: 0.82rem;
-  height: 0.82rem;
-}
-
-.header-actions .login-button,
-.header-actions .signup-button {
-  min-width: 4rem;
-  height: 1.35rem;
-  padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.52);
-  border-radius: 0.3rem;
-  color: white;
-  font-size: 0.50rem;
-  font-weight: 600;
-}
-
-.header-actions .login-button {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 30, 21, 0.15));
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.14),
-    0 0.14rem 0.36rem rgba(0, 31, 21, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+    inset 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 -1px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px) saturate(1.25);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
 }
 
-.header-actions .signup-button {
-  min-width: 4.1rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+.header-glass-icon::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(88% 72% at 14% 10%, rgba(255, 255, 255, 0.34), transparent 56%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 36%);
+  content: '';
+  pointer-events: none;
+}
+
+.header-glass-icon:hover {
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.header-glass-icon--profile {
+  border-width: 1.5px;
+}
+
+.header-glass-button {
+  display: inline-flex;
+  min-width: 68px;
+  height: var(--header-control-size);
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  border-radius: var(--header-button-radius);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px) saturate(1.22);
+  -webkit-backdrop-filter: blur(12px) saturate(1.22);
+  transition:
+    border-color 160ms ease,
+    filter 160ms ease,
+    background-color 160ms ease;
+}
+
+.header-glass-button::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(80% 65% at 10% 0%, rgba(255, 255, 255, 0.26), transparent 54%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 45%);
+  content: '';
+  pointer-events: none;
+}
+
+.header-glass-button--login {
+  min-width: 68px;
+  background: rgba(255, 255, 255, 0.2);
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.2),
-    0 0.14rem 0.36rem rgba(0, 31, 21, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+    inset 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 -1px rgba(0, 0, 0, 0.22);
 }
 
-.header-actions .signup-button:hover {
-  background: rgba(255, 255, 255, 0.22);
+.header-glass-button--signup {
+  min-width: 80px;
+  border-color: rgba(255, 255, 255, 0.54);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.24),
+    inset 0 -1px rgba(0, 0, 0, 0.1);
+}
+
+.header-glass-button:hover {
+  border-color: rgba(255, 255, 255, 0.68);
+  filter: brightness(1.04);
 }
 
 .menu-button {
   display: none;
+  width: var(--header-control-size);
+  height: var(--header-control-size);
+  place-items: center;
   margin-right: 0.25rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 @media (min-width: 48rem) {
+  .app-header-shell {
+    --header-control-size: 28px;
+    --header-button-radius: 6px;
+    --header-action-gap: 6px;
+  }
+
   .brand img {
-    width: 4rem;
+    width: 85px;
   }
 
-  .header-actions a,
-  .menu-button {
-    font-size: 0.62rem;
+  .header-glass-button {
+    font-size: 11px;
   }
 
+  .header-glass-button--login {
+    min-width: 68px;
+  }
+
+  .header-glass-button--signup {
+    min-width: 80px;
+  }
 }
 
 @media (max-width: 63.99rem) {
-  .app-header {
+  .app-header-shell {
     padding: 0 0.5rem;
   }
 
@@ -206,9 +279,9 @@ const externalSiteUrl = 'https://bybet.com/'
     display: grid;
   }
 
-  .header-actions > a:first-child,
-  .header-actions > a:nth-child(2),
-  .login-button {
+  .header-actions > .header-glass-icon:nth-child(1),
+  .header-actions > .header-glass-icon:nth-child(2),
+  .header-actions > .header-glass-button--login {
     display: none;
   }
 }

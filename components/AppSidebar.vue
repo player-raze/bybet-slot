@@ -20,7 +20,7 @@ const nuxtLinkComponent = resolveComponent('NuxtLink')
 const activeItemLabel = ref('Home')
 const expandedMenus = ref(
   railItems
-    .filter(item => item.defaultExpanded)
+    .filter(item => Boolean(item.children?.length))
     .map(item => item.label),
 )
 const {
@@ -196,6 +196,8 @@ onBeforeUnmount(() => {
               :to="childItem.to"
               class="rail-submenu-link"
               :class="{ 'rail-submenu-link--active': route.path === childItem.to }"
+              :title="translate(childItem.label)"
+              :aria-label="translate(childItem.label)"
               @click="handleSubmenuNavigation(childItem.label)"
             >
               <img
@@ -292,6 +294,8 @@ onBeforeUnmount(() => {
 }
 
 .rail-pill {
+  --tw-backdrop-blur: blur(12px) !important;
+
   display: flex;
   height: calc(100% - 0.7rem);
   max-height: calc(100% - 0.7rem);
@@ -299,16 +303,27 @@ onBeforeUnmount(() => {
   padding: 0.3rem;
   overflow-y: auto;
   flex-direction: column;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(232, 245, 239, 0.16);
   border-radius: 0.5rem;
   background:
-    linear-gradient(180deg, rgba(26, 29, 28, 0.94), rgba(18, 21, 20, 0.9));
+    radial-gradient(
+      120% 16% at 8% 0%,
+      rgba(255, 255, 255, 0.14),
+      transparent 60%
+    ),
+    linear-gradient(
+      165deg,
+      rgba(37, 44, 41, 0.52),
+      rgba(16, 21, 19, 0.42) 45%,
+      rgba(8, 11, 10, 0.5)
+    );
   box-shadow:
-    inset 1px 0 rgba(255, 255, 255, 0.045),
-    inset -1px 0 rgba(255, 255, 255, 0.025),
-    0 0.5rem 1.4rem rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(18px) saturate(1.08);
-  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+    inset 1px 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 rgba(255, 255, 255, 0.035),
+    inset 0 1px rgba(255, 255, 255, 0.16),
+    0 0.5rem 1.4rem rgba(0, 0, 0, 0.38);
+  backdrop-filter: var(--tw-backdrop-blur) saturate(1.35) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(1.35) !important;
   gap: 0.1rem;
   pointer-events: auto;
   scrollbar-width: none;
@@ -320,10 +335,51 @@ onBeforeUnmount(() => {
 }
 
 .sidebar--collapsed .rail-pill {
+  --tw-backdrop-blur: blur(12px) !important;
+
   width: 56px;
-  margin-left: 8px;
+  height: 100%;
+  max-height: 100%;
+  margin: 0 0 0 8px;
   padding: 7px 7px;
+  border-color: rgba(232, 245, 239, 0.055);
+  border-radius: 14px;
+  background:
+    radial-gradient(
+      130% 20% at 8% 0%,
+      rgba(255, 255, 255, 0.16),
+      transparent 58%
+    ),
+    linear-gradient(
+      165deg,
+      rgba(38, 45, 42, 0.128),
+      rgba(17, 22, 20, 0.4) 42%,
+      rgba(8, 11, 10, 0.48)
+    );
+  box-shadow:
+    inset 1px 0 rgba(255, 255, 255, 0),
+    inset -1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 1px rgba(255, 255, 255, 0),
+    inset 0 -1px rgba(0, 0, 0, 0.2),
+    0 0.55rem 1.5rem rgba(0, 0, 0, 0.38);
+  backdrop-filter: var(--tw-backdrop-blur) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(1.4) !important;
   gap: 4px;
+}
+
+@media (min-width: 64rem) {
+  .sidebar {
+    z-index: 55;
+    top: calc(var(--header-height) - 12px);
+    bottom: 8px;
+  }
+
+  .sidebar:not(.sidebar--collapsed) .rail-pill {
+    height: 100%;
+    max-height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 .rail-link {
@@ -359,11 +415,7 @@ onBeforeUnmount(() => {
 .rail-link--active,
 .rail-link--active:hover {
   color: white;
-  border: 1px solid rgba(74, 227, 169, 0.18);
-  background: linear-gradient(145deg, rgba(6, 132, 89, 0.94), rgba(3, 98, 66, 0.9));
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.1),
-    0 0.2rem 0.5rem rgba(3, 98, 66, 0.34);
+  background: #036242;
 }
 
 .rail-link--surface {
@@ -550,7 +602,35 @@ onBeforeUnmount(() => {
 }
 
 .sidebar--collapsed .rail-submenu {
-  display: none;
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 3px;
+}
+
+.sidebar--collapsed .rail-submenu-link {
+  display: grid;
+  width: 40px;
+  min-height: 34px;
+  place-items: center;
+  padding: 0;
+  border-radius: 8px;
+  gap: 0;
+}
+
+.sidebar--collapsed .rail-submenu-link > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.sidebar--collapsed .rail-submenu-icon-image,
+.sidebar--collapsed .rail-submenu-link svg {
+  width: 18px;
+  height: 18px;
 }
 
 .rail-toggle {
@@ -653,6 +733,15 @@ onBeforeUnmount(() => {
 
   .sidebar--collapsed .rail-submenu {
     display: grid;
+  }
+
+  .sidebar--collapsed .rail-submenu-link > span {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
   }
 
   .rail-toggle {
