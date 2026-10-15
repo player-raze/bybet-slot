@@ -2,7 +2,7 @@
 const selectedSports = ['Basketball', 'Soccer', 'Tennis', 'Baseball']
 
 // This filter is optional. Omit selected-tournaments to show all tournaments for selectedSports.
-// Add API tournament keys to show only those tournaments in the League and Outright tabs.
+// Add API tournament keys to show only those tournaments across every Popular tab and tournament page.
 // Leave a sport's list empty to show all its available tournaments.
 // A trailing * matches a tournament family, such as all ATP tournaments.
 const selectedTournaments: Record<string, string[]> = {

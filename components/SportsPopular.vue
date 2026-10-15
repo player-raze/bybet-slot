@@ -9,12 +9,12 @@ import {
   RefreshCw,
 } from 'lucide-vue-next'
 
-import League from '~/components/sports/League.vue'
-import Inplay from '~/components/sports/Inplay.vue'
-import Upcoming from '~/components/sports/Upcoming.vue'
-import Prematch from '~/components/sports/Prematch.vue'
-import SmartPick from '~/components/sports/SmartPick.vue'
-import Outright from '~/components/sports/Outright.vue'
+import League from './sports/tabs/League.vue'
+import Inplay from './sports/tabs/Inplay.vue'
+import Upcoming from './sports/tabs/Upcoming.vue'
+import Prematch from './sports/tabs/Prematch.vue'
+import SmartPick from './sports/tabs/SmartPick.vue'
+import Outright from './sports/tabs/Outright.vue'
 import '~/assets/css/sports.css'
 
 const props = withDefaults(defineProps<{
@@ -29,9 +29,9 @@ const route = useRoute()
 
 const tabs = [
   { key: 'league', label: 'League', icon: Trophy },
-  { key: 'inplay', label: 'Inplay', icon: Radio },
+  { key: 'inplay', label: 'In-Play', icon: Radio },
   { key: 'upcoming', label: 'Upcoming', icon: CalendarDays },
-  { key: 'prematch', label: 'Prematch', icon: ChartNoAxesCombined },
+  { key: 'prematch', label: 'Pre-Match', icon: ChartNoAxesCombined },
   { key: 'smart-pick', label: 'Smart Pick', icon: Sparkles },
   { key: 'outright', label: 'Outright', icon: Flag },
 ] as const
@@ -96,9 +96,16 @@ const availableSports = computed(() => {
       return false
     }
 
-    if (props.selectedSports.length > 0 && !props.selectedSports.includes(sport.group)) {
+    if (!props.selectedSports.includes(sport.group)) {
       return false
     }
+
+    const tournamentKeys = props.selectedTournaments[sport.group] ?? []
+    const matchesTournament = tournamentKeys.length === 0 || tournamentKeys.some((key) => {
+      if (key.endsWith('*')) return sport.key.startsWith(key.slice(0, -1))
+      return sport.key === key || (sport.has_outrights && sport.key.startsWith(`${key}_`))
+    })
+    if (!matchesTournament) return false
 
     if (activeTab.value === 'outright' && !isOutrightDetail.value) {
       return sports.some((market) => {
@@ -169,35 +176,8 @@ watch(query, () => {
   }
 })
 
-const filteredSports = computed(() => {
-  return availableSports.value.filter((sport) => {
-    if (!props.selectedSports.includes(sport.group)) {
-      return false
-    }
-
-    // Detail pages are already restricted to the tournament in the URL.
-    // A league opened from another sports page may not be in Popular's shortlist.
-    if (isOutrightDetail.value) {
-      return true
-    }
-
-    const tournamentKeys = props.selectedTournaments[sport.group] ?? []
-    const matchesTournament = tournamentKeys.some((key) => {
-      if (key.endsWith('*')) {
-        return sport.key.startsWith(key.slice(0, -1))
-      }
-
-      return sport.key === key
-        || (activeTab.value === 'outright' && sport.key.startsWith(`${key}_`))
-    })
-
-    if (tournamentKeys.length && !matchesTournament) {
-      return false
-    }
-
-    return true
-  })
-})
+// Every tab and tournament detail uses the same configured selection.
+const filteredSports = availableSports
 
 const groups = computed(() => {
   return props.selectedSports.filter((group) => {
@@ -293,11 +273,7 @@ onBeforeUnmount(() => {
         :class="{ selected: activeTab === tab.key }"
         :aria-current="activeTab === tab.key ? 'page' : undefined"
       >
-        <component
-          :is="tab.icon"
-          :size="17"
-          aria-hidden="true"
-        />
+        
         {{ tab.label }}
       </NuxtLink>
     </nav>

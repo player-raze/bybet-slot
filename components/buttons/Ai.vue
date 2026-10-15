@@ -43,12 +43,4 @@ const handleClick = (event: MouseEvent): void => {
   </button>
 </template>
 
-<style scoped>
-.ai-button:hover,
-.ai-button--active {
-  color: #48daa6;
-  background: #07835828;
-  box-shadow: 0 0 12px rgba(72, 218, 166, 0.25);
-}
-</style>
 

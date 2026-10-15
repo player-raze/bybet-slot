@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Bell, Headphones, Menu, UserRound, X } from 'lucide-vue-next'
+import { MessageCircle, Bell, Headphones, Menu, UserRound, X } from 'lucide-vue-next'
 
 defineProps<{
   drawerOpen: boolean
@@ -10,6 +10,24 @@ const emit = defineEmits<{
 }>()
 
 const { translate } = useSiteLocale()
+const { context, openSportsComments, openGameComments, closeComments } = useCommentPanel()
+const route = useRoute()
+
+const openPageComments = (): void => {
+  if (route.path.startsWith('/explore/sports/')) {
+    if (context.value?.kind === 'sports') {
+      closeComments()
+    } else {
+      openSportsComments()
+      void nextTick(() => {
+        document.getElementById('comment-panel')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+      })
+    }
+    return
+  }
+
+  openGameComments()
+}
 const externalSiteUrl = 'https://bybet.com/'
 </script>
 
@@ -39,8 +57,17 @@ const externalSiteUrl = 'https://bybet.com/'
     </NuxtLink>
 
     <div class="header-actions">
-      <a
+      <button
+        type="button"
         class="header-glass-icon"
+        aria-label="Open chat room"
+        title="Chat Room"
+        @click="openPageComments"
+      >
+        <MessageCircle :size="15" :stroke-width="2" aria-hidden="true" />
+      </button>
+      <a
+        class="header-glass-icon header-glass-icon--utility"
         :href="externalSiteUrl"
         target="_blank"
         rel="nofollow noopener noreferrer"
@@ -49,7 +76,7 @@ const externalSiteUrl = 'https://bybet.com/'
         <Bell :size="15" :stroke-width="2" />
       </a>
       <a
-        class="header-glass-icon"
+        class="header-glass-icon header-glass-icon--utility"
         :href="externalSiteUrl"
         target="_blank"
         rel="nofollow noopener noreferrer"
@@ -279,8 +306,7 @@ const externalSiteUrl = 'https://bybet.com/'
     display: grid;
   }
 
-  .header-actions > .header-glass-icon:nth-child(1),
-  .header-actions > .header-glass-icon:nth-child(2),
+  .header-actions > .header-glass-icon--utility,
   .header-actions > .header-glass-button--login {
     display: none;
   }
