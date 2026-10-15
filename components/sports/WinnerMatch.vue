@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 import { MessageCircle, Share2, Star } from 'lucide-vue-next'
 import type { SportsEvent } from '~/types/sports'
 import ShareMatchModal from '~/components/modals/ShareMatchModal.vue'
@@ -16,7 +17,6 @@ const emit = defineEmits<{
 
 const { openSportsComments } = useCommentPanel()
 
-const starred = ref(false)
 const actionMessage = ref('')
 const isShareModalOpen = ref(false)
 
@@ -71,7 +71,7 @@ const selectMarket = (key: string, name: string): void => {
 }
 
 const isFullDateSport = computed(() => {
-  return props.match.sport_key === 'basketball_nba' || props.match.sport_key === 'baseball_mlb'
+  return props.fullMarkets === true
 })
 
 const matchDate = computed(() => {
@@ -114,8 +114,8 @@ const copyMatchLink = async (): Promise<void> => {
         <span>{{ matchDate }} {{ matchTime }}</span>
       </time>
       <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] pr-2">
-        <span class="winner-home-team text-[12px]`1`">{{ match.home_team }}</span>
-        <span class="winner-away-team text-[12px]">{{ match.away_team }}</span  >
+        <span class="winner-home-team text-[12px]">{{ match.home_team }}</span>
+        <span class="winner-away-team text-[12px]">{{ match.away_team }}</span>
       </div>
       <div class="winner-actions">
         <button
@@ -149,12 +149,11 @@ const copyMatchLink = async (): Promise<void> => {
         </button>
         <button
           type="button"
-          :aria-label="starred ? 'Unstar match' : 'Star match'"
-          :aria-pressed="starred"
-          :title="starred ? 'Unstar match' : 'Star match'"
-          @click="starred = !starred; redirectToBybet()"
+          aria-label="Unstar match"
+          title="Unstar match"
+          @click=" navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
         >
-          <Star :size="16" :fill="starred ? 'currentColor' : 'none'" aria-hidden="true" />
+          <Star :size="16"  aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -190,7 +189,7 @@ const copyMatchLink = async (): Promise<void> => {
           :disabled="!market.outcome || (market.key !== 'h2h' && market.outcome.point == null)"
           :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, odds ${market.outcome?.price ?? 'unavailable'}`"
           :aria-pressed="(market.key === 'h2h' ? selectedOutcome : selectedMarkets[market.key]) === market.name"
-          @click="selectMarket(market.key, market.name); redirectToBybet()"
+          @click="selectMarket(market.key, market.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
         >
           <template v-if="market.outcome && (market.key === 'h2h' || market.outcome.point != null)">
             <span class="text-[#999]">{{ market.label }}</span>
@@ -217,7 +216,7 @@ const copyMatchLink = async (): Promise<void> => {
         :disabled="outcome.price == null"
         :aria-label="`${outcome.name}, odds ${outcome.price ?? 'unavailable'}`"
         :aria-pressed="selectedOutcome === outcome.name"
-        @click="emit('select', outcome.name); redirectToBybet()"
+        @click="emit('select', outcome.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
       >
         <span>{{ outcome.label }}</span>
         <strong>{{ outcome.price == null ? '—' : outcome.price.toFixed(2) }}</strong>

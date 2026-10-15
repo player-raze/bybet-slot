@@ -28,7 +28,7 @@ const openPageComments = (): void => {
 
   openGameComments()
 }
-const externalSiteUrl = 'https://bybet.com/'
+const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 import { MessageCircle, ShoppingBag, GraduationCap, ChartPie, Video, PanelsTopLeft, Play } from 'lucide-vue-next'
 
 import type { LiveStreamCatalog } from '~/types/livestream'
@@ -61,7 +62,7 @@ const tabs = [
         :sources="selectedStream.sources ?? []" @ended="switchEndedStream(selectedStream.id)" @unavailable="switchEndedStream(selectedStream.id)" />
       <a
         v-else-if="previewMode === 'video' && selectedStream"
-        href="https://bybet.com"
+        :href="bybetRedirectUrl"
         class="relative flex h-full w-full items-center justify-center bg-[#14261d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
         :aria-label="`Play livestream: ${selectedStream.home.name} vs ${selectedStream.away.name}`"
       >
@@ -89,7 +90,7 @@ const tabs = [
         <a
           v-for="tab in tabs"
           :key="tab.key"
-          href="https://bybet.com"
+          :href="bybetRedirectUrl"
           class="grid h-5 w-5 place-items-center rounded-full text-[#959999] hover:bg-white/10"
           :aria-label="tab.label"
           :title="tab.label"

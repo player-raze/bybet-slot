@@ -1,0 +1,277 @@
+<script setup lang="ts">
+import { Trophy, ChevronUp, Search } from 'lucide-vue-next'
+import Ai from '~/components/buttons/Ai.vue'
+import Collapse from '~/components/buttons/Collapse.vue'
+import type { Sport, SportsEvent } from '~/types/sports'
+
+const props = defineProps<{
+  filteredSports: Sport[]
+  groups: string[]
+  aiTo?: string
+  refreshVersion: number
+}>()
+
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+const route = useRoute()
+const search = ref('')
+const allCollapsed = ref(false)
+
+const searchedSports = computed(() => {
+  const q = search.value.toLowerCase().trim()
+  if (!q) {
+    return props.filteredSports
+  }
+  return props.filteredSports.filter((sport) => {
+    const details = `${sport.title} ${sport.group} ${sport.description ?? ''}`.toLowerCase()
+    return details.includes(q)
+  })
+})
+
+const searchedGroups = computed(() => {
+  return props.groups.filter((group) => {
+    return searchedSports.value.some(sport => sport.group === group)
+  })
+})
+
+const expandedOutrights = ref<string[]>([])
+const outrightEvents = ref<Record<string, SportsEvent[]>>({})
+const outrightLoading = ref<Record<string, boolean>>({})
+const outrightErrors = ref<Record<string, string>>({})
+const expandedCandidates = ref<Record<string, boolean>>({})
+
+const commencementDates = computed(() => {
+  const dates: Record<string, { value: string; label: string }> = {}
+  const formatter = new Intl.DateTimeFormat('en-PH', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila',
+  })
+  for (const [key, events] of Object.entries(outrightEvents.value)) {
+    const first = events.filter(event => Number.isFinite(Date.parse(event.commence_time)))
+      .sort((a, b) => Date.parse(a.commence_time) - Date.parse(b.commence_time))[0]
+    if (first) dates[key] = { value: first.commence_time, label: formatter.format(new Date(first.commence_time)) }
+  }
+  return dates
+})
+
+const loadOutright = async (key: string): Promise<void> => {
+  if (outrightLoading.value[key]) {
+    return
+  }
+
+  outrightLoading.value[key] = true
+  outrightErrors.value[key] = ''
+
+  try {
+    const response = await $fetch('/api/sports', {
+      query: { mode: 'outright', sport: key },
+    })
+
+    outrightEvents.value[key] = response.events
+  } catch {
+    outrightErrors.value[key] = 'Unable to load outright odds. Please try again.'
+  } finally {
+    outrightLoading.value[key] = false
+  }
+}
+
+const toggleOutright = (key: string): void => {
+  if (expandedOutrights.value.includes(key)) {
+    expandedOutrights.value = expandedOutrights.value.filter(item => item !== key)
+    return
+  }
+
+  expandedOutrights.value.push(key)
+
+  if (!outrightEvents.value[key]) {
+    void loadOutright(key)
+  }
+}
+
+// Fetch dates for the headings while keeping the accordions closed by default.
+onMounted(() => {
+  watch(() => props.filteredSports.map(sport => sport.key), keys => {
+    keys.forEach(key => { if (!outrightEvents.value[key]) void loadOutright(key) })
+  }, { immediate: true })
+})
+
+watch(() => route.path, () => {
+  expandedOutrights.value = []
+})
+
+watch(() => props.refreshVersion, () => {
+  expandedOutrights.value.forEach(key => void loadOutright(key))
+})
+
+watch(allCollapsed, (collapsed) => {
+  if (collapsed) {
+    expandedOutrights.value = []
+  } else {
+    expandedOutrights.value = props.filteredSports.map(s => s.key)
+    expandedOutrights.value.forEach(key => { if (!outrightEvents.value[key]) void loadOutright(key) })
+  }
+})
+</script>
+
+<template>
+  <div class="outright-tab">
+    <div class="toolbar">
+      <Ai
+        v-if="aiTo"
+        :to="aiTo"
+        title="Smart Pick AI"
+      />
+
+      <label class="search">
+        <span class="search-icons">
+          <Search :size="16" aria-hidden="true" />
+        </span>
+        <input
+          v-model="search"
+          type="search"
+          placeholder="Search league or team"
+          aria-label="Search league or team"
+        >
+      </label>
+
+
+      <Collapse
+        v-model="allCollapsed"
+        title="Collapse all matches"
+      />
+    </div>
+
+    <section
+      v-for="group in searchedGroups"
+      :key="group"
+      class="league-group"
+    >
+      <div class="outright-list">
+          <!-- <div
+            class="league-card outright-trigger"
+          >
+            <span class="league-icon">
+              <Trophy :size="19" aria-hidden="true" />
+            </span>
+            <span class="league-name">
+              <strong>{{ sport.title }}</strong>
+              <time
+                v-if="commencementDates[sport.key]"
+                :datetime="commencementDates[sport.key]?.value"
+                class="mt-1 block text-[12px] font-normal text-[#999]"
+              >{{ commencementDates[sport.key]?.label }} PHT</time>
+            </span>
+            <ChevronUp
+              :size="16"
+              class="outright-chevron"
+              :class="{ 'outright-chevron--expanded': expandedOutrights.includes(sport.key) }"
+              aria-hidden="true"
+            />
+          </div> -->
+        <article
+          v-for="sport in searchedSports.filter(item => item.group === group)"
+          :key="sport.key"
+          class="outright-accordion"
+        >
+          <button
+            :id="`outright-trigger-${sport.key}`"
+            type="button"
+            class="league-card outright-trigger"
+            :aria-expanded="expandedOutrights.includes(sport.key)"
+            :aria-controls="`outright-panel-${sport.key}`"
+            @click="toggleOutright(sport.key)"
+          >
+            <span class="league-icon">
+              <Trophy :size="19" aria-hidden="true" />
+            </span>
+            <span class="league-name">
+              <strong>{{ sport.title }}</strong>
+              <time
+                v-if="commencementDates[sport.key]"
+                :datetime="commencementDates[sport.key]?.value"
+                class="mt-1 block text-[12px] font-normal text-[#999]"
+              >{{ commencementDates[sport.key]?.label }} PHT</time>
+            </span>
+            <ChevronUp
+              :size="16"
+              class="outright-chevron"
+              :class="{ 'outright-chevron--expanded': expandedOutrights.includes(sport.key) }"
+              aria-hidden="true"
+            />
+          </button>
+
+          <div
+            v-show="expandedOutrights.includes(sport.key)"
+            :id="`outright-panel-${sport.key}`"
+            class="outright-panel"
+            role="region"
+            :aria-labelledby="`outright-trigger-${sport.key}`"
+            :aria-busy="outrightLoading[sport.key] || false"
+          >
+            <p v-if="outrightLoading[sport.key]" class="note" role="status">
+              Loading outright odds…
+            </p>
+            <div v-else-if="outrightErrors[sport.key]" role="alert">
+              <p class="note">{{ outrightErrors[sport.key] }}</p>
+              <button type="button" class="outright-retry" @click="loadOutright(sport.key)">
+                Try again
+              </button>
+            </div>
+            <template v-else>
+              <article
+                v-for="event in outrightEvents[sport.key] ?? []"
+                :key="event.id"
+                class="outright-market"
+              >
+                <h4>Winner</h4>
+                <div
+                  v-for="bookmaker in (event.bookmakers ?? []).slice(0, 1)"
+                  :key="bookmaker.key"
+                >
+                  <div
+                    v-for="market in bookmaker.markets.filter(item => item.key === 'outrights')"
+                    :key="market.key"
+                    class="odds outright-odds"
+                  >
+                    <button
+                      v-for="outcome in (expandedCandidates[sport.key] ? market.outcomes : market.outcomes.slice(0, 10))"
+                      :key="outcome.name"
+                      type="button"
+                      class="odd-item"
+                      @click="navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
+                    >
+                      <span>{{ outcome.name }}</span>
+                      <strong>{{ outcome.price.toFixed(2) }}</strong>
+                    </button>
+                  </div>
+                </div>
+                <button
+                  v-if="!expandedCandidates[sport.key] && (outrightEvents[sport.key]?.[0]?.bookmakers?.[0]?.markets.find(m => m.key === 'outrights')?.outcomes.length ?? 0) > 10"
+                  type="button"
+                  class="outright-more-btn"
+                  @click="expandedCandidates[sport.key] = true"
+                >
+                  More
+                  <ChevronDown
+                    :size="16"
+                    class="outright-chevron outright-chevron--more"
+                    aria-hidden="true"
+                  />
+                </button>
+                <p v-if="!event.bookmakers?.length" class="note">
+                  Odds are currently unavailable.
+                </p>
+              </article>
+              <p v-if="!outrightEvents[sport.key]?.length" class="note">
+                No outright odds are available for this tournament right now.
+              </p>
+            </template>
+          </div>
+        </article>
+      </div>
+    </section>
+    <div v-if="!searchedSports.length" class="empty">
+      <h2>No outright markets available</h2>
+      <p>No outright markets are currently available for this tournament. Check back later.</p>
+    </div>
+  </div>
+</template>

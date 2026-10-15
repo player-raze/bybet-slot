@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { matchesSportsSelection } from '~/utils/sportsSelection'
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 import {
   Trophy,
   Radio,
@@ -15,6 +17,7 @@ import Upcoming from './sports/tabs/Upcoming.vue'
 import Prematch from './sports/tabs/Prematch.vue'
 import SmartPick from './sports/tabs/SmartPick.vue'
 import Outright from './sports/tabs/Outright.vue'
+import OutrightInner from './sports/tabs/OutrightInner.vue'
 import '~/assets/css/sports.css'
 
 const props = withDefaults(defineProps<{
@@ -43,15 +46,15 @@ const tournamentKey = computed(() => {
   return `${route.params.sport}_${tournament}`
 })
 
-const isPopularRoute = computed(() => route.path.startsWith('/explore/sports/popular'))
+const sportsRouteBase = useSportsRouteBase()
 
 const activeTab = computed(() => {
   if (isOutrightDetail.value) {
     return 'outright'
   }
 
-  if (isPopularRoute.value) {
-    return route.params.tab === 'pre-match' ? 'prematch' : String(route.params.tab ?? 'league')
+  if (sportsRouteBase.value) {
+    return route.params.tab === 'pre-match' ? 'prematch' : String(route.params.tab ?? props.initialTab ?? 'league')
   }
 
   const queryTab = typeof route.query.tab === 'string' ? route.query.tab : undefined
@@ -64,8 +67,8 @@ const activeTab = computed(() => {
 
 const tabPath = (key: string): string => {
   const slug = key === 'prematch' ? 'pre-match' : key
-  if (isPopularRoute.value) {
-    return `/explore/sports/popular/${slug}`
+  if (sportsRouteBase.value) {
+    return `${sportsRouteBase.value}/${slug}`
   }
   return `${route.path}?tab=${slug}`
 }
@@ -88,7 +91,7 @@ const {
 })
 
 const availableSports = computed(() => {
-  const showOutrights = isOutrightDetail.value
+  const showOutrights = activeTab.value === 'outright'
   const sports = leagues.value?.sports ?? []
 
   return sports.filter((sport) => {
@@ -106,15 +109,6 @@ const availableSports = computed(() => {
       return sport.key === key || (sport.has_outrights && sport.key.startsWith(`${key}_`))
     })
     if (!matchesTournament) return false
-
-    if (activeTab.value === 'outright' && !isOutrightDetail.value) {
-      return sports.some((market) => {
-        const belongsToTournament = market.key === sport.key
-          || market.key.startsWith(`${sport.key}_`)
-
-        return market.active && market.has_outrights && belongsToTournament
-      })
-    }
 
     return !isOutrightDetail.value
       || sport.key === tournamentKey.value
@@ -148,9 +142,16 @@ watch(availableSports, (sports) => {
   }
 }, { immediate: true })
 
+const useOddsApi = String(useRuntimeConfig().public.useOddsApi) === 'true'
+const usesLiveCatalog = computed(() => activeTab.value === 'inplay' && useOddsApi)
+const usesMultipleLeagues = computed(() => ['upcoming', 'prematch'].includes(activeTab.value))
+const fixtureSportKeys = computed(() => availableSports.value.map(sport => sport.key))
+const canLoadFixtures = computed(() => usesLiveCatalog.value || (usesMultipleLeagues.value ? fixtureSportKeys.value.length > 0 : Boolean(selectedSport.value)))
+
 const query = computed(() => ({
   mode: activeTab.value,
-  sport: selectedSport.value,
+  sport: usesLiveCatalog.value || usesMultipleLeagues.value ? undefined : selectedSport.value,
+  sports: usesMultipleLeagues.value ? fixtureSportKeys.value.join(',') : undefined,
 }))
 
 const isFixtureTab = computed(() => {
@@ -164,14 +165,14 @@ const {
   execute: loadFixtures,
 } = await useFetch('/api/sports', {
   query,
-  immediate: isFixtureTab.value && Boolean(selectedSport.value),
+  immediate: isFixtureTab.value && canLoadFixtures.value,
   watch: false,
 })
 
 watch(query, () => {
   fixtures.value = null
 
-  if (isFixtureTab.value && selectedSport.value) {
+  if (isFixtureTab.value && canLoadFixtures.value) {
     void loadFixtures()
   }
 })
@@ -191,7 +192,9 @@ const inplayEvents = computed(() => {
   return (fixtures.value?.events ?? [])
     .filter((event) => {
       const start = new Date(event.commence_time).getTime()
-      return !event.completed && event.scores && start <= now.value
+      if (event.completed) return false
+      if (!usesLiveCatalog.value) return Boolean(event.scores && start <= now.value)
+      return matchesSportsSelection(event, props.selectedSports, props.selectedTournaments)
     })
     .sort((a, b) => Date.parse(a.commence_time) - Date.parse(b.commence_time))
 })
@@ -242,7 +245,7 @@ const refresh = (): void => {
 
   if (leagueError.value || !isFixtureTab.value) {
     void refreshLeagues()
-  } else if (selectedSport.value) {
+  } else if (canLoadFixtures.value) {
     void loadFixtures()
   }
 }
@@ -250,6 +253,7 @@ const refresh = (): void => {
 onMounted(() => {
   timer = setInterval(() => {
     now.value = Date.now()
+    if (usesLiveCatalog.value && fixtureStatus.value !== 'pending') void loadFixtures()
   }, 30000)
 })
 
@@ -316,37 +320,42 @@ onBeforeUnmount(() => {
         :sports="availableSports"
         :filtered-sports="filteredSports"
         :groups="groups"
-        :ai-to="tabPath('smart-pick')"
+        :ai-to="bybetRedirectUrl"
       />
       <Inplay
         v-else-if="activeTab === 'inplay'"
         :events="inplayEvents"
         :available-sports="availableSports"
-        v-model:selected-sport="selectedSport"
-        :ai-to="tabPath('smart-pick')"
+        :selected-sport="usesLiveCatalog ? undefined : selectedSport"
+        @update:selected-sport="selectedSport = $event"
+        :ai-to="bybetRedirectUrl"
       />
       <Upcoming
         v-else-if="activeTab === 'upcoming'"
         :events="upcomingEvents"
         :available-sports="availableSports"
         v-model:selected-sport="selectedSport"
-        :ai-to="tabPath('smart-pick')"
+        :ai-to="bybetRedirectUrl"
       />
       <Prematch
         v-else-if="activeTab === 'prematch'"
         :events="prematchEvents"
         :available-sports="availableSports"
         v-model:selected-sport="selectedSport"
-        :ai-to="tabPath('smart-pick')"
+        :ai-to="bybetRedirectUrl"
+      />
+      <OutrightInner
+        v-else-if="activeTab === 'outright' && isOutrightDetail"
+        :filtered-sports="filteredSports"
+        :groups="groups"
+        :refresh-version="outrightRefreshVersion"
+        :ai-to="bybetRedirectUrl"
       />
       <Outright
         v-else-if="activeTab === 'outright'"
         :filtered-sports="filteredSports"
         :groups="groups"
-        :is-outright-detail="isOutrightDetail"
-        :tournament-title="tournamentTitle"
-        :refresh-version="outrightRefreshVersion"
-        :ai-to="tabPath('smart-pick')"
+        :ai-to="bybetRedirectUrl"
       />
     </div>
   </section>

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const { translate } = useSiteLocale()
 const nuxtLinkComponent = resolveComponent('NuxtLink')
-const externalSiteUrl = 'https://bybet.com/'
+const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 
 interface HeroSlide {
   eyebrow: string

@@ -29,7 +29,7 @@ const { getDisplayCount } = useRumblingPlayerCount(
   () => sectionKey.value,
 )
 
-const externalSiteUrl = 'https://bybet.com/'
+const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 const gameRowElement = ref<HTMLElement | null>(null)
 let autoplayTimer: ReturnType<typeof setInterval> | undefined
 let reducedMotionQuery: MediaQueryList | undefined

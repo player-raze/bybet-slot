@@ -5,7 +5,7 @@ import { faqItems } from '~/data/homepage'
 const { translate } = useSiteLocale()
 
 const openFaqIndex = ref<number | null>(null)
-const externalSiteUrl = 'https://bybet.com/'
+const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 
 const toggleFaq = (index: number): void => {
   openFaqIndex.value = openFaqIndex.value === index ? null : index
