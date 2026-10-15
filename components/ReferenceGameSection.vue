@@ -30,6 +30,92 @@ const { getDisplayCount } = useRumblingPlayerCount(
 )
 
 const externalSiteUrl = 'https://bybet.com/'
+const gameRowElement = ref<HTMLElement | null>(null)
+let autoplayTimer: ReturnType<typeof setInterval> | undefined
+let reducedMotionQuery: MediaQueryList | undefined
+
+const stopAutoplay = (): void => {
+  if (autoplayTimer === undefined) {
+    return
+  }
+
+  clearInterval(autoplayTimer)
+  autoplayTimer = undefined
+}
+
+const advanceGameSlider = (): void => {
+  const gameRow = gameRowElement.value
+  if (!gameRow || gameRow.scrollWidth <= gameRow.clientWidth + 1) {
+    return
+  }
+
+  const firstGameCard = gameRow.querySelector<HTMLElement>('.reference-game')
+  if (!firstGameCard) {
+    return
+  }
+
+  const columnGap = Number.parseFloat(getComputedStyle(gameRow).columnGap) || 0
+  const scrollStep = firstGameCard.offsetWidth + columnGap
+  const maximumScrollLeft = gameRow.scrollWidth - gameRow.clientWidth
+  const reachedLastGame = gameRow.scrollLeft >= maximumScrollLeft - scrollStep / 2
+
+  gameRow.scrollTo({
+    left: reachedLastGame ? 0 : Math.min(gameRow.scrollLeft + scrollStep, maximumScrollLeft),
+    behavior: 'smooth',
+  })
+}
+
+const startAutoplay = (): void => {
+  stopAutoplay()
+
+  if (document.hidden || reducedMotionQuery?.matches) {
+    return
+  }
+
+  autoplayTimer = setInterval(advanceGameSlider, 3_500)
+}
+
+const handleVisibilityChange = (): void => {
+  if (document.hidden) {
+    stopAutoplay()
+    return
+  }
+
+  startAutoplay()
+}
+
+const handleSliderFocusOut = (event: FocusEvent): void => {
+  const nextFocusedElement = event.relatedTarget
+  if (
+    nextFocusedElement instanceof Node
+    && event.currentTarget instanceof Node
+    && event.currentTarget.contains(nextFocusedElement)
+  ) {
+    return
+  }
+
+  startAutoplay()
+}
+
+onMounted(() => {
+  reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  startAutoplay()
+})
+
+onBeforeUnmount(() => {
+  stopAutoplay()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+})
+
+watch(
+  () => props.games.length,
+  async () => {
+    await nextTick()
+    gameRowElement.value?.scrollTo({ left: 0 })
+    startAutoplay()
+  },
+)
 </script>
 
 <template>
@@ -44,7 +130,16 @@ const externalSiteUrl = 'https://bybet.com/'
       </NuxtLink>
     </header>
 
-    <div class="reference-game-row">
+    <div
+      ref="gameRowElement"
+      class="reference-game-row"
+      @mouseenter="stopAutoplay"
+      @mouseleave="startAutoplay"
+      @focusin="stopAutoplay"
+      @focusout="handleSliderFocusOut"
+      @touchstart.passive="stopAutoplay"
+      @touchend.passive="startAutoplay"
+    >
       <a
         v-for="game in games"
         :key="game.title"
@@ -184,8 +279,20 @@ const externalSiteUrl = 'https://bybet.com/'
 
 .reference-game-row {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-auto-columns: calc((100% - 1.54rem) / 8);
+  grid-auto-flow: column;
+  grid-template-columns: none;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
   gap: 0.22rem;
+}
+
+.reference-game-row::-webkit-scrollbar {
+  display: none;
 }
 
 .reference-game {
@@ -207,6 +314,8 @@ const externalSiteUrl = 'https://bybet.com/'
   box-shadow:
     inset 0 1px rgba(50, 212, 154, 0.04),
     0 0.18rem 0.42rem rgba(0, 0, 0, 0.22);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .reference-game::before {
