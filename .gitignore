@@ -2,3 +2,4 @@ node_modules
 .nuxt
 .nuxt-build
 .output
+.env

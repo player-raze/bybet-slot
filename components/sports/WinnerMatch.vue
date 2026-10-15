@@ -1,0 +1,440 @@
+<script setup lang="ts">
+import { MessageCircle, Share2, Star } from 'lucide-vue-next'
+import type { SportsEvent } from '~/types/sports'
+import ShareMatchModal from '~/components/modals/ShareMatchModal.vue'
+
+const props = defineProps<{
+  match: SportsEvent
+  soccer: boolean
+  fullMarkets?: boolean
+  selectedOutcome?: string
+}>()
+
+const emit = defineEmits<{
+  select: [name: string]
+}>()
+
+const starred = ref(false)
+const actionMessage = ref('')
+const isShareModalOpen = ref(false)
+
+const outcomes = computed(() => {
+  const market = props.match.bookmakers?.[0]?.markets.find(item => item.key === 'h2h')
+  const selections = [
+    { label: props.soccer ? '1' : 'H', name: props.match.home_team ?? '' },
+    ...(props.soccer ? [{ label: 'X', name: 'Draw' }] : []),
+    { label: props.soccer ? '2' : 'A', name: props.match.away_team ?? '' },
+  ]
+
+  return selections.map(selection => ({
+    ...selection,
+    price: market?.outcomes.find(outcome => outcome.name === selection.name)?.price,
+  }))
+})
+
+const selectedMarkets = ref<Record<string, string>>({})
+
+const teamMarkets = computed(() => {
+  const markets = props.match.bookmakers?.[0]?.markets ?? []
+  const findOutcome = (key: string, name: string) => {
+    return markets.find(market => market.key === key)?.outcomes.find(outcome => outcome.name === name)
+  }
+
+  return [
+    { team: props.match.home_team ?? '', side: 'H', total: 'Over', totalLabel: 'O' },
+    { team: props.match.away_team ?? '', side: 'A', total: 'Under', totalLabel: 'U' },
+  ].map((row) => {
+    const spread = findOutcome('spreads', row.team)
+    const total = findOutcome('totals', row.total)
+    const winner = findOutcome('h2h', row.team)
+
+    return {
+      ...row,
+      markets: [
+        { key: 'spreads', name: row.team, label: spread?.point, outcome: spread },
+        { key: 'totals', name: row.total, label: `${row.totalLabel} ${total?.point ?? ''}`, outcome: total },
+        { key: 'h2h', name: row.team, label: row.side, outcome: winner },
+      ],
+    }
+  })
+})
+
+const selectMarket = (key: string, name: string): void => {
+  if (key === 'h2h') {
+    emit('select', name)
+    return
+  }
+
+  selectedMarkets.value[key] = selectedMarkets.value[key] === name ? '' : name
+}
+
+const isFullDateSport = computed(() => {
+  return props.match.sport_key === 'basketball_nba' || props.match.sport_key === 'baseball_mlb'
+})
+
+const matchDate = computed(() => {
+  return new Intl.DateTimeFormat('en-PH', {
+    month: isFullDateSport.value ? 'long' : 'short',
+    day: 'numeric',
+    timeZone: 'Asia/Manila',
+  }).format(new Date(props.match.commence_time))
+})
+
+const matchTime = computed(() => {
+  return new Intl.DateTimeFormat('en-PH', {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: 'Asia/Manila',
+  }).format(new Date(props.match.commence_time))
+})
+
+const copyMatchLink = async (): Promise<void> => {
+  const url = new URL(window.location.href)
+  url.hash = `match-${props.match.id}`
+
+  try {
+    await navigator.clipboard.writeText(url.href)
+    actionMessage.value = 'Match link copied.'
+  } catch {
+    actionMessage.value = 'Unable to copy the match link. Please copy the page URL from your browser.'
+  }
+}
+</script>
+
+<template>
+  <article :id="`match-${match.id}`" class="winner-match">
+    <div class="winner-header">
+      <time v-if="!fullMarkets" class="winner-date text-xs" :datetime="match.commence_time" >
+        <span>{{ matchDate }}</span>
+        <span>{{ matchTime }}</span>
+      </time>
+      <time v-else class="winner-date text-xs" :datetime="match.commence_time" >
+        <span>{{ matchDate }} {{ matchTime }}</span>
+      </time>
+      <div v-if="!fullMarkets" class="winner-teams">
+        <strong>{{ match.home_team }}</strong>
+        <strong>{{ match.away_team }}</strong>
+      </div>
+      <div class="winner-actions">
+        <button
+          type="button"
+          aria-label="Match comments"
+          title="Comments"
+          @click="actionMessage = 'Match comments are coming soon.'"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M6.00014 0C4.92576 3.78481e-05 3.87109 0.288542 2.94629 0.835382C2.02148 1.38222 1.26047 2.16734 0.742712 3.10873C0.224959 4.05013 -0.0305363 5.11328 0.00290864 6.18714C0.0363536 7.261 0.357512 8.30618 0.932844 9.21354C1.01685 9.41455 0.956845 10.2066 0.932844 10.5456C0.932844 10.7646 0.902842 10.9566 0.902842 11.1006C0.902501 11.1981 0.923862 11.2945 0.965376 11.3827C1.00689 11.4709 1.06751 11.5488 1.14286 11.6107C1.44287 11.8657 1.8599 11.7877 2.52894 11.6587C2.89503 11.5677 3.27078 11.5214 3.648 11.5207C4.46657 11.8694 5.35245 12.0317 6.24147 11.9958C7.1305 11.96 8.00043 11.7268 8.78825 11.3133C9.57608 10.8998 10.2621 10.3163 10.7966 9.605C11.3311 8.8937 11.7007 8.07243 11.8787 7.20066C12.0567 6.3289 12.0386 5.42846 11.8257 4.56456C11.6128 3.70065 11.2104 2.89491 10.6477 2.20568C10.085 1.51645 9.37613 0.960979 8.57231 0.579498C7.76849 0.198017 6.88989 7.26431e-05 6.00014 0ZM7.50023 7.80046H4.50005C4.34093 7.80043 4.18833 7.7372 4.07582 7.62468C3.96331 7.51215 3.90011 7.35954 3.90011 7.20042C3.90011 7.0413 3.96331 6.88869 4.07582 6.77616C4.18833 6.66364 4.34093 6.60041 4.50005 6.60039H7.50023C7.65935 6.60041 7.81195 6.66364 7.92446 6.77616C8.03697 6.88869 8.10017 7.0413 8.10017 7.20042C8.10017 7.35954 8.03697 7.51215 7.92446 7.62468C7.81195 7.7372 7.65935 7.80043 7.50023 7.80046ZM8.10026 5.40032H3.90002C3.74089 5.40029 3.5883 5.33706 3.47579 5.22454C3.36328 5.11201 3.30007 4.9594 3.30007 4.80028C3.30007 4.64116 3.36328 4.48855 3.47579 4.37602C3.5883 4.2635 3.74089 4.20027 3.90002 4.20024H8.10026C8.25939 4.20027 8.41198 4.2635 8.52449 4.37602C8.637 4.48855 8.7002 4.64116 8.7002 4.80028C8.7002 4.9594 8.637 5.11201 8.52449 5.22454C8.41198 5.33706 8.25939 5.40029 8.10026 5.40032Z"
+              class="fill-icon-7"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+        <button
+          type="button"
+          aria-label="Copy match link to share"
+          title="Share match"
+          @click="isShareModalOpen = true"
+        >
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-4"><g id="icon"><path id="Union" fill-rule="evenodd" clip-rule="evenodd" d="M2.06105 10.6318L2.06105 5.3748C2.05445 3.5397 3.53963 2.0538 5.36805 2.0538H7.77605C8.12451 2.0538 8.40305 1.77526 8.40305 1.4268C8.40305 1.07835 8.12451 0.799805 7.77605 0.799805H5.36805C2.84959 0.799805 0.800049 2.84935 0.800049 5.3678V10.6248C0.800049 13.1433 2.84959 15.1928 5.36805 15.1928H10.625C13.1435 15.1928 15.193 13.1433 15.193 10.6248V7.1388C15.193 6.79035 14.9145 6.5118 14.566 6.5118C14.5433 6.5118 14.5211 6.51567 14.5003 6.5229C14.1866 6.5585 13.946 6.82196 13.946 7.1458V10.6318C13.946 12.4603 12.4606 13.9458 10.632 13.9458H5.37505C3.54651 13.9458 2.06105 12.4603 2.06105 10.6318ZM13.411 3.13497L12.0531 5.02488C11.9761 5.12988 11.9481 5.26288 11.9691 5.38888C11.9691 5.3889 11.9691 5.38893 11.9691 5.38895C11.9481 5.26295 11.9761 5.12995 12.0531 5.02495L13.4111 3.13495C13.411 3.13495 13.411 3.13496 13.411 3.13497ZM14.9968 2.35106C14.9641 2.17212 14.8293 2.01989 14.6361 1.97288L11.3881 1.02088C11.1291 0.94388 10.8561 1.09088 10.7721 1.34988C10.7545 1.4129 10.7493 1.47768 10.7563 1.5407C10.7493 1.4777 10.7546 1.41295 10.7721 1.34995C10.8561 1.09095 11.1291 0.943949 11.3881 1.02095L14.6361 1.97295C14.8293 2.01995 14.9641 2.17215 14.9968 2.35106ZM12.5219 2.37891C12.4134 2.41457 12.3057 2.45215 12.1991 2.49158C9.06068 3.65201 6.78031 6.42413 6.52305 9.49088H6.51605C6.51299 9.52 6.51262 9.54878 6.51484 9.57701C6.51262 9.5488 6.513 9.52004 6.51607 9.49095H6.52307C6.78907 6.31995 9.21807 3.46395 12.5221 2.37895L12.5219 2.37891ZM11.8851 2.39832C8.82688 3.62643 6.60691 6.36964 6.32834 9.42176C6.32274 9.43699 6.31892 9.45313 6.31715 9.46994C6.29725 9.65907 6.35735 9.8411 6.48579 9.98104C6.60292 10.1161 6.77074 10.2059 6.96053 10.2159H7.01305C7.36719 10.2159 7.67249 9.94204 7.70235 9.58464C7.93181 6.85661 10.0516 4.40756 12.9139 3.48402L11.8911 4.90747C11.7809 5.05835 11.7427 5.24585 11.7716 5.42094C11.8009 5.60482 11.8999 5.76807 12.0623 5.87113C12.3713 6.0808 12.8014 6.01679 13.0212 5.70763L15.0307 2.90268C15.111 2.81044 15.1684 2.6977 15.1894 2.57811C15.2655 2.22276 15.048 1.86995 14.6882 1.77975L11.4447 0.829056C11.0791 0.7206 10.6982 0.928673 10.5816 1.28812L10.5794 1.29635C10.5312 1.46968 10.5492 1.65659 10.6385 1.8167C10.7268 1.98212 10.8749 2.10115 11.0527 2.15107L11.8851 2.39832Z" class="fill-icon-7"></path></g></svg>
+        </button>
+        <button
+          type="button"
+          :aria-label="starred ? 'Unstar match' : 'Star match'"
+          :aria-pressed="starred"
+          :title="starred ? 'Unstar match' : 'Star match'"
+          @click="starred = !starred; redirectToBybet()"
+        >
+          <Star :size="16" :fill="starred ? 'currentColor' : 'none'" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+
+    <div
+      v-if="isShareModalOpen"
+      class="modal-container"
+    >
+      <ShareMatchModal
+        :match="match"
+        @close="isShareModalOpen = false"
+        @save="() => {
+          console.log('Save QR Code clicked')
+          isShareModalOpen = false
+        }"
+      />
+    </div>
+
+    <div
+      v-if="fullMarkets"
+      class="team-markets"
+
+      role="group"
+      :aria-label="`${match.home_team} vs ${match.away_team}, match markets`"
+    >
+      <div v-for="row in teamMarkets" :key="row.side" class="team-market-row">
+        <strong class="market-team-name">{{ row.team }}</strong>
+        <button
+          v-for="market in row.markets"
+          :key="market.key"
+          type="button"
+          class="winner-price team-market-price"
+          :disabled="!market.outcome || (market.key !== 'h2h' && market.outcome.point == null)"
+          :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, odds ${market.outcome?.price ?? 'unavailable'}`"
+          :aria-pressed="(market.key === 'h2h' ? selectedOutcome : selectedMarkets[market.key]) === market.name"
+          @click="selectMarket(market.key, market.name); redirectToBybet()"
+        >
+          <template v-if="market.outcome && (market.key === 'h2h' || market.outcome.point != null)">
+            <span>{{ market.label }}</span>
+            <br>
+            <strong>{{ market.outcome.price.toFixed(2) }}</strong>
+          </template>
+          <span v-else>—</span>
+        </button>
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="winner-markets"
+      :class="{ 'winner-markets--soccer': soccer }"
+      role="group"
+      :aria-label="`${match.home_team} vs ${match.away_team}, match winner`"
+    >
+      <button
+        v-for="outcome in outcomes"
+        :key="outcome.label"
+        type="button"
+        class="winner-price"
+        :disabled="outcome.price == null"
+        :aria-label="`${outcome.name}, odds ${outcome.price ?? 'unavailable'}`"
+        :aria-pressed="selectedOutcome === outcome.name"
+        @click="emit('select', outcome.name); redirectToBybet()"
+      >
+        <span>{{ outcome.label }}</span>
+        <strong>{{ outcome.price == null ? '—' : outcome.price.toFixed(2) }}</strong>
+      </button>
+    </div>
+    <p v-if="actionMessage" class="winner-message" role="status">{{ actionMessage }}</p>
+  </article>
+</template>
+
+<style scoped>
+.winner-match {
+  padding: 16px;
+  scroll-margin-top: calc(var(--header-height) + 16px);
+}
+.winner-match:hover {
+  background: rgb(var(--color-primary) / 0.1);
+}
+
+.winner-match + .winner-match {
+  border-top: 1px solid #ffffff18;
+}
+
+.winner-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.winner-date {
+  display: grid;
+  gap: 3px;
+  padding-right: 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.winner-date small {
+  font-size: 9px;
+}
+
+.winner-teams {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  flex: 1 1 auto;
+}
+
+.winner-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.winner-actions button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary);
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.winner-actions button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.fill-icon-7 {
+  fill: currentColor;
+}
+
+
+.winner-markets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.winner-markets--soccer {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.winner-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  min-height: 44px;
+  padding: .25rem .5rem;
+  border-radius: 8px;
+  background: var(--odd-btn);
+  color: var(--text);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.winner-price:hover {
+  background: var(--odd-btn-hover);
+}
+
+.winner-price[aria-pressed='true'] {
+  border-color: #48daa6;
+  background: #076b4a;
+}
+
+.winner-price:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.winner-match button:focus-visible {
+  outline: 2px solid #48daa6;
+  outline-offset: 2px;
+}
+
+.winner-message {
+  margin: 12px 0 0;
+  color: var(--secondary);
+  font-size: 12px;
+}
+
+.market-bookmaker {
+  color: var(--secondary);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.team-market-headings,
+.team-market-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 8px;
+}
+
+.team-market-headings {
+  margin-bottom: 8px;
+  color: var(--secondary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.team-market-headings > :first-child {
+  text-align: left;
+}
+
+.team-market-row + .team-market-row {
+  margin-top: 8px;
+}
+
+.market-team-name {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.team-market-price {
+  display: block;
+  text-align: center;
+  white-space: normal;
+}
+
+@media (max-width: 600px) {
+  .team-market-headings,
+  .team-market-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .team-market-headings > :first-child {
+    display: none;
+  }
+
+  .market-team-name {
+    grid-column: 1 / -1;
+    margin: 4px 0;
+  }
+
+  .team-market-row + .team-market-row {
+    margin-top: 12px;
+  }
+
+  .winner-match {
+    padding: 12px;
+  }
+
+  .winner-header {
+    gap: 10px;
+  }
+
+  .winner-date {
+    padding-right: 10px;
+    font-size: 10px;
+  }
+
+  .winner-teams {
+    font-size: 12px;
+  }
+
+  .winner-actions {
+    margin-left: auto;
+  }
+
+  .winner-actions button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .winner-price {
+    padding: 10px;
+  }
+}
+</style>
