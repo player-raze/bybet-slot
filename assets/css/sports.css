@@ -1,0 +1,561 @@
+.sports-page {
+  min-height: 70vh;
+  padding: clamp(12px, 2vw, 28px);
+  color: var(--text);
+}
+
+.sports-page .sports-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: radial-gradient(ellipse at right top, #07563b, transparent 65%), #111c17;
+  color: white;
+}
+
+.sports-page .eyebrow {
+  color: #48daa6;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.sports-page h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.2;
+}
+
+.sports-page .subtitle {
+  font-size: 13px;
+  color: #b0c6bb;
+  margin: 8px 0 0;
+}
+
+.sports-page .header-icon {
+  color: #48daa6;
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff08;
+}
+
+.sports-page .sports-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ffffff14;
+}
+
+.sports-page .sports-tabs a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 18px;
+  font-size: 13px;
+  color: var(--secondary);
+  background: var(--surface);
+  white-space: nowrap;
+}
+
+.sports-page .sports-tabs a.selected {
+  background: #076b4a;
+  color: white;
+  border-color: #24865f;
+}
+
+.sports-page button {
+  cursor: pointer;
+}
+
+.sports-page button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+.sports-page button:focus-visible,
+.sports-page input:focus-visible,
+.sports-page select:focus-visible {
+  outline: none;
+  outline-offset: 3px;
+}
+
+.sports-page .toolbar {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.sports-page .search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--secondary);
+  min-width: 0;
+}
+
+.sports-page .search-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  color: var(--secondary);
+}
+
+.sports-page .search-badge {
+  flex-shrink: 0;
+}
+
+.sports-page input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  font-size: 14px;
+}
+
+.sports-page .league-select {
+  min-width: 0;
+  max-width: 45%;
+}
+
+.sports-page select {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 18px;
+  padding: 0 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.sports-page .refresh,
+.sports-page .toolbar-circle-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--surface);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.sports-page .toolbar-circle-btn:hover,
+.sports-page .toolbar-circle-btn[aria-expanded="true"],
+.sports-page .refresh:hover {
+  background: #07835824;
+  color: #48daa6;
+}
+
+.sports-page .toolbar-circle-btn:focus-visible,
+.sports-page .refresh:focus-visible {
+  outline: 2px solid #48daa6;
+  outline-offset: 2px;
+}
+
+.sports-page .sort-dropdown-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.sports-page .sort-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  width: 155px;
+  padding: 12px 10px 10px;
+  border-radius: 16px;
+  background: #4a4a4a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.sports-page .sort-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  background: #4a4a4a;
+  transform: rotate(45deg);
+  border-top-left-radius: 2px;
+}
+
+.sports-page .sort-menu-title {
+  padding: 0 4px 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.sports-page .sort-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.sports-page .sort-menu-item + .sort-menu-item {
+  margin-top: 4px;
+}
+
+.sports-page .sort-menu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sports-page .sort-menu-item--active {
+  background: #636366;
+}
+
+.sports-page .section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.sports-page h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.sports-page .section-heading > span,
+.sports-page .note {
+  font-size: 12px;
+  color: var(--secondary);
+}
+
+.sports-page .league-group {
+  margin: 24px 0;
+}
+
+.sports-page .league-group h3 {
+  font-size: 13px;
+  color: var(--secondary);
+  margin: 0 0 12px;
+}
+
+.sports-page .league-grid,
+.sports-page .event-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sports-page .league-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 5px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+}
+
+.sports-page .league-card:hover {
+  border-color: #27855f;
+  /* background: #076b4a22; */
+}
+
+.sports-page .league-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  color: #48daa6;
+  background: #15805120;
+}
+
+.sports-page .league-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sports-page .league-name strong {
+  display: block;
+  font-size: 13px;
+}
+
+.sports-page .league-name small {
+  display: block;
+  margin-top: 4px;
+  color: var(--secondary);
+  font-size: 11px;
+}
+
+.sports-page .event-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sports-page .event-card {
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 18px;
+  min-width: 0;
+}
+
+.sports-page .event-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--secondary);
+}
+
+.sports-page .event-card h3 {
+  margin: 20px 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.sports-page .event-card h3 span {
+  color: var(--secondary);
+  font-size: 11px;
+  margin: 0 6px;
+}
+
+.sports-page .live {
+  color: #48daa6;
+  font-weight: 800;
+}
+
+.sports-page .bookmaker {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 12px 0 8px;
+}
+
+.sports-page .odds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 6px;
+}
+
+.sports-page .odds > div,
+.sports-page .odds > button,
+.sports-page .scores > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #07835818;
+  color: var(--text);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.sports-page .odds > button:hover {
+  background: #07835830;
+}
+
+.sports-page .odds strong,
+.sports-page .scores strong {
+  color: #48daa6;
+}
+
+.sports-page .scores {
+  display: grid;
+  gap: 6px;
+}
+
+.sports-page .empty {
+  display: flex;
+  min-height: 280px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 16px;
+  text-align: center;
+}
+
+.sports-page .empty > svg {
+  color: #48daa6;
+}
+
+.sports-page .empty p {
+  max-width: 380px;
+  color: var(--secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.sports-page .empty button {
+  background: #076b4a;
+  color: white;
+  border: 0;
+  border-radius: 18px;
+  min-height: 44px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.sports-page .outright-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #48daa6;
+  font-size: 14px;
+}
+
+.sports-page .outright-list {
+  display: grid;
+  gap: 12px;
+}
+
+.sports-page .outright-accordion {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.sports-page .outright-trigger {
+  width: 100%;
+  border: 0;
+}
+
+.sports-page .outright-trigger:focus-visible,
+.sports-page .outright-retry:focus-visible {
+  outline: 2px solid #48daa6;
+  outline-offset: -3px;
+}
+
+.sports-page .outright-chevron {
+  flex-shrink: 0;
+}
+
+.sports-page .outright-chevron--expanded {
+  transform: rotate(90deg);
+}
+
+.sports-page .outright-panel {
+  padding: 16px;
+  border-top: 1px solid #ffffff18;
+}
+
+.sports-page .outright-market + .outright-market {
+  margin-top: 20px;
+}
+
+.sports-page .outright-market h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.sports-page .outright-odds {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.sports-page .outright-retry {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 18px;
+  background: #076b4a;
+  color: white;
+  font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+  .sports-page .league-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .sports-page {
+    padding: 8px 0;
+  }
+
+  .sports-page .sports-header {
+    padding: 20px 16px;
+  }
+
+  .sports-page .header-icon {
+    padding: 10px;
+  }
+
+  .sports-page .sports-tabs a {
+    padding: 0 12px;
+  }
+
+  .sports-page .toolbar {
+    flex-wrap: wrap;
+  }
+
+  .sports-page .search {
+    flex: 1 1 180px;
+  }
+
+  .sports-page .league-select {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .sports-page input,
+  .sports-page select {
+    font-size: 16px;
+  }
+
+  .sports-page .league-grid,
+  .sports-page .event-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sports-page .section-heading {
+    align-items: flex-start;
+  }
+
+  .sports-page .section-heading > span {
+    text-align: right;
+    font-size: 11px;
+  }
+}
+
+.fill-icon-7 {
+  fill: currentColor;
+}

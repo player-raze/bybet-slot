@@ -1,3 +1,16 @@
+<script setup lang="ts">
+const selectedSports = ['Tennis']
+</script>
+
 <template>
-  <ComingSoonFallback />
+  <SportsPopular
+    class="tennis-page"
+    :selected-sports="selectedSports"
+  />
 </template>
+
+<style scoped>
+.tennis-page {
+  min-width: 0;
+}
+</style>

@@ -49,8 +49,6 @@ const { translate } = useSiteLocale()
       <div>
         <Trophy :size="16" fill="currentColor" aria-hidden="true" />
         <h2 id="jackpots-title">{{ translate('Top Jackpots') }}</h2>
-        <small>{{ translate('Demo values') }}</small>
-        <Info class="jackpot-info" :size="10" aria-label="Values shown are demo data" role="img" />
       </div>
       <NuxtLink to="/explore/egames/jackpot">{{ translate('View All') }} <ArrowRight :size="9" /></NuxtLink>
     </header>

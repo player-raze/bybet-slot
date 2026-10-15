@@ -1,3 +1,32 @@
+<script setup lang="ts">
+const selectedSports = ['Basketball', 'Soccer', 'Tennis', 'Baseball']
+
+// This filter is optional. Omit selected-tournaments to show all tournaments for selectedSports.
+// Add API tournament keys to show only those tournaments in the League and Outright tabs.
+// Leave a sport's list empty to show all its available tournaments.
+// A trailing * matches a tournament family, such as all ATP tournaments.
+const selectedTournaments: Record<string, string[]> = {
+  Basketball: ['basketball_nba'],
+  Soccer: ['soccer_epl', 'soccer_germany_bundesliga', 'soccer_uefa_*', 'soccer_italy_serie_a' ],
+  Tennis: ['tennis_atp_*', 'tennis_wta_*'],
+  Baseball: ['baseball_mlb'],
+}
+
+definePageMeta({
+  middleware: (to) => {
+    if (to.path.replace(/\/$/, '') === '/explore/sports/popular') {
+      return navigateTo({
+        path: '/explore/sports/popular/league',
+        query: to.query,
+      }, { replace: true })
+    }
+  },
+})
+</script>
+
 <template>
-  <ComingSoonFallback />
+  <NuxtPage
+    :selected-sports="selectedSports"
+    :selected-tournaments="selectedTournaments"
+  />
 </template>

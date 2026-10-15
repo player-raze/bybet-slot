@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
               :key="childItem.to"
               v-bind="childItem.underMaintenance ? { type: 'button' } : { to: childItem.to }"
               class="rail-submenu-link"
-              :class="{ 'rail-submenu-link--active': !childItem.underMaintenance && route.path === childItem.to, 'rail-submenu-link--maintenance': childItem.underMaintenance }"
+              :class="{ 'rail-submenu-link--active': !childItem.underMaintenance && (route.path === childItem.to || route.path.startsWith(`${childItem.to}/`)), 'rail-submenu-link--maintenance': childItem.underMaintenance }"
               :aria-label="childItem.underMaintenance ? `${translate(childItem.label)} — Under maintenance` : undefined"
               :aria-haspopup="childItem.underMaintenance ? 'dialog' : undefined"
               :title="childItem.underMaintenance ? 'Under maintenance' : undefined"
