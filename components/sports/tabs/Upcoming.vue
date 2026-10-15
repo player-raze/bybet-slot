@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { CalendarDays, Search } from 'lucide-vue-next'
+import { ref, computed, defineComponent, h } from 'vue'
+import { CalendarDays, ChevronDown, Search } from 'lucide-vue-next'
 import EventCard from '~/components/sports/EventCard.vue'
+import Collapse from '~/components/buttons/Collapse.vue'
+import Sort from '~/components/buttons/Sort.vue'
 import Ai from '~/components/buttons/Ai.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
 
@@ -17,6 +19,101 @@ const emit = defineEmits<{
 }>()
 
 const search = ref('')
+const localCollapsed = ref<string[]>([])
+const earliestTimes = ref<Record<string, number>>({})
+const timeFilters = ['1hours', '3hours', '6hours', '12hours', '24hours'] as const
+const route = useRoute()
+const sportsRouteBase = useSportsRouteBase()
+const selectedTimeFilter = ref<(typeof timeFilters)[number] | null>(null)
+watch(() => route.params.hours, value => {
+  selectedTimeFilter.value = timeFilters.find(filter => filter === value) ?? null
+}, { immediate: true })
+function selectTimeFilter(value: (typeof timeFilters)[number], replace = false) {
+  selectedTimeFilter.value = value
+  if (!sportsRouteBase.value) return
+  void navigateTo({ path: `${sportsRouteBase.value}/upcoming/${value}`, query: route.query }, { replace })
+}
+const now = useState('upcoming-filter-now', () => Date.now())
+let timeFilterTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  now.value = Date.now()
+  timeFilterTimer = setInterval(() => { now.value = Date.now() }, 60000)
+})
+onBeforeUnmount(() => clearInterval(timeFilterTimer))
+const allCollapsed = ref(false)
+const sortBy = ref<'league' | 'time'>('time')
+
+const CollapseIcon = defineComponent({
+  props: {
+    expanded: Boolean,
+  },
+  setup(iconProps) {
+    return () => h(ChevronDown, {
+      size: 16,
+      class: ['league-chevron', { 'league-chevron--expanded': iconProps.expanded }],
+      'aria-hidden': 'true',
+    })
+  },
+})
+
+const isExpanded = (key: string): boolean => {
+  return !localCollapsed.value.includes(key)
+}
+
+const toggleTournament = (key: string): void => {
+  if (localCollapsed.value.includes(key)) {
+    localCollapsed.value = localCollapsed.value.filter(item => item !== key)
+    return
+  }
+
+  localCollapsed.value = [...localCollapsed.value, key]
+}
+
+const getEventStartTimestamp = (event: SportsEvent): number | null => {
+  const raw = (
+    (event as any).commence_time ??
+    (event as any).start_time ??
+    (event as any).starts_at ??
+    (event as any).start ??
+    (event as any).date ??
+    (event as any).timestamp ??
+    (event as any).startTime
+  )
+
+  if (raw == null || raw === '') {
+    return null
+  }
+
+  const value = typeof raw === 'number' ? raw : Date.parse(raw)
+  if (Number.isNaN(value)) {
+    return null
+  }
+
+  return value
+}
+
+const isWithinTimeFilter = (event: SportsEvent, filter: (typeof timeFilters)[number] | null): boolean => {
+  if (!filter) {
+    return true
+  }
+
+  const startTimestamp = getEventStartTimestamp(event)
+  if (startTimestamp == null) {
+    return false
+  }
+
+  const hours = Number.parseInt(filter, 10)
+  const lowerBound = now.value
+  const upperBound = lowerBound + (hours * 60 * 60 * 1000)
+
+  return startTimestamp > lowerBound && startTimestamp <= upperBound
+}
+
+const handleMatchLoaded = (payload: { sportKey: string; earliestTime: number | null }): void => {
+  if (payload.earliestTime != null) {
+    earliestTimes.value[payload.sportKey] = payload.earliestTime
+  }
+}
 
 const handleSportChange = (event: Event): void => {
   const target = event.target as HTMLSelectElement | null
@@ -25,15 +122,51 @@ const handleSportChange = (event: Event): void => {
   }
 }
 
-const filteredEvents = computed(() => {
+const matchingEvents = computed(() => {
   const q = search.value.toLowerCase().trim()
-  if (!q) {
-    return props.events
-  }
-  return props.events.filter((event) => {
+  return props.events.filter(event => {
+    if (event.completed) return false
     const details = `${event.home_team ?? ''} ${event.away_team ?? ''} ${event.sport_title ?? ''}`.toLowerCase()
-    return details.includes(q)
+    return !q || details.includes(q)
   })
+})
+
+const availableTimeFilters = computed(() => timeFilters.filter(filter =>
+  matchingEvents.value.some(event => isWithinTimeFilter(event, filter)),
+))
+
+watch(availableTimeFilters, filters => {
+  if (route.params.hours) return
+  if (!selectedTimeFilter.value || !filters.includes(selectedTimeFilter.value)) {
+    selectedTimeFilter.value = filters[0] ?? null
+    if (import.meta.client && filters[0]) selectTimeFilter(filters[0], true)
+  }
+}, { immediate: true })
+
+const filteredEvents = computed(() => {
+  if (!selectedTimeFilter.value) return []
+  return matchingEvents.value.filter(event => isWithinTimeFilter(event, selectedTimeFilter.value))
+    .sort((a, b) => sortBy.value === 'league'
+      ? a.sport_title.localeCompare(b.sport_title) || Date.parse(a.commence_time) - Date.parse(b.commence_time)
+      : Date.parse(a.commence_time) - Date.parse(b.commence_time))
+})
+
+const groupedSports = computed(() => {
+  const groups: Record<string, { title: string; key: string; description: string; group: string }> = {}
+
+  filteredEvents.value.forEach(event => {
+    const sportKey = event.sport_key
+    if (!groups[sportKey]) {
+      groups[sportKey] = {
+        title: event.sport_title ?? '',
+        key: sportKey,
+        description: (event as any).sport_group ?? event.sport ?? '',
+        group: (event as any).sport_group ?? event.sport ?? ''
+      }
+    }
+  })
+
+  return Object.values(groups)
 })
 </script>
 
@@ -49,7 +182,6 @@ const filteredEvents = computed(() => {
       <label class="search">
         <span class="search-icons">
           <Search :size="16" aria-hidden="true" />
-          <CalendarDays :size="15" class="search-badge text-[#ff8a3d]" aria-hidden="true" />
         </span>
         <input
           v-model="search"
@@ -58,38 +190,68 @@ const filteredEvents = computed(() => {
           aria-label="Search upcoming matches or teams"
         >
       </label>
+      <Sort
+        v-model="sortBy"
+      />
+      <Collapse
+        v-model="allCollapsed"
+        title="Collapse all matches"
+      />
+    </div>
 
-      <label
-        v-if="availableSports && availableSports.length > 0"
-        class="league-select"
+    <div v-if="availableTimeFilters.length" class="flex flex-wrap gap-1" aria-label="Filter upcoming matches by start time">
+      <button
+        v-for="filter in availableTimeFilters"
+        :key="filter"
+        type="button"
+        class="time-filter rounded-md  px-3 py-1 text-[12px] font-medium text-white"
+        :class="selectedTimeFilter === filter ? 'bg-[#076b4a]' : 'bg-[#1a1a1a]'"
+        :aria-pressed="selectedTimeFilter === filter"
+        @click="selectTimeFilter(filter)"
       >
-        <span class="sr-only">League</span>
-        <select
-          :value="selectedSport"
-          @change="handleSportChange"
-        >
-          <option
-            v-for="sport in availableSports"
-            :key="sport.key"
-            :value="sport.key"
-          >
-            {{ sport.title }}
-          </option>
-        </select>
-      </label>
+        {{ filter.replace('hours', 'hours') }}
+      </button>
     </div>
 
     <div class="section-heading">
       <h2>Upcoming</h2>
       <span>{{ filteredEvents.length }} events · Philippine time</span>
     </div>
-    <div class="event-grid">
-      <EventCard
-        v-for="event in filteredEvents"
-        :key="event.id"
-        :event="event"
-      />
+
+    <div class="league-matches-list">
+      <article
+        v-for="sport in groupedSports"
+        :key="sport.key"
+        class="league-preview"
+      >
+        <button
+          :id="`league-trigger-${sport.key}`"
+          class="league-card league-preview-heading"
+          type="button"
+          :aria-expanded="isExpanded(sport.key)"
+          :aria-controls="`league-panel-${sport.key}`"
+          @click="toggleTournament(sport.key)"
+        >
+          <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
+            {{ sport.title }} {{ sport.description }}
+          </span>
+          <CollapseIcon :expanded="isExpanded(sport.key)" />
+        </button>
+        <div
+          v-show="isExpanded(sport.key)"
+          :id="`league-panel-${sport.key}`"
+          role="region"
+          :aria-labelledby="`league-trigger-${sport.key}`"
+        >
+          <EventCard
+            v-for="event in filteredEvents.filter(item => item.sport_key === sport.key).slice(0, 2)"
+            :key="event.id"
+            :event="event"
+          />
+        </div>
+      </article>
     </div>
+
     <div v-if="!filteredEvents.length" class="empty">
       <CalendarDays :size="32" class="text-[#ff8a3d]" aria-hidden="true" />
       <h2>No upcoming events</h2>
@@ -97,3 +259,35 @@ const filteredEvents = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.league-matches-list {
+  display: grid;
+  gap: 16px;
+}
+
+.league-preview {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.league-preview-heading {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+}
+
+.league-preview-heading:focus-visible {
+  outline-offset: -3px;
+}
+
+.league-chevron {
+  flex-shrink: 0;
+}
+
+.league-chevron--expanded {
+  transform: rotate(180deg);
+}
+</style>

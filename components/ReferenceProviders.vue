@@ -7,7 +7,7 @@ defineProps<{
 }>()
 
 const { translate } = useSiteLocale()
-const externalSiteUrl = 'https://bybet.com/'
+const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 </script>
 
 <template>

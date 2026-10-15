@@ -7,6 +7,7 @@ export interface Sport {
   has_outrights: boolean
 }
 export interface SportsEvent {
+  sport?: string
   id: string
   sport_key: string
   sport_title: string

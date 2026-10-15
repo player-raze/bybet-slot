@@ -5,7 +5,11 @@ const environment = (
     process?: {
       env?: {
         NODE_ENV?: string
+        SPORTS_API?: string
+        SPORTS_API_KEY?: string
+        USE_ODDS_API?: string
         KADARIO_API?: string
+        BYBET_REDIRECT_URL?: string
       }
     }
   }
@@ -16,6 +20,13 @@ export default defineNuxtConfig({
   buildDir: environment?.NODE_ENV === 'production' ? 'node_modules/.cache/bybet-nuxt-build' : '.nuxt',
   devtools: { enabled: false },
   runtimeConfig: {
+    oddsApi: environment?.SPORTS_API || 'https://api.the-odds-api.com/v4',
+    oddsApiKey: environment?.SPORTS_API_KEY || '',
+    useOddsApi: environment?.USE_ODDS_API === 'true',
+    public: {
+      useOddsApi: environment?.USE_ODDS_API === 'true',
+      bybetRedirectUrl: environment?.BYBET_REDIRECT_URL || 'https://bybet.com/',
+    },
     kadarioApi: environment?.KADARIO_API || 'https://live88.eu.cc/',
     kadarioSite: 'YBa-BnymZ6iN8pkfAUFTWIKn',
   },

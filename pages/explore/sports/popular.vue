@@ -9,7 +9,7 @@ const selectedTournaments: Record<string, string[]> = {
   Basketball: ['basketball_nba'],
   Soccer: ['soccer_epl', 'soccer_germany_bundesliga', 'soccer_uefa_*', 'soccer_italy_serie_a' ],
   Tennis: ['tennis_atp_*', 'tennis_wta_*'],
-  Baseball: ['baseball_mlb'],
+  Baseball: ['baseball_mlb', 'baseball_mlb_world_series_winner'],
 }
 
 definePageMeta({

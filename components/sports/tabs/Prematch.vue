@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { ChartNoAxesCombined, Search } from 'lucide-vue-next'
+import { ref, computed, defineComponent, h } from 'vue'
+import { ChartNoAxesCombined, ChevronDown, Search } from 'lucide-vue-next'
 import EventCard from '~/components/sports/EventCard.vue'
 import Ai from '~/components/buttons/Ai.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
@@ -17,6 +17,79 @@ const emit = defineEmits<{
 }>()
 
 const search = ref('')
+const route = useRoute()
+const sportsRouteBase = useSportsRouteBase()
+const selectedDate = ref('all')
+watch(() => route.params.date, value => {
+  const [month, day, year] = String(value ?? '').split('-')
+  selectedDate.value = year ? `${year}-${month}-${day}` : 'all'
+}, { immediate: true })
+
+function selectDate(value: string) {
+  selectedDate.value = value
+  if (!sportsRouteBase.value) return
+  const [year, month, day] = value.split('-')
+  const path = `${sportsRouteBase.value}/pre-match` + (value === 'all' ? '' : `/${month}-${day}-${year}`)
+  void navigateTo({ path, query: route.query })
+}
+const now = useState('prematch-date-filter-now', () => Date.now())
+const dateKey = (value: number) => new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit',
+}).format(value)
+const dateFilters = computed(() => {
+  const today = new Date(`${dateKey(now.value)}T00:00:00+08:00`).getTime()
+  return Array.from({ length: 7 }, (_, offset) => {
+    const date = today + offset * 24 * 60 * 60 * 1000
+    return {
+      key: dateKey(date),
+      date: new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Manila', day: 'numeric', month: 'short' }).format(date),
+      label: offset === 0 ? 'Today' : offset === 1 ? 'Tomorrow' : new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Manila', weekday: 'short' }).format(date),
+    }
+  })
+})
+let dateTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  now.value = Date.now()
+  dateTimer = setInterval(() => { now.value = Date.now() }, 60000)
+})
+onBeforeUnmount(() => clearInterval(dateTimer))
+watch(dateFilters, filters => {
+  if (!route.params.date && selectedDate.value !== 'all' && !filters.some(filter => filter.key === selectedDate.value)) selectedDate.value = 'all'
+})
+const localCollapsed = ref<string[]>([])
+const earliestTimes = ref<Record<string, number>>({})
+
+const CollapseIcon = defineComponent({
+  props: {
+    expanded: Boolean,
+  },
+  setup(iconProps) {
+    return () => h(ChevronDown, {
+      size: 16,
+      class: ['league-chevron', { 'league-chevron--expanded': iconProps.expanded }],
+      'aria-hidden': 'true',
+    })
+  },
+})
+
+const isExpanded = (key: string): boolean => {
+  return !localCollapsed.value.includes(key)
+}
+
+const toggleTournament = (key: string): void => {
+  if (localCollapsed.value.includes(key)) {
+    localCollapsed.value = localCollapsed.value.filter(item => item !== key)
+    return
+  }
+
+  localCollapsed.value = [...localCollapsed.value, key]
+}
+
+const handleMatchLoaded = (payload: { sportKey: string; earliestTime: number | null }): void => {
+  if (payload.earliestTime != null) {
+    earliestTimes.value[payload.sportKey] = payload.earliestTime
+  }
+}
 
 const handleSportChange = (event: Event): void => {
   const target = event.target as HTMLSelectElement | null
@@ -27,13 +100,31 @@ const handleSportChange = (event: Event): void => {
 
 const filteredEvents = computed(() => {
   const q = search.value.toLowerCase().trim()
-  if (!q) {
-    return props.events
-  }
-  return props.events.filter((event) => {
+  return props.events.filter(event => {
+    const start = Date.parse(event.commence_time)
+    if (!Number.isFinite(start) || start <= now.value || event.completed) return false
+    if (selectedDate.value !== 'all' && dateKey(start) !== selectedDate.value) return false
     const details = `${event.home_team ?? ''} ${event.away_team ?? ''} ${event.sport_title ?? ''}`.toLowerCase()
-    return details.includes(q)
+    return !q || details.includes(q)
   })
+})
+
+const groupedSports = computed(() => {
+  const groups: Record<string, { title: string; key: string; description: string; group: string }> = {}
+  
+  filteredEvents.value.forEach(event => {
+    const sportKey = event.sport_key
+    if (!groups[sportKey]) {
+      groups[sportKey] = {
+        title: event.sport_title ?? '',
+        key: sportKey,
+        description: (event as any).sport_group ?? event.sport ?? '',
+        group: (event as any).sport_group ?? event.sport ?? ''
+      }
+    }
+  })
+  
+  return Object.values(groups)
 })
 </script>
 
@@ -49,7 +140,6 @@ const filteredEvents = computed(() => {
       <label class="search">
         <span class="search-icons">
           <Search :size="16" aria-hidden="true" />
-          <ChartNoAxesCombined :size="15" class="search-badge text-[#48daa6]" aria-hidden="true" />
         </span>
         <input
           v-model="search"
@@ -58,44 +148,99 @@ const filteredEvents = computed(() => {
           aria-label="Search prematch matches or teams"
         >
       </label>
-
-      <label
-        v-if="availableSports && availableSports.length > 0"
-        class="league-select"
+      
+    </div>
+    <div class="mb-4 flex flex-wrap gap-1" role="group" aria-label="Filter upcoming matches by date, Philippine time">
+      <button
+        type="button"
+        class="time-filter min-h-[44px] min-w-[64px] rounded-md px-3 py-1 text-[12px] font-medium text-white"
+        :class="selectedDate === 'all' ? 'bg-[#076b4a]' : 'bg-[#1a1a1a]'"
+        :aria-pressed="selectedDate === 'all'"
+        @click="selectDate('all')"
+      >All</button>
+      <button
+        v-for="filter in dateFilters"
+        :key="filter.key"
+        type="button"
+        class="time-filter flex min-h-[44px] min-w-[64px] flex-col items-center justify-center rounded-md px-3 py-1 text-[12px] font-medium text-white"
+        :class="selectedDate === filter.key ? 'bg-[#076b4a]' : 'bg-[#1a1a1a]'"
+        :aria-pressed="selectedDate === filter.key"
+        :aria-label="`${filter.date}, ${filter.label}`"
+        @click="selectDate(filter.key)"
       >
-        <span class="sr-only">League</span>
-        <select
-          :value="selectedSport"
-          @change="handleSportChange"
-        >
-          <option
-            v-for="sport in availableSports"
-            :key="sport.key"
-            :value="sport.key"
-          >
-            {{ sport.title }}
-          </option>
-        </select>
-      </label>
+        <span>{{ filter.date }}</span>
+        <span>{{ filter.label }}</span>
+      </button>
     </div>
 
-    <div class="section-heading">
-      <h2>Prematch</h2>
-      <span>{{ filteredEvents.length }} events · Philippine time</span>
+    <div class="league-matches-list">
+      <article
+        v-for="sport in groupedSports"
+        :key="sport.key"
+        class="league-preview"
+      >
+        <button
+          :id="`league-trigger-${sport.key}`"
+          class="league-card league-preview-heading"
+          type="button"
+          :aria-expanded="isExpanded(sport.key)"
+          :aria-controls="`league-panel-${sport.key}`"
+          @click="toggleTournament(sport.key)"
+        >
+          <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
+            {{ sport.title }} {{ sport.description }}
+          </span>
+          <CollapseIcon :expanded="isExpanded(sport.key)" />
+        </button>
+        <div
+          v-show="isExpanded(sport.key)"
+          :id="`league-panel-${sport.key}`"
+          role="region"
+          :aria-labelledby="`league-trigger-${sport.key}`"
+        >
+          <EventCard
+            v-for="event in filteredEvents.filter(item => item.sport_key === sport.key).slice(0, 2)"
+            :key="event.id"
+            :event="event"
+          />
+        </div>
+      </article>
     </div>
-    <p class="note">Upcoming matches with available match winner odds. Decimal odds from US bookmakers.</p>
-    <div class="event-grid">
-      <EventCard
-        v-for="event in filteredEvents"
-        :key="event.id"
-        :event="event"
-        show-odds
-      />
-    </div>
-    <div v-if="!filteredEvents.length" class="empty">
-      <ChartNoAxesCombined :size="32" class="text-[#48daa6]" aria-hidden="true" />
-      <h2>No prematch events</h2>
-      <p>Try another league or check back later.</p>
+
+    <div v-if="!filteredEvents.length" class="flex min-h-[200px] w-full items-center justify-center" role="status">
+      <img src="/images/empty/no-matches.png" alt="No matches available for the selected date" class="h-auto w-full max-w-[400px] object-contain" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.league-matches-list {
+  display: grid;
+  gap: 16px;
+}
+
+.league-preview {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.league-preview-heading {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+}
+
+.league-preview-heading:focus-visible {
+  outline-offset: -3px;
+}
+
+.league-chevron {
+  flex-shrink: 0;
+}
+
+.league-chevron--expanded {
+  transform: rotate(180deg);
+}
+</style>

@@ -1,7 +1,8 @@
 ﻿<script setup lang="ts">
+const railItems = createRailItems(useRuntimeConfig().public.bybetRedirectUrl)
 import { Check, ChevronLeft, ChevronRight, Wrench } from 'lucide-vue-next'
 import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
-import { railItems } from '~/data/homepage'
+import { createRailItems } from '~/data/homepage'
 import type { RailItem, RailSubItem } from '~/data/homepage'
 import type { LanguageOption, ThemePreference } from '~/composables/useSitePreferences'
 

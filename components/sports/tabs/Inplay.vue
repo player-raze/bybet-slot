@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Radio, Search } from 'lucide-vue-next'
-import EventCard from '~/components/sports/EventCard.vue'
+import InplayMatches from '~/components/sports/InplayMatches.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'
@@ -20,7 +20,7 @@ const emit = defineEmits<{
 
 const search = ref('')
 const sortBy = ref<'league' | 'time'>('time')
-const allCollapsed = ref(false)
+const matchList = ref<InstanceType<typeof InplayMatches> | null>(null)
 
 const handleSportChange = (event: Event): void => {
   const target = event.target as HTMLSelectElement | null
@@ -32,6 +32,10 @@ const handleSportChange = (event: Event): void => {
 const filteredEvents = computed(() => {
   const q = search.value.toLowerCase().trim()
   let list = props.events
+
+  if (props.selectedSport) {
+    list = list.filter(event => event.sport_key === props.selectedSport)
+  }
 
   if (q) {
     list = list.filter((event) => {
@@ -47,7 +51,7 @@ const filteredEvents = computed(() => {
         return leagueCompare
       }
     }
-    return new Date(a.commence_time).getTime() - new Date(b.commence_time).getTime()
+    return new Date(b.commence_time).getTime() - new Date(a.commence_time).getTime()
   })
 })
 </script>
@@ -78,22 +82,15 @@ const filteredEvents = computed(() => {
       />
 
       <Collapse
-        v-model="allCollapsed"
+        :model-value="matchList?.allCollapsed ?? false"
+        @toggle="matchList?.toggleAll()"
         title="Collapse all matches"
       />
     </div>
 
-    <div v-show="!allCollapsed" class="event-grid">
-      <EventCard
-        v-for="event in filteredEvents"
-        :key="event.id"
-        :event="event"
-        show-scores
-      />
-    </div>
+    <InplayMatches ref="matchList" :events="filteredEvents" />
 
     <div v-if="!filteredEvents.length" class="empty">
-      <Radio :size="32" class="text-[#48daa6]" aria-hidden="true" />
       <h2>No inplay events</h2>
       <p>Try another league or check back later.</p>
     </div>
