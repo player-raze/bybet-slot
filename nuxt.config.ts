@@ -1,19 +1,24 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
-const nodeEnvironment = (
+const environment = (
   globalThis as typeof globalThis & {
     process?: {
       env?: {
         NODE_ENV?: string
+        KADARIO_API?: string
       }
     }
   }
-).process?.env?.NODE_ENV
+).process?.env
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
-  buildDir: nodeEnvironment === 'production' ? 'node_modules/.cache/bybet-nuxt-build' : '.nuxt',
+  buildDir: environment?.NODE_ENV === 'production' ? 'node_modules/.cache/bybet-nuxt-build' : '.nuxt',
   devtools: { enabled: false },
+  runtimeConfig: {
+    kadarioApi: environment?.KADARIO_API || 'https://live88.eu.cc/',
+    kadarioSite: 'YBa-BnymZ6iN8pkfAUFTWIKn',
+  },
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
   app: {

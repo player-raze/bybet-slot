@@ -29,9 +29,9 @@ const route = useRoute()
 
 const tabs = [
   { key: 'league', label: 'League', icon: Trophy },
-  { key: 'inplay', label: 'Inplay', icon: Radio },
+  { key: 'inplay', label: 'In-Play', icon: Radio },
   { key: 'upcoming', label: 'Upcoming', icon: CalendarDays },
-  { key: 'prematch', label: 'Prematch', icon: ChartNoAxesCombined },
+  { key: 'prematch', label: 'Pre-Match', icon: ChartNoAxesCombined },
   { key: 'smart-pick', label: 'Smart Pick', icon: Sparkles },
   { key: 'outright', label: 'Outright', icon: Flag },
 ] as const
@@ -293,11 +293,7 @@ onBeforeUnmount(() => {
         :class="{ selected: activeTab === tab.key }"
         :aria-current="activeTab === tab.key ? 'page' : undefined"
       >
-        <component
-          :is="tab.icon"
-          :size="17"
-          aria-hidden="true"
-        />
+        
         {{ tab.label }}
       </NuxtLink>
     </nav>

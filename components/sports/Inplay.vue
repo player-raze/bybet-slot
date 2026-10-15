@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Radio, Search } from 'lucide-vue-next'
-import EventCard from './EventCard.vue'
+import EventCard from './cards/EventCard.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'

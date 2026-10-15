@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineComponent, h } from 'vue'
 import { ChevronDown, Search, Trophy } from 'lucide-vue-next'
-import LeagueMatches from './LeagueMatches.vue'
+import LeagueMatches from './cards/LeagueMatches.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'
@@ -159,12 +159,6 @@ const sortedGroups = computed(() => {
           aria-label="Search tournaments"
         >
       </label>
-
-      <!-- Sort button -->
-      <Sort
-        v-model="currentSort"
-      />
-
       <!-- Collapse all / Expand all button -->
       <Collapse
         v-model="allCollapsed"
@@ -177,7 +171,7 @@ const sortedGroups = computed(() => {
       :key="group"
       class="league-group"
     >
-      <h2>{{ group }}</h2>
+      <h2 class="text-[18px] mb-2 ">{{ group }}</h2>
       <div class="league-matches-list">
         <article
           v-for="sport in getGroupTournaments(group)"
@@ -193,7 +187,7 @@ const sortedGroups = computed(() => {
             @click="toggleTournament(sport.key)"
           >
             <span class="league-name">
-              <strong>{{ sport.title }} {{ sport.description || sport.group }}</strong>
+              {{ sport.title }} {{ sport.description || sport.group }}
             </span>
             <CollapseIcon :expanded="isExpanded(sport.key)" />
           </button>

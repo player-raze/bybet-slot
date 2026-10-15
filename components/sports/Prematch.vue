@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { ChartNoAxesCombined, Search } from 'lucide-vue-next'
-import EventCard from './EventCard.vue'
+import EventCard from './cards/EventCard.vue'
 import Ai from '~/components/buttons/Ai.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
 

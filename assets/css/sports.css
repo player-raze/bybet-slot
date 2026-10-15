@@ -1,6 +1,5 @@
 .sports-page {
   min-height: 70vh;
-  padding: clamp(12px, 2vw, 28px);
   color: var(--text);
 }
 
@@ -46,22 +45,23 @@
   display: flex;
   gap: 6px;
   overflow-x: auto;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ffffff14;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgb(31, 31, 31, 0.9);
 }
 
 .sports-page .sports-tabs a {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  flex: 1 0 auto;
-  min-height: 44px;
+  gap: 4px;
+  min-height:28px;
   padding: 0 16px;
   border-radius: 18px;
-  font-size: 13px;
-  color: var(--secondary);
-  background: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--white);
   white-space: nowrap;
 }
 
@@ -158,13 +158,6 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.sports-page .toolbar-circle-btn:hover,
-.sports-page .toolbar-circle-btn[aria-expanded="true"],
-.sports-page .refresh:hover {
-  background: #07835824;
-  color: #48daa6;
-}
-
 .sports-page .toolbar-circle-btn:focus-visible,
 .sports-page .refresh:focus-visible {
   outline: 2px solid #48daa6;
@@ -243,11 +236,6 @@
   align-items: center;
   gap: 12px;
   margin: 20px 0;
-}
-
-.sports-page h2 {
-  font-size: 18px;
-  margin: 0;
 }
 
 .sports-page .section-heading > span,

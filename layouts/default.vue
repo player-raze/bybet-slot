@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { X } from 'lucide-vue-next'
 import MobileBottomNav from '~/components/MobileBottomNav.vue'
+import CommentPanel from '~/components/comments/CommentPanel.vue'
+
+const { context: commentContext, openSportsComments, closeComments } = useCommentPanel()
+const route = useRoute()
+const isSportsPage = computed(() => route.path.startsWith('/explore/sports/'))
+
+watch(() => route.path, () => {
+  if (isSportsPage.value) {
+    openSportsComments()
+  } else {
+    closeComments()
+  }
+}, { immediate: true })
 
 const drawerOpen = ref(false)
 const railCollapsed = ref(true)
@@ -75,7 +88,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="home" class="site-shell" :class="{ 'site-shell--rail-collapsed': railCollapsed }">
+  <div id="home" class="site-shell" :class="{ 'site-shell--rail-collapsed': railCollapsed, 'site-shell--sports-chat': isSportsPage && Boolean(commentContext) }">
     <AppHeader
       :drawer-open="drawerOpen"
       @toggle-drawer="drawerOpen = !drawerOpen"
@@ -88,9 +101,17 @@ onBeforeUnmount(() => {
       @demo-action="showDemoMessage"
     />
 
-    <main ref="pageContentElement" class="page-content">
-      <slot />
-    </main>
+    <div class="content-layout">
+      <main ref="pageContentElement" class="page-content pt-0">
+        <slot />
+      </main>
+
+      <CommentPanel
+        v-if="commentContext"
+        :key="isSportsPage ? 'sports-sidebar' : 'game-dialog'"
+        :docked="isSportsPage"
+      />
+    </div>
 
     <AppFooter />
     <MobileBottomNav />
@@ -109,6 +130,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .site-shell {
   --content-gutter: 0.5rem;
+  --comment-panel-width: min(375px, 23.4375rem);
   --sidebar-width: 175px;
 
   position: relative;
@@ -123,12 +145,23 @@ onBeforeUnmount(() => {
   --sidebar-width: 72px;
 }
 
+.content-layout {
+  top: -12px;
+  z-index: 50;
+  position: relative;
+  overflow: hidden;
+  overflow-y: auto;
+  overflow: scroll;
+  min-width: 0;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 180ms ease;
+}
+
 .page-content {
   min-width: 0;
   min-height: calc(100vh - var(--header-height));
-  margin-left: var(--sidebar-width);
-  padding: 0.35rem 0.62rem 0 var(--content-gutter);
-  transition: margin-left 180ms ease;
+  width: 100%;
+  padding: 0 0.62rem 0 var(--content-gutter);
 }
 
 .page-content--motion-ready > :deep(.section-reveal) {
@@ -186,9 +219,21 @@ onBeforeUnmount(() => {
   transform: translateY(0.35rem);
 }
 
+@media (min-width: 1280px) {
+  .site-shell--sports-chat .content-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--comment-panel-width);
+    align-items: start;
+    gap: 8px;
+  }
+}
+
 @media (max-width: 63.99rem) {
-  .page-content {
+  .content-layout {
     margin-left: 0;
+  }
+
+  .page-content {
     padding: 0.5rem var(--page-padding) 0;
     background: #000000;
   }
@@ -208,6 +253,13 @@ onBeforeUnmount(() => {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+@media screen and (max-width: 900px) {
+  .content-layout {
+    top: 0;
+    z-index: 0;
+    position: block;
   }
 }
 </style>
