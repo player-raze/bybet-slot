@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { CalendarDays, Search } from 'lucide-vue-next'
-import EventCard from './cards/EventCard.vue'
+import EventCard from '~/components/sports/EventCard.vue'
 import Ai from '~/components/buttons/Ai.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
 

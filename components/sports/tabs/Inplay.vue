@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Radio, Search } from 'lucide-vue-next'
-import EventCard from './cards/EventCard.vue'
+import EventCard from '~/components/sports/EventCard.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'
@@ -64,33 +64,13 @@ const filteredEvents = computed(() => {
       <label class="search">
         <span class="search-icons">
           <Search :size="16" aria-hidden="true" />
-          <Radio :size="15" class="search-badge text-[#48daa6] animate-pulse" aria-hidden="true" />
         </span>
         <input
           v-model="search"
           type="search"
-          placeholder="Search inplay matches or teams"
-          aria-label="Search inplay matches or teams"
+          placeholder="Search league or team"
+          aria-label="Search league or team"
         >
-      </label>
-
-      <label
-        v-if="availableSports && availableSports.length > 0"
-        class="league-select"
-      >
-        <span class="sr-only">League</span>
-        <select
-          :value="selectedSport"
-          @change="handleSportChange"
-        >
-          <option
-            v-for="sport in availableSports"
-            :key="sport.key"
-            :value="sport.key"
-          >
-            {{ sport.title }}
-          </option>
-        </select>
       </label>
 
       <Sort
@@ -101,11 +81,6 @@ const filteredEvents = computed(() => {
         v-model="allCollapsed"
         title="Collapse all matches"
       />
-    </div>
-
-    <div class="section-heading">
-      <h2>Inplay</h2>
-      <span>{{ filteredEvents.length }} events · Philippine time</span>
     </div>
 
     <div v-show="!allCollapsed" class="event-grid">

@@ -1,5 +1,7 @@
 export interface LiveStream {
   id: string
+  startTime?: string
+  status?: string
   home: { name: string }
   away: { name: string }
   homeScore?: number

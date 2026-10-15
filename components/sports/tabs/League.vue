@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineComponent, h } from 'vue'
 import { ChevronDown, Search, Trophy } from 'lucide-vue-next'
-import LeagueMatches from './cards/LeagueMatches.vue'
+import LeagueMatches from '~/components/sports/LeagueMatches.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'
@@ -186,7 +186,7 @@ const sortedGroups = computed(() => {
             :aria-controls="`league-panel-${sport.key}`"
             @click="toggleTournament(sport.key)"
           >
-            <span class="league-name">
+            <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
               {{ sport.title }} {{ sport.description || sport.group }}
             </span>
             <CollapseIcon :expanded="isExpanded(sport.key)" />
@@ -210,7 +210,6 @@ const sortedGroups = computed(() => {
       v-if="!effectiveSports.length"
       class="empty"
     >
-      <Trophy :size="32" class="text-[#ff8a3d]" aria-hidden="true" />
       <h2>No leagues found</h2>
       <p>Try searching for a different tournament or league.</p>
     </div>
@@ -246,6 +245,6 @@ const sortedGroups = computed(() => {
 }
 
 .league-chevron--expanded {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 </style>

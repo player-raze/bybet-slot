@@ -6,10 +6,37 @@ import StreamPlayer from './StreamPlayer.vue'
 
 const { data: catalog, status, refresh } = useFetch<LiveStreamCatalog>('/api/livestream', { server: false })
 const selectedStreamId = ref('')
-const streams = computed(() => catalog.value?.results.filter(stream => stream.sources?.some(source => source.url || source.fallbackUrl)) ?? [])
+const endedStreamIds = ref(new Set<string>())
+const streams = computed(() => (catalog.value?.results ?? [])
+  .filter(stream => !endedStreamIds.value.has(stream.id)
+    && (!stream.status || stream.status === 'live')
+    && stream.sources?.some(source => source.url || source.fallbackUrl))
+  .toSorted((a, b) => (Date.parse(b.startTime ?? '') || 0) - (Date.parse(a.startTime ?? '') || 0)))
 const selectedStream = computed(() => streams.value.find(stream => stream.id === selectedStreamId.value) ?? streams.value[0])
 watch(selectedStream, stream => { selectedStreamId.value = stream?.id ?? '' })
 const previewMode = ref('video')
+let refreshTimer: ReturnType<typeof setInterval> | undefined
+let pendingRefresh: Promise<void> | undefined
+let disposed = false
+
+function refreshStreams() {
+  if (disposed) return Promise.resolve()
+  pendingRefresh ??= refresh().finally(() => { pendingRefresh = undefined })
+  return pendingRefresh
+}
+
+async function switchEndedStream(id: string) {
+  if (disposed || endedStreamIds.value.has(id)) return
+  endedStreamIds.value = new Set([...endedStreamIds.value, id])
+  await refreshStreams()
+  if (!disposed) selectedStreamId.value = streams.value[0]?.id ?? ''
+}
+
+onMounted(() => { refreshTimer = setInterval(() => void refreshStreams(), 30000) })
+onBeforeUnmount(() => {
+  disposed = true
+  clearInterval(refreshTimer)
+})
 const tabs = [
   { key: 'offers', label: 'Offers', icon: ShoppingBag },
   { key: 'insights', label: 'Insights', icon: GraduationCap },
@@ -28,15 +55,10 @@ const tabs = [
       <template v-else>Sports TV</template>
     </div>
     <div class="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#14261d]">
-      <iframe
-        v-if="previewMode === 'court' && selectedStream?.iframe"
+      <StreamPlayer
+        v-if="previewMode === 'court' && selectedStream"
         :key="selectedStream.id"
-        :src="selectedStream.iframe.src"
-        :title="selectedStream.iframe.title"
-        class="h-full w-full border-0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen
-      />
+        :sources="selectedStream.sources ?? []" @ended="switchEndedStream(selectedStream.id)" @unavailable="switchEndedStream(selectedStream.id)" />
       <a
         v-else-if="previewMode === 'video' && selectedStream"
         href="https://bybet.com"
@@ -44,7 +66,7 @@ const tabs = [
         :aria-label="`Play livestream: ${selectedStream.home.name} vs ${selectedStream.away.name}`"
       >
         <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-          <StreamPlayer :key="selectedStream.id" :sources="selectedStream.sources ?? []" preview />
+          <StreamPlayer :key="selectedStream.id" :sources="selectedStream.sources ?? []" @ended="switchEndedStream(selectedStream.id)" @unavailable="switchEndedStream(selectedStream.id)" class="box-border" preview />
         </div>
         <span class="relative flex flex-col items-center gap-2">
           <span class="grid h-5 w-5 place-items-center rounded-full bg-white text-white ring-1 ring-white/40 backdrop-blur-sm"><Play class="text-black" :size="15" fill="currentColor" aria-hidden="true" /></span>

@@ -106,16 +106,16 @@ const copyMatchLink = async (): Promise<void> => {
 <template>
   <article :id="`match-${match.id}`" class="winner-match">
     <div class="winner-header">
-      <time v-if="!fullMarkets" class="winner-date text-xs" :datetime="match.commence_time" >
+      <time v-if="!fullMarkets" class="winner-date text-[12px]" :datetime="match.commence_time" >
         <span>{{ matchDate }}</span>
         <span>{{ matchTime }}</span>
       </time>
-      <time v-else class="winner-date text-xs" :datetime="match.commence_time" >
+      <time v-else class="winner-date text-[12px]" :datetime="match.commence_time" >
         <span>{{ matchDate }} {{ matchTime }}</span>
       </time>
-      <div v-if="!fullMarkets" class="winner-teams">
-        <strong>{{ match.home_team }}</strong>
-        <strong>{{ match.away_team }}</strong>
+      <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] pr-2">
+        <span class="winner-home-team text-[12px]`1`">{{ match.home_team }}</span>
+        <span class="winner-away-team text-[12px]">{{ match.away_team }}</span  >
       </div>
       <div class="winner-actions">
         <button
@@ -181,7 +181,7 @@ const copyMatchLink = async (): Promise<void> => {
       :aria-label="`${match.home_team} vs ${match.away_team}, match markets`"
     >
       <div v-for="row in teamMarkets" :key="row.side" class="team-market-row">
-        <strong class="market-team-name">{{ row.team }}</strong>
+        <span class="market-team-name">{{ row.team }}</span>
         <button
           v-for="market in row.markets"
           :key="market.key"
@@ -193,7 +193,7 @@ const copyMatchLink = async (): Promise<void> => {
           @click="selectMarket(market.key, market.name); redirectToBybet()"
         >
           <template v-if="market.outcome && (market.key === 'h2h' || market.outcome.point != null)">
-            <span>{{ market.label }}</span>
+            <span class="text-[#999]">{{ market.label }}</span>
             <br>
             <strong>{{ market.outcome.price.toFixed(2) }}</strong>
           </template>
@@ -229,7 +229,7 @@ const copyMatchLink = async (): Promise<void> => {
 
 <style scoped>
 .winner-match {
-  padding: 16px;
+  padding: 0.5rem 16px 16px;
   scroll-margin-top: calc(var(--header-height) + 16px);
 }
 .winner-match:hover {
@@ -244,7 +244,7 @@ const copyMatchLink = async (): Promise<void> => {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 5px;
 }
 
 .winner-date {
@@ -279,19 +279,14 @@ const copyMatchLink = async (): Promise<void> => {
 .winner-actions button {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: 0;
   border-radius: 6px;
   background: transparent;
   color: var(--secondary);
   transition: color 0.15s, background-color 0.15s;
-}
-
-.winner-actions button:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
 }
 
 .fill-icon-7 {
@@ -360,7 +355,7 @@ const copyMatchLink = async (): Promise<void> => {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .team-market-headings {
@@ -375,11 +370,11 @@ const copyMatchLink = async (): Promise<void> => {
 }
 
 .team-market-row + .team-market-row {
-  margin-top: 8px;
+  margin-top: 1px;
 }
 
 .market-team-name {
-  font-size: 13px;
+  font-size: 12px;
   overflow-wrap: anywhere;
 }
 
@@ -409,9 +404,6 @@ const copyMatchLink = async (): Promise<void> => {
     margin-top: 12px;
   }
 
-  .winner-match {
-    padding: 12px;
-  }
 
   .winner-header {
     gap: 10px;

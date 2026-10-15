@@ -2,10 +2,12 @@
 import type { LiveStream } from '~/types/livestream'
 
 const props = defineProps<{ sources: NonNullable<LiveStream['sources']>; preview?: boolean }>()
+const emit = defineEmits<{ ended: []; unavailable: [] }>()
 const video = ref<HTMLVideoElement | null>(null)
 const state = ref<'loading' | 'ready' | 'unavailable'>('loading')
 
-watch([video, () => props.sources], async ([element, sources], _, onCleanup) => {
+watch([video, () => JSON.stringify(props.sources)], async ([element], _, onCleanup) => {
+  const sources = props.sources
   if (!element) return
   let cancelled = false
   let disposePlayer = () => {}
@@ -13,6 +15,7 @@ watch([video, () => props.sources], async ([element, sources], _, onCleanup) => 
   let attempt = 0
   const cleanPlayer = () => {
     clearTimeout(timer)
+    element.onended = null
     element.onerror = null
     element.onloadeddata = null
     disposePlayer()
@@ -54,11 +57,15 @@ watch([video, () => props.sources], async ([element, sources], _, onCleanup) => 
       const currentAttempt = ++attempt
       cleanPlayer()
       const source = candidates[index++]
-      if (!source) { state.value = 'unavailable'; return }
+      if (!source) { state.value = 'unavailable'; emit('unavailable'); return }
       state.value = 'loading'
       const fail = () => {
         if (!cancelled && currentAttempt === attempt) nextSource()
       }
+      const ended = () => {
+        if (!cancelled && currentAttempt === attempt) emit('ended')
+      }
+      element!.onended = ended
       element!.onerror = fail
       element!.onloadeddata = () => {
         if (cancelled || currentAttempt !== attempt) return
@@ -70,8 +77,9 @@ watch([video, () => props.sources], async ([element, sources], _, onCleanup) => 
       try {
         if (source.type === 'flv') {
           const player = mpegts.createPlayer({ type: 'flv', isLive: true, url: source.url })
-          disposePlayer = () => { player.off(mpegts.Events.ERROR, fail); player.destroy() }
+          disposePlayer = () => { player.off(mpegts.Events.ERROR, fail); player.off(mpegts.Events.LOADING_COMPLETE, ended); player.destroy() }
           player.on(mpegts.Events.ERROR, fail)
+          player.on(mpegts.Events.LOADING_COMPLETE, ended)
           player.attachMediaElement(element!)
           player.load()
         } else if (element!.canPlayType('application/vnd.apple.mpegurl')) {
