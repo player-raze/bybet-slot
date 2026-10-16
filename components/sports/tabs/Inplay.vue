@@ -5,6 +5,7 @@ import InplayMatches from '~/components/sports/InplayMatches.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'
+import SportsSkeleton from '~/components/sports/SportsSkeleton.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
 
 const props = defineProps<{
@@ -12,11 +13,15 @@ const props = defineProps<{
   availableSports?: Sport[]
   selectedSport?: string
   aiTo?: string
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
   'update:selectedSport': [sport: string]
 }>()
+
+const route = useRoute()
+const oddsCols = computed<2 | 3>(() => route.params.sport === 'soccer' ? 3 : 2)
 
 const search = ref('')
 const sortBy = ref<'league' | 'time'>('time')
@@ -88,9 +93,10 @@ const filteredEvents = computed(() => {
       />
     </div>
 
-    <InplayMatches ref="matchList" :events="filteredEvents" />
+    <SportsSkeleton v-if="loading" :cols="oddsCols" />
+    <InplayMatches v-else-if="filteredEvents.length" ref="matchList" :events="filteredEvents" />
 
-    <div v-if="!filteredEvents.length" class="empty">
+    <div v-else class="empty">
       <h2>No inplay events</h2>
       <p>Try another league or check back later.</p>
     </div>

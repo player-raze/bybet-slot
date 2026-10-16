@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { sportsTimeRange } from '~/utils/sportsTimeRange'
 import { matchesSportsSelection } from '~/utils/sportsSelection'
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 import {
@@ -11,6 +12,7 @@ import {
   RefreshCw,
 } from 'lucide-vue-next'
 
+import LeagueDirectory from './sports/LeagueDirectory.vue'
 import League from './sports/tabs/League.vue'
 import Inplay from './sports/tabs/Inplay.vue'
 import Upcoming from './sports/tabs/Upcoming.vue'
@@ -22,6 +24,7 @@ import '~/assets/css/sports.css'
 
 const props = withDefaults(defineProps<{
   selectedSports: string[]
+  popularLeagues?: string[]
   selectedTournaments?: Record<string, string[]>
   initialTab?: string
 }>(), {
@@ -39,11 +42,17 @@ const tabs = [
   { key: 'outright', label: 'Outright', icon: Flag },
 ] as const
 
-const isOutrightDetail = computed(() => Boolean(route.params.sport && route.params.tournament))
+const tournamentSlug = computed(() => {
+  if (route.params.tournament) return String(route.params.tournament)
+  const segment = String(route.params.tab ?? '')
+  const tab = segment === 'pre-match' ? 'prematch' : segment
+  return route.params.sport && segment && !tabs.some(item => item.key === tab) ? segment : ''
+})
+const isOutrightDetail = computed(() => Boolean(route.params.sport && tournamentSlug.value))
 
 const tournamentKey = computed(() => {
-  const tournament = String(route.params.tournament ?? '').replaceAll('-', '_')
-  return `${route.params.sport}_${tournament}`
+  const tournament = tournamentSlug.value.replaceAll('-', '_')
+  return `${route.params.tournamentSport ?? route.params.sport}_${tournament}`
 })
 
 const sportsRouteBase = useSportsRouteBase()
@@ -148,7 +157,10 @@ const usesMultipleLeagues = computed(() => ['upcoming', 'prematch'].includes(act
 const fixtureSportKeys = computed(() => availableSports.value.map(sport => sport.key))
 const canLoadFixtures = computed(() => usesLiveCatalog.value || (usesMultipleLeagues.value ? fixtureSportKeys.value.length > 0 : Boolean(selectedSport.value)))
 
+const fixtureWindowNow = useState('sports-fixture-window-now', () => Math.floor(Date.now() / 60000) * 60000)
+
 const query = computed(() => ({
+  ...sportsTimeRange(activeTab.value, typeof route.params.date === 'string' ? route.params.date : undefined, typeof route.params.hours === 'string' ? route.params.hours : undefined, fixtureWindowNow.value),
   mode: activeTab.value,
   sport: usesLiveCatalog.value || usesMultipleLeagues.value ? undefined : selectedSport.value,
   sports: usesMultipleLeagues.value ? fixtureSportKeys.value.join(',') : undefined,
@@ -315,11 +327,19 @@ onBeforeUnmount(() => {
           Try again
         </button>
       </div>
+      <LeagueDirectory
+        v-else-if="activeTab === 'league' && sportsRouteBase !== '/explore/sports/popular'"
+        :sports="availableSports"
+        :popular-leagues="popularLeagues"
+        :ai-to="bybetRedirectUrl"
+        :loading="loading"
+      />
       <League
         v-else-if="activeTab === 'league'"
         :sports="availableSports"
         :filtered-sports="filteredSports"
         :groups="groups"
+        :max-matches-per-group="sportsRouteBase === '/explore/sports/popular' ? 2 : undefined"
         :ai-to="bybetRedirectUrl"
       />
       <Inplay

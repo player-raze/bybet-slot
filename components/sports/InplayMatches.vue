@@ -7,7 +7,7 @@ const props = defineProps<{ events: SportsEvent[] }>()
 const collapsed = ref<string[]>([])
 const selectedOutcomes = ref<Record<string, string>>({})
 const sportType = (event: SportsEvent) => (event.sport || event.sport_key.split('_')[0] || '').toLowerCase()
-const tournamentKey = (event: SportsEvent) => `${sportType(event)}:${event.sport_key}:${event.sport_title}`
+const tournamentKey = (event: SportsEvent) => event.leagueId || `${event.sport_key}:${event.sport_title}`
 const tournamentKeys = computed(() => [...new Set(props.events.map(tournamentKey))])
 const allCollapsed = computed(() => tournamentKeys.value.length > 0 && tournamentKeys.value.every(key => collapsed.value.includes(key)))
 const isExpanded = (key: string) => !collapsed.value.includes(key)
@@ -29,39 +29,13 @@ function tournaments(events: SportsEvent[]) {
 }
 defineExpose({ toggleAll, allCollapsed })
 
-const sportNames: Record<string, string> = {
-  basketball: 'Basketball', nba: 'Basketball', pba: 'Basketball',
-  soccer: 'Soccer', football: 'Soccer',
-  tennis: 'Tennis', atp: 'Tennis', wta: 'Tennis',
-  baseball: 'Baseball', mlb: 'Baseball',
-}
-const sportOrder = ['Basketball', 'Soccer', 'Tennis', 'Baseball']
-
-const groups = computed(() => {
-  const matchesBySport = new Map<string, SportsEvent[]>()
-  for (const event of props.events) {
-    const sport = (event.sport || event.sport_key.split('_')[0] || '').toLowerCase()
-    const name = sportNames[sport] || (sport && !sport.includes(':')
-      ? sport.charAt(0).toUpperCase() + sport.slice(1).replaceAll('-', ' ')
-      : 'Other sports')
-    const matches = matchesBySport.get(name) ?? []
-    matches.push(event)
-    matchesBySport.set(name, matches)
-  }
-  return [...matchesBySport].map(([name, events]) => ({ name, events }))
-    .sort((a, b) => {
-      const rank = (name: string) => sportOrder.indexOf(name) < 0 ? sportOrder.length : sportOrder.indexOf(name)
-      return rank(a.name) - rank(b.name)
-    })
-})
+const leagues = computed(() => tournaments(props.events))
 </script>
 
 <template>
   <div class="min-w-0">
-    <section v-for="group in groups" :key="group.name" class="league-group" :aria-label="group.name">
-      <h2 class="mb-2 text-[18px]">{{ group.name }}</h2>
       <div class="league-matches-list">
-        <article v-for="tournament in tournaments(group.events)" :key="tournament.key" class="league-preview">
+        <article v-for="tournament in leagues" :key="tournament.key" class="league-preview">
           <button
             :id="`inplay-trigger-${tournament.key}`"
             class="league-card league-preview-heading"
@@ -70,7 +44,7 @@ const groups = computed(() => {
             :aria-controls="`inplay-panel-${tournament.key}`"
             @click="toggleTournament(tournament.key)"
           >
-            <span class="league-name truncate text-[12px] text-[#999]" :title="tournament.title">{{ tournament.title }} {{ group.name }}</span>
+            <span class="league-name truncate text-[12px] text-[#999]" :title="tournament.title">{{ tournament.title }}</span>
             <ChevronDown :size="16" class="shrink-0" :class="{ 'rotate-180': isExpanded(tournament.key) }" aria-hidden="true" />
           </button>
           <div
@@ -91,7 +65,6 @@ const groups = computed(() => {
           </div>
         </article>
       </div>
-    </section>
   </div>
 </template>
 

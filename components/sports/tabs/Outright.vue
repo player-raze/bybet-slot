@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { Trophy, ChevronUp, Search } from 'lucide-vue-next'
-import Ai from '~/components/buttons/Ai.vue'
+import SportsSkeleton from '~/components/sports/SportsSkeleton.vue'
 import type { Sport } from '~/types/sports'
 
 const props = defineProps<{
   filteredSports: Sport[]
   groups: string[]
   aiTo?: string
+  loading?: boolean
 }>()
 
 const search = ref('')
@@ -31,7 +32,9 @@ const searchedGroups = computed(() => {
 
 const tournamentPath = (key: string): string => {
   const [sport, ...tournament] = key.split('_')
-  return `${sportsRouteBase.value || '/explore/sports/popular'}/${sport}/${tournament.join('-')}`
+  const base = sportsRouteBase.value || '/explore/sports/popular'
+  const sportPath = base.endsWith('/popular') ? `/${sport}` : ''
+  return `${base}${sportPath}/${tournament.join('-')}`
 }
 
 </script>

@@ -1,0 +1,72 @@
+<script setup lang="ts">
+withDefaults(defineProps<{
+  cards?: number
+  matchesPerCard?: number
+  cols?: 2 | 3
+}>(), {
+  cards: 2,
+  matchesPerCard: 3,
+  cols: 2,
+})
+</script>
+
+<template>
+  <div class="sports-skeleton flex flex-col gap-4 w-full" aria-busy="true" aria-label="Loading matches">
+    <article
+      v-for="cardIndex in cards"
+      :key="cardIndex"
+      class="overflow-hidden rounded-[10px] bg-[var(--surface,#181c1a)]"
+    >
+      <!-- Tournament Header Skeleton -->
+      <div class="flex items-center justify-between px-4 py-3 bg-[var(--surface,#181c1a)]">
+        <div class="h-3.5 w-32 rounded bg-[#2e3230] animate-pulse" />
+        <div class="h-4 w-4 rounded bg-[#2e3230] animate-pulse" />
+      </div>
+
+      <!-- Match Rows Skeletons -->
+      <div class="flex flex-col divide-y divide-white/5">
+        <div
+          v-for="matchIndex in matchesPerCard"
+          :key="matchIndex"
+          class="flex flex-col gap-2.5 p-3 sm:px-4"
+        >
+          <!-- Top Row: Teams + Info -->
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <!-- Live/Time indicator skeleton -->
+              <div class="h-3.5 w-10 shrink-0 rounded bg-[#2e3230] animate-pulse" />
+              <!-- Team names stacked -->
+              <div class="flex flex-col gap-1.5 min-w-0">
+                <div class="h-3.5 w-28 max-w-[140px] rounded bg-[#2e3230] animate-pulse" />
+                <div class="h-3.5 w-24 max-w-[120px] rounded bg-[#2e3230] animate-pulse" />
+              </div>
+            </div>
+
+            <!-- Right icons skeleton -->
+            <div class="flex items-center gap-1.5 shrink-0">
+              <!-- 6 dots / stats icon placeholder -->
+              <div class="grid grid-cols-3 gap-0.5 p-0.5" aria-hidden="true">
+                <span v-for="d in 6" :key="d" class="h-1 w-1 rounded-[1px] bg-[#2e3230] animate-pulse" />
+              </div>
+              <div class="h-4 w-4 rounded bg-[#2e3230] animate-pulse" />
+              <div class="h-4 w-4 rounded bg-[#2e3230] animate-pulse" />
+              <div class="h-4 w-6 rounded-full bg-[#2e3230] animate-pulse" />
+            </div>
+          </div>
+
+          <!-- Bottom Row: Odds Buttons Skeleton -->
+          <div
+            class="grid gap-2"
+            :class="cols === 3 ? 'grid-cols-3' : 'grid-cols-2'"
+          >
+            <div
+              v-for="colIndex in cols"
+              :key="colIndex"
+              class="h-9 rounded-md bg-[#252827] animate-pulse"
+            />
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</template>

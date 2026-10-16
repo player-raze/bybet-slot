@@ -1,3 +1,5 @@
+import type { LiveStream } from './livestream'
+
 export interface Sport {
   key: string
   group: string
@@ -5,8 +7,17 @@ export interface Sport {
   description: string
   active: boolean
   has_outrights: boolean
+  logo?: string
 }
 export interface SportsEvent {
+  leagueId?: string
+  clock?: string
+  clockUpdatedAt?: number
+  homeScore?: number
+  awayScore?: number
+  scoreAvailable?: boolean
+  probability?: LiveStream['probability']
+  sources?: LiveStream['sources']
   sport?: string
   id: string
   sport_key: string

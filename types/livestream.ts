@@ -1,5 +1,7 @@
 export interface LiveStream {
   id: string
+  clock?: string
+  probability?: { home?: number | null; draw?: number | null; away?: number | null }
   startTime?: string
   status?: string
   home: { name: string }

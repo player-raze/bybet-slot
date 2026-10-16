@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
-import { MessageCircle, Share2, Star } from 'lucide-vue-next'
+import { MessageCircle, Share2, Star, Lock } from 'lucide-vue-next'
 import type { SportsEvent } from '~/types/sports'
 import ShareMatchModal from '~/components/modals/ShareMatchModal.vue'
 
@@ -196,7 +196,9 @@ const copyMatchLink = async (): Promise<void> => {
             <br>
             <strong>{{ market.outcome.price.toFixed(2) }}</strong>
           </template>
-          <span v-else>—</span>
+          <span v-else class="flex items-center justify-center w-full h-full py-1">
+            <Lock :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
+          </span>
         </button>
       </div>
     </div>
@@ -219,7 +221,8 @@ const copyMatchLink = async (): Promise<void> => {
         @click="emit('select', outcome.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
       >
         <span>{{ outcome.label }}</span>
-        <strong>{{ outcome.price == null ? '—' : outcome.price.toFixed(2) }}</strong>
+        <strong v-if="outcome.price != null">{{ outcome.price.toFixed(2) }}</strong>
+        <Lock v-else :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
       </button>
     </div>
     <p v-if="actionMessage" class="winner-message" role="status">{{ actionMessage }}</p>

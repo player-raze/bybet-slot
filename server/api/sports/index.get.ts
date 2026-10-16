@@ -10,12 +10,27 @@ export default defineEventHandler(async (event): Promise<{ sports: Sport[]; even
   const requestedSports = typeof query.sports === 'string'
     ? [...new Set(query.sports.split(',').filter(Boolean))] : undefined
   const multipleLeagues = ['upcoming', 'prematch'].includes(mode) && requestedSports !== undefined
+  const range: Record<string, string> = {}
+  for (const key of ['commenceTimeFrom', 'commenceTimeTo']) {
+    if (query[key] == null) continue
+    const value = query[key]
+    if (typeof value !== 'string' || !Number.isFinite(Date.parse(value))) {
+      throw createError({ statusCode: 400, statusMessage: 'Invalid match time range' })
+    }
+    range[key] = new Date(value).toISOString().replace(/\.\d{3}Z$/, 'Z')
+  }
+  if (range.commenceTimeFrom && range.commenceTimeTo && range.commenceTimeFrom > range.commenceTimeTo) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid match time range' })
+  }
+  const inRange = (match: SportsEvent) => (!range.commenceTimeFrom || Date.parse(match.commence_time) >= Date.parse(range.commenceTimeFrom))
+    && (!range.commenceTimeTo || Date.parse(match.commence_time) <= Date.parse(range.commenceTimeTo))
   const config = useRuntimeConfig(event)
   if (String(config.useOddsApi) !== 'true') {
     if (multipleLeagues) {
-      return { sports: [], events: requestedSports!.flatMap(key => getSampleSportsData({ mode, sport: key }).events) }
+      return { sports: [], events: requestedSports!.flatMap(key => getSampleSportsData({ mode, sport: key }).events).filter(inRange) }
     }
-    return getSampleSportsData({ mode, sport })
+    const sample = getSampleSportsData({ mode, sport })
+    return { ...sample, events: sample.events.filter(inRange) }
   }
 
   if (mode === 'inplay') {
@@ -25,13 +40,13 @@ export default defineEventHandler(async (event): Promise<{ sports: Sport[]; even
   if (mode === 'league') return { sports: await odds.sports(), events: [] }
   if (multipleLeagues) {
     if (!requestedSports!.length) return { sports: [], events: [] }
-    const catalog = await odds.sports()
-    const keys = requestedSports!.filter(key => catalog.some(item => item.key === key && item.active && !item.has_outrights))
+    const allowedKeys = new Set(requestedSports!)
     const events: SportsEvent[] = []
-    // Bound provider concurrency while loading every selected league.
+    const keys = [...allowedKeys]
+    // Each selected league reuses the shared fixture cache; date bounds are applied locally.
     for (let index = 0; index < keys.length; index += 4) {
-      const batch = await Promise.all(keys.slice(index, index + 4).map(key => odds.odds(key)))
-      events.push(...batch.flat())
+      const batch = await Promise.all(keys.slice(index, index + 4).map(key => odds.leagueOdds(key, range)))
+      events.push(...batch.flat().filter(event => allowedKeys.has(event.sport_key) && inRange(event)))
     }
     return { sports: [], events: events.sort((a, b) => Date.parse(a.commence_time) - Date.parse(b.commence_time)) }
   }
@@ -53,8 +68,11 @@ export default defineEventHandler(async (event): Promise<{ sports: Sport[]; even
       })).filter(bookmaker => bookmaker.markets.length > 0),
     })).filter(item => item.bookmakers.length > 0) }
   }
-  if (['league-odds', 'upcoming', 'prematch'].includes(mode)) {
-    return { sports: [], events: await odds.odds(sport) }
+  if (mode === 'league-odds') {
+    return { sports: [], events: await odds.leagueOdds(sport) }
+  }
+  if (['upcoming', 'prematch'].includes(mode)) {
+    return { sports: [], events: (await odds.leagueOdds(sport, range)).filter(inRange) }
   }
   return { sports: [], events: [] }
 })

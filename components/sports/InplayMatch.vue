@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
-import { MessageCircle, Share2, Star } from 'lucide-vue-next'
+import { Share2, Star, Lock } from 'lucide-vue-next'
+import MatchVideoThumbnail from './MatchVideoThumbnail.vue'
 import type { SportsEvent } from '~/types/sports'
 import ShareMatchModal from '~/components/modals/ShareMatchModal.vue'
 
@@ -15,13 +16,49 @@ const emit = defineEmits<{
   select: [name: string]
 }>()
 
-const { openSportsComments } = useCommentPanel()
+
 
 const actionMessage = ref('')
 const isShareModalOpen = ref(false)
 
+const score = (side: 'home' | 'away') => {
+  if (props.match.scoreAvailable === false) return '—'
+  const value = side === 'home' ? props.match.homeScore : props.match.awayScore
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  const name = side === 'home' ? props.match.home_team : props.match.away_team
+  return props.match.scores?.find(item => item.name === name)?.score ?? '—'
+}
+const probability = (side: 'home' | 'draw' | 'away') => {
+  const value = props.match.probability?.[side]
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1 ? value : undefined
+}
+// Implied decimal odds derived from the provider's probability.
+const formatDecimalOdds = (value?: number) =>
+  value == null || !Number.isFinite(value) || value <= 0 || value > 1 ? '—' : (1 / value).toFixed(2)
+const now = ref(0)
+let clockTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  now.value = Date.now()
+  clockTimer = setInterval(() => { now.value = Date.now() }, 1000)
+})
+onBeforeUnmount(() => clearInterval(clockTimer))
+const formatClock = (seconds: number) => `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`
+const liveClock = computed(() => {
+  const clock = props.match.clock?.trim()
+  if (clock) {
+    const basketball = /^(basketball|nba|pba)/.test(props.match.sport || props.match.sport_key)
+    const parts = clock.match(/^((?:[1-4]Q|Q[1-4]|OT)\s+)?(\d{1,2}):(\d{2})$/i)
+    if (basketball && parts && now.value && props.match.clockUpdatedAt) {
+      const elapsed = Math.max(0, Math.floor((now.value - props.match.clockUpdatedAt) / 1000))
+      return `${parts[1] ?? ''}${formatClock(Math.max(0, Number(parts[2]) * 60 + Number(parts[3]) - elapsed))}`
+    }
+    return clock.replace(/\s*\/\s*(?=Game\b)/i, '\n')
+  }
+  const start = Date.parse(props.match.commence_time)
+  return now.value && start > now.value ? `Starts in ${formatClock(Math.ceil((start - now.value) / 1000))}` : '—'
+})
+
 const outcomes = computed(() => {
-  const market = props.match.bookmakers?.[0]?.markets.find(item => item.key === 'h2h')
   const selections = [
     { label: props.soccer ? '1' : 'H', name: props.match.home_team ?? '' },
     ...(props.soccer ? [{ label: 'X', name: 'Draw' }] : []),
@@ -30,7 +67,7 @@ const outcomes = computed(() => {
 
   return selections.map(selection => ({
     ...selection,
-    price: market?.outcomes.find(outcome => outcome.name === selection.name)?.price,
+    price: probability(selection.name === props.match.home_team ? 'home' : selection.name === props.match.away_team ? 'away' : 'draw'),
   }))
 })
 
@@ -48,7 +85,8 @@ const teamMarkets = computed(() => {
   ].map((row) => {
     const spread = findOutcome('spreads', row.team)
     const total = findOutcome('totals', row.total)
-    const winner = findOutcome('h2h', row.team)
+    const chance = probability(row.side === 'H' ? 'home' : 'away')
+    const winner = chance == null ? undefined : { name: row.team, price: chance, point: undefined }
 
     return {
       ...row,
@@ -111,34 +149,19 @@ const copyMatchLink = async (): Promise<void> => {
         <span>{{ matchTime }}</span>
       </time>
       <time v-else class="winner-date text-[12px]" :datetime="match.commence_time" >
-        <span>{{ matchDate }} {{ matchTime }}</span>
+        <span class="whitespace-pre-line">{{ liveClock }}</span>
       </time>
       <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] pr-2">
         <span class="winner-home-team text-[12px]">{{ match.home_team }}</span>
         <span class="winner-away-team text-[12px]">{{ match.away_team }}</span>
       </div>
+      <!-- Scores from the live provider; unavailable values remain blank. --> 
+      <div v-if="!fullMarkets" class="winner-teams border-r border-[#e5e7eb33] pr-2">
+        <span class="winner-home-team text-[12px] text-right">{{ score('home') }}</span>
+        <span class="winner-away-team text-[12px] text-right">{{ score('away') }}</span>
+      </div>
       <div class="winner-actions">
-        <button
-          type="button"
-          aria-label="Match comments"
-          title="Comments"
-          @click="openSportsComments(match)"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 12 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M6.00014 0C4.92576 3.78481e-05 3.87109 0.288542 2.94629 0.835382C2.02148 1.38222 1.26047 2.16734 0.742712 3.10873C0.224959 4.05013 -0.0305363 5.11328 0.00290864 6.18714C0.0363536 7.261 0.357512 8.30618 0.932844 9.21354C1.01685 9.41455 0.956845 10.2066 0.932844 10.5456C0.932844 10.7646 0.902842 10.9566 0.902842 11.1006C0.902501 11.1981 0.923862 11.2945 0.965376 11.3827C1.00689 11.4709 1.06751 11.5488 1.14286 11.6107C1.44287 11.8657 1.8599 11.7877 2.52894 11.6587C2.89503 11.5677 3.27078 11.5214 3.648 11.5207C4.46657 11.8694 5.35245 12.0317 6.24147 11.9958C7.1305 11.96 8.00043 11.7268 8.78825 11.3133C9.57608 10.8998 10.2621 10.3163 10.7966 9.605C11.3311 8.8937 11.7007 8.07243 11.8787 7.20066C12.0567 6.3289 12.0386 5.42846 11.8257 4.56456C11.6128 3.70065 11.2104 2.89491 10.6477 2.20568C10.085 1.51645 9.37613 0.960979 8.57231 0.579498C7.76849 0.198017 6.88989 7.26431e-05 6.00014 0ZM7.50023 7.80046H4.50005C4.34093 7.80043 4.18833 7.7372 4.07582 7.62468C3.96331 7.51215 3.90011 7.35954 3.90011 7.20042C3.90011 7.0413 3.96331 6.88869 4.07582 6.77616C4.18833 6.66364 4.34093 6.60041 4.50005 6.60039H7.50023C7.65935 6.60041 7.81195 6.66364 7.92446 6.77616C8.03697 6.88869 8.10017 7.0413 8.10017 7.20042C8.10017 7.35954 8.03697 7.51215 7.92446 7.62468C7.81195 7.7372 7.65935 7.80043 7.50023 7.80046ZM8.10026 5.40032H3.90002C3.74089 5.40029 3.5883 5.33706 3.47579 5.22454C3.36328 5.11201 3.30007 4.9594 3.30007 4.80028C3.30007 4.64116 3.36328 4.48855 3.47579 4.37602C3.5883 4.2635 3.74089 4.20027 3.90002 4.20024H8.10026C8.25939 4.20027 8.41198 4.2635 8.52449 4.37602C8.637 4.48855 8.7002 4.64116 8.7002 4.80028C8.7002 4.9594 8.637 5.11201 8.52449 5.22454C8.41198 5.33706 8.25939 5.40029 8.10026 5.40032Z"
-              class="fill-icon-7"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
+        <MatchVideoThumbnail :sources="match.sources" :label="`${match.home_team} vs ${match.away_team}`" />
         <button
           type="button"
           aria-label="Copy match link to share"
@@ -179,27 +202,31 @@ const copyMatchLink = async (): Promise<void> => {
       role="group"
       :aria-label="`${match.home_team} vs ${match.away_team}, match markets`"
     >
+    <!-- Win probability uses Kadario probability; other columns require market data. -->
       <div v-for="row in teamMarkets" :key="row.side" class="team-market-row">
-        <span class="market-team-name">{{ row.team }}</span>
+        <span class="market-team-name flex">{{ row.team }} <strong class=" flex-end">{{ score(row.side === 'H' ? 'home' : 'away') }}</strong></span>
         <button
           v-for="market in row.markets"
           :key="market.key"
           type="button"
           class="winner-price team-market-price"
-          :disabled="!market.outcome || (market.key !== 'h2h' && market.outcome.point == null)"
-          :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, odds ${market.outcome?.price ?? 'unavailable'}`"
+          :disabled="!market.outcome || (market.key === 'h2h' && market.outcome.price <= 0) || (market.key !== 'h2h' && market.outcome.point == null)"
+          :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, ${market.key === 'h2h' ? 'implied decimal odds ' + formatDecimalOdds(market.outcome?.price) : 'odds ' + (market.outcome?.price ?? 'unavailable')}`"
           :aria-pressed="(market.key === 'h2h' ? selectedOutcome : selectedMarkets[market.key]) === market.name"
           @click="selectMarket(market.key, market.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
         >
           <template v-if="market.outcome && (market.key === 'h2h' || market.outcome.point != null)">
             <span class="text-[#999]">{{ market.label }}</span>
             <br>
-            <strong>{{ market.outcome.price.toFixed(2) }}</strong>
+            <strong>{{ market.key === 'h2h' ? formatDecimalOdds(market.outcome.price) : market.outcome.price.toFixed(2) }}</strong>
           </template>
-          <span v-else>—</span>
+          <span v-else class="flex items-center justify-center w-full h-full py-1">
+            <Lock :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
+          </span>
         </button>
       </div>
     </div>
+    <!-- Quarter/inning breakdowns are not provided by the livestream response. -->
 
     <div
       v-else
@@ -213,13 +240,16 @@ const copyMatchLink = async (): Promise<void> => {
         :key="outcome.label"
         type="button"
         class="winner-price"
-        :disabled="outcome.price == null"
-        :aria-label="`${outcome.name}, odds ${outcome.price ?? 'unavailable'}`"
+        :disabled="outcome.price == null || outcome.price <= 0"
+        :aria-label="`${outcome.name}, implied decimal odds ${formatDecimalOdds(outcome.price)}`"
         :aria-pressed="selectedOutcome === outcome.name"
         @click="emit('select', outcome.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
       >
         <span>{{ outcome.label }}</span>
-        <strong>{{ outcome.price == null ? '—' : outcome.price.toFixed(2) }}</strong>
+        <strong v-if="outcome.price != null && outcome.price > 0 && formatDecimalOdds(outcome.price) !== '—'">
+          {{ formatDecimalOdds(outcome.price) }}
+        </strong>
+        <Lock v-else :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
       </button>
     </div>
     <p v-if="actionMessage" class="winner-message" role="status">{{ actionMessage }}</p>

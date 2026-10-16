@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trophy, ChevronUp, Search } from 'lucide-vue-next'
+import { Trophy, ChevronUp, ChevronDown, Search } from 'lucide-vue-next'
 import Ai from '~/components/buttons/Ai.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
@@ -14,7 +14,6 @@ const props = defineProps<{
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 const route = useRoute()
 const search = ref('')
-const allCollapsed = ref(false)
 
 const searchedSports = computed(() => {
   const q = search.value.toLowerCase().trim()
@@ -102,14 +101,19 @@ watch(() => props.refreshVersion, () => {
   expandedOutrights.value.forEach(key => void loadOutright(key))
 })
 
-watch(allCollapsed, (collapsed) => {
-  if (collapsed) {
-    expandedOutrights.value = []
-  } else {
+const allCollapsed = computed(() => {
+  return props.filteredSports.length > 0
+    && expandedOutrights.value.length === 0
+})
+
+const toggleCollapseAll = (): void => {
+  if (allCollapsed.value) {
     expandedOutrights.value = props.filteredSports.map(s => s.key)
     expandedOutrights.value.forEach(key => { if (!outrightEvents.value[key]) void loadOutright(key) })
+  } else {
+    expandedOutrights.value = []
   }
-})
+}
 </script>
 
 <template>
@@ -135,8 +139,9 @@ watch(allCollapsed, (collapsed) => {
 
 
       <Collapse
-        v-model="allCollapsed"
+        :model-value="allCollapsed"
         title="Collapse all matches"
+        @toggle="toggleCollapseAll"
       />
     </div>
 
@@ -207,9 +212,9 @@ watch(allCollapsed, (collapsed) => {
             :aria-labelledby="`outright-trigger-${sport.key}`"
             :aria-busy="outrightLoading[sport.key] || false"
           >
-            <p v-if="outrightLoading[sport.key]" class="note" role="status">
-              Loading outright odds…
-            </p>
+            <div v-if="outrightLoading[sport.key]" class="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4" role="status" aria-label="Loading outright odds">
+              <div v-for="i in 4" :key="i" class="h-10 rounded-md bg-[#252827] animate-pulse" />
+            </div>
             <div v-else-if="outrightErrors[sport.key]" role="alert">
               <p class="note">{{ outrightErrors[sport.key] }}</p>
               <button type="button" class="outright-retry" @click="loadOutright(sport.key)">

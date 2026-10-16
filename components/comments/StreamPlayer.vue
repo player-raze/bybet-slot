@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { LiveStream } from '~/types/livestream'
 
-const props = defineProps<{ sources: NonNullable<LiveStream['sources']>; preview?: boolean }>()
+const props = defineProps<{ sources: NonNullable<LiveStream['sources']>; preview?: boolean; compact?: boolean }>()
 const emit = defineEmits<{ ended: []; unavailable: [] }>()
 const video = ref<HTMLVideoElement | null>(null)
 const state = ref<'loading' | 'ready' | 'unavailable'>('loading')
@@ -105,7 +105,7 @@ watch([video, () => JSON.stringify(props.sources)], async ([element], _, onClean
 <template>
   <div class="relative h-full w-full bg-black">
     <video ref="video" :controls="!preview" :autoplay="!preview" muted playsinline preload="auto" class="h-full w-full object-contain" aria-label="Live sports stream" />
-    <div v-if="state !== 'ready'" class="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#14261d] px-5 text-center text-sm text-white/70" role="status">
+    <div v-if="state !== 'ready' && !compact" class="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#14261d] px-5 text-center text-sm text-white/70" role="status">
       {{ state === 'loading' ? 'Loading live stream…' : 'Stream unavailable' }}
     </div>
   </div>

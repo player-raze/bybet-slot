@@ -5,6 +5,7 @@ import LeagueMatches from '~/components/sports/LeagueMatches.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Ai from '~/components/buttons/Ai.vue'
+import SportsSkeleton from '~/components/sports/SportsSkeleton.vue'
 import type { Sport } from '~/types/sports'
 
 const props = withDefaults(defineProps<{
@@ -14,8 +15,14 @@ const props = withDefaults(defineProps<{
   sortBy?: 'league' | 'time'
   collapsedTournaments?: string[]
   aiTo?: string
+  maxMatchesPerGroup?: number
+  matchLimitPerTournament?: number
+  hideSportTitle?: boolean
+  loading?: boolean
 }>(), {
   sortBy: 'league',
+  matchLimitPerTournament: 2,
+  loading: false,
 })
 
 const emit = defineEmits<{
@@ -28,6 +35,7 @@ const search = ref('')
 const localSortBy = ref<'league' | 'time'>(props.sortBy)
 const localCollapsed = ref<string[]>([])
 const earliestTimes = ref<Record<string, number>>({})
+const matchCounts = ref<Record<string, number>>({})
 
 const currentSort = computed({
   get: () => localSortBy.value,
@@ -84,20 +92,37 @@ const effectiveSports = computed(() => {
   })
 })
 
+const matchLimit = (sport: Sport): number => {
+  if (props.maxMatchesPerGroup == null) return props.matchLimitPerTournament
+  let remaining = props.maxMatchesPerGroup
+  for (const tournament of getGroupTournaments(sport.group)) {
+    if (tournament.key === sport.key) return Math.max(0, Math.min(2, remaining))
+    // Resolve one visible tournament at a time before spending on the next.
+    if (!isExpanded(tournament.key)) continue
+    if (matchCounts.value[tournament.key] == null) return 0
+    remaining -= Math.min(2, matchCounts.value[tournament.key] ?? 0)
+  }
+  return 0
+}
+const visibleSports = computed(() => effectiveSports.value.filter(sport =>
+  matchCounts.value[sport.key] !== 0 && matchLimit(sport) > 0,
+))
+
 const allCollapsed = computed(() => {
-  return effectiveSports.value.length > 0
-    && effectiveSports.value.every(sport => collapsedList.value.includes(sport.key))
+  return visibleSports.value.length > 0
+    && visibleSports.value.every(sport => collapsedList.value.includes(sport.key))
 })
 
 const toggleCollapseAll = (): void => {
   if (allCollapsed.value) {
     collapsedList.value = []
   } else {
-    collapsedList.value = effectiveSports.value.map(sport => sport.key)
+    collapsedList.value = visibleSports.value.map(sport => sport.key)
   }
 }
 
-const handleMatchLoaded = (payload: { sportKey: string; earliestTime: number | null }): void => {
+const handleMatchLoaded = (payload: { sportKey: string; earliestTime: number | null; count: number }): void => {
+  matchCounts.value[payload.sportKey] = payload.count
   if (payload.earliestTime != null) {
     earliestTimes.value[payload.sportKey] = payload.earliestTime
   }
@@ -161,53 +186,61 @@ const sortedGroups = computed(() => {
       </label>
       <!-- Collapse all / Expand all button -->
       <Collapse
-        v-model="allCollapsed"
+        :model-value="allCollapsed"
         @toggle="toggleCollapseAll"
       />
     </div>
 
-    <section
-      v-for="group in sortedGroups"
-      :key="group"
-      class="league-group"
-    >
-      <h2 class="text-[18px] mb-2 ">{{ group }}</h2>
-      <div class="league-matches-list">
-        <article
-          v-for="sport in getGroupTournaments(group)"
-          :key="sport.key"
-          class="league-preview"
-        >
-          <button
-            :id="`league-trigger-${sport.key}`"
-            class="league-card league-preview-heading"
-            type="button"
-            :aria-expanded="isExpanded(sport.key)"
-            :aria-controls="`league-panel-${sport.key}`"
-            @click="toggleTournament(sport.key)"
+    <SportsSkeleton v-if="loading" />
+
+    <template v-else-if="visibleSports.length">
+      <section
+        v-for="group in sortedGroups"
+        v-show="visibleSports.some(sport => sport.group === group)"
+        :key="group"
+        class="league-group"
+      >
+        <h2 v-if="!hideSportTitle" class="text-[18px] mb-2 ">{{ group }}</h2>
+        <div class="league-matches-list">
+          <article
+            v-for="sport in getGroupTournaments(group)"
+            v-show="matchCounts[sport.key] !== 0 && matchLimit(sport) > 0"
+            :key="sport.key"
+            class="league-preview"
           >
-            <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
-              {{ sport.title }} {{ sport.description || sport.group }}
-            </span>
-            <CollapseIcon :expanded="isExpanded(sport.key)" />
-          </button>
-          <div
-            v-show="isExpanded(sport.key)"
-            :id="`league-panel-${sport.key}`"
-            role="region"
-            :aria-labelledby="`league-trigger-${sport.key}`"
-          >
-            <LeagueMatches
-              :sport-key="sport.key"
-              :sort-by="currentSort"
-              @loaded="handleMatchLoaded"
-            />
-          </div>
-        </article>
-      </div>
-    </section>
+            <button
+              :id="`league-trigger-${sport.key}`"
+              class="league-card league-preview-heading"
+              type="button"
+              :aria-expanded="isExpanded(sport.key)"
+              :aria-controls="`league-panel-${sport.key}`"
+              @click="toggleTournament(sport.key)"
+            >
+              <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
+                {{ sport.title }} {{ sport.description || sport.group }}
+              </span>
+              <CollapseIcon :expanded="isExpanded(sport.key)" />
+            </button>
+            <div
+              v-show="isExpanded(sport.key)"
+              :id="`league-panel-${sport.key}`"
+              role="region"
+              :aria-labelledby="`league-trigger-${sport.key}`"
+            >
+              <LeagueMatches
+                v-if="isExpanded(sport.key) && matchCounts[sport.key] !== 0 && matchLimit(sport) > 0"
+                :sport-key="sport.key"
+                :limit="matchLimit(sport)"
+                :sort-by="currentSort"
+                @loaded="handleMatchLoaded"
+              />
+            </div>
+          </article>
+        </div>
+      </section>
+    </template>
     <div
-      v-if="!effectiveSports.length"
+      v-else
       class="empty"
     >
       <h2>No leagues found</h2>
