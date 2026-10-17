@@ -14,15 +14,16 @@ const { context, openSportsComments, openGameComments, closeComments } = useComm
 const route = useRoute()
 
 const openPageComments = (): void => {
+  if (context.value) {
+    closeComments()
+    return
+  }
+
   if (route.path.startsWith('/explore/sports/')) {
-    if (context.value?.kind === 'sports') {
-      closeComments()
-    } else {
-      openSportsComments()
-      void nextTick(() => {
-        document.getElementById('comment-panel')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-      })
-    }
+    openSportsComments()
+    void nextTick(() => {
+      document.getElementById('comment-panel')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    })
     return
   }
 
