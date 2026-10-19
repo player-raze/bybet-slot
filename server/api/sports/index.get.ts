@@ -34,7 +34,34 @@ export default defineEventHandler(async (event): Promise<{ sports: Sport[]; even
   }
 
   if (mode === 'inplay') {
-    return { sports: [], events: await getLiveInplayEvents(config.kadarioApi, config.kadarioSite) }
+    const kadarioEvents = await getLiveInplayEvents(config.kadarioApi, config.kadarioSite)
+    
+    // Filter out tennis and baseball from Kadario to avoid duplicates and fulfill requirement
+    const otherEvents = kadarioEvents.filter(event => {
+      const key = event.sport_key.toLowerCase()
+      return !key.startsWith('tennis') && key !== 'baseball_mlb'
+    })
+
+    const odds = createOddsApi(config.oddsApi, config.oddsApiKey)
+    const oddsSports = ['tennis', 'baseball_mlb']
+    const oddsEvents: SportsEvent[] = []
+    const now = Date.now()
+    
+    for (const sportKey of oddsSports) {
+      try {
+        const events = await odds.leagueOdds(sportKey)
+        oddsEvents.push(...events.filter(event => 
+          Date.parse(event.commence_time) <= now && !event.completed
+        ))
+      } catch (e) {
+        console.error(`Error fetching inplay events for ${sportKey}:`, e)
+      }
+    }
+
+    return { 
+      sports: [], 
+      events: [...otherEvents, ...oddsEvents].sort((a, b) => Date.parse(b.commence_time) - Date.parse(a.commence_time)) 
+    }
   }
   const odds = createOddsApi(config.oddsApi, config.oddsApiKey)
   if (mode === 'league') return { sports: await odds.sports(), events: [] }
