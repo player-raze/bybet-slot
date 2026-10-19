@@ -204,7 +204,7 @@ const copyMatchLink = async (): Promise<void> => {
     >
     <!-- Win probability uses Kadario probability; other columns require market data. -->
       <div v-for="row in teamMarkets" :key="row.side" class="team-market-row">
-        <span class="market-team-name flex">{{ row.team }} <strong class=" flex-end">{{ score(row.side === 'H' ? 'home' : 'away') }}</strong></span>
+        <span class="market-team-name flex"><span class="flex-auto">{{ row.team }}</span> <strong class=" flex-auto text-right">{{ score(row.side === 'H' ? 'home' : 'away') }}</strong></span>
         <button
           v-for="market in row.markets"
           :key="market.key"
