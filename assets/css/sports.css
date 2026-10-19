@@ -90,7 +90,7 @@
 .sports-page .toolbar {
   display: flex;
   gap: 10px;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .sports-page .search {
@@ -365,22 +365,12 @@
   padding: 10px;
   border: 0;
   border-radius: 6px;
-  background: #07835818;
-  color: var(--text);
   font-size: 12px;
   overflow-wrap: anywhere;
   cursor: pointer;
   transition: background-color 0.15s;
 }
 
-.sports-page .odds > button:hover {
-  background: #07835830;
-}
-
-.sports-page .odds strong,
-.sports-page .scores strong {
-  color: #48daa6;
-}
 
 .sports-page .scores {
   display: grid;

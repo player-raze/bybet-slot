@@ -194,7 +194,7 @@ const toggleCollapseAll = (): void => {
                 v-if="commencementDates[sport.key]"
                 :datetime="commencementDates[sport.key]?.value"
                 class="mt-1 block text-[12px] font-normal text-[#999]"
-              >{{ commencementDates[sport.key]?.label }} PHT</time>
+              >End Time : {{ commencementDates[sport.key]?.label }}</time>
             </span>
             <ChevronUp
               :size="16"
@@ -213,7 +213,7 @@ const toggleCollapseAll = (): void => {
             :aria-busy="outrightLoading[sport.key] || false"
           >
             <div v-if="outrightLoading[sport.key]" class="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4" role="status" aria-label="Loading outright odds">
-              <div v-for="i in 4" :key="i" class="h-10 rounded-md bg-[#252827] animate-pulse" />
+              <div v-for="i in 4" :key="i" class="h-10 rounded-md bg-[##141414] animate-pulse" />
             </div>
             <div v-else-if="outrightErrors[sport.key]" role="alert">
               <p class="note">{{ outrightErrors[sport.key] }}</p>
@@ -227,7 +227,7 @@ const toggleCollapseAll = (): void => {
                 :key="event.id"
                 class="outright-market"
               >
-                <h4>Winner</h4>
+                <h4 class="pb-1.5">Winner</h4>
                 <div
                   v-for="bookmaker in (event.bookmakers ?? []).slice(0, 1)"
                   :key="bookmaker.key"
@@ -235,32 +235,34 @@ const toggleCollapseAll = (): void => {
                   <div
                     v-for="market in bookmaker.markets.filter(item => item.key === 'outrights')"
                     :key="market.key"
-                    class="odds outright-odds"
+                    class="odds outright-odds  flex flex-wrap gap-1 justify-center p"
                   >
                     <button
                       v-for="outcome in (expandedCandidates[sport.key] ? market.outcomes : market.outcomes.slice(0, 10))"
                       :key="outcome.name"
                       type="button"
-                      class="odd-item"
+                      class="text-white bg-[#232323] hover:bg-[#122F25] rounded-[8px] p-1 "
                       @click="navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
                     >
-                      <span>{{ outcome.name }}</span>
+                      <span class="text-[#959799]">{{ outcome.name }}</span>
                       <strong>{{ outcome.price.toFixed(2) }}</strong>
                     </button>
                   </div>
                 </div>
-                <button
-                  v-if="!expandedCandidates[sport.key] && (outrightEvents[sport.key]?.[0]?.bookmakers?.[0]?.markets.find(m => m.key === 'outrights')?.outcomes.length ?? 0) > 10"
-                  type="button"
-                  class="outright-more-btn"
-                  @click="expandedCandidates[sport.key] = true"
-                >
-                  More
-                  <ChevronDown
-                    :size="16"
-                    class="outright-chevron outright-chevron--more"
-                    aria-hidden="true"
-                  />
+                  <button
+                    v-if="!expandedCandidates[sport.key] && (outrightEvents[sport.key]?.[0]?.bookmakers?.[0]?.markets.find(m => m.key === 'outrights')?.outcomes.length ?? 0) > 10"
+                    type="button"
+                    class="outright-more-btn justify-center center flex items-center gap-1 text-[#959799] font-[12px] m-auto mt-2"
+                    @click="expandedCandidates[sport.key] = true"
+                  >
+                    <span class="text-[12px] font-normal text-[#707070]">
+                      More
+                    </span>
+                    <ChevronDown
+                      :size="24"
+                      class="outright-chevron outright-chevron--more rounded-full bg-[#252827]  p-1"
+                      aria-hidden="true"
+                    />
                 </button>
                 <p v-if="!event.bookmakers?.length" class="note">
                   Odds are currently unavailable.

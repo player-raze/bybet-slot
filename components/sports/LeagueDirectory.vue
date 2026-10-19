@@ -254,8 +254,7 @@ const isPopular = (key: string): boolean => {
   const defaultPopular = [
     'basketball_nba',
     'basketball_euroleague',
-    'basketball_pba',
-    'basketball_preseason',
+    'basketball_nba_preseason',
     'soccer_epl',
     'soccer_uefa_champions_league',
     'soccer_germany_bundesliga',
@@ -420,9 +419,8 @@ const COUNTRY_FLAGS: Record<string, string> = {
     <!-- Single Tournament Detail View -->
     <template v-if="tournamentKey">
       <div class="mb-4">
-        <NuxtLink :to="`${base}/league`" class="inline-flex items-center gap-1.5 text-sm font-medium text-[#48daa6] hover:underline">
+        <NuxtLink :to="`${base}/league`" class="inline-flex items-center gap-1.5 text-sm font-medium text-[#48daa6]">
           <span>←</span>
-          <span>All leagues</span>
         </NuxtLink>
       </div>
       <League
@@ -470,7 +468,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
 
       <!-- Loading Skeleton -->
       <div v-if="loading" class="flex flex-col gap-4 mt-4" aria-busy="true">
-        <div v-for="s in 2" :key="s" class="rounded-xl bg-[#181a19] border border-[#252827] p-4">
+        <div v-for="s in 2" :key="s" class="rounded-[12px] bg-[#181a19]  p-4">
           <div class="mb-3 h-5 w-32 rounded bg-[#2e3230] animate-pulse" />
           <div class="space-y-2">
             <div v-for="i in 3" :key="i" class="h-12 rounded-lg bg-[#222423] animate-pulse" />
@@ -478,15 +476,15 @@ const COUNTRY_FLAGS: Record<string, string> = {
         </div>
       </div>
 
-      <div v-else class="space-y-3 mt-4">
+      <div v-else class="space-y-3 mt-2">
         <!-- Popular Leagues Section (Collapsible) -->
         <section
           v-if="popularLeaguesList.length"
-          class="rounded-xl bg-[#181a19] border border-[#252827] overflow-hidden"
+          class="rounded-[12px] bg-[#181a19]  overflow-hidden"
         >
           <button
             type="button"
-            class="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[#1f2220] transition-colors"
+            class="w-full  flex items-center justify-between px-2 py-1 text-left  transition-colors"
             :aria-expanded="isGroupExpanded('__popular__')"
             @click="toggleGroup('__popular__')"
           >
@@ -501,32 +499,32 @@ const COUNTRY_FLAGS: Record<string, string> = {
 
           <div
             v-show="isGroupExpanded('__popular__')"
-            class="px-4 pb-4 pt-1"
+            class="px-2 pb-1 pt-1"
           >
-            <div class="flex items-center gap-3 overflow-x-auto pb-1 no-scrollbar">
+            <div class="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar">
               <NuxtLink
                 v-for="league in popularLeaguesList"
                 :key="league.key"
                 :to="leaguePath(league.key)"
-                class="flex flex-col items-center justify-center min-w-[84px] max-w-[84px] h-[92px] p-2 rounded-lg bg-[#252827] hover:bg-[#2e3230] transition text-center shrink-0 group"
+                class="flex flex-col items-center justify-top min-w-[72px] max-w-[72px] h-[88px] p-1 rounded-lg bg-[#252827] transition text-center shrink-0 group"
               >
                 <!-- Tournament logo with small sport ball at bottom right -->
-                <div class="relative w-9 h-9 rounded-full bg-[#1e2220] flex items-center justify-center shrink-0 mb-1.5 p-1 border border-[#2e3230]">
+                <div class="relative w-5 h-5 flex items-center justify-center shrink-0 ">
                   <img
                     :src="getTournamentLogo(league)"
                     :alt="league.title"
-                    class="w-full h-full object-contain"
+                    class="w-[32] h-full object-contain"
                     loading="lazy"
                   />
                   <img
                     v-if="getSportBall(league, route.params.sport as string)"
                     :src="getSportBall(league, route.params.sport as string)"
                     alt=""
-                    class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border border-[#181a19] bg-[#181a19] shadow-sm object-contain pointer-events-none"
+                    class="absolute -bottom-1 -right-1 w-[12px] h-[12px] rounded-full  bg-[#181a19] shadow-sm object-contain pointer-events-none"
                   />
                 </div>
 
-                <span class="text-[11px] font-medium text-[#ccc] group-hover:text-white leading-tight line-clamp-2">
+                <span class="text-[11px] font-medium text-[#ccc] leading-tight line-clamp-2 mt-2">
                   {{ league.title }}
                 </span>
               </NuxtLink>
@@ -539,20 +537,20 @@ const COUNTRY_FLAGS: Record<string, string> = {
           <section
             v-for="section in sections"
             :key="section.title"
-            class="rounded-xl bg-[#181a19] border border-[#252827] overflow-hidden"
+            class="rounded-[12px] bg-[#181a19] overflow-hidden"
           >
             <!-- Group Accordion Header -->
             <button
               type="button"
-              class="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[#1f2220] transition-colors"
+              class="w-full flex items-center justify-between px-2 py-1 text-left transition-colors"
               :aria-expanded="isGroupExpanded(section.title)"
               @click="toggleGroup(section.title)"
             >
-              <div class="flex items-center gap-2.5">
+              <div class="flex items-center gap-2">
                 <!-- ATP Header Badge -->
                 <div
                   v-if="section.type === 'atp'"
-                  class="h-4 px-1 rounded bg-[#001e4e] border border-[#0a3575] flex items-center justify-center shadow-sm"
+                  class="h-4 px-1 rounded bg-[#001e4e]  flex items-center justify-center shadow-sm"
                 >
                   <span class="text-[8px] font-black tracking-wider text-white">ATP</span>
                   <span class="text-[5.5px] font-semibold text-[#6899d3] ml-0.5 tracking-tight">TOUR</span>
@@ -606,34 +604,28 @@ const COUNTRY_FLAGS: Record<string, string> = {
             <!-- Group Accordion Body: League Rows -->
             <div
               v-show="isGroupExpanded(section.title)"
-              class="divide-y divide-[#222524] border-t border-[#222524]"
+              class="divide-y divide-[#222524] "
             >
               <NuxtLink
                 v-for="league in section.leagues"
                 :key="league.key"
                 :to="leaguePath(league.key)"
-                class="flex items-center justify-between px-4 py-3 hover:bg-[#202322] transition-colors group cursor-pointer"
+                class="flex items-center justify-between px-2 py-1  transition-colors group cursor-pointer"
               >
                 <!-- Left: Badge + League Title -->
-                <div class="flex items-center gap-3 min-w-0 pr-3">
+                <div class="flex items-center gap-2 min-w-0">
                   <!-- Tournament logo with small sport ball at bottom right -->
-                  <div class="relative w-6 h-6 rounded-full bg-[#1e2220] flex items-center justify-center shrink-0 p-0.5 border border-[#2e3230]">
+                  <div class="relative  flex items-center justify-center shrink-0  ">
                     <img
                       :src="getTournamentLogo(league)"
                       :alt="league.title"
-                      class="w-full h-full object-contain"
+                      class="w-full h-[20px] object-contain"
                       loading="lazy"
-                    />
-                    <img
-                      v-if="getSportBall(league, route.params.sport as string)"
-                      :src="getSportBall(league, route.params.sport as string)"
-                      alt=""
-                      class="absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full border border-[#181a19] bg-[#181a19] shadow-sm object-contain pointer-events-none"
                     />
                   </div>
 
                   <!-- Title -->
-                  <span class="text-[13.5px] text-[#e0e2e1] group-hover:text-white truncate">
+                  <span class="text-[13.5px] text-[#e0e2e1] truncate">
                     {{ league.title }}
                   </span>
                 </div>
