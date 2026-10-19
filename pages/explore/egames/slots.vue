@@ -117,13 +117,13 @@ const filteredSections = computed<SlotSection[]>(() => {
 <template>
   <div class="slots-page w-full min-w-0 pb-12 pt-1">
     <!-- Top Category Navigation Bar -->
-    <header class="category-nav-bar flex items-center justify-between gap-1 rounded-2xl bg-[#171817] border border-white/5 p-1 mb-2.5 overflow-x-auto no-scrollbar shadow-sm">
+    <header class="category-nav-bar flex items-center justify-between gap-1 rounded-[18px] bg-[#171817] p-1 mb-2.5 overflow-x-auto no-scrollbar shadow-sm">
       <div class="flex items-center gap-1 min-w-0">
         <button
           v-for="cat in SLOT_CATEGORIES"
           :key="cat.key"
           type="button"
-          class="category-tab flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none"
+          class="category-tab flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-[10px] transition-all cursor-pointer select-none"
           :class="activeCategory === cat.key ? 'category-tab--active bg-[#00c74d] text-[#0a1c13] font-bold shadow-md' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
           :aria-label="cat.label"
           @click="selectCategory(cat.key)"
@@ -136,8 +136,8 @@ const filteredSections = computed<SlotSection[]>(() => {
       <!-- Right Chat Toggle -->
       <button
         type="button"
-        class="category-tab category-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0 border-l border-white/5 pl-2"
-        :class="commentContext ? 'text-[#00c74d] font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+        class="category-tab category-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0  pl-2"
+        :class="commentContext ? ' text-[#7a807d]' : 'text-[#7a807d]'"
         aria-label="Toggle chat room"
         @click="toggleChat"
       >
@@ -188,7 +188,7 @@ const filteredSections = computed<SlotSection[]>(() => {
 
     <!-- Search Bar Input (collapsible) -->
     <Transition name="fade-slide">
-      <div v-if="isSearchOpen" class="mb-4 flex items-center gap-2 rounded-xl bg-[#202220] border border-white/10 px-3.5 py-2 shadow-inner">
+      <div v-if="isSearchOpen" class="mb-4 flex items-center gap-2 rounded-full bg-[#202220] border border-white/10 px-3.5 py-2 shadow-inner">
         <Search class="h-4 w-4 text-[#9ca3af] shrink-0" />
         <input
           v-model="searchQuery"
@@ -212,7 +212,7 @@ const filteredSections = computed<SlotSection[]>(() => {
     <!-- Empty State if no games match -->
     <div
       v-if="filteredSections.length === 0"
-      class="my-12 flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-[#171817] p-8 text-center"
+      class="my-12 flex flex-col items-center justify-center gap-3 rounded-full border border-white/5 bg-[#171817] p-8 text-center"
     >
       <Search class="h-10 w-10 text-[#7a807d]" />
       <h3 class="text-base font-semibold text-white">No games found</h3>
@@ -269,11 +269,11 @@ const filteredSections = computed<SlotSection[]>(() => {
           :href="game.href || bybetRedirectUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="game-card group relative flex flex-col cursor-pointer select-none"
+          class="game-card group relative flex flex-col cursor-pointer select-none bg-[#141414] rounded-[10px]  p-0 transition-all "
           :aria-label="`Play ${game.title} by ${game.provider}`"
         >
           <!-- Card Image Thumbnail Container -->
-          <div class="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#181a19] border border-white/5 shadow-md">
+          <div class="relative aspect-square w-full rounded-[10px] overflow-hidden bg-[#181a19]  shadow-md">
             <img
               :src="game.image"
               :alt="game.title"
@@ -293,7 +293,7 @@ const filteredSections = computed<SlotSection[]>(() => {
             <!-- Top Right: BUY BONUS Badge -->
             <span
               v-if="game.buyBonus"
-              class="absolute top-1.5 right-1.5 rounded bg-[#0d594f] border border-[#168a7b] px-1 py-0.5 text-[8px] font-black text-[#ffd700] text-center leading-tight shadow"
+              class="absolute top-1.5 right-1.5 rounded bg-[#0d594f]  px-1 py-0.5 text-[8px] font-black text-[#ffd700] text-center leading-tight shadow"
             >
               BUY<br>BONUS
             </span>
@@ -353,11 +353,21 @@ const filteredSections = computed<SlotSection[]>(() => {
             <!-- Bottom-Right Info Icon -->
             <button
               type="button"
-              class="absolute bottom-2 right-2 h-4 w-4 rounded-full bg-black/45 backdrop-blur-xs flex items-center justify-center text-[10px] text-white/80 hover:text-white hover:bg-black/75 transition-colors"
+              class="absolute bottom-2 right-2 h-2 w-2 rounded-full bg-black/45 backdrop-blur-xs flex items-center justify-center text-[10px] text-white/80 hover:text-white hover:bg-black/75 transition-colors"
               aria-label="Game Info"
               @click.stop.prevent="showGameDetails(game)"
             >
-              ⓘ
+              <svg xmlns="http://www.w3.org/2000/svg" width="5" height="5" viewBox="0 0 12 12" fill="none" class="size-3">
+  <g clip-path="url(#clip0_35610_114092)">
+    <path d="M6 0C4.81331 0 3.65328 0.351894 2.66658 1.01118C1.67989 1.67047 0.910851 2.60754 0.456725 3.7039C0.00259972 4.80025 -0.11622 6.00665 0.115291 7.17054C0.346802 8.33443 0.918247 9.40352 1.75736 10.2426C2.59648 11.0818 3.66557 11.6532 4.82946 11.8847C5.99335 12.1162 7.19975 11.9974 8.2961 11.5433C9.39246 11.0891 10.3295 10.3201 10.9888 9.33342C11.6481 8.34672 12 7.18669 12 6C11.9983 4.40922 11.3656 2.88407 10.2408 1.75921C9.11593 0.63436 7.59078 0.0016799 6 0ZM5.76923 2.76923C5.90616 2.76923 6.04001 2.80983 6.15386 2.88591C6.26771 2.96198 6.35644 3.0701 6.40884 3.1966C6.46124 3.32311 6.47495 3.46231 6.44824 3.5966C6.42152 3.73089 6.35559 3.85425 6.25877 3.95107C6.16195 4.04789 6.03859 4.11383 5.90429 4.14054C5.77 4.16726 5.6308 4.15355 5.5043 4.10115C5.37779 4.04875 5.26967 3.96001 5.1936 3.84616C5.11753 3.73231 5.07692 3.59846 5.07692 3.46154C5.07692 3.27793 5.14986 3.10184 5.2797 2.972C5.40953 2.84217 5.58562 2.76923 5.76923 2.76923ZM6.46154 9.23077C6.21672 9.23077 5.98194 9.13351 5.80883 8.9604C5.63572 8.78729 5.53846 8.55251 5.53846 8.30769V6C5.41606 6 5.29866 5.95137 5.21211 5.86482C5.12555 5.77826 5.07692 5.66087 5.07692 5.53846C5.07692 5.41605 5.12555 5.29866 5.21211 5.2121C5.29866 5.12555 5.41606 5.07692 5.53846 5.07692C5.78328 5.07692 6.01807 5.17417 6.19118 5.34729C6.36429 5.5204 6.46154 5.75518 6.46154 6V8.30769C6.58395 8.30769 6.70134 8.35632 6.7879 8.44287C6.87445 8.52943 6.92308 8.64682 6.92308 8.76923C6.92308 8.89164 6.87445 9.00903 6.7879 9.09559C6.70134 9.18214 6.58395 9.23077 6.46154 9.23077Z" fill="#DDDDDD"/>
+  </g>
+  <defs>
+    <clipPath id="clip0_35610_114092">
+      <rect width="12" height="12" fill="white"/>
+    </clipPath>
+  </defs>
+</svg>
+
             </button>
 
             <!-- Hover Play Button Overlay -->
@@ -369,7 +379,7 @@ const filteredSections = computed<SlotSection[]>(() => {
           </div>
 
           <!-- Bottom Caption: Title & Provider Logo -->
-          <div class="mt-1.5 flex items-center justify-between gap-1 px-0.5">
+          <div class="mt-1.5 flex items-center justify-between gap-1 px-1">
             <span class="truncate text-[12px] font-semibold text-[#e5e7eb] group-hover:text-white transition-colors">
               {{ game.title }}
             </span>

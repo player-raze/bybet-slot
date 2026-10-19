@@ -22,9 +22,9 @@ export const getTournamentLogo = (sport: Sport | string | undefined | null): str
   if (key.includes('ligue_1') || key.includes('ligue 1') || key.includes('ligue_one')) return '/images/sports/ligue-1.webp'
   if (key.includes('mlb') || key.includes('world_series')) return '/images/sports/mlb.webp'
   if (key.includes('npb')) return '/images/sports/npb.webp'
-  if (key.includes('wimbledon')) return '/images/sports/wimbledon.webp'
+  if (key.includes('wimbledon')) return '/images/sports/atp.webp'
   if (key.includes('us_open') || key.includes('us open')) return '/images/sports/us-open.webp'
-  if (key.includes('aus_open') || key.includes('australian')) return '/images/sports/australian-open.webp'
+  if (key.includes('aus_open') || key.includes('australian')) return '/images/sports/atp.webp'
   if (key.includes('roland_garros') || key.includes('french_open')) return '/images/sports/roland-garros.webp'
   if (key.includes('atp')) return '/images/sports/atp.webp'
   if (key.includes('wta')) return '/images/sports/wta.webp'
@@ -260,7 +260,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Championships',
     active: true,
     has_outrights: false,
-    logo: '/images/sports/wimbledon.webp',
+    logo: '/images/sports/atp.webp',
   },
   {
     key: 'tennis_atp_aus_open',
@@ -269,7 +269,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Tournament',
     active: true,
     has_outrights: false,
-    logo: '/images/sports/australian-open.webp',
+    logo: '/images/sports/atp.webp',
   },
   {
     key: 'tennis_wta_us_open',
@@ -289,7 +289,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Championships Outright',
     active: true,
     has_outrights: true,
-    logo: '/images/sports/wimbledon.webp',
+    logo: '/images/sports/atp.webp',
   },
   {
     key: 'tennis_atp_aus_open_winner',
@@ -298,7 +298,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Tournament Outright',
     active: true,
     has_outrights: true,
-    logo: '/images/sports/australian-open.webp',
+    logo: '/images/sports/atp.webp',
   },
   {
     key: 'tennis_wta_us_open_winner',
