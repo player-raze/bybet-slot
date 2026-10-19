@@ -51,17 +51,17 @@ watch(() => route.path, () => {
       @click="handleBackdropClick"
     >
       <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 pb-2 pr-2 text-white">
-        <header  v-if="context.kind != 'sports'" class="flex shrink-0 items-center justify-between gap-3 rounded-2xl bg-[#131313] px-3 py-2">
+        <header  v-if="context.kind != 'sports'" class="flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2">
           <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
-          <button type="button" class="grid h-9 w-9 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
-            <X :size="18" aria-hidden="true" />
+          <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
+            <X :size="10" aria-hidden="true" />
           </button>
         </header>
-        <div class="min-h-0 flex-1 overflow-y-auto">
-          <div class="flex min-h-full flex-col gap-2">
+        <div class="min-h-0 flex-1 rounded-lg overflow-y-auto ">
+          <div class="flex min-h-full flex-col gap-2 ">
             <SportsPreview v-if="context.kind === 'sports'" class="shrink-0" />
            
-            <section class="flex flex-1 flex-col rounded-2xl border border-white/5 bg-[#131313]" aria-label="Conversation">
+            <section class="flex flex-1 flex-col  border border-white/5 bg-[#131313]" aria-label="Conversation">
               <EmptyConversation v-if="context.kind === 'sports'" class="min-h-[260px] flex-1 py-8" />
               <GameConversation v-else />
               <footer class="flex shrink-0 items-center gap-2 rounded-2xl bg-[#131313] p-2 pb-[max(8px,env(safe-area-inset-bottom))]">

@@ -30,6 +30,7 @@ export const getTournamentLogo = (sport: Sport | string | undefined | null): str
   if (key.includes('wta')) return '/images/sports/wta.webp'
   if (key.includes('utr')) return '/images/sports/utr.webp'
   if (key.includes('nfl')) return '/images/sports/nfl.webp'
+  if (key.includes('nbl')) return '/images/sports/nbl.webp'
 
   if (key.includes('basketball')) return '/icons/sports/basketball.png'
   if (key.includes('soccer') || key.includes('football')) return '/icons/sports/soccer.png'
@@ -77,15 +78,6 @@ export const SAMPLE_SPORTS: Sport[] = [
     active: true,
     has_outrights: false,
     logo: '/images/sports/euroleague.webp',
-  },
-  {
-    key: 'basketball_ncaab',
-    group: 'Basketball',
-    title: "NCAA Men's Basketball",
-    description: 'US College Basketball',
-    active: true,
-    has_outrights: false,
-    logo: '/images/sports/ncaab.webp',
   },
   {
     key: 'basketball_pba',

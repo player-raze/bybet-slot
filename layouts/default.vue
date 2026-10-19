@@ -158,7 +158,6 @@ onBeforeUnmount(() => {
   position: relative;
   overflow: hidden;
   overflow-y: auto;
-  overflow: scroll;
   min-width: 0;
   margin-left: var(--sidebar-width);
   transition: margin-left 180ms ease;

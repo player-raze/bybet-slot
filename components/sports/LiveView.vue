@@ -72,11 +72,6 @@ const filteredEvents = computed(() => {
     <div class="inplay-tab">
       <!-- Toolbar identical to Inplay tab -->
       <div class="toolbar">
-        <Ai
-          :to="bybetRedirectUrl"
-          title="Smart Pick AI"
-        />
-
         <label class="search">
           <span class="search-icons">
             <Search :size="16" aria-hidden="true" />
@@ -120,9 +115,11 @@ const filteredEvents = computed(() => {
       />
 
       <!-- Empty State -->
-      <div v-else class="empty">
-        <h2>No inplay events</h2>
-        <p>Try another league or check back later.</p>
+      <div v-else class="flex min-h-[100px] w-full items-center justify-center" role="status">
+        <div class="flex flex-col items-center mt-14">
+          <img src="/images/empty/no-matches.webp" alt="No matches available for the selected date" class="h-auto w-full max-w-[200px] object-contain" />
+          <p class="text-center text-[16px] text-[#959799]">No Live Streaming</p>
+        </div>
       </div>
     </div>
   </div>
