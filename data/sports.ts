@@ -4,6 +4,60 @@ const now = () => Date.now()
 const hoursFromNow = (h: number) => new Date(now() + h * 3600 * 1000).toISOString()
 const hoursAgo = (h: number) => new Date(now() - h * 3600 * 1000).toISOString()
 
+export const getTournamentLogo = (sport: Sport | string | undefined | null): string => {
+  if (!sport) return '/images/sports/popular.webp'
+  if (typeof sport === 'object' && sport.logo) return sport.logo
+
+  const key = (typeof sport === 'object' ? `${sport.key} ${sport.title} ${sport.group}` : sport).toLowerCase()
+
+  if (key.includes('nba')) return '/images/sports/nba.webp'
+  if (key.includes('euroleague')) return '/images/sports/euroleague.webp'
+  if (key.includes('ncaa') || key.includes('ncaab') || key.includes('march_madness')) return '/images/sports/ncaab.webp'
+  if (key.includes('pba')) return '/images/sports/pba.webp'
+  if (key.includes('epl') || key.includes('premier_league') || key.includes('premier league')) return '/images/sports/premier-league.webp'
+  if (key.includes('champions_league') || key.includes('champs_league') || key.includes('uefa_champions') || key.includes('ucl')) return '/images/sports/uefa-champions-league.webp'
+  if (key.includes('bundesliga')) return '/images/sports/bundesliga.webp'
+  if (key.includes('serie_a') || key.includes('serie a')) return '/images/sports/serie-a.webp'
+  if (key.includes('la_liga') || key.includes('laliga') || key.includes('la liga')) return '/images/sports/la-liga.webp'
+  if (key.includes('ligue_1') || key.includes('ligue 1') || key.includes('ligue_one')) return '/images/sports/ligue-1.webp'
+  if (key.includes('mlb') || key.includes('world_series')) return '/images/sports/mlb.webp'
+  if (key.includes('npb')) return '/images/sports/npb.webp'
+  if (key.includes('wimbledon')) return '/images/sports/wimbledon.webp'
+  if (key.includes('us_open') || key.includes('us open')) return '/images/sports/us-open.webp'
+  if (key.includes('aus_open') || key.includes('australian')) return '/images/sports/australian-open.webp'
+  if (key.includes('roland_garros') || key.includes('french_open')) return '/images/sports/roland-garros.webp'
+  if (key.includes('atp')) return '/images/sports/atp.webp'
+  if (key.includes('wta')) return '/images/sports/wta.webp'
+  if (key.includes('utr')) return '/images/sports/utr.webp'
+  if (key.includes('nfl')) return '/images/sports/nfl.webp'
+
+  if (key.includes('basketball')) return '/icons/sports/basketball.png'
+  if (key.includes('soccer') || key.includes('football')) return '/icons/sports/soccer.png'
+  if (key.includes('tennis')) return '/icons/sports/tennis.png'
+  if (key.includes('baseball')) return '/icons/sports/baseball.png'
+
+  return '/images/sports/popular.webp'
+}
+
+export const getSportBall = (sport: Sport | string | undefined | null, sportParam?: string): string => {
+  if (!sport && !sportParam) return ''
+  const str = `${sport && typeof sport === 'object' ? `${sport.group || ''} ${sport.key || ''} ${sport.title || ''}` : (sport || '')} ${sportParam || ''}`.toLowerCase()
+
+  if (str.includes('basketball') || str.includes('nba') || str.includes('euroleague') || str.includes('ncaa') || str.includes('pba')) {
+    return '/icons/sports/basketball.png'
+  }
+  if (str.includes('soccer') || str.includes('epl') || str.includes('bundesliga') || str.includes('serie_a') || str.includes('la_liga') || str.includes('uefa') || str.includes('ligue') || str.includes('football')) {
+    return '/icons/sports/soccer.png'
+  }
+  if (str.includes('tennis') || str.includes('atp') || str.includes('wta') || str.includes('utr') || str.includes('wimbledon') || str.includes('open')) {
+    return '/icons/sports/tennis.png'
+  }
+  if (str.includes('baseball') || str.includes('mlb') || str.includes('npb')) {
+    return '/icons/sports/baseball.png'
+  }
+  return ''
+}
+
 export const SAMPLE_SPORTS: Sport[] = [
   // Basketball Leagues
   {
@@ -13,6 +67,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'National Basketball Association',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/nba.webp',
   },
   {
     key: 'basketball_euroleague',
@@ -21,6 +76,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'European Basketball Championship',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/euroleague.webp',
   },
   {
     key: 'basketball_ncaab',
@@ -29,6 +85,25 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'US College Basketball',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/ncaab.webp',
+  },
+  {
+    key: 'basketball_pba',
+    group: 'Basketball',
+    title: 'PBA Philippine Cup',
+    description: 'Philippine Basketball Association',
+    active: true,
+    has_outrights: false,
+    logo: '/images/sports/pba.webp',
+  },
+  {
+    key: 'basketball_preseason',
+    group: 'Basketball',
+    title: 'NBA Preseason',
+    description: 'NBA Warm-up Exhibition Games',
+    active: true,
+    has_outrights: false,
+    logo: '/images/sports/nba.webp',
   },
 
   // Basketball Outrights
@@ -39,6 +114,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'National Basketball Association Winner',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/nba.webp',
   },
   {
     key: 'basketball_euroleague_winner',
@@ -47,6 +123,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'European Championship Winner',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/euroleague.webp',
   },
 
   // Soccer Leagues
@@ -57,6 +134,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'English Premier League',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/premier-league.webp',
   },
   {
     key: 'soccer_uefa_champions_league',
@@ -65,6 +143,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'European Club Championship',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/uefa-champions-league.webp',
   },
   {
     key: 'soccer_germany_bundesliga',
@@ -73,6 +152,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'German Bundesliga',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/bundesliga.webp',
   },
   {
     key: 'soccer_italy_serie_a',
@@ -81,6 +161,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Italian Serie A',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/serie-a.webp',
   },
   {
     key: 'soccer_spain_la_liga',
@@ -89,6 +170,16 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Spanish Primera Division',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/la-liga.webp',
+  },
+  {
+    key: 'soccer_france_ligue_one',
+    group: 'Soccer',
+    title: 'Ligue 1',
+    description: 'French Ligue 1',
+    active: true,
+    has_outrights: false,
+    logo: '/images/sports/ligue-1.webp',
   },
 
   // Soccer Outrights
@@ -99,6 +190,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'English Premier League Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/premier-league.webp',
   },
   {
     key: 'soccer_uefa_champions_league_winner',
@@ -107,6 +199,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Champions League Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/uefa-champions-league.webp',
   },
   {
     key: 'soccer_germany_bundesliga_winner',
@@ -115,6 +208,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Bundesliga Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/bundesliga.webp',
   },
   {
     key: 'soccer_italy_serie_a_winner',
@@ -123,6 +217,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Serie A Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/serie-a.webp',
   },
   {
     key: 'soccer_spain_la_liga_winner',
@@ -131,6 +226,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'La Liga Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/la-liga.webp',
   },
 
   // Baseball Leagues
@@ -141,6 +237,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Major League Baseball',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/mlb.webp',
   },
   {
     key: 'baseball_npb',
@@ -149,6 +246,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Nippon Professional Baseball',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/npb.webp',
   },
 
   // Baseball Outrights
@@ -159,6 +257,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'World Series Winner Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/mlb.webp',
   },
 
   // Tennis Leagues
@@ -169,6 +268,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Championships',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/wimbledon.webp',
   },
   {
     key: 'tennis_atp_aus_open',
@@ -177,6 +277,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Tournament',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/australian-open.webp',
   },
   {
     key: 'tennis_wta_us_open',
@@ -185,6 +286,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Tournament',
     active: true,
     has_outrights: false,
+    logo: '/images/sports/us-open.webp',
   },
 
   // Tennis Outrights
@@ -195,6 +297,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Championships Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/wimbledon.webp',
   },
   {
     key: 'tennis_atp_aus_open_winner',
@@ -203,6 +306,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Tournament Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/australian-open.webp',
   },
   {
     key: 'tennis_wta_us_open_winner',
@@ -211,6 +315,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     description: 'Grand Slam Tournament Outright',
     active: true,
     has_outrights: true,
+    logo: '/images/sports/us-open.webp',
   },
 ]
 
@@ -916,6 +1021,62 @@ export const SAMPLE_INPLAY_EVENTS: SportsEvent[] = [
     ],
   },
   {
+    id: 'live_nba_2',
+    sport_key: 'basketball_nba',
+    sport_title: 'NBA',
+    commence_time: hoursAgo(0.6),
+    home_team: 'Los Angeles Lakers',
+    away_team: 'Boston Celtics',
+    completed: false,
+    scores: [
+      { name: 'Los Angeles Lakers', score: '76' },
+      { name: 'Boston Celtics', score: '72' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Los Angeles Lakers', price: 1.78 },
+              { name: 'Boston Celtics', price: 2.10 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_nba_3',
+    sport_key: 'basketball_nba',
+    sport_title: 'NBA',
+    commence_time: hoursAgo(1.9),
+    home_team: 'Golden State Warriors',
+    away_team: 'Denver Nuggets',
+    completed: false,
+    scores: [
+      { name: 'Golden State Warriors', score: '104' },
+      { name: 'Denver Nuggets', score: '101' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Golden State Warriors', price: 1.62 },
+              { name: 'Denver Nuggets', price: 2.35 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: 'live_soccer_1',
     sport_key: 'soccer_epl',
     sport_title: 'Premier League',
@@ -994,6 +1155,232 @@ export const SAMPLE_INPLAY_EVENTS: SportsEvent[] = [
             outcomes: [
               { name: 'Los Angeles Dodgers', price: 1.28 },
               { name: 'San Francisco Giants', price: 3.60 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_mlb_2',
+    sport_key: 'baseball_mlb',
+    sport_title: 'MLB',
+    commence_time: hoursAgo(1.4),
+    home_team: 'New York Yankees',
+    away_team: 'Boston Red Sox',
+    completed: false,
+    scores: [
+      { name: 'New York Yankees', score: '4' },
+      { name: 'Boston Red Sox', score: '2' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'New York Yankees', price: 1.55 },
+              { name: 'Boston Red Sox', price: 2.45 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_npb_1',
+    sport_key: 'baseball_npb',
+    sport_title: 'NPB',
+    commence_time: hoursAgo(0.7),
+    home_team: 'Yomiuri Giants',
+    away_team: 'Hanshin Tigers',
+    completed: false,
+    scores: [
+      { name: 'Yomiuri Giants', score: '3' },
+      { name: 'Hanshin Tigers', score: '1' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Yomiuri Giants', price: 1.70 },
+              { name: 'Hanshin Tigers', price: 2.15 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_euro_1',
+    sport_key: 'basketball_euroleague',
+    sport_title: 'EuroLeague',
+    commence_time: hoursAgo(1.1),
+    home_team: 'Real Madrid Baloncesto',
+    away_team: 'Panathinaikos BC',
+    completed: false,
+    scores: [
+      { name: 'Real Madrid Baloncesto', score: '68' },
+      { name: 'Panathinaikos BC', score: '65' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Real Madrid Baloncesto', price: 1.50 },
+              { name: 'Panathinaikos BC', price: 2.60 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_pba_1',
+    sport_key: 'basketball_pba',
+    sport_title: 'PBA',
+    commence_time: hoursAgo(1.8),
+    home_team: 'San Miguel Beermen',
+    away_team: 'Barangay Ginebra',
+    completed: false,
+    scores: [
+      { name: 'San Miguel Beermen', score: '88' },
+      { name: 'Barangay Ginebra', score: '82' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'San Miguel Beermen', price: 1.65 },
+              { name: 'Barangay Ginebra', price: 2.25 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_soccer_laliga',
+    sport_key: 'soccer_spain_la_liga',
+    sport_title: 'La Liga',
+    commence_time: hoursAgo(0.5),
+    home_team: 'Real Madrid',
+    away_team: 'Barcelona',
+    completed: false,
+    scores: [
+      { name: 'Real Madrid', score: '2' },
+      { name: 'Barcelona', score: '1' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Real Madrid', price: 1.85 },
+              { name: 'Draw', price: 3.50 },
+              { name: 'Barcelona', price: 3.90 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_soccer_bundesliga',
+    sport_key: 'soccer_germany_bundesliga',
+    sport_title: 'Bundesliga',
+    commence_time: hoursAgo(1.1),
+    home_team: 'Bayern Munich',
+    away_team: 'Borussia Dortmund',
+    completed: false,
+    scores: [
+      { name: 'Bayern Munich', score: '3' },
+      { name: 'Borussia Dortmund', score: '2' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Bayern Munich', price: 1.30 },
+              { name: 'Draw', price: 5.00 },
+              { name: 'Borussia Dortmund', price: 8.50 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_tennis_wta',
+    sport_key: 'tennis_wta_wuhan_open_singles',
+    sport_title: 'WTA Wuhan Open',
+    commence_time: hoursAgo(0.9),
+    home_team: 'Aryna Sabalenka',
+    away_team: 'Iga Swiatek',
+    completed: false,
+    scores: [
+      { name: 'Aryna Sabalenka', score: '1' },
+      { name: 'Iga Swiatek', score: '1' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Aryna Sabalenka', price: 1.95 },
+              { name: 'Iga Swiatek', price: 1.85 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'live_tennis_atp_shanghai',
+    sport_key: 'tennis_atp_1000_shanghai_masters_singles',
+    sport_title: 'ATP Shanghai Masters',
+    commence_time: hoursAgo(1.3),
+    home_team: 'Novak Djokovic',
+    away_team: 'Daniil Medvedev',
+    completed: false,
+    scores: [
+      { name: 'Novak Djokovic', score: '1' },
+      { name: 'Daniil Medvedev', score: '0' },
+    ],
+    bookmakers: [
+      {
+        key: 'bybet_live',
+        title: 'ByBet Live',
+        markets: [
+          {
+            key: 'h2h',
+            outcomes: [
+              { name: 'Novak Djokovic', price: 1.48 },
+              { name: 'Daniil Medvedev', price: 2.65 },
             ],
           },
         ],

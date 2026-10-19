@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trophy, ChevronUp, Search } from 'lucide-vue-next'
+import { Trophy, ChevronUp, ChevronDown, Search } from 'lucide-vue-next'
 import Ai from '~/components/buttons/Ai.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
@@ -14,7 +14,6 @@ const props = defineProps<{
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 const route = useRoute()
 const search = ref('')
-const allCollapsed = ref(false)
 
 const searchedSports = computed(() => {
   const q = search.value.toLowerCase().trim()
@@ -102,14 +101,19 @@ watch(() => props.refreshVersion, () => {
   expandedOutrights.value.forEach(key => void loadOutright(key))
 })
 
-watch(allCollapsed, (collapsed) => {
-  if (collapsed) {
-    expandedOutrights.value = []
-  } else {
+const allCollapsed = computed(() => {
+  return props.filteredSports.length > 0
+    && expandedOutrights.value.length === 0
+})
+
+const toggleCollapseAll = (): void => {
+  if (allCollapsed.value) {
     expandedOutrights.value = props.filteredSports.map(s => s.key)
     expandedOutrights.value.forEach(key => { if (!outrightEvents.value[key]) void loadOutright(key) })
+  } else {
+    expandedOutrights.value = []
   }
-})
+}
 </script>
 
 <template>
@@ -135,8 +139,9 @@ watch(allCollapsed, (collapsed) => {
 
 
       <Collapse
-        v-model="allCollapsed"
+        :model-value="allCollapsed"
         title="Collapse all matches"
+        @toggle="toggleCollapseAll"
       />
     </div>
 
@@ -189,7 +194,7 @@ watch(allCollapsed, (collapsed) => {
                 v-if="commencementDates[sport.key]"
                 :datetime="commencementDates[sport.key]?.value"
                 class="mt-1 block text-[12px] font-normal text-[#999]"
-              >{{ commencementDates[sport.key]?.label }} PHT</time>
+              >End Time : {{ commencementDates[sport.key]?.label }}</time>
             </span>
             <ChevronUp
               :size="16"
@@ -207,9 +212,9 @@ watch(allCollapsed, (collapsed) => {
             :aria-labelledby="`outright-trigger-${sport.key}`"
             :aria-busy="outrightLoading[sport.key] || false"
           >
-            <p v-if="outrightLoading[sport.key]" class="note" role="status">
-              Loading outright odds…
-            </p>
+            <div v-if="outrightLoading[sport.key]" class="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4" role="status" aria-label="Loading outright odds">
+              <div v-for="i in 4" :key="i" class="h-10 rounded-md bg-[##141414] animate-pulse" />
+            </div>
             <div v-else-if="outrightErrors[sport.key]" role="alert">
               <p class="note">{{ outrightErrors[sport.key] }}</p>
               <button type="button" class="outright-retry" @click="loadOutright(sport.key)">
@@ -222,7 +227,7 @@ watch(allCollapsed, (collapsed) => {
                 :key="event.id"
                 class="outright-market"
               >
-                <h4>Winner</h4>
+                <h4 class="pb-1.5">Winner</h4>
                 <div
                   v-for="bookmaker in (event.bookmakers ?? []).slice(0, 1)"
                   :key="bookmaker.key"
@@ -230,32 +235,34 @@ watch(allCollapsed, (collapsed) => {
                   <div
                     v-for="market in bookmaker.markets.filter(item => item.key === 'outrights')"
                     :key="market.key"
-                    class="odds outright-odds"
+                    class="odds outright-odds  flex flex-wrap gap-1 justify-center p"
                   >
                     <button
                       v-for="outcome in (expandedCandidates[sport.key] ? market.outcomes : market.outcomes.slice(0, 10))"
                       :key="outcome.name"
                       type="button"
-                      class="odd-item"
+                      class="text-white bg-[#232323] hover:bg-[#122F25] rounded-[8px] p-1 "
                       @click="navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
                     >
-                      <span>{{ outcome.name }}</span>
+                      <span class="text-[#959799]">{{ outcome.name }}</span>
                       <strong>{{ outcome.price.toFixed(2) }}</strong>
                     </button>
                   </div>
                 </div>
-                <button
-                  v-if="!expandedCandidates[sport.key] && (outrightEvents[sport.key]?.[0]?.bookmakers?.[0]?.markets.find(m => m.key === 'outrights')?.outcomes.length ?? 0) > 10"
-                  type="button"
-                  class="outright-more-btn"
-                  @click="expandedCandidates[sport.key] = true"
-                >
-                  More
-                  <ChevronDown
-                    :size="16"
-                    class="outright-chevron outright-chevron--more"
-                    aria-hidden="true"
-                  />
+                  <button
+                    v-if="!expandedCandidates[sport.key] && (outrightEvents[sport.key]?.[0]?.bookmakers?.[0]?.markets.find(m => m.key === 'outrights')?.outcomes.length ?? 0) > 10"
+                    type="button"
+                    class="outright-more-btn justify-center center flex items-center gap-1 text-[#959799] font-[12px] m-auto mt-2"
+                    @click="expandedCandidates[sport.key] = true"
+                  >
+                    <span class="text-[12px] font-normal text-[#707070]">
+                      More
+                    </span>
+                    <ChevronDown
+                      :size="24"
+                      class="outright-chevron outright-chevron--more rounded-full bg-[#252827]  p-1"
+                      aria-hidden="true"
+                    />
                 </button>
                 <p v-if="!event.bookmakers?.length" class="note">
                   Odds are currently unavailable.

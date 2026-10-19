@@ -96,6 +96,14 @@ export async function getLiveInplayEvents(api: string, site: string): Promise<Sp
     .filter(match => match.status === 'live' && match.home?.name && match.away?.name && Number.isFinite(Date.parse(match.startTime ?? '')))
     .map(match => ({
       id: match.id,
+      leagueId: match.leagueId,
+      sources: match.sources,
+      clock: match.clock,
+      clockUpdatedAt: Date.now(),
+      homeScore: match.homeScore,
+      awayScore: match.awayScore,
+      scoreAvailable: match.scoreAvailable,
+      probability: match.probability,
       sport: match.sport,
       sport_key: kadarioTournamentKey(match),
       sport_title: match.competition || 'Live match',

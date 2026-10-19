@@ -3,13 +3,20 @@ import { X } from 'lucide-vue-next'
 import MobileBottomNav from '~/components/MobileBottomNav.vue'
 import CommentPanel from '~/components/comments/CommentPanel.vue'
 
-const { context: commentContext, openSportsComments, closeComments } = useCommentPanel()
+const { context: commentContext, openSportsComments, openGameComments, closeComments } = useCommentPanel()
 const route = useRoute()
 const isSportsPage = computed(() => route.path.startsWith('/explore/sports/'))
+const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/'))
+const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
+const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
+const isMePage = computed(() => route.path.startsWith('/explore/account/me'))
+const isDockedChatPage = computed(() => isSportsPage.value || isGameChatPage.value)
 
 watch(() => route.path, () => {
   if (isSportsPage.value) {
     openSportsComments()
+  } else if (isGameChatPage.value) {
+    openGameComments()
   } else {
     closeComments()
   }
@@ -88,7 +95,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="home" class="site-shell" :class="{ 'site-shell--rail-collapsed': railCollapsed, 'site-shell--sports-chat': isSportsPage && Boolean(commentContext) }">
+  <div id="home" class="site-shell" :class="{ 'site-shell--rail-collapsed': railCollapsed, 'site-shell--sports-chat': isDockedChatPage && Boolean(commentContext) }">
     <AppHeader
       :drawer-open="drawerOpen"
       @toggle-drawer="drawerOpen = !drawerOpen"
@@ -108,12 +115,12 @@ onBeforeUnmount(() => {
 
       <CommentPanel
         v-if="commentContext"
-        :key="isSportsPage ? 'sports-sidebar' : 'game-dialog'"
-        :docked="isSportsPage"
+        :key="isSportsPage ? 'sports-sidebar' : isGameChatPage ? 'casino-sidebar' : 'game-dialog'"
+        :docked="isDockedChatPage"
       />
     </div>
 
-    <AppFooter />
+    <AppFooter v-if="!isMePage" />
     <MobileBottomNav />
 
     <Transition name="toast">

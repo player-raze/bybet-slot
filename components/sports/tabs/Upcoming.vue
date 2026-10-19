@@ -2,6 +2,7 @@
 import { ref, computed, defineComponent, h } from 'vue'
 import { CalendarDays, ChevronDown, Search } from 'lucide-vue-next'
 import EventCard from '~/components/sports/EventCard.vue'
+import SportsSkeleton from '~/components/sports/SportsSkeleton.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import Sort from '~/components/buttons/Sort.vue'
 import Ai from '~/components/buttons/Ai.vue'
@@ -12,6 +13,7 @@ const props = defineProps<{
   availableSports?: Sport[]
   selectedSport?: string
   aiTo?: string
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -24,6 +26,7 @@ const earliestTimes = ref<Record<string, number>>({})
 const timeFilters = ['1hours', '3hours', '6hours', '12hours', '24hours'] as const
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
+const oddsCols = computed<2 | 3>(() => route.params.sport === 'soccer' ? 3 : 2)
 const selectedTimeFilter = ref<(typeof timeFilters)[number] | null>(null)
 watch(() => route.params.hours, value => {
   selectedTimeFilter.value = timeFilters.find(filter => filter === value) ?? null
@@ -40,7 +43,6 @@ onMounted(() => {
   timeFilterTimer = setInterval(() => { now.value = Date.now() }, 60000)
 })
 onBeforeUnmount(() => clearInterval(timeFilterTimer))
-const allCollapsed = ref(false)
 const sortBy = ref<'league' | 'time'>('time')
 
 const CollapseIcon = defineComponent({
@@ -152,22 +154,45 @@ const filteredEvents = computed(() => {
 })
 
 const groupedSports = computed(() => {
-  const groups: Record<string, { title: string; key: string; description: string; group: string }> = {}
+  const groups: Record<string, { title: string; key: string; description: string; group: string; earliestTime: number }> = {}
 
   filteredEvents.value.forEach(event => {
     const sportKey = event.sport_key
+    const eventTime = Date.parse(event.commence_time)
+    const validTime = Number.isFinite(eventTime) ? eventTime : Infinity
+
     if (!groups[sportKey]) {
       groups[sportKey] = {
         title: event.sport_title ?? '',
         key: sportKey,
         description: (event as any).sport_group ?? event.sport ?? '',
-        group: (event as any).sport_group ?? event.sport ?? ''
+        group: (event as any).sport_group ?? event.sport ?? '',
+        earliestTime: validTime,
       }
+    } else if (validTime < groups[sportKey].earliestTime) {
+      groups[sportKey].earliestTime = validTime
     }
   })
 
-  return Object.values(groups)
+  const list = Object.values(groups)
+  if (sortBy.value === 'league') {
+    return list.sort((a, b) => a.title.localeCompare(b.title) || a.earliestTime - b.earliestTime)
+  }
+  return list.sort((a, b) => a.earliestTime - b.earliestTime || a.title.localeCompare(b.title))
 })
+
+const allCollapsed = computed(() => {
+  return groupedSports.value.length > 0
+    && groupedSports.value.every(sport => localCollapsed.value.includes(sport.key))
+})
+
+const toggleCollapseAll = (): void => {
+  if (allCollapsed.value) {
+    localCollapsed.value = []
+  } else {
+    localCollapsed.value = groupedSports.value.map(sport => sport.key)
+  }
+}
 </script>
 
 <template>
@@ -186,16 +211,17 @@ const groupedSports = computed(() => {
         <input
           v-model="search"
           type="search"
-          placeholder="Search upcoming matches or teams"
-          aria-label="Search upcoming matches or teams"
+          placeholder="Search league or team"
+          aria-label="Search league or team"
         >
       </label>
       <Sort
         v-model="sortBy"
       />
       <Collapse
-        v-model="allCollapsed"
+        :model-value="allCollapsed"
         title="Collapse all matches"
+        @toggle="toggleCollapseAll"
       />
     </div>
 
@@ -218,7 +244,9 @@ const groupedSports = computed(() => {
       <span>{{ filteredEvents.length }} events · Philippine time</span>
     </div>
 
-    <div class="league-matches-list">
+    <SportsSkeleton v-if="loading" :cols="oddsCols" />
+
+    <div v-else-if="filteredEvents.length" class="league-matches-list">
       <article
         v-for="sport in groupedSports"
         :key="sport.key"
@@ -252,7 +280,7 @@ const groupedSports = computed(() => {
       </article>
     </div>
 
-    <div v-if="!filteredEvents.length" class="empty">
+    <div v-else class="empty">
       <CalendarDays :size="32" class="text-[#ff8a3d]" aria-hidden="true" />
       <h2>No upcoming events</h2>
       <p>Try another league or check back later.</p>

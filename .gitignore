@@ -3,3 +3,4 @@ node_modules
 .nuxt-build
 .output
 .env
+graphify-out

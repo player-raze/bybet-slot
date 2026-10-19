@@ -1,26 +1,50 @@
 <script setup lang="ts">
-const messages = [
-  { name: 'Dray', avatar: '🎮', vip: 1, text: 'Anyone playing live casino tonight?', reaction: '👍 5+' },
-  { name: 'Ito', avatar: '👩🏻', vip: 2, text: 'Trying a few new games today.' },
-  { name: 'Nes*****', avatar: 'N', vip: 1, text: 'Good luck, everyone!' },
-  { name: 'ikawlang27', avatar: '🌄', vip: 1, text: 'What’s your favorite slot?', reaction: '👍 🙌' },
-  { name: 'jeo*****', avatar: 'J', vip: 1, text: 'Just here to hang out and chat.' },
-  { name: 'Kem*****', avatar: '🦄', vip: 2, text: 'Hello, chat room! 👋' },
-]
+import { SLOTS_COMMENTS } from '~/data/comments'
+
+const messages = SLOTS_COMMENTS
 </script>
 
 <template>
-  <div class="space-y-5 p-4">
-    <p class="text-[11px] text-[#949b97]">Sample conversation</p>
-    <article v-for="(message, index) in messages" :key="index" class="flex items-start gap-2">
-      <div class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#006649] text-[18px] text-white" aria-hidden="true">{{ message.avatar }}</div>
+  <div class="space-y-4 p-3 overflow-y-auto">
+    <article
+      v-for="(message, index) in messages"
+      :key="message.id || index"
+      class="flex items-start gap-2.5"
+    >
+      <!-- Avatar -->
+      <div
+        class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white shadow-sm"
+        :style="{ backgroundColor: message.avatarBg || '#006649' }"
+        aria-hidden="true"
+      >
+        {{ message.avatar }}
+      </div>
+
+      <!-- Content -->
       <div class="min-w-0 flex-1">
-        <div class="mb-2 flex items-center gap-2 text-[12px]">
-          <span class="rounded-full bg-gradient-to-b from-[#0bb58a] to-[#005a40] px-1.5 text-[10px] font-bold italic text-white">VIP{{ message.vip }}</span>
-          <span class="truncate text-[#13b68b]">{{ message.name }}</span>
+        <!-- Header: Level Badge + Name -->
+        <div class="mb-1 flex items-center gap-1.5 text-[12px]">
+          <span
+            class="rounded bg-[#073b2c] text-[#00e701] border border-[#0f543e] px-1.5 py-0.2 text-[9.5px] font-extrabold flex items-center gap-0.5 leading-none"
+          >
+            <span class="text-[8px]">🛡️</span>
+            {{ message.level || 'K1' }}
+          </span>
+          <span class="truncate font-semibold text-[#34d399] text-[12px]">{{ message.name }}</span>
         </div>
-        <p class="w-fit max-w-full break-words rounded-[20px] bg-[#242523] px-3 py-2.5 text-[14px] leading-snug text-white">{{ message.text }}</p>
-        <span v-if="message.reaction" class="relative -top-1 inline-block rounded-full bg-[#242523] px-2 text-[11px] text-white">{{ message.reaction }}</span>
+
+        <!-- Message Bubble -->
+        <p class="w-fit max-w-[95%] break-words rounded-[18px] bg-[#242523] px-3.5 py-2 text-[13px] leading-relaxed text-[#f0f2f1]">
+          {{ message.text }}
+        </p>
+
+        <!-- Reaction -->
+        <div
+          v-if="message.reaction"
+          class="mt-1 inline-flex items-center gap-1 rounded-full bg-[#1e201f] border border-[#2d302e] px-2 py-0.5 text-[11px] text-white shadow-sm"
+        >
+          <span>{{ message.reaction }}</span>
+        </div>
       </div>
     </article>
   </div>

@@ -2,7 +2,10 @@
 import { ref, computed, defineComponent, h } from 'vue'
 import { ChartNoAxesCombined, ChevronDown, Search } from 'lucide-vue-next'
 import EventCard from '~/components/sports/EventCard.vue'
+import SportsSkeleton from '~/components/sports/SportsSkeleton.vue'
 import Ai from '~/components/buttons/Ai.vue'
+import Collapse from '~/components/buttons/Collapse.vue'
+import Sort from '~/components/buttons/Sort.vue'
 import type { Sport, SportsEvent } from '~/types/sports'
 
 const props = defineProps<{
@@ -10,6 +13,7 @@ const props = defineProps<{
   availableSports?: Sport[]
   selectedSport?: string
   aiTo?: string
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -19,6 +23,7 @@ const emit = defineEmits<{
 const search = ref('')
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
+const oddsCols = computed<2 | 3>(() => route.params.sport === 'soccer' ? 3 : 2)
 const selectedDate = ref('all')
 watch(() => route.params.date, value => {
   const [month, day, year] = String(value ?? '').split('-')
@@ -58,6 +63,7 @@ watch(dateFilters, filters => {
 })
 const localCollapsed = ref<string[]>([])
 const earliestTimes = ref<Record<string, number>>({})
+const sortBy = ref<'league' | 'time'>('time')
 
 const CollapseIcon = defineComponent({
   props: {
@@ -100,32 +106,63 @@ const handleSportChange = (event: Event): void => {
 
 const filteredEvents = computed(() => {
   const q = search.value.toLowerCase().trim()
-  return props.events.filter(event => {
+  const list = props.events.filter(event => {
     const start = Date.parse(event.commence_time)
     if (!Number.isFinite(start) || start <= now.value || event.completed) return false
     if (selectedDate.value !== 'all' && dateKey(start) !== selectedDate.value) return false
     const details = `${event.home_team ?? ''} ${event.away_team ?? ''} ${event.sport_title ?? ''}`.toLowerCase()
     return !q || details.includes(q)
   })
+
+  return list.sort((a, b) => {
+    if (sortBy.value === 'league') {
+      const leagueCompare = (a.sport_title ?? '').localeCompare(b.sport_title ?? '')
+      if (leagueCompare !== 0) return leagueCompare
+    }
+    return Date.parse(a.commence_time) - Date.parse(b.commence_time)
+  })
 })
 
 const groupedSports = computed(() => {
-  const groups: Record<string, { title: string; key: string; description: string; group: string }> = {}
+  const groups: Record<string, { title: string; key: string; description: string; group: string; earliestTime: number }> = {}
   
   filteredEvents.value.forEach(event => {
     const sportKey = event.sport_key
+    const eventTime = Date.parse(event.commence_time)
+    const validTime = Number.isFinite(eventTime) ? eventTime : Infinity
+
     if (!groups[sportKey]) {
       groups[sportKey] = {
         title: event.sport_title ?? '',
         key: sportKey,
         description: (event as any).sport_group ?? event.sport ?? '',
-        group: (event as any).sport_group ?? event.sport ?? ''
+        group: (event as any).sport_group ?? event.sport ?? '',
+        earliestTime: validTime,
       }
+    } else if (validTime < groups[sportKey].earliestTime) {
+      groups[sportKey].earliestTime = validTime
     }
   })
   
-  return Object.values(groups)
+  const list = Object.values(groups)
+  if (sortBy.value === 'league') {
+    return list.sort((a, b) => a.title.localeCompare(b.title) || a.earliestTime - b.earliestTime)
+  }
+  return list.sort((a, b) => a.earliestTime - b.earliestTime || a.title.localeCompare(b.title))
 })
+
+const allCollapsed = computed(() => {
+  return groupedSports.value.length > 0
+    && groupedSports.value.every(sport => localCollapsed.value.includes(sport.key))
+})
+
+const toggleCollapseAll = (): void => {
+  if (allCollapsed.value) {
+    localCollapsed.value = []
+  } else {
+    localCollapsed.value = groupedSports.value.map(sport => sport.key)
+  }
+}
 </script>
 
 <template>
@@ -144,10 +181,18 @@ const groupedSports = computed(() => {
         <input
           v-model="search"
           type="search"
-          placeholder="Search prematch matches or teams"
-          aria-label="Search prematch matches or teams"
+          placeholder="Search league or team"
+          aria-label="Search league or team"
         >
       </label>
+      <Sort
+        v-model="sortBy"
+      />
+      <Collapse
+        :model-value="allCollapsed"
+        title="Collapse all matches"
+        @toggle="toggleCollapseAll"
+      />
       
     </div>
     <div class="mb-4 flex flex-wrap gap-1" role="group" aria-label="Filter upcoming matches by date, Philippine time">
@@ -173,7 +218,9 @@ const groupedSports = computed(() => {
       </button>
     </div>
 
-    <div class="league-matches-list">
+    <SportsSkeleton v-if="loading" :cols="oddsCols" />
+
+    <div v-else-if="filteredEvents.length" class="league-matches-list">
       <article
         v-for="sport in groupedSports"
         :key="sport.key"
@@ -207,7 +254,7 @@ const groupedSports = computed(() => {
       </article>
     </div>
 
-    <div v-if="!filteredEvents.length" class="flex min-h-[200px] w-full items-center justify-center" role="status">
+    <div v-else class="flex min-h-[200px] w-full items-center justify-center" role="status">
       <img src="/images/empty/no-matches.png" alt="No matches available for the selected date" class="h-auto w-full max-w-[400px] object-contain" />
     </div>
   </div>
