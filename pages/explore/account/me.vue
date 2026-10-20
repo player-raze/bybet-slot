@@ -79,37 +79,40 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="me-page w-full min-w-0 pb-16 pt-1 text-white">
+  <div class="me-page w-full min-w-0 pb-0 pt-1 text-white">
     <!-- Top Account Card: Login / Sign Up & Action Buttons -->
-    <div class="account-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
-      <div class="flex items-center gap-2">
-        <a
-          :href="bybetRedirectUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded-full border border-[#00c74d] px-4 py-1 text-xs font-semibold text-[#00c74d] hover:bg-[#00c74d]/10 transition-colors"
-        >
-          Login
-        </a>
-        <a
-          :href="bybetRedirectUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded-full bg-[#00c74d] px-4 py-1 text-xs font-bold text-black hover:bg-[#00e701] transition-colors"
-        >
-          Sign Up
-        </a>
-      </div>
+    <div class="account-card rounded-lg bg-[#141414]  px-2 py-3 mb-3.5 shadow-sm">
+      <div class="px-2">
+        <div class="flex items-center gap-1">
+          <a
+            :href="bybetRedirectUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-[#2b2b2b] rounded-lg border border-[#1fa779] px-4 py-1 text-[12px] font-semibold text-[#1fa779] hover:bg-[#252525] transition-colors"
+          >
+            Login
+          </a>
+          <a
+            :href="bybetRedirectUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-lg bg-[#036242] px-4 py-1 text-[12px] font-bold text-white hover:bg-[#122F25] transition-colors"
+          >
+            Sign Up
+          </a>
+        </div>
 
-      <p class="mt-2 text-xs text-[#7a807d]">Hi, please log in/register first.</p>
+        <p class="mt-2 text-[12px] text-[#707070]">Hi, please log in/register first.</p>
+      </div>
+      
 
       <!-- 4 Quick Actions: Deposit, Withdraw, VIP, Bonus -->
-      <div class="grid grid-cols-4 gap-2 mt-4">
+      <div class="grid grid-cols-4 gap-1 mt-4">
         <a
           :href="bybetRedirectUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c] hover:bg-[#00704b] py-2 text-xs font-semibold text-white transition-colors shadow-sm"
+          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c] py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           Deposit
         </a>
@@ -117,7 +120,7 @@ onBeforeUnmount(() => {
           :href="bybetRedirectUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c] hover:bg-[#00704b] py-2 text-xs font-semibold text-white transition-colors shadow-sm"
+          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c]  py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           Withdraw
         </a>
@@ -125,7 +128,7 @@ onBeforeUnmount(() => {
           :href="bybetRedirectUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c] hover:bg-[#00704b] py-2 text-xs font-semibold text-white transition-colors shadow-sm"
+          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c]  py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           VIP
         </a>
@@ -133,7 +136,7 @@ onBeforeUnmount(() => {
           :href="bybetRedirectUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c] hover:bg-[#00704b] py-2 text-xs font-semibold text-white transition-colors shadow-sm"
+          class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c]  py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           Bonus
         </a>
@@ -141,7 +144,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 1: General -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414] p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -211,7 +214,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 2: Live Plaza -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -259,7 +262,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 3: Game Settings -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -363,7 +366,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 4: System Settings -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -443,7 +446,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 5: Help -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -568,7 +571,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Section: Special Promotion -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -590,7 +593,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Section: HELP List -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -612,7 +615,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Section: Responsibility & Reputation -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-3.5 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-3.5 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -648,7 +651,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Section: About Us -->
-    <div class="section-card rounded-2xl bg-[#171817] border border-white/5 p-4 mb-6 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  p-4 mb-6 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"

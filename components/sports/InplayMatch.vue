@@ -108,6 +108,23 @@ const selectMarket = (key: string, name: string): void => {
   selectedMarkets.value[key] = selectedMarkets.value[key] === name ? '' : name
 }
 
+const isMarketValid = (market: { key: string; outcome?: { price?: number; point?: number | string } }): boolean => {
+  if (!market.outcome || market.outcome.price == null || market.outcome.price <= 0) {
+    return false
+  }
+  if (market.key === 'h2h') {
+    const formatted = formatDecimalOdds(market.outcome.price)
+    return formatted !== '—' && formatted !== '-' && formatted !== ''
+  }
+  return market.outcome.point != null && market.outcome.point !== ''
+}
+
+const isOutcomeValid = (outcome: { price?: number }): boolean => {
+  if (outcome.price == null || outcome.price <= 0) return false
+  const formatted = formatDecimalOdds(outcome.price)
+  return formatted !== '—' && formatted !== '-' && formatted !== ''
+}
+
 const isFullDateSport = computed(() => {
   return props.fullMarkets === true
 })
@@ -210,15 +227,16 @@ const copyMatchLink = async (): Promise<void> => {
           :key="market.key"
           type="button"
           class="winner-price team-market-price"
-          :disabled="!market.outcome || (market.key === 'h2h' && market.outcome.price <= 0) || (market.key !== 'h2h' && market.outcome.point == null)"
+          :class="{ 'winner-price--locked': !isMarketValid(market) }"
+          :disabled="!isMarketValid(market)"
           :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, ${market.key === 'h2h' ? 'implied decimal odds ' + formatDecimalOdds(market.outcome?.price) : 'odds ' + (market.outcome?.price ?? 'unavailable')}`"
           :aria-pressed="(market.key === 'h2h' ? selectedOutcome : selectedMarkets[market.key]) === market.name"
           @click="selectMarket(market.key, market.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
         >
-          <template v-if="market.outcome && (market.key === 'h2h' || market.outcome.point != null)">
+          <template v-if="isMarketValid(market)">
             <span class="text-[#999]">{{ market.label }}</span>
             <br>
-            <strong>{{ market.key === 'h2h' ? formatDecimalOdds(market.outcome.price) : market.outcome.price.toFixed(2) }}</strong>
+            <strong>{{ market.key === 'h2h' ? formatDecimalOdds(market.outcome!.price) : market.outcome!.price.toFixed(2) }}</strong>
           </template>
           <span v-else class="flex items-center justify-center w-full h-full py-1">
             <Lock :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
@@ -240,16 +258,19 @@ const copyMatchLink = async (): Promise<void> => {
         :key="outcome.label"
         type="button"
         class="winner-price"
-        :disabled="outcome.price == null || outcome.price <= 0"
+        :class="{ 'winner-price--locked': !isOutcomeValid(outcome) }"
+        :disabled="!isOutcomeValid(outcome)"
         :aria-label="`${outcome.name}, implied decimal odds ${formatDecimalOdds(outcome.price)}`"
         :aria-pressed="selectedOutcome === outcome.name"
         @click="emit('select', outcome.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
       >
-        <span>{{ outcome.label }}</span>
-        <strong v-if="outcome.price != null && outcome.price > 0 && formatDecimalOdds(outcome.price) !== '—'">
-          {{ formatDecimalOdds(outcome.price) }}
-        </strong>
-        <Lock v-else :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
+        <template v-if="isOutcomeValid(outcome)">
+          <span>{{ outcome.label }}</span>
+          <strong>{{ formatDecimalOdds(outcome.price) }}</strong>
+        </template>
+        <span v-else class="flex items-center justify-center w-full h-full py-1">
+          <Lock :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
+        </span>
       </button>
     </div>
     <p v-if="actionMessage" class="winner-message" role="status">{{ actionMessage }}</p>
@@ -348,6 +369,10 @@ const copyMatchLink = async (): Promise<void> => {
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+.winner-price--locked {
+  justify-content: center;
+}
+
 .winner-price:hover {
   background: var(--odd-btn-hover);
 }

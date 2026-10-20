@@ -20,12 +20,14 @@ export interface SlotCategory {
   shortLabel: string
   iconName: string
   emoji?: string
+  iconImage?: string
 }
 
 export interface SlotSection {
   id: string
   title: string
   emoji?: string
+  iconImage?: string
   iconName: string
   count: number
   hasHelp?: boolean
@@ -51,13 +53,13 @@ export const newGames: ReferenceGame[] = [
 
 export const SLOT_CATEGORIES: SlotCategory[] = [
   { key: 'home', label: 'Home', shortLabel: 'Home', iconName: 'House' },
-  { key: 'bonuses', label: 'Bonuses', shortLabel: 'Bonu...', iconName: 'Percent', emoji: '🟡' },
-  { key: 'top-pick', label: 'Top Pick', shortLabel: 'Top...', iconName: 'ThumbsUp', emoji: '👍' },
-  { key: 'top', label: 'Top', shortLabel: 'Top', iconName: 'Crown', emoji: '👑' },
-  { key: 'new', label: 'New', shortLabel: 'New', iconName: 'Sparkles', emoji: '🏵️' },
-  { key: 'hot', label: 'Hot games', shortLabel: 'Hot...', iconName: 'Flame', emoji: '🔥' },
-  { key: 'cold', label: 'Cold Games', shortLabel: 'Cold...', iconName: 'Snowflake', emoji: '❄️' },
-  { key: 'max-rtp', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Trophy', emoji: '💵' },
+  { key: 'bonuses', label: 'Bonuses', shortLabel: 'Bonu...', iconName: 'Percent', emoji: '🟡', iconImage: '/icons/slots/bonuses.png' },
+  { key: 'top-pick', label: 'Top Pick', shortLabel: 'Top...', iconName: 'ThumbsUp', emoji: '👍', iconImage: '/icons/slots/top-pick.png' },
+  { key: 'top', label: 'Top', shortLabel: 'Top', iconName: 'Medal', emoji: '🏅', iconImage: '/icons/slots/top.png' },
+  { key: 'new', label: 'New', shortLabel: 'New', iconName: 'Sparkles', emoji: '🆕', iconImage: '/icons/slots/new.png' },
+  { key: 'hot', label: 'Hot games', shortLabel: 'Hot...', iconName: 'Flame', emoji: '🔥', iconImage: '/icons/slots/hot.png' },
+  { key: 'cold', label: 'Cold Games', shortLabel: 'Cold...', iconName: 'Snowflake', emoji: '❄️', iconImage: '/icons/slots/cold.png' },
+  { key: 'max-rtp', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Banknote', emoji: '💵', iconImage: '/icons/slots/max-rtp.png' },
 ]
 
 export const SLOT_PROVIDERS: { key: string; label: string }[] = [
@@ -75,6 +77,7 @@ export const SLOT_SECTIONS: SlotSection[] = [
     id: 'bonuses',
     title: 'Bonuses',
     emoji: '🟡',
+    iconImage: '/icons/slots/bonuses.png',
     iconName: 'Percent',
     count: 334,
     games: [
@@ -127,6 +130,7 @@ export const SLOT_SECTIONS: SlotSection[] = [
     id: 'top-pick',
     title: 'Top Pick',
     emoji: '👍',
+    iconImage: '/icons/slots/top-pick.png',
     iconName: 'ThumbsUp',
     count: 92,
     games: [
@@ -178,8 +182,9 @@ export const SLOT_SECTIONS: SlotSection[] = [
   {
     id: 'top',
     title: 'Top',
-    emoji: '👑',
-    iconName: 'Crown',
+    emoji: '🏅',
+    iconImage: '/icons/slots/top.png',
+    iconName: 'Medal',
     count: 406,
     games: [
       {
@@ -235,7 +240,8 @@ export const SLOT_SECTIONS: SlotSection[] = [
   {
     id: 'new',
     title: 'New',
-    emoji: '🏵️',
+    emoji: '🆕',
+    iconImage: '/icons/slots/new.png',
     iconName: 'Sparkles',
     count: 4,
     games: [
@@ -277,6 +283,7 @@ export const SLOT_SECTIONS: SlotSection[] = [
     id: 'hot',
     title: 'Hot Games',
     emoji: '🔥',
+    iconImage: '/icons/slots/hot.png',
     iconName: 'Flame',
     count: 108,
     hasHelp: true,
@@ -333,6 +340,7 @@ export const SLOT_SECTIONS: SlotSection[] = [
     id: 'cold',
     title: 'Cold Games',
     emoji: '❄️',
+    iconImage: '/icons/slots/cold.png',
     iconName: 'Snowflake',
     count: 297,
     hasHelp: true,
@@ -389,7 +397,8 @@ export const SLOT_SECTIONS: SlotSection[] = [
     id: 'max-rtp',
     title: 'Max RTP',
     emoji: '💵',
-    iconName: 'Trophy',
+    iconImage: '/icons/slots/max-rtp.png',
+    iconName: 'Banknote',
     count: 1439,
     games: [
       {

@@ -83,7 +83,6 @@ watch(() => route.path, () => {
 
 <style scoped>
 .comment-panel {
-  position: sticky;
   width: min(375px, 23.4375rem);
   height: 100dvh;
   max-width: 100vw;
@@ -95,15 +94,19 @@ watch(() => route.path, () => {
 
 .comment-panel--docked {
   position: sticky;
+  top: var(--header-height);
+  align-self: start;
   z-index: 40;
   width: 100%;
   min-width: 0;
   height: calc(100dvh - var(--header-height));
+  max-height: calc(100dvh - var(--header-height));
 }
 
-@media (max-width: 1279px) {
+@media (max-width: 63.99rem) {
   .comment-panel--docked {
     position: relative;
+    top: auto;
     inset: auto;
     width: min(23.4375rem, 100%);
     height: 650px;

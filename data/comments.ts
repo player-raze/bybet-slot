@@ -18,7 +18,8 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatar: '🎮',
     avatarType: 'emoji',
     avatarBg: '#0f382c',
-    level: 'K1',
+    level: 'K0',
+    vip: 0,
     text: 'legit',
   },
   {
@@ -28,16 +29,18 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'emoji',
     avatarBg: '#0f382c',
     level: 'K1',
+    vip: 1,
     text: 'mag verify kayo sa customer support mas mabilis',
     reaction: '👍 🙏',
   },
   {
     id: 'msg_2',
     name: 'Ito',
-    avatar: '👩🏻',
-    avatarType: 'emoji',
+    avatar: '/images/avatars/ito.png',
+    avatarType: 'image',
     avatarBg: '#3b1d54',
     level: 'K2',
+    vip: 2,
     text: 'cNu lApit na pumaldo?',
   },
   {
@@ -47,6 +50,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'text',
     avatarBg: '#036242',
     level: 'K1',
+    vip: 1,
     text: 'paldo naraman lets gooo',
   },
   {
@@ -56,6 +60,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'emoji',
     avatarBg: '#1f354d',
     level: 'K1',
+    vip: 1,
     text: 'paldo na Ako dito',
   },
   {
@@ -64,7 +69,8 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatar: 'J',
     avatarType: 'text',
     avatarBg: '#036242',
-    level: 'K1',
+    level: 'K0',
+    vip: 0,
     text: 'cnu nakawidthraw na? legit po ba.?',
   },
   {
@@ -74,6 +80,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'emoji',
     avatarBg: '#4a2559',
     level: 'K2',
+    vip: 2,
     text: 'opo legit po. nakawidthraw na ako ng 10k sa bank account ko. pero mas mabilis po sa gcash',
   },
   {
@@ -82,7 +89,8 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatar: '👤',
     avatarType: 'emoji',
     avatarBg: '#2a3530',
-    level: 'K1',
+    level: 'K0',
+    vip: 0,
     text: 'panu po magwidthdraw?',
   },
   {
@@ -92,6 +100,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'emoji',
     avatarBg: '#4a2559',
     level: 'K2',
+    vip: 2,
     text: 'musta naman d2? cnu nanalo na?',
   },
   {
@@ -101,6 +110,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'text',
     avatarBg: '#036242',
     level: 'K2',
+    vip: 2,
     text: 'Guyss sasabihin ko sainyo na legit yan nung una diko den ma widrew yung panalo ko pumunta lang ako sa cs para mapaltan yung national ID ko tinanggap naman syaa kaso yung temporary nga lang kaya ako nag sasabe sainyo na legit yan ayoko nalang sabihin kung mag kano panalo ko HAHAHA',
   },
   {
@@ -110,6 +120,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
     avatarType: 'text',
     avatarBg: '#036242',
     level: 'K2',
+    vip: 2,
     text: 'Basta paldong paldo ako naka bili motor rider fi at iphone 16pro',
   },
 ]

@@ -6,7 +6,7 @@ import CommentPanel from '~/components/comments/CommentPanel.vue'
 const { context: commentContext, openSportsComments, openGameComments, closeComments } = useCommentPanel()
 const route = useRoute()
 const isSportsPage = computed(() => route.path.startsWith('/explore/sports/'))
-const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/'))
+const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/') && route.path !== '/explore/egames/customer-service')
 const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
 const isMePage = computed(() => route.path.startsWith('/explore/account/me'))
@@ -153,11 +153,7 @@ onBeforeUnmount(() => {
 }
 
 .content-layout {
-  top: -12px;
-  z-index: 50;
   position: relative;
-  overflow: hidden;
-  overflow-y: auto;
   min-width: 0;
   margin-left: var(--sidebar-width);
   transition: margin-left 180ms ease;
@@ -225,7 +221,7 @@ onBeforeUnmount(() => {
   transform: translateY(0.35rem);
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 64rem) {
   .site-shell--sports-chat .content-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--comment-panel-width);
@@ -259,13 +255,6 @@ onBeforeUnmount(() => {
     opacity: 1;
     transform: none;
     transition: none;
-  }
-}
-@media screen and (max-width: 900px) {
-  .content-layout {
-    top: 0;
-    z-index: 0;
-    position: block;
   }
 }
 </style>
