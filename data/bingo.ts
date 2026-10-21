@@ -14,13 +14,30 @@ export interface BingoGame {
   href?: string
 }
 
+export const FREQUENTLY_SEARCHED_BINGO: string[] = [
+  'Super Bingo',
+  'Calaca Bingo',
+  'Fortune Bingo',
+  'iRich Bingo',
+  'Bingo Carnaval',
+  'Jackpot Bingo',
+  'Bingo Bonanza',
+  'Mega Ball Bingo',
+  'Golden Bingo Deluxe',
+  'Lucky Bingo Neko',
+]
+
 export interface BingoCategory {
   key: string
   label: string
   shortLabel: string
-  iconName: string
+  iconName?: string
   emoji?: string
+  iconImage?: string
+  svg?: string
 }
+
+export const BINGO_CATEGORY_SVGS: Record<string, string> = {}
 
 export interface BingoSection {
   id: string
@@ -33,10 +50,11 @@ export interface BingoSection {
 }
 
 export const BINGO_CATEGORIES: BingoCategory[] = [
+  { key: 'home', label: 'Home', shortLabel: 'Home', iconName: 'House', emoji: '🏠' },
   { key: 'top', label: 'Top', shortLabel: 'Top', iconName: 'Crown', emoji: '👑' },
   { key: 'hot', label: 'Hot Games', shortLabel: 'Hot...', iconName: 'Flame', emoji: '🔥' },
   { key: 'cold', label: 'Cold Games', shortLabel: 'Cold...', iconName: 'Snowflake', emoji: '❄️' },
-  { key: 'max-rtp', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Trophy', emoji: '💵' },
+  { key: 'max-rpt', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Trophy', emoji: '💵' },
 ]
 
 export const BINGO_PROVIDERS: { key: string; label: string }[] = [
@@ -57,28 +75,12 @@ export const BINGO_SECTIONS: BingoSection[] = [
     count: 120,
     games: [
       {
-        id: 'super-bingo',
-        title: 'Super Bingo',
+        id: 'jackpot-bingo',
+        title: 'Jackpot Bingo',
         provider: 'JILI',
         providerLogo: '/images/providers/jili.png',
-        image: '/images/games/popular/super-ace.webp',
-        livePlayers: 3840,
-      },
-      {
-        id: 'calaca-bingo',
-        title: 'Calaca Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.png',
-        image: '/images/games/popular/super-ace-2.webp',
-        livePlayers: 2615,
-      },
-      {
-        id: 'fortune-bingo',
-        title: 'Fortune Bingo',
-        provider: 'JDB',
-        providerLogo: '/images/providers/jdb.png',
-        image: '/images/games/popular/fortune-gems-2.webp',
-        livePlayers: 2190,
+        image: '/images/games/popular/golden-empire.webp',
+        livePlayers: 47,
       },
       {
         id: 'irich-bingo',
@@ -86,23 +88,71 @@ export const BINGO_SECTIONS: BingoSection[] = [
         provider: 'JILI',
         providerLogo: '/images/providers/jili.png',
         image: '/images/games/popular/mega-ace.webp',
-        livePlayers: 1945,
+        livePlayers: 16,
       },
       {
         id: 'bingo-carnaval',
         title: 'Bingo Carnaval',
-        provider: 'CQ9',
-        providerLogo: '/images/providers/cq9.png',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
         image: '/images/games/popular/sugar-rush-dice.webp',
-        livePlayers: 1420,
+        livePlayers: 13,
       },
       {
-        id: 'jackpot-bingo',
-        title: 'Jackpot Bingo',
-        provider: 'JDB',
-        providerLogo: '/images/providers/jdb.png',
-        image: '/images/games/popular/golden-empire.webp',
-        livePlayers: 1105,
+        id: 'super-bingo',
+        title: 'Super Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/popular/super-ace.webp',
+        livePlayers: 11,
+      },
+      {
+        id: 'west-hunter-bingo',
+        title: 'West Hunter Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/new-releases/wild-hop-and-drop.webp',
+        livePlayers: 6,
+      },
+      {
+        id: 'fortune-bingo',
+        title: 'Fortune Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/popular/fortune-gems-2.webp',
+        livePlayers: 25,
+      },
+      {
+        id: 'magic-lamp-bingo',
+        title: 'Magic Lamp Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/new-releases/open-sesame.webp',
+        livePlayers: 23,
+      },
+      {
+        id: 'lucky-bingo',
+        title: 'Lucky Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/new-releases/7-wheel-money.webp',
+        livePlayers: 22,
+      },
+      {
+        id: 'calaca-bingo',
+        title: 'Calaca Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/popular/super-ace-2.webp',
+        livePlayers: 21,
+      },
+      {
+        id: 'candyland-bingo',
+        title: 'Candyland Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/popular/sweet-bonanza-1000.webp',
+        livePlayers: 21,
       },
     ],
   },

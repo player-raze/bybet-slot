@@ -89,12 +89,12 @@ const handleOddClick = (prediction: LivePlazaPrediction, option: LivePlazaPredic
 
 <template>
   <div class="live-plaza-home-page w-full min-w-0 pb-16 pt-1 text-white">
-    <!-- Top Header Bar -->
-    <header class="live-plaza-top-bar flex items-center rounded-xl bg-[#1c2321] px-4 py-2.5 mb-2 shadow-sm">
-      <h1 class="text-sm sm:text-[15px] font-bold text-white tracking-tight">
-        Live Plaza
-      </h1>
-    </header>
+    <!-- Reusable Top SEO Header Bar -->
+    <SeoHeader
+      title="Live Plaza"
+      description="Live Plaza on ByBet Philippines. Real-time game streaming, popular matches, and expert sports predictions."
+      :show-back="false"
+    />
 
     <!-- Section 1: Popular Games -->
     <section class="popular-games-section rounded-xl bg-[#141414] p-3.5 sm:p-4 mb-2 shadow-sm">

@@ -17,7 +17,14 @@ import {
 } from '~/data/jackpot'
 import GameCard from '~/components/game-cards/GameCard.vue'
 
-const activeTab = ref('all')
+const route = useRoute()
+const router = useRouter()
+
+const activeProvider = computed(() => {
+  const p = (route.params.provider as string || 'jdb').toLowerCase()
+  return p
+})
+
 const activeGameId = ref<string | null>(null)
 const currentWinners = ref<JackpotWinner[]>([...JACKPOT_WINNERS])
 let winnerTimer: ReturnType<typeof setTimeout> | null = null
@@ -71,7 +78,6 @@ const addNewWinner = (): void => {
 
 const scheduleRandomWinner = (): void => {
   if (!import.meta.client) return
-  // Random time between 5 seconds (5000ms) and 1 minute (60000ms)
   const delay = Math.floor(Math.random() * (60000 - 5000 + 1)) + 5000
   winnerTimer = setTimeout(() => {
     addNewWinner()
@@ -116,17 +122,7 @@ const toggleChat = (): void => {
 }
 
 const selectTab = (key: string): void => {
-  activeTab.value = key
-  if (import.meta.client) {
-    if (key === 'all') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      const el = document.getElementById(`section-${key.toLowerCase()}`)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }
-  }
+  router.push(`/explore/egames/jackpot/${key.toLowerCase()}`)
 }
 
 const showGameDetails = (game: any): void => {
@@ -153,10 +149,10 @@ const handleDemo = (game: any): void => {
 }
 
 const filteredSections = computed<JackpotSection[]>(() => {
-  if (activeTab.value === 'all') {
+  if (activeProvider.value === 'all') {
     return JACKPOT_SECTIONS
   }
-  return JACKPOT_SECTIONS.filter((s) => s.provider.toLowerCase() === activeTab.value.toLowerCase())
+  return JACKPOT_SECTIONS.filter((s) => s.id.toLowerCase() === activeProvider.value)
 })
 </script>
 
@@ -164,7 +160,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
   <div class="jackpot-page w-full min-w-0 pb-16 pt-1">
     <!-- Sticky Header (Top Nav Tabs Bar) -->
     <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
-      <!-- Top Nav Tabs Bar (777, JILI, CQ9, JDB + Chat) -->
+      <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
       <header class="top-nav-bar flex items-center justify-between gap-2 rounded-2xl bg-[#171817] border border-white/5 p-1 overflow-x-auto no-scrollbar shadow-sm">
         <div class="flex items-center gap-1.5 min-w-0">
           <button
@@ -172,14 +168,14 @@ const filteredSections = computed<JackpotSection[]>(() => {
             :key="tab.key"
             type="button"
             class="nav-tab flex items-center justify-center min-w-[58px] py-1.5 px-3.5 rounded-xl transition-all cursor-pointer select-none"
-            :class="activeTab === tab.key ? 'bg-[#00c74d] shadow-md' : 'hover:bg-white/5'"
+            :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md border border-[#047b53]' : 'hover:bg-white/5'"
             :aria-label="tab.label"
             @click="selectTab(tab.key)"
           >
             <span
               v-if="tab.isAll"
               class="text-[13px] font-black tracking-wider"
-              :class="activeTab === tab.key ? 'text-[#0a1c13]' : 'text-white/80'"
+              :class="activeProvider === tab.key.toLowerCase() ? 'text-white' : 'text-white/80'"
             >
               {{ tab.label }}
             </span>
@@ -188,7 +184,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
               :src="tab.logo"
               :alt="tab.label"
               class="h-4 max-w-[42px] object-contain transition-opacity"
-              :class="activeTab === tab.key ? 'brightness-0 contrast-200' : 'brightness-125 opacity-80 hover:opacity-100'"
+              :class="activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125 opacity-80 hover:opacity-100'"
             />
           </button>
         </div>
@@ -197,7 +193,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
         <button
           type="button"
           class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0 border-l border-white/5 pl-2"
-          :class="commentContext ? 'text-[#00c74d] font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+          :class="commentContext ? 'text-[#036242] font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
           aria-label="Toggle chat room"
           @click="toggleChat"
         >
@@ -207,25 +203,25 @@ const filteredSections = computed<JackpotSection[]>(() => {
       </header>
     </div>
 
-    <!-- Provider Jackpot Sections -->
+    <!-- Provider Jackpot Section (Layout matches Image 2) -->
     <section
       v-for="section in filteredSections"
       :id="`section-${section.id}`"
       :key="section.id"
       class="jackpot-provider-section mb-8 scroll-mt-[85px]"
     >
-      <!-- Section Header: Provider Logo on Left, Jackpot Banner in Center, Count on Right -->
-      <div class="flex items-center justify-between mb-2">
+      <!-- Section Header: Provider Logo on Left, 3D Jackpot Graphic in Center, Count on Right -->
+      <div class="relative flex items-center justify-between mb-4 px-1 min-h-[50px]">
         <!-- Left: Provider Logo -->
-        <div class="flex items-center">
+        <div class="flex items-center w-24">
           <img
             :src="section.providerLogo"
             :alt="section.provider"
-            class="h-5 max-w-[56px] object-contain brightness-125 opacity-90"
+            class="h-6 max-w-[64px] object-contain brightness-125 opacity-90"
           />
         </div>
 
-        <!-- Center: 3D Jackpot Graphic + Mascot -->
+        <!-- Center: 3D Jackpot Graphic + Mascot + Digital Odometer -->
         <div class="flex flex-col items-center justify-center">
           <div class="relative flex items-center justify-center">
             <span class="jackpot-logo-text text-xl md:text-2xl font-black tracking-widest uppercase select-none">
@@ -239,7 +235,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
           <!-- Digital Odometer / Counter Bar -->
           <div
             v-if="section.counterDigits"
-            class="jackpot-counter-box mt-1.5 flex items-center gap-1 rounded-xl bg-[#282a29] border border-white/10 px-3.5 py-1 shadow-inner"
+            class="jackpot-counter-box mt-1.5 flex items-center gap-1 rounded-xl bg-[#282a29] border border-white/10 px-3 py-1 shadow-inner"
           >
             <template v-for="(char, idx) in section.counterDigits" :key="idx">
               <div
@@ -254,26 +250,28 @@ const filteredSections = computed<JackpotSection[]>(() => {
         </div>
 
         <!-- Right: Section Count Pill -->
-        <a
-          :href="bybetRedirectUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="count-badge flex items-center gap-0.5 rounded-full bg-[#202220] hover:bg-[#282a29] px-2.5 py-0.5 text-[11px] font-medium text-[#8e9491] hover:text-white transition-colors cursor-pointer"
-        >
-          <span>{{ section.count }}</span>
-          <ChevronRight class="h-3 w-3" />
-        </a>
+        <div class="flex items-center justify-end w-24">
+          <a
+            :href="bybetRedirectUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="count-badge flex items-center gap-0.5 rounded-full bg-[#202220] hover:bg-[#282a29] px-2.5 py-0.5 text-[11px] font-medium text-[#8e9491] hover:text-white transition-colors cursor-pointer"
+          >
+            <span>{{ section.count }}</span>
+            <ChevronRight class="h-3 w-3" />
+          </a>
+        </div>
       </div>
 
-      <!-- Games Grid: 6 Columns -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      <!-- Games Grid: 8 Columns matching Image 2 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2.5">
         <GameCard
           v-for="game in section.games"
           :key="game.id"
           :game="game"
           :activeId="activeGameId"
           @select="handleCardClick"
-           @info="showGameDetails" 
+          @info="showGameDetails"
           @start="handleStartNow"
           @demo="handleDemo"
         />
@@ -380,3 +378,4 @@ const filteredSections = computed<JackpotSection[]>(() => {
   transform: translateY(8px);
 }
 </style>
+

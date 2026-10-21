@@ -1,7 +1,8 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 const railItems = createRailItems(useRuntimeConfig().public.bybetRedirectUrl)
 import { Check, ChevronLeft, ChevronRight, Wrench } from 'lucide-vue-next'
 import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
+import DepositReminderModal from '~/components/modals/DepositReminderModal.vue'
 import { createRailItems } from '~/data/homepage'
 import type { RailItem, RailSubItem } from '~/data/homepage'
 import type { LanguageOption, ThemePreference } from '~/composables/useSitePreferences'
@@ -21,6 +22,7 @@ const route = useRoute()
 const nuxtLinkComponent = resolveComponent('NuxtLink')
 const activeItemLabel = ref('Home')
 const maintenanceOpen = ref(false)
+const fundsReminderOpen = ref(false)
 const expandedMenus = ref(
   railItems
     .filter(item => Boolean(item.children?.length))
@@ -106,6 +108,10 @@ const handleItemClick = (item: RailItem): void => {
 const handleSubmenuNavigation = (item: RailSubItem): void => {
   if (item.underMaintenance) {
     maintenanceOpen.value = true
+    return
+  }
+  if (item.showFundsModal || item.label.toLowerCase() === 'funds') {
+    fundsReminderOpen.value = true
     return
   }
   activeItemLabel.value = item.label
@@ -198,13 +204,13 @@ onBeforeUnmount(() => {
             :aria-label="`${translate(item.label)} submenu`"
           >
             <component
-              :is="childItem.underMaintenance ? 'button' : nuxtLinkComponent"
+              :is="childItem.underMaintenance || childItem.showFundsModal || childItem.label.toLowerCase() === 'funds' ? 'button' : nuxtLinkComponent"
               v-for="childItem in item.children"
               :key="childItem.to"
-              v-bind="childItem.underMaintenance ? { type: 'button' } : { to: childItem.to }"
+              v-bind="childItem.underMaintenance || childItem.showFundsModal || childItem.label.toLowerCase() === 'funds' ? { type: 'button' } : { to: childItem.to }"
               class="rail-submenu-link"
-              :class="{ 'rail-submenu-link--active': !childItem.underMaintenance && (route.path === childItem.to || route.path.startsWith(`${childItem.to}/`)), 'rail-submenu-link--maintenance': childItem.underMaintenance }"
-              :aria-haspopup="childItem.underMaintenance ? 'dialog' : undefined"
+              :class="{ 'rail-submenu-link--active': !childItem.underMaintenance && !childItem.showFundsModal && childItem.label.toLowerCase() !== 'funds' && (route.path === childItem.to || route.path.startsWith(`${childItem.to}/`)), 'rail-submenu-link--maintenance': childItem.underMaintenance }"
+              :aria-haspopup="childItem.underMaintenance || childItem.showFundsModal || childItem.label.toLowerCase() === 'funds' ? 'dialog' : undefined"
               :title="translate(childItem.label)"
               :aria-label="translate(childItem.label)"
               @click="handleSubmenuNavigation(childItem)"
@@ -285,6 +291,7 @@ onBeforeUnmount(() => {
     </div>
   </aside>
   <UnderMaintenance v-if="maintenanceOpen" @close="maintenanceOpen = false" />
+  <DepositReminderModal v-if="fundsReminderOpen" @close="fundsReminderOpen = false" />
 </template>
 
 <style scoped>
@@ -513,11 +520,17 @@ onBeforeUnmount(() => {
   object-fit: contain;
 }
 
-.rail-submenu-link:hover,
-.rail-submenu-link--active {
+.rail-submenu-link:hover {
   color: white;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045));
   box-shadow: inset 1px 0 rgba(50, 212, 154, 0.42);
+}
+
+.rail-submenu-link--active,
+.rail-submenu-link--active:hover {
+  color: white;
+  background: #036242;
+  box-shadow: none;
 }
 
 .rail-submenu--panel {

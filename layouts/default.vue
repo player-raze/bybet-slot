@@ -9,10 +9,21 @@ const isSportsPage = computed(() => route.path.startsWith('/explore/sports/'))
 const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/') && route.path !== '/explore/egames/customer-service')
 const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
-const isMePage = computed(() => route.path.startsWith('/explore/account/me'))
+const isAccountSettingsPage = computed(() => [
+  '/explore/account/me',
+  '/explore/account/language',
+  '/explore/account/timezone',
+  '/tutorial',
+].some(path => route.path.startsWith(path)))
 const isDockedChatPage = computed(() => isSportsPage.value || isGameChatPage.value)
+const isTutorialPage = computed(() => route.path === '/tutorial' || route.path.startsWith('/tutorial/'))
+const railCollapsed = ref(!isTutorialPage.value)
 
 watch(() => route.path, () => {
+  if (isTutorialPage.value) {
+    railCollapsed.value = false
+  }
+
   if (isSportsPage.value) {
     openSportsComments()
   } else if (isGameChatPage.value) {
@@ -23,7 +34,6 @@ watch(() => route.path, () => {
 }, { immediate: true })
 
 const drawerOpen = ref(false)
-const railCollapsed = ref(true)
 const pageContentElement = ref<HTMLElement | null>(null)
 let sectionRevealObserver: IntersectionObserver | undefined
 const {
@@ -120,7 +130,7 @@ onBeforeUnmount(() => {
       />
     </div>
 
-    <AppFooter v-if="!isMePage" />
+    <AppFooter v-if="!isAccountSettingsPage" />
     <MobileBottomNav />
 
     <Transition name="toast">

@@ -1,0 +1,1470 @@
+<script setup lang="ts">
+import { ChevronLeft, CircleDot, Flag } from 'lucide-vue-next'
+
+type TutorialMode = 'mock-betting' | 'tutorial'
+type MarketKey = 'hdp' | 'o-u' | '1x2' | 'corners' | 'odd-even' | 'correct-score' | 'outright'
+type BetOutcome = 'WIN' | 'LOSE' | 'PUSH'
+
+const props = withDefaults(defineProps<{
+  mode?: TutorialMode
+}>(), {
+  mode: 'mock-betting',
+})
+
+interface BetChoice {
+  id: string
+  label: string
+  selection: string
+  odds: string
+  outcome: BetOutcome
+  explanation: string
+}
+
+interface TutorialLesson {
+  title: string
+  summary: string
+  rules: Array<{
+    title: string
+    body: string
+  }>
+  example: string
+}
+
+interface MarketDefinition {
+  key: MarketKey
+  label: string
+  panelTitle: string
+  choices: BetChoice[]
+  lesson: TutorialLesson
+}
+
+type TutorialOutcomeStatus = 'win' | 'lose' | 'refund' | 'win-half' | 'lose-half'
+type TutorialOptionTone = 'home' | 'draw' | 'away'
+
+interface TutorialVisualOption {
+  label: string
+  value?: string
+  status: TutorialOutcomeStatus
+  tone: TutorialOptionTone
+}
+
+interface TutorialScenario {
+  score: string
+  description: string
+  subtitle?: string
+  image?: string
+  options: TutorialVisualOption[]
+}
+
+interface TutorialGroup {
+  title: string
+  scenarios: TutorialScenario[]
+}
+
+interface TutorialDefinition {
+  intro?: string
+  title?: string
+  groups?: TutorialGroup[]
+  scenarios?: TutorialScenario[]
+}
+
+const choice = (
+  id: string,
+  label: string,
+  selection: string,
+  odds: string,
+  outcome: BetOutcome,
+  explanation: string,
+): BetChoice => ({ id, label, selection, odds, outcome, explanation })
+
+const tutorialOption = (
+  label: string,
+  value: string | undefined,
+  status: TutorialOutcomeStatus,
+  tone: TutorialOptionTone,
+): TutorialVisualOption => ({ label, value, status, tone })
+
+const markets: MarketDefinition[] = [
+  {
+    key: 'hdp',
+    label: 'HDP',
+    panelTitle: 'HDP',
+    choices: [
+      choice('barcelona-0', '0', 'Barcelona 0', '1.98', 'WIN', 'When the handicap is 0, betting on the winning team will result in a win. For example, bets on Barcelona (0) win when Barcelona wins.'),
+      choice('madrid-0', '0', 'Real Madrid 0', '1.98', 'LOSE', 'The handicap is 0, so the selection follows the match result. Real Madrid lost 0–2, so this selection loses.'),
+      choice('barcelona-025', '−0/0.5', 'Barcelona −0/0.5', '1.98', 'WIN', 'Barcelona won the match, so the split handicap of 0 and −0.5 is settled as a full win.'),
+      choice('madrid-025', '+0/0.5', 'Real Madrid +0/0.5', '1.98', 'LOSE', 'Real Madrid lost by two goals, so the quarter-goal head start does not cover the final margin.'),
+      choice('barcelona-1', '−1', 'Barcelona −1', '1.98', 'WIN', 'Barcelona won by two goals. After applying the −1 handicap, Barcelona still leads by one goal.'),
+      choice('madrid-1', '+1', 'Real Madrid +1', '1.98', 'LOSE', 'Adding one goal to Real Madrid changes the handicap score to 2–1, which is still a Barcelona win.'),
+      choice('barcelona-175', '−1.5/2', 'Barcelona −1.5/2', '1.98', 'WIN', 'A two-goal Barcelona victory fully wins the −1.5 half and pushes the −2 half.'),
+      choice('madrid-175', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE', 'The two-goal defeat does not fully cover this split positive handicap.'),
+    ],
+    lesson: {
+      title: 'Asian Handicap (HDP)',
+      summary: 'A handicap gives one team a virtual head start or deficit before the result is settled, removing the draw from most lines.',
+      rules: [
+        { title: 'Minus handicap', body: 'The favored team must win by more than the handicap for the wager to win.' },
+        { title: 'Plus handicap', body: 'The underdog receives a virtual goal advantage before the scores are compared.' },
+        { title: 'Quarter lines', body: 'Lines such as 0/0.5 split the stake equally across the two neighboring handicap lines.' },
+      ],
+      example: 'Barcelona wins 2–0. Barcelona −1 is a win because the adjusted score is 1–0; Barcelona −2 is a push.',
+    },
+  },
+  {
+    key: 'o-u',
+    label: 'O/U',
+    panelTitle: 'O/U',
+    choices: [
+      choice('over-15', 'Over 1.5', 'Over 1.5', '1.98', 'WIN', 'Two goals were scored. Because 2 is greater than 1.5, the Over selection wins.'),
+      choice('under-15', 'Under 1.5', 'Under 1.5', '1.98', 'LOSE', 'The match produced two goals, which is above the 1.5 line.'),
+      choice('over-175', 'Over 1.5/2', 'Over 1.5/2', '1.98', 'WIN', 'The stake is split between Over 1.5 and Over 2. The first half wins and the second half pushes.'),
+      choice('under-175', 'Under 1.5/2', 'Under 1.5/2', '1.98', 'LOSE', 'At exactly two goals, half the selection loses and half is refunded.'),
+      choice('over-2', 'Over 2', 'Over 2', '1.98', 'PUSH', 'The total finished exactly on the line at two goals, so the stake is refunded.'),
+      choice('under-2', 'Under 2', 'Under 2', '1.98', 'PUSH', 'The total finished exactly on the line at two goals, so the stake is refunded.'),
+      choice('over-225', 'Over 2/2.5', 'Over 2/2.5', '1.98', 'LOSE', 'Two goals do not clear either part of the 2/2.5 split line.'),
+      choice('under-225', 'Under 2/2.5', 'Under 2/2.5', '1.98', 'WIN', 'Two goals push the Under 2 half and win the Under 2.5 half.'),
+    ],
+    lesson: {
+      title: 'Over / Under (O/U)',
+      summary: 'Predict whether the combined score of both teams will finish above or below a posted total.',
+      rules: [
+        { title: 'Over', body: 'Wins when the final combined score is greater than the listed line.' },
+        { title: 'Under', body: 'Wins when the final combined score is lower than the listed line.' },
+        { title: 'Whole lines', body: 'When the total equals a whole-number line, the wager is a push and the stake is returned.' },
+      ],
+      example: 'A 2–0 result has two total goals. Over 1.5 wins, Under 2.5 wins, and a wager on exactly Over or Under 2 pushes.',
+    },
+  },
+  {
+    key: '1x2',
+    label: '1X2',
+    panelTitle: '1X2',
+    choices: [
+      choice('home-win', '1  Barcelona', 'Barcelona (1)', '1.98', 'WIN', 'Barcelona is the home team and won 2–0, so the Home Win (1) selection wins.'),
+      choice('draw', 'X  Draw', 'Draw (X)', '3.20', 'LOSE', 'The match did not finish level, so the Draw selection loses.'),
+      choice('away-win', '2  Real Madrid', 'Real Madrid (2)', '3.80', 'LOSE', 'Real Madrid is the away team and lost the match, so Away Win (2) loses.'),
+    ],
+    lesson: {
+      title: '1X2 Match Result',
+      summary: 'Choose one of three regulation-time outcomes: home win, draw, or away win.',
+      rules: [
+        { title: '1 — Home', body: 'The home team must lead when regulation time and stoppage time end.' },
+        { title: 'X — Draw', body: 'Both teams must have the same score at the end of regulation.' },
+        { title: '2 — Away', body: 'The away team must win within regulation time; extra time does not count.' },
+      ],
+      example: 'Barcelona is listed at home and wins 2–0, so 1 wins while X and 2 lose.',
+    },
+  },
+  {
+    key: 'corners',
+    label: 'Corners',
+    panelTitle: 'Corners',
+    choices: [
+      choice('corners-over-75', 'Over 7.5', 'Corners Over 7.5', '1.98', 'WIN', 'The example match finishes with nine corners, so Over 7.5 wins.'),
+      choice('corners-under-75', 'Under 7.5', 'Corners Under 7.5', '1.98', 'LOSE', 'Nine corners were taken, exceeding the 7.5 line.'),
+      choice('corners-over-85', 'Over 8.5', 'Corners Over 8.5', '1.98', 'WIN', 'Nine total corners are enough for Over 8.5 to win.'),
+      choice('corners-under-85', 'Under 8.5', 'Corners Under 8.5', '1.98', 'LOSE', 'Nine total corners are above the 8.5 line.'),
+      choice('corners-over-9', 'Over 9', 'Corners Over 9', '1.98', 'PUSH', 'The example total lands exactly on nine, so the stake is refunded.'),
+      choice('corners-under-9', 'Under 9', 'Corners Under 9', '1.98', 'PUSH', 'The example total lands exactly on nine, so the stake is refunded.'),
+      choice('barca-corners', 'Barcelona −1', 'Barcelona Corners −1', '1.98', 'WIN', 'Barcelona takes two more corners, covering the −1 corner handicap.'),
+      choice('madrid-corners', 'Real Madrid +1', 'Real Madrid Corners +1', '1.98', 'LOSE', 'The one-corner allowance is not enough to cover a two-corner deficit.'),
+    ],
+    lesson: {
+      title: 'Corner Betting',
+      summary: 'Corner markets are settled using awarded corner kicks rather than goals or the match winner.',
+      rules: [
+        { title: 'Total corners', body: 'Add the corners taken by both teams and compare the total with the selected line.' },
+        { title: 'Corner handicap', body: 'Apply the posted corner advantage or deficit before comparing each team.' },
+        { title: 'Settlement', body: 'Only corners awarded during the stated match period are counted.' },
+      ],
+      example: 'If Barcelona has six corners and Real Madrid has three, the total is nine and Barcelona −1 corners wins.',
+    },
+  },
+  {
+    key: 'odd-even',
+    label: 'Odd / Even',
+    panelTitle: 'Odd / Even',
+    choices: [
+      choice('odd', 'Odd', 'Total Goals — Odd', '1.98', 'LOSE', 'The final total is two goals. Two is an even number, so Odd loses.'),
+      choice('even', 'Even', 'Total Goals — Even', '1.98', 'WIN', 'The final total is two goals. Two is even, so this selection wins.'),
+    ],
+    lesson: {
+      title: 'Odd / Even',
+      summary: 'Predict whether the combined final score will be an odd or even number.',
+      rules: [
+        { title: 'Odd totals', body: 'Totals such as 1, 3, 5, and 7 settle as Odd.' },
+        { title: 'Even totals', body: 'Totals such as 0, 2, 4, and 6 settle as Even.' },
+        { title: 'Zero rule', body: 'A 0–0 match has a total of zero, which is classified as Even.' },
+      ],
+      example: 'Barcelona 2–0 Real Madrid produces two total goals, so Even wins.',
+    },
+  },
+  {
+    key: 'correct-score',
+    label: 'Correct Score',
+    panelTitle: 'Correct Score',
+    choices: [
+      choice('score-20', '2–0', 'Barcelona 2–0', '8.50', 'WIN', 'The predicted score exactly matches the 2–0 result, so the selection wins.'),
+      choice('score-21', '2–1', 'Barcelona 2–1', '7.50', 'LOSE', 'Real Madrid did not score, so the 2–1 prediction loses.'),
+      choice('score-10', '1–0', 'Barcelona 1–0', '6.80', 'LOSE', 'Barcelona scored twice rather than once, so the exact-score selection loses.'),
+      choice('score-11', '1–1', 'Draw 1–1', '7.20', 'LOSE', 'The match did not finish level, so the 1–1 selection loses.'),
+      choice('score-30', '3–0', 'Barcelona 3–0', '11.0', 'LOSE', 'Barcelona scored two goals, not three, so the selection loses.'),
+      choice('score-12', '1–2', 'Real Madrid 2–1', '12.0', 'LOSE', 'Real Madrid did not win 2–1, so the prediction loses.'),
+      choice('score-00', '0–0', 'Draw 0–0', '10.0', 'LOSE', 'Two goals were scored, so the goalless draw selection loses.'),
+      choice('score-other', 'Any Other Score', 'Any Other Score', '13.0', 'LOSE', 'The 2–0 score is listed separately, so it is not settled under Any Other Score.'),
+    ],
+    lesson: {
+      title: 'Correct Score',
+      summary: 'Predict the exact score at the end of regulation time for higher potential odds.',
+      rules: [
+        { title: 'Exact result', body: 'Both teams’ goal totals must match the chosen score exactly.' },
+        { title: 'Regulation only', body: 'Extra time and penalty shootouts are excluded unless the market explicitly says otherwise.' },
+        { title: 'Any other score', body: 'This covers scorelines not listed as individual selections in the market.' },
+      ],
+      example: 'A Barcelona 2–0 selection only wins if the match ends exactly 2–0 after regulation time.',
+    },
+  },
+  {
+    key: 'outright',
+    label: 'Outright',
+    panelTitle: 'Outright',
+    choices: [
+      choice('real-madrid-outright', 'Real Madrid', 'Real Madrid', '13.0', 'WIN', 'Real Madrid wins the championship, so bets on Real Madrid win.'),
+      choice('barcelona-outright', 'Barcelona', 'Barcelona', '13.0', 'LOSE', 'Barcelona finishes as runner-up, so the outright selection loses.'),
+      choice('atletico-outright', 'Atletico Madrid', 'Atletico Madrid', '13.0', 'LOSE', 'Atletico Madrid finishes third and does not win the championship.'),
+      choice('villarreal-outright', 'Villarreal', 'Villarreal', '13.0', 'LOSE', 'Villarreal does not win the championship, so the outright selection loses.'),
+    ],
+    lesson: {
+      title: 'Outright Betting',
+      summary: 'Choose the eventual winner of a league, tournament, or season rather than the result of one match.',
+      rules: [
+        { title: 'Long-term market', body: 'The wager remains open until the named competition is officially decided.' },
+        { title: 'All-in principle', body: 'Selections may lose if a team withdraws unless the market rules state that stakes are void.' },
+        { title: 'Dead heat', body: 'When winners tie, the stake can be divided by the number of tied winners before odds are applied.' },
+      ],
+      example: 'Real Madrid is declared Spanish LaLiga champion, so the Real Madrid outright selection wins regardless of individual match results.',
+    },
+  },
+]
+
+const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
+  hdp: {
+    intro: 'In-play – The result of the handicap is based on the goal difference of the bet after the bet is placed. For example, if the score is 1-0 when placing the bet, and the final score is 2-1, then the result of the in-play to handicap is 1-1.',
+    groups: [
+      {
+        title: 'Handicap 0',
+        scenarios: [
+          {
+            score: '1-0',
+            description: 'Home and away are well matched in strength. There is no handicap, and bets on the winning team win.',
+            options: [
+              tutorialOption('Home', '0', 'win', 'home'),
+              tutorialOption('Away', '0', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '1-1',
+            description: 'If the result is a draw, the bet amount will be refunded.',
+            options: [
+              tutorialOption('Home', '0', 'refund', 'home'),
+              tutorialOption('Away', '0', 'refund', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 0/0.5',
+        scenarios: [
+          {
+            score: '1-0',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '−0/−0.5', 'win', 'home'),
+              tutorialOption('Away', '+0/+0.5', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '0-0',
+            description: 'Draw. Bets on the giver of the handicap lose half; bets on the recipient win half.',
+            options: [
+              tutorialOption('Home', '−0/−0.5', 'lose-half', 'home'),
+              tutorialOption('Away', '+0/+0.5', 'win-half', 'away'),
+            ],
+          },
+          {
+            score: '0-1',
+            description: 'The giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '−0/−0.5', 'lose', 'home'),
+              tutorialOption('Away', '+0/+0.5', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 0.5',
+        scenarios: [
+          {
+            score: '1-0',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '+0.5', 'win', 'home'),
+              tutorialOption('Away', '−0.5', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '0-0',
+            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+0.5', 'lose', 'home'),
+              tutorialOption('Away', '−0.5', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 0.5/1',
+        scenarios: [
+          {
+            score: '2-0',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '+0.5/1', 'win', 'home'),
+              tutorialOption('Away', '−0.5/1', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '1-0',
+            description: 'The giver wins by 1 goal. Bets on the giver win half; bets on the recipient lose half.',
+            options: [
+              tutorialOption('Home', '+0.5/1', 'win-half', 'home'),
+              tutorialOption('Away', '−0.5/1', 'lose-half', 'away'),
+            ],
+          },
+          {
+            score: '0-0',
+            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+0.5/1', 'lose', 'home'),
+              tutorialOption('Away', '−0.5/1', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 1',
+        scenarios: [
+          {
+            score: '2-0',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '+1', 'win', 'home'),
+              tutorialOption('Away', '−1', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '1-0',
+            description: 'The giver of the handicap wins by 1 goal. Bets on home and away will be refunded.',
+            options: [
+              tutorialOption('Home', '+1', 'refund', 'home'),
+              tutorialOption('Away', '−1', 'refund', 'away'),
+            ],
+          },
+          {
+            score: '0-0',
+            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+1', 'lose', 'home'),
+              tutorialOption('Away', '−1', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 1/1.5',
+        scenarios: [
+          {
+            score: '2-0',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '+1/1.5', 'win', 'home'),
+              tutorialOption('Away', '−1/1.5', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '1-0',
+            description: 'The giver wins by 1 goal. Bets on the giver lose half; bets on the recipient win half.',
+            options: [
+              tutorialOption('Home', '+1/1.5', 'lose-half', 'home'),
+              tutorialOption('Away', '−1/1.5', 'win-half', 'away'),
+            ],
+          },
+          {
+            score: '0-0',
+            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+1/1.5', 'lose', 'home'),
+              tutorialOption('Away', '−1/1.5', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 1.5',
+        scenarios: [
+          {
+            score: '2-0',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '+1.5', 'win', 'home'),
+              tutorialOption('Away', '−1.5', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '1-0',
+            description: 'The giver wins by only 1 goal. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+1.5', 'lose', 'home'),
+              tutorialOption('Away', '−1.5', 'win', 'away'),
+            ],
+          },
+          {
+            score: '0-0',
+            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+1.5', 'lose', 'home'),
+              tutorialOption('Away', '−1.5', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Handicap 1.5/2',
+        scenarios: [
+          {
+            score: '3-0',
+            description: 'The giver of the handicap wins by 3 or more goals. Bets on the giver win; bets on the recipient lose.',
+            options: [
+              tutorialOption('Home', '+1.5/2', 'win', 'home'),
+              tutorialOption('Away', '−1.5/2', 'lose', 'away'),
+            ],
+          },
+          {
+            score: '2-0',
+            description: 'The handicap team wins by 2 goals. Half wins on the giver; half loses on the recipient.',
+            options: [
+              tutorialOption('Home', '+1.5/2', 'win-half', 'home'),
+              tutorialOption('Away', '−1.5/2', 'lose-half', 'away'),
+            ],
+          },
+          {
+            score: '1-0',
+            description: 'The giver wins by only 1 goal. Bets on the giver lose; bets on the recipient win.',
+            options: [
+              tutorialOption('Home', '+1.5/2', 'lose', 'home'),
+              tutorialOption('Away', '−1.5/2', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  'o-u': {
+    title: 'Over/Under',
+    scenarios: [
+      {
+        score: '1-1',
+        description: 'If total number of goals is greater than the selected item, all bets on Over win, all bets on Under lose.',
+        options: [
+          tutorialOption('Over', 'O 1.5', 'win', 'home'),
+          tutorialOption('Under', 'U 1.5', 'lose', 'away'),
+        ],
+      },
+      {
+        score: '1-1',
+        description: 'If total number of goals exceed half of the selected item, then half-win for Over, half loss for Under.',
+        options: [
+          tutorialOption('Over', 'O 1.5/2', 'win-half', 'home'),
+          tutorialOption('Under', 'U 1.5/2', 'lose-half', 'away'),
+        ],
+      },
+      {
+        score: '1-1',
+        description: 'If total number of goals are equal to the selected item, the bet will be refunded (draw).',
+        options: [
+          tutorialOption('Over', 'O 2', 'refund', 'home'),
+          tutorialOption('Under', 'U 2', 'refund', 'away'),
+        ],
+      },
+    ],
+  },
+  '1x2': {
+    title: 'Win/Draw/Lose',
+    scenarios: [
+      {
+        score: '1-0',
+        description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        options: [
+          tutorialOption('Home', undefined, 'win', 'home'),
+          tutorialOption('Draw', undefined, 'lose', 'draw'),
+          tutorialOption('Away', undefined, 'lose', 'away'),
+        ],
+      },
+      {
+        score: '1-1',
+        description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        options: [
+          tutorialOption('Home', undefined, 'lose', 'home'),
+          tutorialOption('Draw', undefined, 'win', 'draw'),
+          tutorialOption('Away', undefined, 'lose', 'away'),
+        ],
+      },
+      {
+        score: '0-1',
+        description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        options: [
+          tutorialOption('Home', undefined, 'lose', 'home'),
+          tutorialOption('Draw', undefined, 'lose', 'draw'),
+          tutorialOption('Away', undefined, 'win', 'away'),
+        ],
+      },
+    ],
+  },
+  corners: {
+    intro: 'Winning is determined by the total number of corners taken by the home and away teams.',
+    groups: [
+      {
+        title: 'Corners Handicap',
+        scenarios: [
+          {
+            score: '7-5',
+            subtitle: 'Corner Kick Results',
+            description: '',
+            options: [
+              tutorialOption('Home', '−1.5', 'win', 'home'),
+              tutorialOption('Away', '+1.5', 'lose', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Corners Over/Under',
+        scenarios: [
+          {
+            score: '7-5',
+            subtitle: 'Corner Kick Results',
+            description: '',
+            options: [
+              tutorialOption('Over', 'O11.5', 'win', 'home'),
+              tutorialOption('Under', 'U11.5', 'lose', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Corners 1X2',
+        scenarios: [
+          {
+            score: '7-5',
+            subtitle: 'Corner Kick Results',
+            description: '',
+            options: [
+              tutorialOption('Home', undefined, 'win', 'home'),
+              tutorialOption('Draw', undefined, 'lose', 'draw'),
+              tutorialOption('Away', undefined, 'lose', 'away'),
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Corners Odd/Even',
+        scenarios: [
+          {
+            score: '7-5',
+            subtitle: 'Corner Kick Results',
+            description: '',
+            options: [
+              tutorialOption('Odd', 'O', 'lose', 'home'),
+              tutorialOption('Even', 'U', 'win', 'away'),
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  'odd-even': {
+    title: 'Odd/Even',
+    scenarios: [
+      {
+        score: '1-0',
+        description: 'If total number of goals are odd, bets on Odd wins, bets on Even loses.',
+        options: [
+          tutorialOption('Odd', 'O', 'win', 'home'),
+          tutorialOption('Even', 'U', 'lose', 'away'),
+        ],
+      },
+      {
+        score: '0-0',
+        description: 'If total number of goals are even, bets on Odd loses, bets on Even wins (0–0 is even).',
+        options: [
+          tutorialOption('Odd', 'O', 'lose', 'home'),
+          tutorialOption('Even', 'U', 'win', 'away'),
+        ],
+      },
+    ],
+  },
+  'correct-score': {
+    title: 'Match Result',
+    scenarios: [
+      {
+        score: '1-0',
+        description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        options: [
+          tutorialOption('1-0', undefined, 'win', 'home'),
+          tutorialOption('0-0', undefined, 'lose', 'draw'),
+          tutorialOption('0-1', undefined, 'lose', 'away'),
+        ],
+      },
+      {
+        score: '1-0',
+        description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        options: [
+          tutorialOption('2-0', undefined, 'lose', 'home'),
+          tutorialOption('1-1', undefined, 'lose', 'draw'),
+          tutorialOption('0-2', undefined, 'lose', 'away'),
+        ],
+      },
+      {
+        score: '1-0',
+        description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        options: [
+          tutorialOption('2-1', undefined, 'lose', 'home'),
+          tutorialOption('Others', undefined, 'lose', 'draw'),
+          tutorialOption('1-2', undefined, 'lose', 'away'),
+        ],
+      },
+    ],
+  },
+  outright: {
+    title: 'Tournament Winner',
+    scenarios: [
+      {
+        score: 'Real Madrid wins',
+        description: 'Spanish La Liga If the bet is on the team that wins the championship, it will be a win, and the rest will be deemed as loss.',
+        options: [
+          tutorialOption('Real Madrid', undefined, 'win', 'home'),
+          tutorialOption('Others', undefined, 'lose', 'away'),
+        ],
+      },
+    ],
+  },
+}
+
+const activeMode = computed(() => props.mode)
+const activeMarketKey = ref<MarketKey>('hdp')
+const selectedChoiceId = ref<string | null>(null)
+
+const activeMarket = computed(() => markets.find(market => market.key === activeMarketKey.value) ?? markets[0]!)
+const activeTutorial = computed(() => tutorialDefinitions[activeMarketKey.value])
+const selectedChoice = computed(() => activeMarket.value.choices.find(item => item.id === selectedChoiceId.value) ?? null)
+const isOutright = computed(() => activeMarketKey.value === 'outright')
+
+const selectMarket = (market: MarketKey): void => {
+  activeMarketKey.value = market
+  selectedChoiceId.value = null
+}
+
+const selectChoice = (id: string): void => {
+  selectedChoiceId.value = id
+}
+</script>
+
+<template>
+  <section
+    class="game-tutorial-page"
+    :class="{ 'game-tutorial-page--lesson': activeMode === 'tutorial' }"
+  >
+    <nav class="game-mode-toolbar" aria-label="Game tutorial mode">
+      <NuxtLink class="game-back" to="/explore/account/me" aria-label="Back to account settings">
+        <ChevronLeft :size="18" :stroke-width="2.5" />
+      </NuxtLink>
+
+      <NuxtLink
+        to="/tutorial/mock-betting"
+        class="game-mode-tab"
+        :class="{ 'game-mode-tab--active': activeMode === 'mock-betting' }"
+        :aria-current="activeMode === 'mock-betting' ? 'page' : undefined"
+      >
+        Mock Betting
+      </NuxtLink>
+      <NuxtLink
+        to="/tutorial"
+        class="game-mode-tab"
+        :class="{ 'game-mode-tab--active': activeMode === 'tutorial' }"
+        :aria-current="activeMode === 'tutorial' ? 'page' : undefined"
+      >
+        Tutorial
+      </NuxtLink>
+    </nav>
+
+    <nav class="market-tabs" aria-label="Betting markets">
+      <button
+        v-for="market in markets"
+        :key="market.key"
+        type="button"
+        class="market-tab"
+        :class="{ 'market-tab--active': activeMarketKey === market.key }"
+        :aria-pressed="activeMarketKey === market.key"
+        @click="selectMarket(market.key)"
+      >
+        {{ market.label }}
+      </button>
+    </nav>
+
+    <div v-if="activeMode === 'mock-betting'" class="mock-betting-content">
+      <div v-if="!isOutright" class="match-banner">
+        <div class="match-team match-team--home">
+          <div class="match-name">
+            <strong>Barcelona</strong>
+            <span>2</span>
+          </div>
+          <img src="/tutorial-assets/barcelona-crest.svg" alt="Barcelona crest">
+        </div>
+
+        <div class="match-score">
+          <strong>2 - 0</strong>
+          <div>
+            <span><CircleDot :size="11" /> 0–0</span>
+            <span><Flag :size="11" /> 0–0</span>
+          </div>
+        </div>
+
+        <div class="match-team match-team--away">
+          <div class="match-name">
+            <span>2</span>
+            <strong>Real Madrid</strong>
+          </div>
+          <img src="/tutorial-assets/real-madrid-crest.svg" alt="Real Madrid crest">
+        </div>
+      </div>
+
+      <div class="market-panel" :class="{ 'market-panel--outright': isOutright }">
+        <div v-if="isOutright" class="outright-heading">
+          <h1>Spanish LaLiga</h1>
+          <p>Real Madrid wins the championship, Barcelona is the runner-up, and Atletico Madrid is third place</p>
+        </div>
+
+        <h1 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h1>
+        <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
+
+        <div class="choice-grid" :class="{ 'choice-grid--short': activeMarket.choices.length < 4 }">
+          <button
+            v-for="item in activeMarket.choices"
+            :key="item.id"
+            type="button"
+            class="bet-choice"
+            :class="{ 'bet-choice--selected': selectedChoiceId === item.id }"
+            :aria-pressed="selectedChoiceId === item.id"
+            @click="selectChoice(item.id)"
+          >
+            <span>{{ item.label }}</span>
+            <strong>{{ item.odds }}</strong>
+          </button>
+        </div>
+      </div>
+
+      <Transition name="result-card">
+        <article v-if="selectedChoice" class="betting-result" aria-live="polite">
+          <div class="betting-result-copy">
+            <h2>Betting Result</h2>
+            <p>{{ selectedChoice.selection }} @{{ selectedChoice.odds }}</p>
+          </div>
+          <div class="result-stamp" :class="`result-stamp--${selectedChoice.outcome.toLowerCase()}`">
+            <img
+              v-if="selectedChoice.outcome === 'WIN'"
+              src="/tutorial-assets/result-stamp-win.webp"
+              alt="WIN"
+              class="result-stamp-img"
+              width="44"
+              height="44"
+            />
+            <img
+              v-else-if="selectedChoice.outcome === 'LOSE'"
+              src="/tutorial-assets/result-stamp-lose.webp"
+              alt="LOSE"
+              class="result-stamp-img"
+              width="44"
+              height="44"
+            />
+            <span v-else>{{ selectedChoice.outcome }}</span>
+          </div>
+          <p class="result-explanation">{{ selectedChoice.explanation }}</p>
+        </article>
+      </Transition>
+    </div>
+
+    <div v-else class="tutorial-content">
+      <p v-if="activeTutorial.intro" class="tutorial-intro">
+        {{ activeTutorial.intro }}
+      </p>
+
+      <h1 v-if="activeTutorial.title" class="tutorial-section-title">
+        {{ activeTutorial.title }}
+      </h1>
+
+      <div v-if="activeTutorial.scenarios" class="tutorial-card-grid">
+        <TutorialScenarioCard
+          v-for="(scenario, index) in activeTutorial.scenarios"
+          :key="`${activeMarketKey}-${index}`"
+          :scenario="scenario"
+        />
+      </div>
+
+      <div v-else class="tutorial-group-grid">
+        <section
+          v-for="group in activeTutorial.groups"
+          :key="group.title"
+          class="tutorial-group"
+        >
+          <h2>{{ group.title }}</h2>
+          <div class="tutorial-group-cards">
+            <TutorialScenarioCard
+              v-for="(scenario, index) in group.scenarios"
+              :key="`${group.title}-${index}`"
+              :scenario="scenario"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="tutorial-responsible">
+      <div class="tutorial-responsible-logos" aria-label="Responsible gaming partners">
+        <img src="/responsible-gaming/pagcor.png" alt="PAGCOR">
+        <img src="/responsible-gaming/age-restriction.png" alt="Gambling can be addictive. Know when to stop. 21 and above.">
+      </div>
+
+      <div v-if="activeMode === 'tutorial'" class="tutorial-compliance-copy">
+        <p>
+          <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer">WWW.PAGCOR.PH/REGULATORY</a>
+          <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
+        </p>
+        <strong>GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.</strong>
+        <img src="/responsible-gaming/support-hotline.png" alt="Responsible gaming support hotline">
+      </div>
+    </footer>
+  </section>
+</template>
+
+<style scoped>
+.game-tutorial-page {
+  display: flex;
+  width: min(100%, 1170px);
+  min-height: calc(100vh - var(--header-height) + 12px);
+  flex-direction: column;
+  margin: -12px auto 0;
+  color: #f4f4f4;
+}
+
+.game-tutorial-page--lesson {
+  min-height: calc(100vh - var(--header-height) + 172px);
+}
+
+.game-mode-toolbar,
+.market-tabs {
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  background: #1c1d1c;
+}
+
+.game-mode-toolbar {
+  position: sticky;
+  z-index: 60;
+  top: calc(var(--header-height) - 12px);
+  min-height: 44px;
+  padding: 6px 14px;
+  background: linear-gradient(180deg, rgba(37, 43, 41, 0.98), rgba(22, 24, 23, 0.99));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+  gap: 8px;
+}
+
+.game-back {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  margin-right: 4px;
+  border-radius: 50%;
+  color: #00a474;
+  background: #111514;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.game-back:hover {
+  color: #35d5a0;
+  background: #0a0e0d;
+}
+
+.game-mode-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 128px;
+  height: 32px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 8px;
+  color: #f3f3f3;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  background: #6c6d6c;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.game-mode-tab:hover {
+  background: #7b7c7b;
+}
+
+.game-mode-tab--active,
+.game-mode-tab--active:hover {
+  background: #007653;
+}
+
+.market-tabs {
+  position: sticky;
+  z-index: 59;
+  top: calc(var(--header-height) + 40px);
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 6px 9px;
+  overflow-x: auto;
+  border-radius: 11px;
+  gap: 10px;
+  scrollbar-width: none;
+}
+
+.market-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.market-tab {
+  height: 28px;
+  flex: 0 0 auto;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 16px;
+  color: #ececec;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: transparent;
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.market-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.market-tab--active,
+.market-tab--active:hover {
+  color: white;
+  font-weight: 700;
+  background: #007653;
+}
+
+.mock-betting-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.match-banner {
+  display: grid;
+  position: relative;
+  min-height: 116px;
+  overflow: hidden;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 14px 13px;
+  border-radius: 13px;
+  background:
+    linear-gradient(90deg, rgba(8, 63, 45, 0.72), rgba(21, 67, 53, 0.48) 50%, rgba(8, 63, 45, 0.72)),
+    url('/tutorial-assets/mock-betting-background.webp') center / cover no-repeat;
+  box-shadow: inset 0 0 30px rgba(0, 35, 25, 0.18);
+}
+
+.match-team {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  justify-content: space-between;
+}
+
+.match-team--away {
+  align-items: flex-end;
+}
+
+.match-name {
+  display: flex;
+  align-items: center;
+  color: #f5f5f5;
+  font-size: 14px;
+  gap: 3px;
+}
+
+.match-name strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-name span {
+  display: inline-grid;
+  min-width: 9px;
+  height: 13px;
+  place-items: center;
+  border-radius: 1px;
+  color: #312900;
+  font-size: 9px;
+  font-weight: 800;
+  background: #ffd300;
+}
+
+.match-team img {
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+}
+
+.match-score {
+  display: flex;
+  align-self: start;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.match-score > strong {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.match-score > div {
+  display: flex;
+  margin-top: 8px;
+  color: #d8dedb;
+  font-size: 11px;
+  gap: 8px;
+}
+
+.match-score span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.market-panel,
+.betting-result {
+  border-radius: 13px;
+  background: #141414;
+}
+
+.market-panel {
+  padding: 11px 9px 8px;
+}
+
+.market-panel--outright {
+  padding-top: 9px;
+}
+
+.market-panel-title {
+  margin: 0 0 9px;
+  color: #969696;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.market-panel--outright .market-panel-title {
+  margin-top: 9px;
+  color: #f2f2f2;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.outright-heading h1 {
+  margin: 0 0 2px;
+  color: #f4f4f4;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.outright-heading p {
+  margin: 0;
+  color: #eeeeee;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 8px;
+}
+
+.bet-choice {
+  display: flex;
+  min-width: 0;
+  height: 39px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #939393;
+  font-size: 14px;
+  text-align: left;
+  background: #000;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+  gap: 12px;
+}
+
+.bet-choice:hover {
+  border-color: rgba(0, 166, 116, 0.45);
+  color: #dedede;
+}
+
+.bet-choice strong {
+  flex: 0 0 auto;
+  color: #f1f1f1;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.bet-choice--selected,
+.bet-choice--selected:hover {
+  border-color: #007d5b;
+  color: #eeeeee;
+  background: #0c1d17;
+}
+
+.betting-result {
+  display: grid;
+  position: relative;
+  min-height: 111px;
+  grid-template-columns: 1fr auto;
+  padding: 15px 13px 10px;
+}
+
+.betting-result-copy h2 {
+  margin: 0 0 1px;
+  color: #f4f4f4;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.betting-result-copy p {
+  margin: 0;
+  color: #f0f0f0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.result-stamp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  align-self: start;
+  flex-shrink: 0;
+}
+
+.result-stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+}
+
+.result-stamp--win {
+  color: #7ca800;
+}
+
+.result-stamp--lose {
+  color: #d74d43;
+}
+
+.result-stamp--push {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 3px double currentColor;
+  border-radius: 50%;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  transform: rotate(12deg);
+  color: #d3a33a;
+  background: rgba(211, 163, 58, 0.08);
+}
+
+.result-explanation {
+  grid-column: 1 / -1;
+  margin: 9px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid #4a4a4a;
+  color: #eeeeee;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.result-card-enter-active,
+.result-card-leave-active {
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.result-card-enter-from,
+.result-card-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.tutorial-content {
+  margin-top: 8px;
+}
+
+.tutorial-intro {
+  margin: 0 0 12px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  color: #eeeeee;
+  font-size: 12px;
+  line-height: 1.45;
+  background: #141414;
+}
+
+.tutorial-section-title,
+.tutorial-group h2 {
+  color: #f4f4f4;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tutorial-section-title {
+  margin: 15px 4px 12px;
+}
+
+.tutorial-card-grid,
+.tutorial-group-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tutorial-group-grid {
+  align-items: start;
+  row-gap: 16px;
+}
+
+.tutorial-group {
+  min-width: 0;
+}
+
+.tutorial-group h2 {
+  margin: 0 4px 8px;
+}
+
+.tutorial-group-cards {
+  display: grid;
+  gap: 8px;
+}
+
+.tutorial-responsible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+}
+
+.tutorial-responsible-logos {
+  display: flex;
+  min-height: 104px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px 0 0;
+  gap: 25px;
+}
+
+.tutorial-responsible-logos img:first-child {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+.tutorial-responsible-logos img:last-child {
+  width: 184px;
+  height: 47px;
+  border-radius: 11px;
+  object-fit: cover;
+  image-rendering: auto;
+}
+
+.tutorial-compliance-copy {
+  display: flex;
+  width: min(100%, 420px);
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px 28px;
+  text-align: center;
+}
+
+.tutorial-compliance-copy p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+  gap: 5px 12px;
+}
+
+.tutorial-compliance-copy a {
+  color: #c61c27;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.tutorial-compliance-copy strong {
+  max-width: 330px;
+  margin-top: 12px;
+  color: #1849a4;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.tutorial-compliance-copy img {
+  width: 129px;
+  height: auto;
+  margin-top: 13px;
+  object-fit: contain;
+}
+
+@media (max-width: 64rem) {
+  .game-tutorial-page {
+    min-height: calc(100vh - var(--header-height) - 8px);
+    margin-top: 0;
+  }
+
+  .game-tutorial-page--lesson {
+    min-height: calc(100vh - var(--header-height) + 152px);
+  }
+
+  .game-mode-toolbar {
+    top: calc(var(--header-height) + 6px);
+  }
+
+  .market-tabs {
+    top: calc(var(--header-height) + 58px);
+  }
+}
+
+@media (max-width: 46rem) {
+  .game-mode-toolbar {
+    padding-inline: 9px;
+  }
+
+  .game-mode-tab {
+    min-width: 0;
+    flex: 1;
+    padding-inline: 10px;
+    font-size: 13px;
+  }
+
+  .market-tabs {
+    justify-content: flex-start;
+  }
+
+  .match-banner {
+    min-height: 124px;
+    padding-inline: 10px;
+  }
+
+  .match-name {
+    max-width: 105px;
+    font-size: 12px;
+  }
+
+  .match-score > strong {
+    font-size: 18px;
+  }
+
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bet-choice {
+    height: 42px;
+  }
+
+  .tutorial-card-grid,
+  .tutorial-group-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-group-grid {
+    gap: 14px;
+  }
+
+  .tutorial-intro {
+    font-size: 11px;
+  }
+
+  .tutorial-responsible-logos {
+    min-height: 92px;
+    gap: 14px;
+  }
+
+  .tutorial-responsible-logos img:first-child {
+    width: 65px;
+    height: 65px;
+  }
+
+  .tutorial-responsible-logos img:last-child {
+    width: 150px;
+    height: 39px;
+  }
+}
+
+@media (max-width: 25rem) {
+  .game-back {
+    margin-right: 0;
+  }
+
+  .game-mode-tab {
+    font-size: 12px;
+  }
+
+  .match-team img {
+    width: 36px;
+    height: 36px;
+  }
+}
+</style>

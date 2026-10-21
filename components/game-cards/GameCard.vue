@@ -158,7 +158,7 @@ onUnmounted(() => {
       <!-- Top Left: NEW/PROMO Badge -->
       <span
         v-if="game.badge === 'NEW' || game.promo"
-        class="absolute top-2 left-2 rounded bg-[#036242] text-black font-black text-[9px] px-1.5 py-0.5 leading-none shadow tracking-wide"
+        class="absolute top-0 left-0 rounded-br bg-[#036242] text-white font-black text-[10px] px-1 py-0.5 leading-none shadow tracking-wide text-semibold"
       >
         {{ game.badge === 'NEW' ? 'NEW' : 'PROMO' }}
       </span>
@@ -174,7 +174,7 @@ onUnmounted(() => {
       <!-- Top Right: Dual-color RTP Badge -->
       <div
         v-else-if="game.rtpPercent"
-        class="absolute top-2 right-2 flex items-center rounded overflow-hidden shadow-md leading-none border border-black/40 text-[9px] font-black"
+        class="absolute top-2 right-2 flex items-center rounded overflow-hidden shadow-md leading-none border border-[#00a843]/40 text-[9px] font-black"
       >
         <span class="bg-[#00a843] text-white px-1.5 py-0.5">RTP</span>
         <span class="bg-white text-black px-1.5 py-0.5">{{ game.rtpPercent }}</span>
@@ -191,7 +191,7 @@ onUnmounted(() => {
       <!-- Top Right: Live Player Count Badge -->
       <span
         v-else-if="game.livePlayers"
-        class="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-xs px-1.5 py-0.5 text-[10px] font-medium text-white/90"
+        class="absolute top-1 right-0.5 flex items-center gap-0 rounded-full bg-black/40 backdrop-blur-md px-1 py-0.5 text-[12px] font-medium text-white/90"
       >
         <User class="h-2.5 w-2.5 text-white/70" />
         <span>{{ game.livePlayers }}</span>
@@ -245,29 +245,29 @@ onUnmounted(() => {
       <Transition name="fade-tooltip">
         <div
           v-if="showTooltip && activeId !== game.id"
-          class="absolute inset-2 z-30 rounded-2xl bg-[#202120]/95 backdrop-blur-md p-3.5 sm:p-4 flex flex-col justify-between shadow-2xl border border-white/5 select-none cursor-default"
+          class="absolute top-100 inset-1 right-0 z-55 rounded-md bg-[#202120]/70 backdrop-blur-md px-2 py-2 flex flex-col justify-between shadow-2xl  select-none cursor-default"
           @mouseenter="cancelClose"
           @mouseleave="closeTooltipNow"
           @click.stop="closeTooltipNow"
         >
           <!-- Top Row: Winning Line & RTP -->
-          <div class="flex items-start justify-between">
+          <div class="flex items-start justify-between mb-1">
             <div class="flex flex-col">
-              <span class="text-[12px] sm:text-[13px] font-normal text-[#d6d6d6] leading-tight">Winning Line</span>
-              <span class="text-[18px] sm:text-[21px] font-bold text-white leading-tight mt-1">{{ displayWinningLine }}</span>
+              <span class="text-[10px] sm:text-[10px] font-normal text-white leading-tight">Winning Line</span>
+              <span class="text-[12px] sm:text-[12px] font-bold text-white leading-tight mt-1">{{ displayWinningLine }}</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-[12px] sm:text-[13px] font-normal text-[#d6d6d6] leading-tight">RTP</span>
-              <span class="text-[18px] sm:text-[21px] font-bold text-white leading-tight mt-1">{{ displayRtp }}</span>
+              <span class="text-[10px] sm:text-[10px] font-normal text-[#d6d6d6] leading-tight">RTP</span>
+              <span class="text-[12px] sm:text-[12px] font-bold text-white leading-tight mt-1">{{ displayRtp }}</span>
             </div>
           </div>
 
           <!-- Feature / Tag Pills -->
-          <div class="flex flex-col items-start gap-1.5 sm:gap-2">
+          <div class="flex flex-col items-start gap-0.5 sm:gap-0.5">
             <span
               v-for="tag in displayTags"
               :key="tag"
-              class="inline-flex items-center px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full border border-white/30 text-[11px] sm:text-[12.5px] font-normal text-white bg-transparent leading-normal tracking-wide"
+              class="inline-flex items-center px-1 py-1  rounded-full border border-white/30 text-[10px] sm:text-[10px] font-normal text-white bg-transparent leading-normal tracking-wide"
             >
               {{ tag }}
             </span>
