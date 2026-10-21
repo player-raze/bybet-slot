@@ -27,6 +27,8 @@ export const FREQUENTLY_SEARCHED_BINGO: string[] = [
   'Lucky Bingo Neko',
 ]
 
+import { SLOT_CATEGORY_SVGS } from './slots'
+
 export interface BingoCategory {
   key: string
   label: string
@@ -37,12 +39,19 @@ export interface BingoCategory {
   svg?: string
 }
 
-export const BINGO_CATEGORY_SVGS: Record<string, string> = {}
+export const BINGO_CATEGORY_SVGS: Record<string, string> = {
+  home: SLOT_CATEGORY_SVGS.home,
+  top: SLOT_CATEGORY_SVGS.top,
+  hot: SLOT_CATEGORY_SVGS.hot,
+  cold: SLOT_CATEGORY_SVGS.cold,
+  'max-rpt': SLOT_CATEGORY_SVGS['max-rpt'],
+}
 
 export interface BingoSection {
   id: string
   title: string
   emoji?: string
+  iconImage?: string
   iconName: string
   count: number
   hasHelp?: boolean
@@ -50,11 +59,11 @@ export interface BingoSection {
 }
 
 export const BINGO_CATEGORIES: BingoCategory[] = [
-  { key: 'home', label: 'Home', shortLabel: 'Home', iconName: 'House', emoji: '🏠' },
-  { key: 'top', label: 'Top', shortLabel: 'Top', iconName: 'Crown', emoji: '👑' },
-  { key: 'hot', label: 'Hot Games', shortLabel: 'Hot...', iconName: 'Flame', emoji: '🔥' },
-  { key: 'cold', label: 'Cold Games', shortLabel: 'Cold...', iconName: 'Snowflake', emoji: '❄️' },
-  { key: 'max-rpt', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Trophy', emoji: '💵' },
+  { key: 'home', label: 'Home', shortLabel: 'Home', iconName: 'House', emoji: '🏠', svg: SLOT_CATEGORY_SVGS.home },
+  { key: 'top', label: 'Top', shortLabel: 'Top', iconName: 'Crown', emoji: '👑', iconImage: '/icons/slots/top.png', svg: SLOT_CATEGORY_SVGS.top },
+  { key: 'hot', label: 'Hot Games', shortLabel: 'Hot...', iconName: 'Flame', emoji: '🔥', iconImage: '/icons/slots/hot.png', svg: SLOT_CATEGORY_SVGS.hot },
+  { key: 'cold', label: 'Cold Games', shortLabel: 'Cold...', iconName: 'Snowflake', emoji: '❄️', iconImage: '/icons/slots/cold.png', svg: SLOT_CATEGORY_SVGS.cold },
+  { key: 'max-rpt', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Trophy', emoji: '💵', iconImage: '/icons/slots/max-rtp.png', svg: SLOT_CATEGORY_SVGS['max-rpt'] },
 ]
 
 export const BINGO_PROVIDERS: { key: string; label: string }[] = [
@@ -71,6 +80,7 @@ export const BINGO_SECTIONS: BingoSection[] = [
     id: 'top',
     title: 'Top',
     emoji: '👑',
+    iconImage: '/icons/slots/top.png',
     iconName: 'Crown',
     count: 120,
     games: [
@@ -160,6 +170,7 @@ export const BINGO_SECTIONS: BingoSection[] = [
     id: 'hot',
     title: 'Hot Games',
     emoji: '🔥',
+    iconImage: '/icons/slots/hot.png',
     iconName: 'Flame',
     count: 85,
     hasHelp: true,
@@ -218,6 +229,7 @@ export const BINGO_SECTIONS: BingoSection[] = [
     id: 'cold',
     title: 'Cold Games',
     emoji: '❄️',
+    iconImage: '/icons/slots/cold.png',
     iconName: 'Snowflake',
     count: 64,
     hasHelp: true,
@@ -278,6 +290,7 @@ export const BINGO_SECTIONS: BingoSection[] = [
     id: 'max-rtp',
     title: 'Max RTP',
     emoji: '💵',
+    iconImage: '/icons/slots/max-rtp.png',
     iconName: 'Trophy',
     count: 340,
     games: [

@@ -91,6 +91,7 @@ const handleOddClick = (prediction: LivePlazaPrediction, option: LivePlazaPredic
   <div class="live-plaza-home-page w-full min-w-0 pb-16 pt-1 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
+      sticky
       title="Live Plaza"
       description="Live Plaza on ByBet Philippines. Real-time game streaming, popular matches, and expert sports predictions."
       :show-back="false"

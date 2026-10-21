@@ -83,7 +83,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="me-page w-full min-w-0 pb-0 pt-1 text-white">
     <!-- Top Account Card: Login / Sign Up & Action Buttons -->
-    <div class="account-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-sm">
+    <div class="sticky top-[var(--header-height)] z-20 bg-[#000000] -mx-1 px-1 pt-0.5 pb-1 mb-2">
+      <div class="account-card rounded-lg bg-[#141414] px-2 py-3 shadow-sm">
       <div class="px-2">
         <div class="flex items-center gap-1">
           <a
@@ -144,6 +145,7 @@ onBeforeUnmount(() => {
         </a>
       </div>
     </div>
+  </div>
 
     <!-- Accordion 1: General -->
     <div class="section-card rounded-lg bg-[#141414] px-2 py-3 mb-2 shadow-sm">

@@ -20,6 +20,7 @@ const handleAllStreamersClick = (): void => {
   <div class="live-plaza-streamer-page w-full min-w-0 pb-16 pt-1 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
+      sticky
       :title="translate('Streamer')"
       description="Live streaming channels, interactive hosts, and gaming influencers on ByBet Philippines."
       :show-back="false"

@@ -250,14 +250,14 @@ const displayedGames = computed<BingoGame[]>(() => {
   <div class="bingo-page w-full min-w-0 pb-16 pt-1">
     <!-- Top Bar: Category Tabs & Chat -->
     <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] border border-white/5 p-1 overflow-x-auto no-scrollbar shadow-sm">
-        <div class="flex items-center gap-1.5 min-w-0">
+      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-x-auto no-scrollbar">
+        <div class="flex items-center gap-1 min-w-0">
           <button
             v-for="cat in BINGO_CATEGORIES"
             :key="cat.key"
             type="button"
-            class="nav-tab flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none"
-            :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+            class="nav-tab flex flex-col items-center justify-center min-w-[48px] py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
+            :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#959799]'"
             :aria-label="cat.label"
             @click="selectCategory(cat.key)"
           >
@@ -271,55 +271,67 @@ const displayedGames = computed<BingoGame[]>(() => {
               v-else-if="cat.iconName && categoryIcons[cat.iconName]"
               class="h-4 w-4 mb-0.5 shrink-0"
             />
-            <span class="text-[11px] leading-tight whitespace-nowrap">{{ cat.shortLabel }}</span>
+            <span class="text-[10px] leading-tight whitespace-nowrap">{{ cat.shortLabel }}</span>
           </button>
         </div>
 
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0 border-l border-white/5 pl-2"
-          :class="commentContext ? 'text-[#036242] font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md transition-all cursor-pointer select-none shrink-0"
+          :class="commentContext ? 'text-[#959799]' : 'text-[#959799]'"
           aria-label="Toggle chat room"
           @click="toggleChat"
         >
-          <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
-          <span class="text-[11px] leading-tight">Chat</span>
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mb-0.5 shrink-0"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M5.17487 19.8675L7.9565 18.1075C8.63891 18.2396 9.31883 18.308 10 18.308C15.4956 18.308 20 14.2442 20 9.15401C20 4.06434 15.4954 0 10 0C4.50461 0 0 4.06434 0 9.15401C0 12.0413 1.46921 14.6858 3.88947 16.3963L3.85501 19.0683C3.84572 19.7874 4.5896 20.2378 5.17487 19.8675ZM5.50007 10.9998C6.32849 10.9998 7.00007 10.3282 7.00007 9.49982C7.00007 8.67139 6.32849 7.99982 5.50007 7.99982C4.67164 7.99982 4.00007 8.67139 4.00007 9.49982C4.00007 10.3282 4.67164 10.9998 5.50007 10.9998ZM12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998C9.67164 10.9998 9.00007 10.3282 9.00007 9.49982C9.00007 8.67139 9.67164 7.99982 10.5001 7.99982C11.3285 7.99982 12.0001 8.67139 12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998ZM15.5001 10.9998C16.3285 10.9998 17.0001 10.3282 17.0001 9.49982C17.0001 8.67139 16.3285 7.99982 15.5001 7.99982C14.6716 7.99982 14.0001 8.67139 14.0001 9.49982C14.0001 10.3282 14.6716 10.9998 15.5001 10.9998Z"
+            />
+          </svg>
+          <span class="text-[10px] leading-tight whitespace-nowrap">Chat</span>
         </button>
       </header>
-    </div>
 
-    <!-- Provider Filter Bar & Search / Filter Icons -->
-    <div class="provider-filter-bar flex items-center justify-between gap-2 rounded-2xl bg-[#171817] border border-white/5 px-2 py-1.5 mb-3 shadow-sm">
-      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-        <button
-          v-for="prov in BINGO_PROVIDERS"
-          :key="prov.key"
-          type="button"
-          class="provider-pill px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer select-none"
-          :class="activeProvider === prov.key ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] hover:text-white'"
-          @click="selectProvider(prov.key)"
-        >
-          {{ prov.label }}
-        </button>
-      </div>
+      <!-- Provider Filter Bar & Search / Filter Icons -->
+      <div class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <button
+            v-for="prov in BINGO_PROVIDERS"
+            :key="prov.key"
+            type="button"
+            class="provider-pill px-4 py-1.5 rounded-full text-[16px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
+            :class="activeProvider === prov.key ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
+            @click="selectProvider(prov.key)"
+          >
+            {{ prov.label }}
+          </button>
+        </div>
 
-      <div class="flex items-center gap-1 shrink-0">
-        <button
-          type="button"
-          class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-          aria-label="Search games"
-          @click="openSearch"
-        >
-          <Search class="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-          aria-label="Filter games"
-          @click="isFilterOpen = true"
-        >
-          <SlidersHorizontal class="h-4 w-4" />
-        </button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Search games"
+            @click="openSearch"
+          >
+            <Search class="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Filter games"
+            @click="isFilterOpen = true"
+          >
+            <SlidersHorizontal class="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -530,8 +542,8 @@ const displayedGames = computed<BingoGame[]>(() => {
 
 <style scoped>
 .slot-nav-svg {
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 1rem;
+  height: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -544,6 +556,7 @@ const displayedGames = computed<BingoGame[]>(() => {
 }
 
 .slot-nav-svg :deep(.fill-text-4),
+.slot-nav-svg :deep(.fill-title-button-special),
 .slot-nav-svg :deep([class*="fill-text"]),
 .slot-nav-svg :deep(path.fill-text-4),
 .slot-nav-svg :deep(path:not([fill])) {

@@ -73,19 +73,47 @@ const handleBack = (): void => {
 </script>
 
 <template>
+  <div
+    v-if="sticky"
+    class="seo-header-sticky-wrapper sticky top-[var(--header-height,64px)] z-20 bg-[#000000] -mx-1 px-1 pt-1 pb-1"
+  >
+    <header
+      class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f] px-1 py-2 shadow-sm select-none"
+      :class="customClass"
+    >
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center gap-1.5 min-w-0">
+        <button
+          v-if="showBack"
+          type="button"
+          class="flex items-center justify-center h-6 w-6 bg-[#141414] rounded-full text-[#1FA779] transition-colors cursor-pointer shrink-0"
+          aria-label="Go back"
+          @click="handleBack"
+        >
+          <ChevronLeft class="h-3 w-3" />
+        </button>
+
+        <!-- Page Title (SEO H1) -->
+        <h1 class="text-[15px] font-bold text-white tracking-tight truncate leading-tight">
+          <slot name="title">
+            {{ title }}
+          </slot>
+        </h1>
+      </div>
+    </header>
+  </div>
+
   <header
-    class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f]/80 px-1 py-2 mb-2 shadow-sm select-none "
-    :class="[
-      sticky ? 'sticky top-[var(--header-height,64px)] z-20 backdrop-blur-md bg-[#1f1f1f]/80' : '',
-      customClass,
-    ]"
+    v-else
+    class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f]/80 px-1 py-2 mb-2 shadow-sm select-none"
+    :class="customClass"
   >
     <!-- Left: Back Button & Title -->
     <div class="flex items-center gap-1.5 min-w-0">
       <button
         v-if="showBack"
         type="button"
-        class="flex items-center justify-center h-6 w-6 bg-[#141414] rounded-full text-[#1FA779] transition-colors cursor-pointer shrink-0 "
+        class="flex items-center justify-center h-6 w-6 bg-[#141414] rounded-full text-[#1FA779] transition-colors cursor-pointer shrink-0"
         aria-label="Go back"
         @click="handleBack"
       >
@@ -99,8 +127,6 @@ const handleBack = (): void => {
         </slot>
       </h1>
     </div>
-
-    
   </header>
 </template>
 

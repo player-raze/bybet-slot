@@ -9,18 +9,20 @@ const isSportsPage = computed(() => route.path.startsWith('/explore/sports/'))
 const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/') && route.path !== '/explore/egames/customer-service')
 const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
+const isAffiliatePage = computed(() => route.path === '/affiliate')
 const isAccountSettingsPage = computed(() => [
   '/explore/account/me',
   '/explore/account/language',
   '/explore/account/timezone',
   '/tutorial',
+  '/affiliate',
 ].some(path => route.path.startsWith(path)))
 const isDockedChatPage = computed(() => isSportsPage.value || isGameChatPage.value)
 const isTutorialPage = computed(() => route.path === '/tutorial' || route.path.startsWith('/tutorial/'))
-const railCollapsed = ref(!isTutorialPage.value)
+const railCollapsed = ref(!(isTutorialPage.value || isAffiliatePage.value))
 
 watch(() => route.path, () => {
-  if (isTutorialPage.value) {
+  if (isTutorialPage.value || isAffiliatePage.value) {
     railCollapsed.value = false
   }
 

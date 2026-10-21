@@ -19,7 +19,8 @@ export interface JackpotSection {
   providerLogo: string
   count: number
   jackpotCharacter: 'dragon' | 'genie' | 'panda'
-  counterDigits?: string[]
+  showCounter: boolean
+  jackpotAmount: number
   games: JackpotGame[]
 }
 
@@ -32,7 +33,7 @@ export interface JackpotWinner {
 }
 
 export const JACKPOT_NAV_TABS = [
-  { key: 'all', label: '777', isAll: true },
+  { key: 'all', label: '777', logo: '/images/jackpot/all_slot_selected.png', isAll: true },
   { key: 'jili', label: 'JILI', logo: '/images/providers/jili.png' },
   { key: 'jdb', label: 'JDB', logo: '/images/providers/jdb.png' },
   { key: 'cq9', label: 'CQ9', logo: '/images/providers/cq9.png' },
@@ -45,6 +46,8 @@ export const JACKPOT_SECTIONS: JackpotSection[] = [
     providerLogo: '/images/providers/jili.png',
     count: 27,
     jackpotCharacter: 'dragon',
+    showCounter: false,
+    jackpotAmount: 8769541.88,
     games: [
       {
         id: '3-coin-treasures-2',
@@ -86,6 +89,30 @@ export const JACKPOT_SECTIONS: JackpotSection[] = [
         image: '/images/games/new-releases/chinese-new-year-deluxe.webp',
         rtpPercent: '97.0%',
       },
+      {
+        id: 'pirate-queen',
+        title: 'Pirate Queen',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/new-releases/lucky-neko.webp',
+        rtpPercent: '97.0%',
+      },
+      {
+        id: 'elf-bingo',
+        title: 'Elf Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/popular/sweet-bonanza-1000.webp',
+        rtpPercent: '97.0%',
+      },
+      {
+        id: 'jackpot-bingo',
+        title: 'Jackpot Bingo',
+        provider: 'JILI',
+        providerLogo: '/images/providers/jili.png',
+        image: '/images/games/new-releases/777-strike.webp',
+        rtpPercent: '97.0%',
+      },
     ],
   },
   {
@@ -94,7 +121,8 @@ export const JACKPOT_SECTIONS: JackpotSection[] = [
     providerLogo: '/images/providers/cq9.png',
     count: 3,
     jackpotCharacter: 'genie',
-    counterDigits: ['0', '.', '0', '0'],
+    showCounter: true,
+    jackpotAmount: 0.00,
     games: [
       {
         id: 'golden-egg-jp',
@@ -128,7 +156,8 @@ export const JACKPOT_SECTIONS: JackpotSection[] = [
     providerLogo: '/images/providers/jdb.png',
     count: 30,
     jackpotCharacter: 'panda',
-    counterDigits: ['3', '0', '1', '2', '9', '1'],
+    showCounter: true,
+    jackpotAmount: 3015.46,
     games: [
       {
         id: 'piggy-bank',

@@ -85,6 +85,7 @@ const getCategoryIcon = (type?: string) => {
   <div class="bonus-detail-page w-full min-w-0 pb-24 pt-1 text-white">
     <!-- Reusable Top SEO Navigation Header -->
     <SeoHeader
+      sticky
       :title="bonus.title"
       :description="bonus.subtitle || `Participate in ${bonus.title} promotion on ByBet Philippines.`"
       back-to="/explore/bonuses"

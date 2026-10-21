@@ -26,6 +26,7 @@ const filteredTimeZones = computed(() => {
 <template>
   <section class="preference-page timezone-page w-full min-w-0 pb-16 pt-1 text-white">
     <SeoHeader
+      sticky
       title="Time Zone"
       description="Select your preferred time zone for betting markets and event schedules on ByBet."
       back-to="/explore/account/me"

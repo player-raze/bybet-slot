@@ -32,6 +32,7 @@ import {
   type SlotSection,
 } from '~/data/slots'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 
 const categoryIcons: Record<string, Component> = {
   House,
@@ -80,6 +81,7 @@ const filterState = ref({
 
 const { context: commentContext, openGameComments, closeComments } = useCommentPanel()
 const { showDemoMessage } = useDemoInteraction()
+const { addRecentGame } = useRecentGames()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
 const toggleChat = (): void => {
@@ -91,7 +93,7 @@ const toggleChat = (): void => {
 }
 
 const selectCategory = (key: string): void => {
-  if (isSearchOpen.value) {
+  if (isSearchOpen.value || isSearchSubmitted.value) {
     closeSearch()
   }
   if (key === 'home') {
@@ -120,7 +122,6 @@ const toggleProvider = (key: string): void => {
 const openSearch = (): void => {
   isSearchOpen.value = true
   isSearchSubmitted.value = false
-  searchQuery.value = ''
   nextTick(() => {
     searchInputRef.value?.focus()
   })
@@ -137,33 +138,40 @@ const {
   addToHistory,
   removeHistoryItem,
   clearHistory,
-} = useSearchHistory('bybet_slots_search_history', ['Super Ace', 'Fortune Gems 2'])
+} = useSearchHistory('bybet_slots_search_history', ['Super'])
 
 const clearSearch = (): void => {
   searchQuery.value = ''
-  isSearchSubmitted.value = false
   nextTick(() => {
     searchInputRef.value?.focus()
   })
 }
 
 const handleSearchSubmit = (): void => {
-  if (searchQuery.value.trim()) {
+  const query = searchQuery.value.trim()
+  if (query) {
     isSearchSubmitted.value = true
-    addToHistory(searchQuery.value)
+    isSearchOpen.value = false
+    addToHistory(query)
   }
 }
 
 const handleInput = (): void => {
-  if (!searchQuery.value.trim()) {
-    isSearchSubmitted.value = false
-  }
+  // Stay in search mode while typing
 }
 
 const selectFrequentSearch = (term: string): void => {
   searchQuery.value = term
   isSearchSubmitted.value = true
+  isSearchOpen.value = false
   addToHistory(term)
+}
+
+const resetSearch = (): void => {
+  searchQuery.value = ''
+  isSearchSubmitted.value = false
+  isSearchOpen.value = false
+  activeProviders.value = ['all']
 }
 
 const showGameDetails = (game: any): void => {
@@ -173,6 +181,7 @@ const showGameDetails = (game: any): void => {
 const activeGameId = ref<string | null>(null)
 
 const handleCardClick = (game: any): void => {
+  addRecentGame(game)
   if (activeGameId.value === game.id) {
     activeGameId.value = null
   } else {
@@ -181,6 +190,7 @@ const handleCardClick = (game: any): void => {
 }
 
 const handleStartNow = (game: any): void => {
+  addRecentGame(game)
   showDemoMessage(`Starting ${game.title} (${game.provider})...`)
   if (import.meta.client) {
     window.open(game.href || bybetRedirectUrl, '_blank')
@@ -188,6 +198,7 @@ const handleStartNow = (game: any): void => {
 }
 
 const handleDemo = (game: any): void => {
+  addRecentGame(game)
   showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
 }
 
@@ -275,14 +286,14 @@ const displayedGames = computed<SlotGame[]>(() => {
   <div class="slots-page w-full min-w-0 pb-16 pt-1">
     <!-- Top Bar: Category Tabs & Chat -->
     <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-md bg-[#171817] border border-white/5 p-1 overflow-x-auto no-scrollbar shadow-sm">
-        <div class="flex items-center gap-1.5 min-w-0">
+      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-x-auto no-scrollbar">
+        <div class="flex items-center gap-1 min-w-0">
           <button
             v-for="cat in SLOT_CATEGORIES"
             :key="cat.key"
             type="button"
-            class="nav-tab flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none"
-            :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+            class="nav-tab flex flex-col items-center justify-center min-w-[48px] py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
+            :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#959799]'"
             :aria-label="cat.label"
             @click="selectCategory(cat.key)"
           >
@@ -294,172 +305,192 @@ const displayedGames = computed<SlotGame[]>(() => {
             <component
               :is="categoryIcons[cat.iconName]"
               v-else-if="cat.iconName && categoryIcons[cat.iconName]"
-              class="h-4 w-4 mb-0.5 shrink-0"
+              class="h-2 w-2 mb-0.5 shrink-0"
             />
-            <span class="text-[11px] leading-tight whitespace-nowrap">{{ cat.shortLabel }}</span>
+            <span class="text-[10px] leading-tight whitespace-nowrap">{{ cat.shortLabel }}</span>
           </button>
         </div>
 
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-md transition-all cursor-pointer select-none shrink-0 border-l border-white/5 pl-2"
-          :class="commentContext ? 'text-[#036242] font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md transition-all cursor-pointer select-none shrink-0"
+          :class="commentContext ? 'text-[#959799]' : 'text-[#959799]'"
           aria-label="Toggle chat room"
           @click="toggleChat"
         >
-          <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
-          <span class="text-[11px] leading-tight">Chat</span>
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mb-0.5 shrink-0"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M5.17487 19.8675L7.9565 18.1075C8.63891 18.2396 9.31883 18.308 10 18.308C15.4956 18.308 20 14.2442 20 9.15401C20 4.06434 15.4954 0 10 0C4.50461 0 0 4.06434 0 9.15401C0 12.0413 1.46921 14.6858 3.88947 16.3963L3.85501 19.0683C3.84572 19.7874 4.5896 20.2378 5.17487 19.8675ZM5.50007 10.9998C6.32849 10.9998 7.00007 10.3282 7.00007 9.49982C7.00007 8.67139 6.32849 7.99982 5.50007 7.99982C4.67164 7.99982 4.00007 8.67139 4.00007 9.49982C4.00007 10.3282 4.67164 10.9998 5.50007 10.9998ZM12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998C9.67164 10.9998 9.00007 10.3282 9.00007 9.49982C9.00007 8.67139 9.67164 7.99982 10.5001 7.99982C11.3285 7.99982 12.0001 8.67139 12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998ZM15.5001 10.9998C16.3285 10.9998 17.0001 10.3282 17.0001 9.49982C17.0001 8.67139 16.3285 7.99982 15.5001 7.99982C14.6716 7.99982 14.0001 8.67139 14.0001 9.49982C14.0001 10.3282 14.6716 10.9998 15.5001 10.9998Z"
+            />
+          </svg>
+          <span class="text-[10px] leading-tight whitespace-nowrap">Chat</span>
         </button>
       </header>
+
+      <!-- Provider Filter Bar & Search / Filter Icons -->
+      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <button
+            v-for="prov in SLOT_PROVIDERS"
+            :key="prov.key"
+            type="button"
+            class="provider-pill px-4 py-1.5 rounded-full text-[16px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
+            :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
+            @click="toggleProvider(prov.key)"
+          >
+            {{ prov.label }}
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Search games"
+            @click="openSearch"
+          >
+            <Search class="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Filter games"
+            @click="isFilterOpen = true"
+          >
+            <SlidersHorizontal class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Provider Filter Bar & Search / Filter Icons -->
-    <div class="provider-filter-bar flex items-center justify-between gap-2 rounded-2xl bg-[#171817] border border-white/5 px-2 py-1.5 mb-3 shadow-sm">
-      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-        <button
-          v-for="prov in SLOT_PROVIDERS"
-          :key="prov.key"
-          type="button"
-          class="provider-pill px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer select-none"
-          :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] hover:text-white'"
-          @click="toggleProvider(prov.key)"
-        >
-          {{ prov.label }}
-        </button>
-      </div>
-
-      <div class="flex items-center gap-1 shrink-0">
-        <button
-          type="button"
-          class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-          aria-label="Search games"
-          @click="openSearch"
-        >
-          <Search class="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-          aria-label="Filter games"
-          @click="isFilterOpen = true"
-        >
-          <SlidersHorizontal class="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-
-    <!-- Search Overlay / Panel -->
+    <!-- Search View (Image 1) -->
     <div
       v-if="isSearchOpen"
-      class="search-panel mb-6 rounded-2xl bg-[#171817] border border-white/5 p-4 shadow-lg"
+      class="search-view w-full pt-4 pb-8"
     >
-      <div class="relative flex items-center mb-4">
-        <Search class="absolute left-3.5 h-4 w-4 text-[#8e9491]" />
-        <input
-          ref="searchInputRef"
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search by game or provider..."
-          class="w-full rounded-xl bg-[#202220] border border-white/10 pl-10 pr-20 py-2.5 text-sm text-white placeholder-[#8e9491] focus:outline-none focus:border-[#036242] transition-colors"
-          @input="handleInput"
-          @keyup.enter="handleSearchSubmit"
-        />
-        <div class="absolute right-2 flex items-center gap-1">
+      <!-- Search Input Row -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="relative flex-1">
+          <input
+            ref="searchInputRef"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Enter game name"
+            class="w-full h-11 rounded-full bg-[#171817] border border-[#2b2d2b] px-5 text-sm text-white placeholder-[#7a807d] focus:outline-none focus:border-[#036242] transition-colors"
+            @input="handleInput"
+            @keyup.enter="handleSearchSubmit"
+          />
           <button
             v-if="searchQuery"
             type="button"
-            class="p-1 text-[#8e9491] hover:text-white rounded-md"
+            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#7a807d] hover:text-white p-1"
+            aria-label="Clear input"
             @click="clearSearch"
           >
             <X class="h-4 w-4" />
           </button>
+        </div>
+        <button
+          type="button"
+          class="text-sm text-white hover:text-white/80 px-2 py-1 select-none cursor-pointer font-medium whitespace-nowrap"
+          @click="closeSearch"
+        >
+          Cancel
+        </button>
+      </div>
+
+      <!-- History Section -->
+      <div v-if="searchHistory.length > 0" class="history-section mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-white tracking-wide">History</h3>
           <button
             type="button"
-            class="p-1 text-[#8e9491] hover:text-white rounded-md"
-            @click="closeSearch"
+            class="text-[#7a807d] hover:text-white p-1 transition-colors cursor-pointer"
+            aria-label="Clear history"
+            title="Clear history"
+            @click="clearHistory"
           >
-            <span class="text-xs">Cancel</span>
+            <Trash2 class="h-4 w-4" />
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="item in searchHistory"
+            :key="item"
+            type="button"
+            class="px-3.5 py-1.5 rounded-full bg-[#1b1c1b] text-xs text-[#8e9491] hover:text-white hover:bg-[#242625] transition-colors cursor-pointer"
+            @click="selectFrequentSearch(item)"
+          >
+            {{ item }}
           </button>
         </div>
       </div>
 
-      <!-- Search History & Suggestions -->
-      <div v-if="!isShowingResults" class="space-y-4">
-        <div v-if="searchHistory.length > 0" class="history-block">
-          <div class="flex items-center justify-between text-xs text-[#8e9491] mb-2">
-            <span>Recent Searches</span>
-            <button
-              type="button"
-              class="hover:text-white flex items-center gap-1"
-              @click="clearHistory"
-            >
-              <Trash2 class="h-3 w-3" />
-              <span>Clear</span>
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <span
-              v-for="(item, idx) in searchHistory"
-              :key="item"
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#202220] text-xs text-white hover:bg-[#282a29] cursor-pointer"
-              @click="selectFrequentSearch(item)"
-            >
-              <span>{{ item }}</span>
-              <button
-                type="button"
-                class="hover:text-red-400"
-                @click.stop="removeHistoryItem(idx)"
-              >
-                <X class="h-3 w-3" />
-              </button>
-            </span>
-          </div>
+      <!-- Frequently Searched Section -->
+      <div class="frequently-searched-section mb-8">
+        <div class="text-sm font-semibold text-white tracking-wide mb-3">
+          Frequently searched
         </div>
-
-        <div class="suggestions-block">
-          <div class="text-xs text-[#8e9491] mb-2">Frequently Searched</div>
-          <div class="flex flex-wrap gap-2">
-            <button
-              v-for="term in FREQUENTLY_SEARCHED_SLOTS"
-              :key="term"
-              type="button"
-              class="px-3 py-1 rounded-full bg-[#202220] text-xs text-[#8e9491] hover:text-white hover:bg-[#282a29] transition-colors"
-              @click="selectFrequentSearch(term)"
-            >
-              {{ term }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Search Results -->
-      <div v-if="isShowingResults" class="results-block">
-        <div class="text-xs text-[#8e9491] mb-3">
-          Found {{ searchResults.length }} result(s) for "{{ searchQuery }}"
-        </div>
-        <div
-          v-if="searchResults.length > 0"
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2.5"
-        >
-          <GameCard
-            v-for="game in searchResults"
-            :key="game.id"
-            :game="game"
-            :activeId="activeGameId"
-            @select="handleCardClick"
-            @info="showGameDetails"
-            @start="handleStartNow"
-            @demo="handleDemo"
-          />
-        </div>
-        <div v-else class="text-center py-8 text-sm text-[#8e9491]">
-          No games found matching your search.
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="term in FREQUENTLY_SEARCHED_SLOTS"
+            :key="term"
+            type="button"
+            class="px-3.5 py-1.5 rounded-full bg-[#1b1c1b] text-xs text-[#8e9491] hover:text-white hover:bg-[#242625] transition-colors cursor-pointer"
+            @click="selectFrequentSearch(term)"
+          >
+            {{ term }}
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Active Category Games Grid (Layout like Image 1) -->
-    <div v-if="!isSearchOpen" class="slots-games-container">
+    <!-- Search Results View (Image 2) -->
+    <div v-else-if="isSearchSubmitted" class="search-results-view mb-12">
+      <div
+        v-if="searchResults.length > 0"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5"
+      >
+        <GameCard
+          v-for="game in searchResults"
+          :key="game.id"
+          :game="game"
+          :activeId="activeGameId"
+          @select="handleCardClick"
+          @info="showGameDetails"
+          @start="handleStartNow"
+          @demo="handleDemo"
+        />
+      </div>
+
+      <!-- Empty State for Search Results -->
+      <div
+        v-else
+        class="my-12 flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-[#171817] p-8 text-center"
+      >
+        <Search class="h-10 w-10 text-[#7a807d]" />
+        <h3 class="text-base font-semibold text-white">No games found for "{{ searchQuery }}"</h3>
+        <p class="text-xs text-[#9ca3af]">Try adjusting your search query or provider filter.</p>
+        <button
+          type="button"
+          class="mt-2 rounded-full bg-[#036242] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#047b53] transition-colors cursor-pointer"
+          @click="resetSearch"
+        >
+          Reset Search
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Category Games Grid -->
+    <div v-else class="slots-games-container">
       <div
         v-if="displayedGames.length > 0"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2.5"
@@ -480,83 +511,17 @@ const displayedGames = computed<SlotGame[]>(() => {
       </div>
     </div>
 
-    <!-- Filter Modal -->
-    <div
-      v-if="isFilterOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-      @click.self="isFilterOpen = false"
-    >
-      <div class="w-full max-w-md rounded-2xl bg-[#171817] border border-white/10 p-5 shadow-2xl">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-base font-bold text-white">Filter Games</h3>
-          <button
-            type="button"
-            class="p-1 text-[#8e9491] hover:text-white rounded-lg"
-            @click="isFilterOpen = false"
-          >
-            <X class="h-5 w-5" />
-          </button>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs text-[#8e9491] mb-1.5">Theme</label>
-            <div class="flex flex-wrap gap-1.5">
-              <button
-                v-for="th in ['All', 'Mythology', 'Adventure', 'Classic', 'Fantasy', 'Asian']"
-                :key="th"
-                type="button"
-                class="px-3 py-1 rounded-full text-xs transition-colors"
-                :class="filterState.theme === th ? 'bg-[#036242] text-white font-semibold' : 'bg-[#202220] text-[#8e9491] hover:text-white'"
-                @click="filterState.theme = th"
-              >
-                {{ th }}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs text-[#8e9491] mb-1.5">Features</label>
-            <div class="flex flex-wrap gap-1.5">
-              <button
-                v-for="ft in ['All', 'Free Spins', 'Buy Feature', 'Megaways', 'Jackpot', 'Multiplier']"
-                :key="ft"
-                type="button"
-                class="px-3 py-1 rounded-full text-xs transition-colors"
-                :class="filterState.feature === ft ? 'bg-[#036242] text-white font-semibold' : 'bg-[#202220] text-[#8e9491] hover:text-white'"
-                @click="filterState.feature = ft"
-              >
-                {{ ft }}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-white/5">
-          <button
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-semibold text-[#8e9491] hover:text-white bg-[#202220]"
-            @click="filterState = { theme: 'All', feature: 'All', winningLine: 'All' }"
-          >
-            Reset
-          </button>
-          <button
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#036242] hover:bg-[#047b53]"
-            @click="isFilterOpen = false"
-          >
-            Apply Filters
-          </button>
-        </div>
-      </div>
-    </div>
+    <SlotFilterModal
+      v-model="filterState"
+      v-model:open="isFilterOpen"
+    />
   </div>
 </template>
 
 <style scoped>
 .slot-nav-svg {
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 1rem;
+  height: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -569,6 +534,7 @@ const displayedGames = computed<SlotGame[]>(() => {
 }
 
 .slot-nav-svg :deep(.fill-text-4),
+.slot-nav-svg :deep(.fill-title-button-special),
 .slot-nav-svg :deep([class*="fill-text"]),
 .slot-nav-svg :deep(path.fill-text-4),
 .slot-nav-svg :deep(path:not([fill])) {

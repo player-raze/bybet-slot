@@ -11,11 +11,43 @@ import {
   JACKPOT_NAV_TABS,
   JACKPOT_SECTIONS,
   JACKPOT_WINNERS,
-  type JackpotGame,
   type JackpotSection,
   type JackpotWinner,
 } from '~/data/jackpot'
 import GameCard from '~/components/game-cards/GameCard.vue'
+
+const JACKPOT_REFRESH_INTERVAL_MS = 60_000
+
+const JACKPOT_CHARACTER_IMAGES: Record<JackpotSection['jackpotCharacter'], string> = {
+  dragon: '/images/jackpot/jili-jackpot.png',
+  genie: '/images/jackpot/cq9-jackpot.png',
+  panda: '/images/jackpot/jdb-jackpot.png',
+}
+
+const JACKPOT_DIGIT_IMAGES: Record<string, string> = Object.fromEntries(
+  ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(digit => [
+    digit,
+    `/images/jackpot/${digit}.png`,
+  ]),
+)
+
+const JACKPOT_SEPARATOR_IMAGES: Record<string, string> = {
+  ',': '/images/jackpot/comma.png',
+  '.': '/images/jackpot/dot.png',
+}
+
+const JACKPOT_INCREMENT_RANGES: Record<string, readonly [number, number]> = {
+  jili: [680, 2_800],
+  cq9: [80, 560],
+  jdb: [12, 120],
+}
+
+const JACKPOT_SECTION_ORDER = ['jili', 'jdb', 'cq9']
+
+const jackpotNumberFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
 
 const route = useRoute()
 const router = useRouter()
@@ -27,7 +59,12 @@ const activeProvider = computed(() => {
 
 const activeGameId = ref<string | null>(null)
 const currentWinners = ref<JackpotWinner[]>([...JACKPOT_WINNERS])
+const jackpotAmounts = ref<Record<string, number>>(
+  Object.fromEntries(JACKPOT_SECTIONS.map(section => [section.id, section.jackpotAmount])),
+)
+const jackpotRevision = ref(0)
 let winnerTimer: ReturnType<typeof setTimeout> | null = null
+let jackpotClockTimer: ReturnType<typeof setInterval> | null = null
 
 const providerLogos = [
   '/images/providers/jdb.png',
@@ -85,6 +122,39 @@ const scheduleRandomWinner = (): void => {
   }, delay)
 }
 
+const getJackpotAmount = (section: JackpotSection): number => {
+  return jackpotAmounts.value[section.id] ?? section.jackpotAmount
+}
+
+const getJackpotCharacters = (section: JackpotSection): string[] => {
+  return [...jackpotNumberFormatter.format(getJackpotAmount(section))]
+}
+
+const getJackpotDigitImage = (character: string): string | undefined => {
+  return JACKPOT_DIGIT_IMAGES[character]
+}
+
+const getJackpotSeparatorImage = (character: string): string | undefined => {
+  return JACKPOT_SEPARATOR_IMAGES[character]
+}
+
+const getJackpotLabel = (section: JackpotSection): string => {
+  return `${section.provider} live jackpot: PHP ${jackpotNumberFormatter.format(getJackpotAmount(section))}`
+}
+
+const refreshJackpotAmounts = (): void => {
+  const nextAmounts = { ...jackpotAmounts.value }
+
+  JACKPOT_SECTIONS.filter(section => section.showCounter).forEach((section) => {
+    const [minimum, maximum] = JACKPOT_INCREMENT_RANGES[section.id] ?? [20, 200]
+    const increment = Math.random() * (maximum - minimum) + minimum
+    nextAmounts[section.id] = Math.round((getJackpotAmount(section) + increment) * 100) / 100
+  })
+
+  jackpotAmounts.value = nextAmounts
+  jackpotRevision.value += 1
+}
+
 const handleDocumentClick = (event: MouseEvent): void => {
   const target = event.target as HTMLElement | null
   if (!target?.closest('.game-card')) {
@@ -96,6 +166,7 @@ onMounted(() => {
   if (import.meta.client) {
     document.addEventListener('click', handleDocumentClick)
     scheduleRandomWinner()
+    jackpotClockTimer = setInterval(refreshJackpotAmounts, JACKPOT_REFRESH_INTERVAL_MS)
   }
 })
 
@@ -105,6 +176,10 @@ onBeforeUnmount(() => {
     if (winnerTimer) {
       clearTimeout(winnerTimer)
       winnerTimer = null
+    }
+    if (jackpotClockTimer) {
+      clearInterval(jackpotClockTimer)
+      jackpotClockTimer = null
     }
   }
 })
@@ -150,7 +225,9 @@ const handleDemo = (game: any): void => {
 
 const filteredSections = computed<JackpotSection[]>(() => {
   if (activeProvider.value === 'all') {
-    return JACKPOT_SECTIONS
+    return [...JACKPOT_SECTIONS].sort((left, right) => (
+      JACKPOT_SECTION_ORDER.indexOf(left.id) - JACKPOT_SECTION_ORDER.indexOf(right.id)
+    ))
   }
   return JACKPOT_SECTIONS.filter((s) => s.id.toLowerCase() === activeProvider.value)
 })
@@ -184,7 +261,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
               :src="tab.logo"
               :alt="tab.label"
               class="h-4 max-w-[42px] object-contain transition-opacity"
-              :class="activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125 opacity-80 hover:opacity-100'"
+              :class="activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125 opacity-80 '"
             />
           </button>
         </div>
@@ -192,12 +269,24 @@ const filteredSections = computed<JackpotSection[]>(() => {
         <!-- Right Chat Toggle -->
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0 border-l border-white/5 pl-2"
-          :class="commentContext ? 'text-[#036242] font-semibold' : 'text-[#7a807d] hover:text-white hover:bg-white/5'"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0  pl-2"
+          :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
           aria-label="Toggle chat room"
           @click="toggleChat"
         >
-          <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mb-0.5 shrink-0"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M5.17487 19.8675L7.9565 18.1075C8.63891 18.2396 9.31883 18.308 10 18.308C15.4956 18.308 20 14.2442 20 9.15401C20 4.06434 15.4954 0 10 0C4.50461 0 0 4.06434 0 9.15401C0 12.0413 1.46921 14.6858 3.88947 16.3963L3.85501 19.0683C3.84572 19.7874 4.5896 20.2378 5.17487 19.8675ZM5.50007 10.9998C6.32849 10.9998 7.00007 10.3282 7.00007 9.49982C7.00007 8.67139 6.32849 7.99982 5.50007 7.99982C4.67164 7.99982 4.00007 8.67139 4.00007 9.49982C4.00007 10.3282 4.67164 10.9998 5.50007 10.9998ZM12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998C9.67164 10.9998 9.00007 10.3282 9.00007 9.49982C9.00007 8.67139 9.67164 7.99982 10.5001 7.99982C11.3285 7.99982 12.0001 8.67139 12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998ZM15.5001 10.9998C16.3285 10.9998 17.0001 10.3282 17.0001 9.49982C17.0001 8.67139 16.3285 7.99982 15.5001 7.99982C14.6716 7.99982 14.0001 8.67139 14.0001 9.49982C14.0001 10.3282 14.6716 10.9998 15.5001 10.9998Z"
+            />
+          </svg>
           <span class="text-[11px] leading-tight">Chat</span>
         </button>
       </header>
@@ -208,49 +297,69 @@ const filteredSections = computed<JackpotSection[]>(() => {
       v-for="section in filteredSections"
       :id="`section-${section.id}`"
       :key="section.id"
-      class="jackpot-provider-section mb-8 scroll-mt-[85px]"
+      class="jackpot-provider-section scroll-mt-[85px]"
     >
-      <!-- Section Header: Provider Logo on Left, 3D Jackpot Graphic in Center, Count on Right -->
-      <div class="relative flex items-center justify-between mb-4 px-1 min-h-[50px]">
-        <!-- Left: Provider Logo -->
-        <div class="flex items-center w-24">
+      <!-- Provider identity, supplied jackpot artwork, and reference-style counter strip -->
+      <div
+        class="jackpot-provider-header"
+        :class="{ 'jackpot-provider-header--with-counter': section.showCounter }"
+      >
+        <div class="jackpot-provider-identity">
           <img
             :src="section.providerLogo"
             :alt="section.provider"
-            class="h-6 max-w-[64px] object-contain brightness-125 opacity-90"
+            class="jackpot-provider-logo object-contain brightness-125"
           />
         </div>
 
-        <!-- Center: 3D Jackpot Graphic + Mascot + Digital Odometer -->
-        <div class="flex flex-col items-center justify-center">
-          <div class="relative flex items-center justify-center">
-            <span class="jackpot-logo-text text-xl md:text-2xl font-black tracking-widest uppercase select-none">
-              JACKPOT
-            </span>
-            <span class="text-2xl absolute -top-3.5 -right-7 select-none filter drop-shadow">
-              {{ section.jackpotCharacter === 'dragon' ? '🐉' : section.jackpotCharacter === 'genie' ? '🧞' : '🐼' }}
-            </span>
-          </div>
+        <div class="jackpot-brand-stage" aria-hidden="true">
+          <img
+            src="/images/jackpot/jackpot.png"
+            alt=""
+            class="jackpot-wordmark"
+          />
+          <img
+            :src="JACKPOT_CHARACTER_IMAGES[section.jackpotCharacter]"
+            alt=""
+            class="jackpot-character"
+            :class="`jackpot-character--${section.jackpotCharacter}`"
+          />
+        </div>
 
-          <!-- Digital Odometer / Counter Bar -->
-          <div
-            v-if="section.counterDigits"
-            class="jackpot-counter-box mt-1.5 flex items-center gap-1 rounded-xl bg-[#282a29] border border-white/10 px-3 py-1 shadow-inner"
-          >
-            <template v-for="(char, idx) in section.counterDigits" :key="idx">
-              <div
-                v-if="char !== '.' && char !== ','"
-                class="digit-cell flex h-7 w-5.5 items-center justify-center rounded bg-[#1e201f] border border-black/50 text-[16px] font-black text-[#ffcb3d] shadow-sm select-none"
-              >
-                {{ char }}
-              </div>
-              <span v-else class="text-[#ffcb3d] font-black text-sm px-0.5 select-none">{{ char }}</span>
+        <div
+          v-if="section.showCounter"
+          class="jackpot-counter-track"
+          role="status"
+          aria-live="polite"
+          :aria-label="getJackpotLabel(section)"
+        >
+          <div class="jackpot-counter" aria-hidden="true">
+            <template
+              v-for="(character, index) in getJackpotCharacters(section)"
+              :key="`${section.id}-${jackpotRevision}-${index}-${character}`"
+            >
+              <span v-if="/\d/.test(character)" class="jackpot-counter-character">
+                <img
+                  v-if="getJackpotDigitImage(character)"
+                  :src="getJackpotDigitImage(character)"
+                  alt=""
+                  class="jackpot-digit-image"
+                />
+                <span v-else class="jackpot-digit-fallback">{{ character }}</span>
+              </span>
+              <span v-else class="jackpot-separator">
+                <img
+                  v-if="getJackpotSeparatorImage(character)"
+                  :src="getJackpotSeparatorImage(character)"
+                  alt=""
+                  class="jackpot-separator-image"
+                />
+              </span>
             </template>
           </div>
         </div>
 
-        <!-- Right: Section Count Pill -->
-        <div class="flex items-center justify-end w-24">
+        <div class="jackpot-provider-count">
           <a
             :href="bybetRedirectUrl"
             target="_blank"
@@ -263,8 +372,8 @@ const filteredSections = computed<JackpotSection[]>(() => {
         </div>
       </div>
 
-      <!-- Games Grid: 8 Columns matching Image 2 -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2.5">
+      <!-- Single-row game rail, matching the reference carousel layout -->
+      <div class="jackpot-game-rail no-scrollbar">
         <GameCard
           v-for="game in section.games"
           :key="game.id"
@@ -354,12 +463,286 @@ const filteredSections = computed<JackpotSection[]>(() => {
   scrollbar-width: none;
 }
 
-.jackpot-logo-text {
-  background: linear-gradient(180deg, #fff7b2 0%, #ffc82f 45%, #e68500 100%);
+.jackpot-provider-section {
+  min-width: 0;
+  margin-bottom: 20px;
+}
+
+.jackpot-provider-header {
+  position: relative;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.jackpot-provider-identity,
+.jackpot-provider-count {
+  position: absolute;
+  z-index: 5;
+  top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.jackpot-provider-identity {
+  left: 4px;
+}
+
+.jackpot-provider-count {
+  right: 0;
+}
+
+.jackpot-provider-logo {
+  width: auto;
+  max-width: 82px;
+  height: 28px;
+}
+
+.jackpot-brand-stage {
+  position: relative;
+  width: 100%;
+  height: 105px;
+}
+
+.jackpot-provider-header--with-counter .jackpot-brand-stage {
+  height: 84px;
+}
+
+.jackpot-wordmark {
+  position: absolute;
+  z-index: 2;
+  bottom: 6px;
+  left: 50%;
+  width: clamp(178px, 18vw, 216px);
+  height: auto;
+  filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.72));
+  transform: translateX(-50%);
+}
+
+.jackpot-character {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: calc(50% + 70px);
+  width: clamp(96px, 10vw, 118px);
+  max-height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 7px rgba(0, 0, 0, 0.56));
+}
+
+.jackpot-character--dragon {
+  left: calc(50% + 67px);
+  width: clamp(112px, 12vw, 136px);
+  max-height: 101px;
+}
+
+.jackpot-character--genie {
+  left: calc(50% + 70px);
+  width: clamp(92px, 9vw, 108px);
+  max-height: 86px;
+}
+
+.jackpot-counter-track {
+  display: flex;
+  width: 100%;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #5d5d5d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+
+.jackpot-counter {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.jackpot-counter-character {
+  display: inline-flex;
+  width: 41px;
+  height: 56px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(132, 132, 132, 0.82);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #4b4b4b 0%, #333 48%, #3e3e3e 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 3px rgba(0, 0, 0, 0.4);
+  animation: jackpot-digit-pop 420ms cubic-bezier(0.2, 0.85, 0.35, 1.2) both;
+}
+
+.jackpot-digit-image {
+  display: block;
+  width: 34px;
+  height: auto;
+  max-height: 45px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.78));
+}
+
+.jackpot-digit-fallback {
+  display: inline-flex;
+  width: 34px;
+  height: 45px;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fff3a2 2%, #ffd264 42%, #e8921c 88%);
+  background-clip: text;
+  color: transparent;
+  font-size: 43px;
+  font-weight: 1000;
+  line-height: 1;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 0 #8c4a00) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.7));
-  letter-spacing: 0.08em;
+  -webkit-text-stroke: 2.5px #050505;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 3px 0 #1f1508);
+  transform: rotate(-2deg);
+}
+
+.jackpot-separator {
+  display: inline-flex;
+  width: 9px;
+  height: 56px;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 3px;
+}
+
+.jackpot-separator-image {
+  display: block;
+  width: 9px;
+  height: auto;
+  max-height: 15px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.48));
+}
+
+.jackpot-game-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 70px) / 8);
+  gap: 10px;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding-bottom: 2px;
+  scroll-snap-type: inline proximity;
+}
+
+.jackpot-game-rail > * {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+@keyframes jackpot-digit-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-7px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 1279px) {
+  .jackpot-game-rail {
+    grid-auto-columns: calc((100% - 50px) / 6);
+  }
+}
+
+@media (max-width: 1023px) {
+  .jackpot-game-rail {
+    grid-auto-columns: calc((100% - 30px) / 4);
+  }
+}
+
+@media (max-width: 767px) {
+  .jackpot-brand-stage {
+    height: 98px;
+  }
+
+  .jackpot-provider-header--with-counter .jackpot-brand-stage {
+    height: 82px;
+  }
+
+  .jackpot-wordmark {
+    width: clamp(164px, 42vw, 194px);
+  }
+
+  .jackpot-character {
+    left: calc(50% + 61px);
+    width: clamp(88px, 25vw, 108px);
+  }
+
+  .jackpot-character--dragon {
+    left: calc(50% + 58px);
+    width: clamp(105px, 30vw, 126px);
+  }
+
+  .jackpot-character--genie {
+    left: calc(50% + 60px);
+  }
+
+  .jackpot-game-rail {
+    grid-auto-columns: calc((100% - 20px) / 3);
+  }
+}
+
+@media (max-width: 639px) {
+  .jackpot-provider-identity,
+  .jackpot-provider-count {
+    top: 6px;
+  }
+
+  .jackpot-counter-track {
+    height: 58px;
+  }
+
+  .jackpot-counter-character {
+    width: 34px;
+    height: 50px;
+  }
+
+  .jackpot-digit-image,
+  .jackpot-digit-fallback {
+    width: 29px;
+    max-height: 41px;
+  }
+
+  .jackpot-digit-fallback {
+    height: 41px;
+    font-size: 37px;
+  }
+
+  .jackpot-separator {
+    width: 8px;
+    height: 50px;
+  }
+
+  .jackpot-separator-image {
+    width: 8px;
+  }
+
+  .jackpot-game-rail {
+    grid-auto-columns: minmax(140px, 46%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jackpot-counter-character {
+    animation: none;
+  }
 }
 
 .winner-fade-enter-active {

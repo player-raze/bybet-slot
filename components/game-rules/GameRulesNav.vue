@@ -78,54 +78,56 @@ watch(() => route.path, () => {
 </script>
 
 <template>
-  <header class="game-rules-header-wrapper mb-3 sm:mb-4">
-    <!-- Top Bar: [ < ] Game Rules ........... [ AA ] -->
-    <div class="game-rules-top-bar flex items-center justify-between bg-[#1c201e] rounded-xl px-3 sm:px-4 py-2 border border-white/5 shadow-md">
-      <div class="flex items-center gap-2.5">
+  <div class="game-rules-sticky-wrapper sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-2 sm:-mx-4 px-2 sm:px-4 pt-1 pb-2 mb-2 sm:mb-3">
+    <header class="game-rules-header-wrapper">
+      <!-- Top Bar: [ < ] Game Rules ........... [ AA ] -->
+      <div class="game-rules-top-bar flex items-center justify-between bg-[#171817] rounded-xl px-3 sm:px-4 py-2 border border-white/5 shadow-md mb-2">
+        <div class="flex items-center gap-2.5">
+          <button
+            type="button"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/90 hover:text-white transition-colors cursor-pointer"
+            aria-label="Back"
+            title="Back"
+            @click="handleBack"
+          >
+            <ChevronLeft class="h-4 w-4" />
+          </button>
+          <span class="text-sm sm:text-base font-bold text-white tracking-wide select-none">
+            Game Rules
+          </span>
+        </div>
+
         <button
           type="button"
-          class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/90 hover:text-white transition-colors cursor-pointer"
-          aria-label="Back"
-          title="Back"
-          @click="handleBack"
+          class="flex items-center justify-center px-2 py-0.5 text-[#1fa779] hover:text-[#32d49a] hover:bg-white/5 rounded font-bold text-sm sm:text-base tracking-tight transition-colors cursor-pointer select-none"
+          :title="`Text size: ${textSizeLevel} (click to cycle)`"
+          aria-label="Adjust font size"
+          @click="cycleTextSize"
         >
-          <ChevronLeft class="h-4 w-4" />
+          AA
         </button>
-        <span class="text-sm sm:text-base font-bold text-white tracking-wide select-none">
-          Game Rules
-        </span>
       </div>
 
-      <button
-        type="button"
-        class="flex items-center justify-center px-2 py-0.5 text-[#1fa779] hover:text-[#32d49a] hover:bg-white/5 rounded font-bold text-sm sm:text-base tracking-tight transition-colors cursor-pointer select-none"
-        :title="`Text size: ${textSizeLevel} (click to cycle)`"
-        aria-label="Adjust font size"
-        @click="cycleTextSize"
+      <!-- Category Navigation Tabs (cornered layout matching screenshot) -->
+      <nav
+        ref="navContainerRef"
+        class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none"
+        aria-label="Game Rules Categories"
       >
-        AA
-      </button>
-    </div>
-
-    <!-- Category Navigation Tabs -->
-    <nav
-      ref="navContainerRef"
-      class="flex items-center gap-2 sm:gap-3 overflow-x-auto py-2.5 scrollbar-none"
-      aria-label="Game Rules Categories"
-    >
-      <NuxtLink
-        v-for="tab in ruleTabs"
-        :key="tab.to"
-        :to="tab.to"
-        class="shrink-0 text-xs font-bold uppercase transition-all whitespace-nowrap select-none"
-        :class="isActive(tab.to)
-          ? 'tab-pill--active bg-[#036242] text-white px-3.5 py-1 rounded-full shadow-sm'
-          : 'text-white/85 hover:text-white px-2 py-1 rounded-full hover:bg-white/5'"
-      >
-        {{ tab.label }}
-      </NuxtLink>
-    </nav>
-  </header>
+        <NuxtLink
+          v-for="tab in ruleTabs"
+          :key="tab.to"
+          :to="tab.to"
+          class="shrink-0 text-xs sm:text-sm font-semibold uppercase transition-all whitespace-nowrap select-none px-4 py-1.5 rounded-full border border-white/5"
+          :class="isActive(tab.to)
+            ? 'tab-pill--active bg-[#036242] text-white shadow font-bold'
+            : 'bg-[#242625] text-[#8e9491] hover:text-white'"
+        >
+          {{ tab.label }}
+        </NuxtLink>
+      </nav>
+    </header>
+  </div>
 </template>
 
 <style scoped>

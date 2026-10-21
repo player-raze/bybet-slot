@@ -1,29 +1,15 @@
 <script setup lang="ts">
-import {
-  Smartphone,
-  Download,
-  Apple,
-  QrCode,
-  ShieldCheck,
-  Zap,
-  Bell,
-  Fingerprint,
-  Tv,
-  CheckCircle2,
-  ChevronRight,
-  ChevronLeft,
-  Sparkles,
-} from 'lucide-vue-next'
+import { ChevronLeft } from 'lucide-vue-next'
 
 const router = useRouter()
 const { showDemoMessage } = useDemoInteraction()
-const activeTab = ref<'android' | 'ios'>('android')
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
 useSeoMeta({
   title: 'Download ByBet Mobile App — Android APK & iOS | Official ByBet',
-  description: 'Download the official ByBet mobile application for Android and iOS. Ultra-fast live sports odds, casino slots, biometric login, and instant GCash cashouts.',
+  description: 'Download the official ByBet mobile application for Android and iOS. Ultra-fast live sports odds, casino slots, and instant gaming.',
   ogTitle: 'Download ByBet Mobile App — Android APK & iOS | Official ByBet',
-  ogDescription: 'Experience mobile gaming at its finest. Download ByBet APK for Android or install our iOS Progressive Web App.',
+  ogDescription: 'Experience mobile gaming at its finest. Download ByBet for Google Play and App Store.',
 })
 
 const handleBack = (): void => {
@@ -34,248 +20,122 @@ const handleBack = (): void => {
   }
 }
 
-const handleDownloadAndroid = (): void => {
-  showDemoMessage('Downloading ByBet Official APK (v3.2.4)...')
+const handleGooglePlay = (): void => {
+  showDemoMessage('Downloading ByBet Official Android App from Google Play...')
+  if (import.meta.client ) {
+    window.open('https://play.google.com/store/apps/details?id=com.bygame.sports&hl=en')
+  }
 }
 
-const handleInstallIos = (): void => {
-  showDemoMessage('iOS Installation Guide: Follow the 3 steps below in Safari')
+const handleAppStore = (): void => {
+  showDemoMessage('Redirecting to ByBet on the Apple App Store...')
+  if (import.meta.client ) {
+    window.open('https://apps.apple.com/ph/app/bygame/id6748813909')
+  }
 }
-
-const appFeatures = [
-  {
-    icon: Zap,
-    title: 'Lightning Speed Odds',
-    desc: 'Up to 3x faster live odds refreshes and instant one-tap bet placement without lag.',
-  },
-  {
-    icon: Tv,
-    title: 'HD Live Sports Streaming',
-    desc: 'Watch Premier League, NBA, and La Liga matches live in full HD on your phone.',
-  },
-  {
-    icon: Fingerprint,
-    title: 'Biometric Login',
-    desc: 'Log in securely in under one second using your Face ID or Fingerprint scanner.',
-  },
-  {
-    icon: Bell,
-    title: 'Instant Push Alerts',
-    desc: 'Get notified immediately when your team scores or when withdrawal funds clear.',
-  },
-]
 </script>
 
 <template>
   <div class="download-app-page max-w-4xl mx-auto pb-16 px-2 sm:px-4 text-white">
-    <!-- Reusable Top SEO Header Bar -->
-    <SeoHeader
-      title="Download ByBet Mobile App"
-      description="Download the official ByBet Mobile App for iOS and Android. Enjoy sports betting, live dealer casino, and slots anytime, anywhere."
-      back-to="/explore/account/me"
-      custom-class="mb-4"
-    >
-      <template #title>
-        <div>
-          <span class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5">
-            <Smartphone class="h-4 w-4 text-[#32d49a]" />
-            ByBet Mobile Application
-          </span>
-          <p class="text-[11px] text-[#9eaea5] hidden sm:block font-normal">
-            Seamless gaming on Android and iOS smartphones
-          </p>
-        </div>
-      </template>
-      <template #right>
-        <div class="flex items-center gap-2">
-          <span class="text-base select-none">🇵🇭</span>
-          <span class="text-xs font-mono text-[#32d49a] bg-[#036242]/40 px-2.5 py-1 rounded-full font-bold">
-            v3.2.4 Official
-          </span>
-        </div>
-      </template>
-    </SeoHeader>
-
-    <!-- Hero Card -->
-    <div class="rounded-2xl bg-gradient-to-br from-[#036242]/40 via-[#141414] to-[#141414] p-6 sm:p-8 mb-6 border border-[#32d49a]/20 shadow-2xl relative overflow-hidden">
-      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div class="max-w-lg">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#036242] text-[#32d49a] text-xs font-bold mb-3 shadow-sm">
-            <Sparkles class="h-3.5 w-3.5" />
-            Exclusive App Experience
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
-            Bet Faster. Win Bigger. Anywhere, Anytime.
-          </h2>
-          <p class="text-xs sm:text-sm text-[#d1d5db] mt-2 leading-relaxed">
-            Download the official ByBet mobile app for ultra-low latency live odds, over 3,000+ slots, live casino streaming, and instant GCash/Maya transactions.
-          </p>
-
-          <!-- Download Action Buttons -->
-          <div class="flex flex-wrap items-center gap-3 mt-6">
-            <button
-              type="button"
-              class="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-[#32d49a] text-black font-extrabold text-xs sm:text-sm hover:bg-[#28b884] transition-all shadow-lg cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
-              @click="handleDownloadAndroid"
-            >
-              <Download class="h-4 w-4" />
-              <span>Download Android APK</span>
-            </button>
-
-            <button
-              type="button"
-              class="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-[#1C1C1C] text-white font-bold text-xs sm:text-sm hover:bg-[#252525] border border-white/10 transition-all shadow-md cursor-pointer"
-              @click="activeTab = 'ios'"
-            >
-              <Apple class="h-4 w-4" />
-              <span>iOS Quick Install</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- QR Code Box -->
-        <div class="rounded-2xl bg-[#1a1a1a] p-4 border border-white/10 flex flex-col items-center text-center shrink-0 shadow-lg">
-          <div class="h-32 w-32 rounded-xl bg-white p-2 flex items-center justify-center mb-2 shadow-inner">
-            <!-- Stylized QR Code Graphic -->
-            <div class="h-full w-full bg-slate-900 rounded p-1 flex flex-col justify-between">
-              <div class="flex justify-between">
-                <div class="h-8 w-8 bg-white rounded-sm flex items-center justify-center">
-                  <div class="h-4 w-4 bg-slate-900 rounded-xs" />
-                </div>
-                <div class="h-8 w-8 bg-white rounded-sm flex items-center justify-center">
-                  <div class="h-4 w-4 bg-slate-900 rounded-xs" />
-                </div>
-              </div>
-              <div class="text-[9px] font-mono text-[#32d49a] font-bold tracking-tighter">BYBET APP</div>
-              <div class="flex justify-between">
-                <div class="h-8 w-8 bg-white rounded-sm flex items-center justify-center">
-                  <div class="h-4 w-4 bg-slate-900 rounded-xs" />
-                </div>
-                <div class="h-8 w-8 border border-white flex items-center justify-center text-white text-[8px] font-bold">
-                  SCAN
-                </div>
-              </div>
-            </div>
-          </div>
-          <span class="text-xs font-bold text-white">Scan with Camera</span>
-          <span class="text-[10px] text-[#7a807d]">Direct Mobile Download</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- App Features Grid -->
-    <div class="mb-8">
-      <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-3">
-        Engineered for Mobile Performance
-      </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        <div
-          v-for="feat in appFeatures"
-          :key="feat.title"
-          class="rounded-xl bg-[#141414] p-4 border border-white/5 flex flex-col justify-between"
-        >
-          <div>
-            <div class="h-9 w-9 rounded-lg bg-[#036242]/30 text-[#32d49a] flex items-center justify-center mb-2.5">
-              <component :is="feat.icon" class="h-4 w-4" />
-            </div>
-            <h4 class="text-xs font-bold text-white mb-1">{{ feat.title }}</h4>
-            <p class="text-[11px] text-[#9eaea5] leading-relaxed">{{ feat.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Installation Guides with Tabs -->
-    <div class="rounded-xl bg-[#141414] p-5 border border-white/5 mb-8">
-      <div class="flex items-center gap-2 pb-4 mb-4 border-b border-white/5">
+    <!-- Top Sticky Header Bar with black background wrapper -->
+    <div class="sticky top-[var(--header-height)] z-20 bg-[#000000] -mx-1 px-1 pt-0.5 pb-1 mb-2">
+      <div class="header-card flex items-center gap-2 rounded-lg bg-[#141414] px-3 py-2 text-white shadow-sm border border-white/5">
         <button
           type="button"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer"
-          :class="activeTab === 'android'
-            ? 'bg-[#036242] text-white shadow-sm'
-            : 'bg-[#1C1C1C] text-[#9eaea5] hover:text-white'"
-          @click="activeTab = 'android'"
+          class="flex h-6 w-6 items-center justify-center rounded-full bg-[#1f1f1f] text-[#1fa779] hover:bg-[#252525] transition-colors cursor-pointer shrink-0"
+          aria-label="Go back"
+          @click="handleBack"
         >
-          <Download class="h-3.5 w-3.5" />
-          <span>Android Installation Guide</span>
+          <ChevronLeft class="h-3.5 w-3.5" />
         </button>
 
-        <button
-          type="button"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer"
-          :class="activeTab === 'ios'
-            ? 'bg-[#036242] text-white shadow-sm'
-            : 'bg-[#1C1C1C] text-[#9eaea5] hover:text-white'"
-          @click="activeTab = 'ios'"
-        >
-          <Apple class="h-3.5 w-3.5" />
-          <span>iOS (iPhone / iPad) Guide</span>
-        </button>
+        <h1 class="text-[15px] font-bold text-white tracking-tight leading-tight">
+          Download APP
+        </h1>
       </div>
+    </div>
 
-      <!-- Android Content -->
-      <div v-if="activeTab === 'android'" class="space-y-4">
-        <div class="flex items-start gap-3">
-          <div class="h-7 w-7 rounded-full bg-[#036242] text-white font-bold text-xs flex items-center justify-center shrink-0">1</div>
-          <div>
-            <strong class="text-xs font-bold text-white block mb-0.5">Download the APK File</strong>
-            <p class="text-xs text-[#9eaea5]">Click "Download Android APK" above to save the latest `bybet-latest.apk` (approx. 28 MB) to your device.</p>
-          </div>
-        </div>
+    <!-- Center Content Card with Soccer Player Graphic and Floating Buttons -->
+    <div class="app-card rounded-2xl bg-[#141414] border border-white/5 p-4 sm:p-6 lg:p-10 mb-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+      <div class="relative w-full max-w-[560px] mx-auto flex items-center justify-center min-h-[300px] sm:min-h-[460px]">
+        <!-- Center Image matching 2nd photo -->
+        <img
+          src="/images/app/league-player.png"
+          alt="ByBet App League"
+          class="w-full h-auto max-h-[480px] object-contain select-none pointer-events-none drop-shadow-2xl"
+          loading="eager"
+        />
 
-        <div class="flex items-start gap-3">
-          <div class="h-7 w-7 rounded-full bg-[#036242] text-white font-bold text-xs flex items-center justify-center shrink-0">2</div>
-          <div>
-            <strong class="text-xs font-bold text-white block mb-0.5">Allow Install from Unknown Sources</strong>
-            <p class="text-xs text-[#9eaea5]">When prompted by Android Security, tap Settings and toggle "Allow from this source" or "Install unknown apps" for your browser.</p>
-          </div>
-        </div>
+        <!-- Floating Buttons in the Middle -->
+        <div class="absolute inset-0 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 z-10 pointer-events-none">
+          <!-- Download in Google Play -->
+          <button
+            type="button"
+            class="pointer-events-auto flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#036242] hover:bg-[#047b53] text-white font-bold text-xs sm:text-sm shadow-[0_8px_30px_rgb(0,0,0,0.85)] border border-white/20 backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+            @click="handleGooglePlay"
+          >
+            <svg class="w-5 h-5 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M3.609 1.814L13.792 12 3.61 22.186A2.298 2.298 0 0 1 3 20.627V3.373c0-.62.23-1.19.609-1.559z" fill="#00D2FF"/>
+              <path d="M17.37 8.423l-3.578 3.577 3.578 3.577 4.08-2.317a1.442 1.442 0 0 0 0-2.52l-4.08-2.317z" fill="#FFCE00"/>
+              <path d="M3.609 22.186l10.183-10.186 3.578 3.577-11.458 6.51a2.127 2.127 0 0 1-2.303.099z" fill="#FF3A44"/>
+              <path d="M3.609 1.814c.73-.418 1.62-.387 2.303.099l11.458 6.51-3.578 3.577L3.609 1.814z" fill="#00E676"/>
+            </svg>
+            <span>Download in Google Play</span>
+          </button>
 
-        <div class="flex items-start gap-3">
-          <div class="h-7 w-7 rounded-full bg-[#036242] text-white font-bold text-xs flex items-center justify-center shrink-0">3</div>
-          <div>
-            <strong class="text-xs font-bold text-white block mb-0.5">Open & Launch ByBet</strong>
-            <p class="text-xs text-[#9eaea5]">Tap the completed download notification to complete installation. Log in to claim exclusive mobile bonus rewards!</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- iOS Content -->
-      <div v-else class="space-y-4">
-        <div class="flex items-start gap-3">
-          <div class="h-7 w-7 rounded-full bg-[#036242] text-white font-bold text-xs flex items-center justify-center shrink-0">1</div>
-          <div>
-            <strong class="text-xs font-bold text-white block mb-0.5">Open ByBet in Safari</strong>
-            <p class="text-xs text-[#9eaea5]">Ensure you are viewing ByBet on your iPhone or iPad using the default Apple Safari browser.</p>
-          </div>
-        </div>
-
-        <div class="flex items-start gap-3">
-          <div class="h-7 w-7 rounded-full bg-[#036242] text-white font-bold text-xs flex items-center justify-center shrink-0">2</div>
-          <div>
-            <strong class="text-xs font-bold text-white block mb-0.5">Tap the Share Icon</strong>
-            <p class="text-xs text-[#9eaea5]">Tap the Share button (square icon with an upward arrow) located at the bottom center of the Safari toolbar.</p>
-          </div>
-        </div>
-
-        <div class="flex items-start gap-3">
-          <div class="h-7 w-7 rounded-full bg-[#036242] text-white font-bold text-xs flex items-center justify-center shrink-0">3</div>
-          <div>
-            <strong class="text-xs font-bold text-white block mb-0.5">Select "Add to Home Screen"</strong>
-            <p class="text-xs text-[#9eaea5]">Scroll down the share sheet and tap "Add to Home Screen". The ByBet icon will now launch as a full-screen, ultra-fast web application!</p>
-          </div>
+          <!-- Download in App Store -->
+          <button
+            type="button"
+            class="pointer-events-auto flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#1e201f]/95 hover:bg-[#282d2a] text-white font-bold text-xs sm:text-sm shadow-[0_8px_30px_rgb(0,0,0,0.85)] border border-white/20 backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+            @click="handleAppStore"
+          >
+            <svg class="w-5 h-5 shrink-0 fill-current" width="20" height="20" viewBox="0 0 24 24">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.66 1.38-.56.65-1.06 1.7-0.92 2.73 1.05.08 2.05-.49 2.66-1.24z"/>
+            </svg>
+            <span>Download in App Store</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Security & Compatibility -->
-    <div class="rounded-xl bg-[#1a1a1a] p-4 border border-white/5 flex items-start gap-3 text-xs text-[#9eaea5]">
-      <ShieldCheck class="h-5 w-5 text-[#32d49a] shrink-0 mt-0.5" />
-      <div>
-        <strong class="text-white block mb-0.5">Certified Virus-Free & Secure</strong>
-        ByBet application packages are digitally signed and verified with 256-bit SSL encryption. Compatible with Android 7.0 (Nougat) or newer, and iOS 14.0 or newer.
+    <!-- Bottom Compliance Section matching 2nd Photo -->
+    <div class="flex flex-col items-center justify-center text-center space-y-3 pt-2">
+      <!-- Certifications / Badges -->
+      <div class="flex items-center justify-center gap-3">
+        <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center p-1 shadow">
+          <img
+            src="/responsible-gaming/pagcor.png"
+            alt="PAGCOR Regulated"
+            class="h-7 w-7 object-contain"
+          />
+        </div>
+        <div class="h-10 w-28 rounded-lg bg-white flex items-center justify-center gap-1.5 px-2 shadow">
+          <span class="text-[14px] font-black text-red-600 border border-red-600 rounded-full h-5 w-5 flex items-center justify-center">21</span>
+          <span class="text-[7.5px] font-bold text-black leading-tight text-left">GAMBLING CAN BE ADDICTIVE<br><strong>KNOW WHEN TO STOP</strong></span>
+        </div>
       </div>
+
+      <!-- Links & Warnings -->
+      <div class="text-[11px] font-semibold text-[#f04438] tracking-wide">
+        <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
+        <span class="mx-2">•</span>
+        <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
+      </div>
+
+      <p class="text-[10px] font-medium text-[#2e90fa] max-w-md uppercase leading-relaxed">
+        GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.
+      </p>
     </div>
   </div>
 </template>
 
+<style scoped>
+.download-app-page {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.app-card {
+  word-break: break-word;
+}
+</style>

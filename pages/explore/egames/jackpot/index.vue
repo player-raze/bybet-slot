@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: () => {
-    return navigateTo('/explore/egames/jackpot/jdb', { replace: true })
+    return navigateTo('/explore/egames/jackpot/all', { replace: true })
   },
 })
 </script>

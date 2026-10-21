@@ -275,6 +275,9 @@ const handleOddClick = (prediction: Prediction, option: { label: string; odd: st
 
 /* Top Predict Card */
 .predict-card {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 20;
   background-color: #171d1a;
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 1rem;

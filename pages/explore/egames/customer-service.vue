@@ -37,6 +37,7 @@ onMounted(() => {
   <div class="customer-service-page w-full min-w-0 pb-16 pt-1 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
+      sticky
       title="24/7 Services"
       description="Connect with ByBet Philippines 24/7 Customer Support. Instant live chat, Telegram assistance, VIP manager support, and email inquiries."
       back-to="/explore/entertainment/live-casino/all"

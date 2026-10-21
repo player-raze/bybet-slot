@@ -32,18 +32,158 @@ export const LIVE_CASINO_CATEGORIES: LiveCasinoCategory[] = [
 
 export const GAME_SHOW: LiveCasinoTable[] = [
   {
-    id: 'crazy-time',
-    title: 'Crazy Time',
-    image: '/images/casino/card1.jpg',
-    players: 2400,
-    category: 'game-show',
+    "id": "crazy-pachinko",
+    "title": "Crazy Pachinko",
+    "image": "/images/casino/game-show/gen_pch2_med_M.webp",
+    "players": 49,
+    "category": "game-show"
   },
   {
-    id: 'monopoly-live',
-    title: 'Monopoly Live',
-    image: '/images/casino/card1.jpg',
-    players: 1100,
-    category: 'game-show',
+    "id": "lightning-storm",
+    "title": "Lightning Storm",
+    "image": "/images/casino/game-show/lmwr1_med_M.webp",
+    "players": 1786,
+    "category": "game-show"
+  },
+  {
+    "id": "super-color-game",
+    "title": "Super Color Game",
+    "image": "/images/casino/game-show/lcgr1_dice_med_M.webp",
+    "players": 210,
+    "category": "game-show"
+  },
+  {
+    "id": "monopoly-live",
+    "title": "MONOPOLY Live",
+    "image": "/images/casino/game-show/mdc2_mw_en_med_M.webp",
+    "players": 814,
+    "category": "game-show"
+  },
+  {
+    "id": "funky-time",
+    "title": "Funky Time",
+    "image": "/images/casino/game-show/fntk1_fnt_med_M.webp",
+    "players": 4024,
+    "category": "game-show"
+  },
+  {
+    "id": "ice-fishing",
+    "title": "Ice Fishing",
+    "image": "/images/casino/game-show/icefishing_med_M.webp",
+    "players": 28523,
+    "category": "game-show"
+  },
+  {
+    "id": "dream-catcher",
+    "title": "Dream Catcher",
+    "image": "/images/casino/game-show/dc1_mw_med_M.webp",
+    "players": 237,
+    "category": "game-show"
+  },
+  {
+    "id": "crazy-time",
+    "title": "Crazy Time",
+    "image": "/images/casino/game-show/dc3_ct_med_M.webp",
+    "players": 6548,
+    "category": "game-show"
+  },
+  {
+    "id": "imperial-quest",
+    "title": "Imperial Quest",
+    "image": "/images/casino/game-show/dcca1_mw_med_M.webp",
+    "players": 34,
+    "category": "game-show"
+  },
+  {
+    "id": "monopoly-big-baller",
+    "title": "MONOPOLY Big Baller",
+    "image": "/images/casino/game-show/monbbk1_mb_en_med_M.webp",
+    "players": 5627,
+    "category": "game-show"
+  },
+  {
+    "id": "crazy-time-a",
+    "title": "Crazy Time A",
+    "image": "/images/casino/game-show/ctk1_ct_med_M.webp",
+    "players": 1789,
+    "category": "game-show"
+  },
+  {
+    "id": "lightning-dice",
+    "title": "Lightning Dice",
+    "image": "/images/casino/game-show/light1_dice_med_M.webp",
+    "players": 271,
+    "category": "game-show"
+  },
+  {
+    "id": "football-studio-dice",
+    "title": "Football Studio Dice",
+    "image": "/images/casino/game-show/fsdicem1_bi_med_M.webp",
+    "players": 77,
+    "category": "game-show"
+  },
+  {
+    "id": "dead-or-alive-saloon",
+    "title": "Dead or Alive: Saloon",
+    "image": "/images/casino/game-show/card_med_M.webp",
+    "players": 42,
+    "category": "game-show"
+  },
+  {
+    "id": "race-track",
+    "title": "Race Track",
+    "image": "/images/casino/game-show/rng_racetrack_live_med_M.webp",
+    "players": 229,
+    "category": "game-show"
+  },
+  {
+    "id": "crazy-coin-flip",
+    "title": "Crazy Coin Flip",
+    "image": "/images/casino/game-show/gen_ccf1_med_M.webp",
+    "players": 157,
+    "category": "game-show"
+  },
+  {
+    "id": "perya-super-color-game",
+    "title": "Perya Super Color Game",
+    "image": "/images/casino/game-show/lcgceb1_dice_med_M.webp",
+    "players": 82,
+    "category": "game-show"
+  },
+  {
+    "id": "balloon-race",
+    "title": "Balloon Race",
+    "image": "/images/casino/game-show/rng_balloonrace_med_M.webp",
+    "players": 33,
+    "category": "game-show"
+  },
+  {
+    "id": "football-studio",
+    "title": "Football Studio",
+    "image": "/images/casino/game-show/topctm1_bi_med_M.webp",
+    "players": 356,
+    "category": "game-show"
+  },
+  {
+    "id": "red-baron",
+    "title": "Red Baron",
+    "image": "/images/casino/game-show/redbaron_med_M.webp",
+    "players": 202,
+    "category": "game-show"
+  },
+  {
+    "id": "marble-race",
+    "title": "Marble Race",
+    "image": "/images/casino/game-show/mracer1_mr_med_M.webp",
+    "players": 87,
+    "category": "game-show"
+  },
+  {
+    "id": "extra-chilli-epic-spins",
+    "title": "Extra Chilli Epic Spins",
+    "image": "/images/casino/game-show/exchk_es0_med_M.webp",
+    "players": 82,
+    "category": "game-show"
   }
 ]
 
@@ -4659,37 +4799,451 @@ export const FANTAN: LiveCasinoTable[] = [
 
 export const BLACKJACK: LiveCasinoTable[] = [
   {
-    id: 'blackjack-vip-9',
-    title: 'Blackjack VIP 9',
-    image: '/images/casino/card1.jpg',
-    players: 6,
-    category: 'blackjack',
-    wins: [0, 1, 1, 0, 1, 1, 1],
+    "id": "salon-prive-blackjack-j",
+    "title": "Salon Privé Blackjack J",
+    "image": "/images/casino/blackjack/bj_spr10_med_M.webp",
+    "players": 0,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 0, 0, 0, 1]
   },
   {
-    id: 'speed-blackjack-2',
-    title: 'Speed Blackjack 2',
-    image: '/images/casino/card1.jpg',
-    players: 8,
-    category: 'blackjack',
-    wins: [1, 0, 0, 1, 1, 0, 1],
+    "id": "perya-classic-blackjack-4",
+    "title": "Perya Classic Blackjack 4",
+    "image": "/images/casino/blackjack/bj_perceb4_med_M.webp",
+    "players": 12,
+    "category": "blackjack",
+    "wins": [0, 1, 1, 0, 0, 1, 0]
+  },
+  {
+    "id": "blackjack-vip-9",
+    "title": "Blackjack VIP 9",
+    "image": "/images/casino/blackjack/bj_vipt12_med_M.webp",
+    "players": 6,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 0, 0, 0, 1]
+  },
+  {
+    "id": "evo-speed-blackjack-2",
+    "title": "Evo Speed Blackjack 2",
+    "image": "/images/casino/blackjack/bj_espdk2_med_M.webp",
+    "players": 11,
+    "category": "blackjack",
+  },
+  {
+    "id": "blackjack-vip-34",
+    "title": "Blackjack VIP 34",
+    "image": "/images/casino/blackjack/bj_vipr34_med_M.webp",
+    "players": 0,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 1, 1, 1, 1]
+  },
+  {
+    "id": "salon-prive-blackjack-n",
+    "title": "Salon Privé Blackjack N",
+    "image": "/images/casino/blackjack/bj_spr14_med_M.webp",
+    "players": 1,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 0, 1, 0, 1]
+  },
+  {
+    "id": "speed-vip-blackjack-k",
+    "title": "Speed VIP Blackjack K",
+    "image": "/images/casino/blackjack/bj_spdvipt11_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [0, 1, 1, 1, 0, 0, 1]
+  },
+  {
+    "id": "speed-vip-blackjack-d",
+    "title": "Speed VIP Blackjack D",
+    "image": "/images/casino/blackjack/bj_spdvipt4_med_M.webp",
+    "players": 11,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 0, 0, 0, 0]
+  },
+  {
+    "id": "perya-classic-blackjack-1",
+    "title": "Perya Classic Blackjack 1",
+    "image": "/images/casino/blackjack/bj_perceb1_med_M.webp",
+    "players": 12,
+    "category": "blackjack",
+    "wins": [1, 0, 1, 1, 1, 1, 0]
+  },
+  {
+    "id": "blackjack-vip-a",
+    "title": "Blackjack VIP A",
+    "image": "/images/casino/blackjack/bj_vipro3_med_M.webp",
+    "players": 7,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 1, 0, 0, 0]
+  },
+  {
+    "id": "blackjack-platinum-vip",
+    "title": "Blackjack Platinum VIP",
+    "image": "/images/casino/blackjack/bj_vipro12_med_M.webp",
+    "players": 12,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 1, 1, 0, 0]
+  },
+  {
+    "id": "salon-prive-blackjack-h",
+    "title": "Salon Privé Blackjack H",
+    "image": "/images/casino/blackjack/bj_spr8_med_M.webp",
+    "players": 0,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 0, 1, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-3",
+    "title": "Blackjack VIP 3",
+    "image": "/images/casino/blackjack/bj_vipt6_med_M.webp",
+    "players": 7,
+    "category": "blackjack",
+    "wins": [0, 0, 1, 1, 1, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-o",
+    "title": "Blackjack VIP O",
+    "image": "/images/casino/blackjack/bj_vipr8_med_M.webp",
+    "players": 9,
+    "category": "blackjack",
+    "wins": [0, 1, 1, 1, 0, 0, 0]
+  },
+  {
+    "id": "blackjack-vip-u",
+    "title": "Blackjack VIP U",
+    "image": "/images/casino/blackjack/bj_vgena52_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 1, 0, 0, 1]
+  },
+  {
+    "id": "speed-vip-blackjack-a",
+    "title": "Speed VIP Blackjack A",
+    "image": "/images/casino/blackjack/bj_spdvipt1_med_M.webp",
+    "players": 11,
+    "category": "blackjack",
+    "wins": [0, 0, 1, 0, 0, 1, 0]
+  },
+  {
+    "id": "blackjack-vip-5",
+    "title": "Blackjack VIP 5",
+    "image": "/images/casino/blackjack/bj_vgena5_med_M.webp",
+    "players": 9,
+    "category": "blackjack",
+    "wins": [0, 0, 1, 0, 0, 0, 0]
+  },
+  {
+    "id": "blackjack-b",
+    "title": "Blackjack B",
+    "image": "/images/casino/blackjack/bj_gen2_med_M.webp",
+    "players": 22,
+    "category": "blackjack",
+    "wins": [0, 0, 0, 0, 1, 0, 0]
+  },
+  {
+    "id": "lightning-blackjack",
+    "title": "Lightning Blackjack",
+    "image": "/images/casino/blackjack/bj_lightr1_med_M.webp",
+    "players": 30,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 0, 1, 0, 0]
+  },
+  {
+    "id": "blackjack-silver-e",
+    "title": "Blackjack Silver E",
+    "image": "/images/casino/blackjack/bj_cgent94_med_M.webp",
+    "players": 6,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 1, 1, 0, 1]
+  },
+  {
+    "id": "blackjack-vip-1",
+    "title": "Blackjack VIP 1",
+    "image": "/images/casino/blackjack/bj_vipr7_med_M.webp",
+    "players": 12,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 0, 1, 1, 0]
+  },
+  {
+    "id": "blackjack-vip-25",
+    "title": "Blackjack VIP 25",
+    "image": "/images/casino/blackjack/bj_vgena15_med_M.webp",
+    "players": 7,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 0, 0, 1, 1]
+  },
+  {
+    "id": "evo-speed-blackjack-6",
+    "title": "Evo Speed Blackjack 6",
+    "image": "/images/casino/blackjack/bj_espdk6_med_M.webp",
+    "players": 10,
+    "category": "blackjack",
+  },
+  {
+    "id": "blackjack-silver-b",
+    "title": "Blackjack Silver B",
+    "image": "/images/casino/blackjack/bj_cgent10_med_M.webp",
+    "players": 6,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 0, 1, 0, 0]
+  },
+  {
+    "id": "blackjack-vip-q",
+    "title": "Blackjack VIP Q",
+    "image": "/images/casino/blackjack/bj_vipr4_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 0, 1, 0, 1]
+  },
+  {
+    "id": "blackjack-vip-12",
+    "title": "Blackjack VIP 12",
+    "image": "/images/casino/blackjack/bj_vipro14_med_M.webp",
+    "players": 10,
+    "category": "blackjack",
+    "wins": [0, 1, 1, 1, 1, 1, 0]
+  },
+  {
+    "id": "blackjack-vip-36",
+    "title": "Blackjack VIP 36",
+    "image": "/images/casino/blackjack/bj_vipr39_med_M.webp",
+    "players": 6,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 0, 1, 0, 0]
+  },
+  {
+    "id": "salon-prive-blackjack-m",
+    "title": "Salon Privé Blackjack M",
+    "image": "/images/casino/blackjack/bj_spr13_med_M.webp",
+    "players": 0,
+    "category": "blackjack",
+    "wins": [0, 0, 0, 1, 0, 1, 0]
+  },
+  {
+    "id": "perya-vip-blackjack-7",
+    "title": "Perya VIP Blackjack 7",
+    "image": "/images/casino/blackjack/bj_vperceb7_med_M.webp",
+    "players": 6,
+    "category": "blackjack",
+    "wins": [1, 0, 1, 0, 1, 0, 0]
+  },
+  {
+    "id": "perya-classic-blackjack-9",
+    "title": "Perya Classic Blackjack 9",
+    "image": "/images/casino/blackjack/bj_perceb9_med_M.webp",
+    "players": 12,
+    "category": "blackjack",
+    "wins": [0, 0, 0, 0, 1, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-15",
+    "title": "Blackjack VIP 15",
+    "image": "/images/casino/blackjack/bj_vipt18_med_M.webp",
+    "players": 6,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 1, 1, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-28",
+    "title": "Blackjack VIP 28",
+    "image": "/images/casino/blackjack/bj_vgenmed28_med_M.webp",
+    "players": 5,
+    "category": "blackjack",
+    "wins": [0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+    "id": "blackjack-vip-k",
+    "title": "Blackjack VIP K",
+    "image": "/images/casino/blackjack/bj_vipr6_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [1, 0, 1, 0, 0, 1, 0]
+  },
+  {
+    "id": "perya-vip-blackjack-2",
+    "title": "Perya VIP Blackjack 2",
+    "image": "/images/casino/blackjack/bj_vperceb2_med_M.webp",
+    "players": 9,
+    "category": "blackjack",
+    "wins": [1, 1, 1, 0, 0, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-n",
+    "title": "Blackjack VIP N",
+    "image": "/images/casino/blackjack/bj_cgent67_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 1, 0, 0, 1]
+  },
+  {
+    "id": "blackjack-silver-c",
+    "title": "Blackjack Silver C",
+    "image": "/images/casino/blackjack/bj_cgent88_med_M.webp",
+    "players": 10,
+    "category": "blackjack",
+  },
+  {
+    "id": "blackjack-vip-x",
+    "title": "Blackjack VIP X",
+    "image": "/images/casino/blackjack/bj_vgena53_med_M.webp",
+    "players": 7,
+    "category": "blackjack",
+    "wins": [1, 0, 1, 0, 0, 0, 1]
+  },
+  {
+    "id": "blackjack-a",
+    "title": "Blackjack A",
+    "image": "/images/casino/blackjack/bj_gen7_med_M.webp",
+    "players": 24,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 0, 0, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-h",
+    "title": "Blackjack VIP H",
+    "image": "/images/casino/blackjack/bj_cgent66_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [1, 0, 1, 1, 0, 0, 0]
+  },
+  {
+    "id": "salon-prive-blackjack-i",
+    "title": "Salon Privé Blackjack I",
+    "image": "/images/casino/blackjack/bj_spr9_med_M.webp",
+    "players": 0,
+    "category": "blackjack",
+    "wins": [0, 0, 1, 0, 1, 0, 1]
+  },
+  {
+    "id": "perya-vip-blackjack-1",
+    "title": "Perya VIP Blackjack 1",
+    "image": "/images/casino/blackjack/bj_vperceb1_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+    "id": "blackjack-vip-37",
+    "title": "Blackjack VIP 37",
+    "image": "/images/casino/blackjack/bj_vgena20_med_M.webp",
+    "players": 3,
+    "category": "blackjack",
+    "wins": [1, 0, 0, 1, 1, 1, 0]
+  },
+  {
+    "id": "salon-prive-blackjack-d",
+    "title": "Salon Privé Blackjack D",
+    "image": "/images/casino/blackjack/bj_spr5_med_M.webp",
+    "players": 0,
+    "category": "blackjack",
+    "wins": [0, 1, 0, 1, 1, 1, 1]
+  },
+  {
+    "id": "perya-vip-blackjack-5",
+    "title": "Perya VIP Blackjack 5",
+    "image": "/images/casino/blackjack/bj_vperceb5_med_M.webp",
+    "players": 7,
+    "category": "blackjack",
+    "wins": [1, 1, 0, 1, 0, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-alpha",
+    "title": "Blackjack VIP Alpha",
+    "image": "/images/casino/blackjack/bj_vipro13_med_M.webp",
+    "players": 4,
+    "category": "blackjack",
+    "wins": [1, 0, 1, 0, 1, 0, 1]
+  },
+  {
+    "id": "blackjack-vip-d",
+    "title": "Blackjack VIP D",
+    "image": "/images/casino/blackjack/bj_vipk4_med_M.webp",
+    "players": 4,
+    "category": "blackjack",
+    "wins": [0, 1, 1, 0, 0, 1, 1]
+  },
+  {
+    "id": "evo-speed-blackjack-10",
+    "title": "Evo Speed Blackjack 10",
+    "image": "/images/casino/blackjack/bj_espdmad10_med_M.webp",
+    "players": 10,
+    "category": "blackjack",
+  },
+  {
+    "id": "salon-prive-blackjack-g",
+    "title": "Salon Privé Blackjack G",
+    "image": "/images/casino/blackjack/bj_spr7_med_M.webp",
+    "players": 1,
+    "category": "blackjack",
+    "wins": [0, 1, 1, 0, 1, 1, 1]
+  },
+  {
+    "id": "blackjack-vip-6",
+    "title": "Blackjack VIP 6",
+    "image": "/images/casino/blackjack/bj_vipt9_med_M.webp",
+    "players": 8,
+    "category": "blackjack",
+    "wins": [0, 0, 0, 1, 0, 1, 0]
   }
 ]
 
 export const POKER: LiveCasinoTable[] = [
   {
-    id: 'poker-1',
-    title: 'Live Poker 1',
-    image: '/images/casino/card1.jpg',
-    players: 5,
-    category: 'poker',
+    "id": "three-card-poker",
+    "title": "Three Card Poker",
+    "image": "/images/casino/poker/pk_3card_med_M.webp",
+    "players": 23,
+    "category": "poker"
   },
   {
-    id: 'poker-2',
-    title: 'Live Poker 2',
-    image: '/images/casino/card1.jpg',
-    players: 3,
-    category: 'poker',
+    "id": "2-hand-casino-hold-em",
+    "title": "2 Hand Casino Hold'em",
+    "image": "/images/casino/poker/pk_thchr1_med_M.webp",
+    "players": 38,
+    "category": "poker"
+  },
+  {
+    "id": "super-andar-bahar",
+    "title": "Super Andar Bahar",
+    "image": "/images/casino/poker/pk_teds1_med_M.webp",
+    "players": 336,
+    "category": "poker"
+  },
+  {
+    "id": "teen-patti",
+    "title": "Teen Patti",
+    "image": "/images/casino/poker/pk_tnptr1_med_M.webp",
+    "players": 59,
+    "category": "poker"
+  },
+  {
+    "id": "casino-hold-em",
+    "title": "Casino Hold'em",
+    "image": "/images/casino/poker/pk_gen_med_M.webp",
+    "players": 136,
+    "category": "poker"
+  },
+  {
+    "id": "caribbean-stud-poker",
+    "title": "Caribbean Stud Poker",
+    "image": "/images/casino/poker/pk_crb_med_M.webp",
+    "players": 23,
+    "category": "poker"
+  },
+  {
+    "id": "texas-hold-em-bonus-poker",
+    "title": "Texas Hold'em Bonus Poker",
+    "image": "/images/casino/poker/pk_bth1_med_M.webp",
+    "players": 57,
+    "category": "poker"
+  },
+  {
+    "id": "ultimate-texas-hold-em",
+    "title": "Ultimate Texas Hold'em",
+    "image": "/images/casino/poker/pk_uth1_med_M.webp",
+    "players": 56,
+    "category": "poker"
   }
 ]
 

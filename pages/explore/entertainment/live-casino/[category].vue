@@ -140,40 +140,42 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 
 <template>
   <div class="live-casino-page w-full min-w-0 pb-16 pt-1 text-white">
-    <!-- Top Bar -->
-    <header class="top-brand-bar flex items-center  justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
-      <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
-        <div class="h-9 w-9 rounded-xl bg-[#036242] flex items-center justify-center shadow-md">
-          <img
-            :src="pragmaticPlayLogo"
-            alt="Pragmatic Play"
-            class="h-6 w-6 object-contain"
-          />
+    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-0.5">
+      <!-- Top Bar -->
+      <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
+        <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
+          <div class="h-6 w-8 rounded-md bg-[#036242] flex items-center justify-center shadow-md">
+            <img
+              :src="pragmaticPlayLogo"
+              alt="Pragmatic Play"
+              class="h-5 w-5 object-contain"
+            />
+          </div>
         </div>
-      </div>
-      <button
-        type="button"
-        class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none  pl-2"
-        :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
-        @click="toggleChat"
-      >
-        <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
-        <span class="text-[11px] leading-tight">Chat</span>
-      </button>
-    </header>
+        <button
+          type="button"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none  pl-2"
+          :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
+          @click="toggleChat"
+        >
+          <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
+          <span class="text-[11px] leading-tight">Chat</span>
+        </button>
+      </header>
 
-    <!-- Category Filter Bar -->
-    <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817]  px-1 py-1.5 mb-1.5 shadow-sm">
-      <button
-        v-for="cat in LIVE_CASINO_CATEGORIES"
-        :key="cat.key"
-        type="button"
-        class="category-pill px-1.5 py-0.5 rounded-md text-[14px]  whitespace-nowrap transition-all cursor-pointer select-none"
-        :class="activeCategory === cat.key ? 'bg-[#036242] text-white font-bold shadow' : 'text-[#8e9491] '"
-        @click="selectCategory(cat.key)"
-      >
-        {{ cat.label }}
-      </button>
+      <!-- Category Filter Bar -->
+      <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817]  px-1 py-1.5 mb-1.5 shadow-sm">
+        <button
+          v-for="cat in LIVE_CASINO_CATEGORIES"
+          :key="cat.key"
+          type="button"
+          class="category-pill px-1.5 py-0.5 rounded-md text-[14px]  whitespace-nowrap transition-all cursor-pointer select-none"
+          :class="activeCategory === cat.key ? 'bg-[#036242] text-white font-bold shadow' : 'text-[#8e9491] '"
+          @click="selectCategory(cat.key)"
+        >
+          {{ cat.label }}
+        </button>
+      </div>
     </div>
 
     <!-- Live Casino Tables Grid -->

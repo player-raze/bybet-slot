@@ -26,6 +26,7 @@ const handleBack = (): void => {
   <div class="live-plaza-all-streamers-page w-full min-w-0 pb-16 pt-1 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
+      sticky
       :title="translate('All Streamers')"
       description="Watch and follow top casino, sports, and gaming streamers live on ByBet Philippines."
       back-to="/explore/live-plaza/streamer"

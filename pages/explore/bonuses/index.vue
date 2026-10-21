@@ -156,25 +156,27 @@ const getIconComponent = (type?: string) => {
 
 <template>
   <div class="bonuses-page w-full min-w-0 pb-16 pt-1 text-white">
-    <!-- Reusable SEO Top Header Bar -->
-    <SeoHeader
-      title="Bonuses"
-      description="Explore the latest bonuses, daily slot rebates, free spins, deposit matches, and VIP promotions on ByBet Philippines."
-      keywords="ByBet bonuses, Philippines casino bonus, deposit reward, free spins, daily slot rebate"
-    />
+    <!-- Reusable SEO Top Header Bar & Category Filter Bar -->
+    <div class="sticky top-[var(--header-height)] z-20 bg-[#000000] -mx-1 px-1 -mt-1 pb-1">
+      <SeoHeader
+        title="Bonuses"
+        description="Explore the latest bonuses, daily slot rebates, free spins, deposit matches, and VIP promotions on ByBet Philippines."
+        keywords="ByBet bonuses, Philippines casino bonus, deposit reward, free spins, daily slot rebate"
+      />
 
-    <!-- Category Filter Bar -->
-    <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817] px-2 py-1.5 mb-3 shadow-sm">
-      <button
-        v-for="cat in PROMO_CATEGORIES"
-        :key="cat.key"
-        type="button"
-        class="category-pill px-3 py-1 rounded-md text-[13px] whitespace-nowrap transition-all cursor-pointer select-none font-medium"
-        :class="selectedCategory === cat.key ? 'bg-[#036242] text-white font-bold shadow' : 'text-[#8e9491] hover:text-white'"
-        @click="selectCategory(cat.key)"
-      >
-        {{ cat.label }}
-      </button>
+      <!-- Category Filter Bar -->
+      <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817] px-2 py-1.5 mb-1 shadow-sm">
+        <button
+          v-for="cat in PROMO_CATEGORIES"
+          :key="cat.key"
+          type="button"
+          class="category-pill px-3 py-1 rounded-md text-[13px] whitespace-nowrap transition-all cursor-pointer select-none font-medium"
+          :class="selectedCategory === cat.key ? 'bg-[#036242] text-white font-bold shadow' : 'text-[#8e9491] hover:text-white'"
+          @click="selectCategory(cat.key)"
+        >
+          {{ cat.label }}
+        </button>
+      </div>
     </div>
 
     <!-- Featured Promotions Carousel (Top Banners) -->

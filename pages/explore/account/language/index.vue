@@ -7,6 +7,7 @@ const { locale, setLocale } = useSiteLocale()
 <template>
   <section class="preference-page language-page w-full min-w-0 pb-16 pt-1 text-white">
     <SeoHeader
+      sticky
       title="Language"
       description="Choose your preferred display language on ByBet."
       back-to="/explore/account/me"
