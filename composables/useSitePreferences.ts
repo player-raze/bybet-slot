@@ -20,23 +20,27 @@ export type EffectiveTheme = 'light' | 'dark'
 export interface LanguageOption {
   label: string
   code: LocaleCode
+  flag: string
 }
 
+export const DEFAULT_LOCALE: LocaleCode = 'en-PH'
+export const LANGUAGE_SESSION_KEY = 'bybet-language'
+
 export const languageOptions: LanguageOption[] = [
-  { label: 'English', code: 'en' },
-  { label: 'English - PH', code: 'en-PH' },
-  { label: 'Tagalog', code: 'tl' },
-  { label: '简体中文', code: 'zh-CN' },
-  { label: 'Tiếng Việt', code: 'vi' },
-  { label: 'Bahasa Malaysia', code: 'ms' },
-  { label: 'Bahasa Indonesia', code: 'id' },
-  { label: '繁體中文', code: 'zh-TW' },
-  { label: 'हिन्दी', code: 'hi' },
-  { label: '日本語', code: 'ja' },
-  { label: '한국어', code: 'ko' },
-  { label: 'ไทย', code: 'th' },
-  { label: 'Português', code: 'pt' },
-  { label: 'English - HI', code: 'en-IN' },
+  { label: 'English - PH', code: 'en-PH', flag: '🇵🇭' },
+  { label: 'English', code: 'en', flag: '🇺🇸' },
+  { label: 'Tagalog', code: 'tl', flag: '🇵🇭' },
+  { label: '简体中文', code: 'zh-CN', flag: '🇨🇳' },
+  { label: 'Tiếng Việt', code: 'vi', flag: '🇻🇳' },
+  { label: 'Bahasa Malaysia', code: 'ms', flag: '🇲🇾' },
+  { label: 'Bahasa Indonesia', code: 'id', flag: '🇮🇩' },
+  { label: '繁體中文', code: 'zh-TW', flag: '🇭🇰' },
+  { label: 'हिन्दी', code: 'hi', flag: '🇮🇳' },
+  { label: '日本語', code: 'ja', flag: '🇯🇵' },
+  { label: '한국어', code: 'ko', flag: '🇰🇷' },
+  { label: 'ไทย', code: 'th', flag: '🇹🇭' },
+  { label: 'Português', code: 'pt', flag: '🇧🇷' },
+  { label: 'English - HI', code: 'en-IN', flag: '🇮🇳' },
 ]
 
 const translations: Partial<Record<LocaleCode, Record<string, string>>> = {
@@ -969,17 +973,16 @@ const isThemePreference = (value: string | null | undefined): value is ThemePref
 }
 
 export const useSiteLocale = () => {
-  const localeCookie = useCookie<LocaleCode>('bybet-language', {
-    default: () => 'en',
+  const localeCookie = useCookie<LocaleCode>(LANGUAGE_SESSION_KEY, {
+    default: () => DEFAULT_LOCALE,
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 365,
   })
   const locale = useState<LocaleCode>('bybet-locale', () => {
-    return isLocaleCode(localeCookie.value) ? localeCookie.value : 'en'
+    return isLocaleCode(localeCookie.value) ? localeCookie.value : DEFAULT_LOCALE
   })
 
   const selectedLanguageLabel = computed(() => {
-    return languageOptions.find(option => option.code === locale.value)?.label ?? 'English'
+    return languageOptions.find(option => option.code === locale.value)?.label ?? 'English - PH'
   })
 
   const translate = (sourceText: string): string => {
@@ -995,12 +998,28 @@ export const useSiteLocale = () => {
 
     if (import.meta.client) {
       document.documentElement.lang = nextLocale
-      window.localStorage.setItem('bybet-language', nextLocale)
+      window.sessionStorage.setItem(LANGUAGE_SESSION_KEY, nextLocale)
     }
+  }
+
+  const restoreLocale = (): void => {
+    if (!import.meta.client) {
+      return
+    }
+
+    const savedLocale = window.sessionStorage.getItem(LANGUAGE_SESSION_KEY)
+    const nextLocale = isLocaleCode(savedLocale)
+      ? savedLocale
+      : isLocaleCode(localeCookie.value) ? localeCookie.value : DEFAULT_LOCALE
+
+    locale.value = nextLocale
+    localeCookie.value = nextLocale
+    document.documentElement.lang = nextLocale
   }
 
   return {
     locale,
+    restoreLocale,
     selectedLanguageLabel,
     setLocale,
     translate,

@@ -35,24 +35,17 @@ onMounted(() => {
 
 <template>
   <div class="customer-service-page w-full min-w-0 pb-16 pt-1 text-white">
-    <!-- Top Header Bar -->
-    <header class="service-top-bar flex items-center gap-1 rounded-lg bg-[#1C1C1C] px-2 py-1 mb-2 shadow-sm">
-      <button
-        type="button"
-        class="back-btn flex h-5 w-5 items-center justify-center rounded-full bg-[#141414] text-[#d1d5db] transition-colors  cursor-pointer"
-        aria-label="Go back"
-        @click="handleBack"
-      >
-        <ChevronLeft class="h-3 w-3 text-[#1FA779]" />
-      </button>
-      <h1 class="text-[16px] sm:text-[16px] font-bold text-white tracking-tight">
-        24/7 Services
-      </h1>
-    </header>
+    <!-- Reusable Top SEO Header Bar -->
+    <SeoHeader
+      sticky
+      title="24/7 Services"
+      description="Connect with ByBet Philippines 24/7 Customer Support. Instant live chat, Telegram assistance, VIP manager support, and email inquiries."
+      back-to="/explore/entertainment/live-casino/all"
+    />
 
     <!-- Welcome Greeting Card -->
     <div class="welcome-card flex items-center gap-1 rounded-lg bg-[#141414] p-1 sm:p-2 mb-2 shadow-sm">
-      <div class="logo-box h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-[#036242] p-1 flex items-center justify-center shadow-sm">
+      <div class="logo-box h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-[#036242] p-1 flex items-center justify-center shadow-sm">
         <img
           src="/icons/bybet-square.png"
           alt="ByBet"
@@ -70,11 +63,11 @@ onMounted(() => {
     </div>
 
     <!-- Service Options Card -->
-    <div class="services-card rounded-xl bg-[#141414] overflow-hidden shadow-sm">
+    <div class="services-card px-0.5 rounded-md bg-[#141414] overflow-hidden shadow-sm">
       <!-- 24/7 Services 1 -->
       <button
         type="button"
-        class="service-row flex w-full items-center justify-between p-2 text-left transition-colors  group cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#32d49a]"
+        class="service-row flex w-full items-center justify-between p-2 text-left transition-colors  group cursor-pointer "
         @click="handleServiceClick('24/7 Services 1')"
       >
         <div class="flex items-center gap-3">
@@ -90,12 +83,12 @@ onMounted(() => {
       </button>
 
       <!-- Divider -->
-      <div class="divider h-px bg-[#262928] mx-3" />
+      <div class="divider h-px bg-white/30 mx-1" />
 
       <!-- 24/7 Services 2 -->
       <button
         type="button"
-        class="service-row flex w-full items-center justify-between p-2 text-left transition-colors  group cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#32d49a]"
+        class="service-row flex w-full items-center justify-between p-2 text-left transition-colors  group cursor-pointer"
         @click="handleServiceClick('24/7 Services 2')"
       >
         <div class="flex items-center gap-3">

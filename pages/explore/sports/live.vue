@@ -29,26 +29,28 @@ const currentSport = computed(() => {
 <template>
   <section class="sports-page live-page">
     <!-- Sports Tabs Navigation: Sport Ball Icons -->
-    <nav
-      class="sports-tabs"
-      aria-label="Live sports categories"
-    >
-      <NuxtLink
-        v-for="tab in liveTabs"
-        :key="tab.key"
-        :to="tab.to"
-        :class="{ selected: currentSport === tab.key }"
-        :aria-current="currentSport === tab.key ? 'page' : undefined"
+    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-1 pt-1">
+      <nav
+        class="sports-tabs"
+        aria-label="Live sports categories"
       >
-        <img
-          v-if="tab.icon"
-          :src="tab.icon"
-          :alt="tab.label"
-          class="w-[24px] h-[24px] object-contain shrink-0"
-        />
-        <span>{{ tab.label }}</span>
-      </NuxtLink>
-    </nav>
+        <NuxtLink
+          v-for="tab in liveTabs"
+          :key="tab.key"
+          :to="tab.to"
+          :class="{ selected: currentSport === tab.key }"
+          :aria-current="currentSport === tab.key ? 'page' : undefined"
+        >
+          <img
+            v-if="tab.icon"
+            :src="tab.icon"
+            :alt="tab.label"
+            class="w-[24px] h-[24px] object-contain shrink-0"
+          />
+          <span>{{ tab.label }}</span>
+        </NuxtLink>
+      </nav>
+    </div>
 
     <!-- Nested Route Content -->
     <NuxtPage />

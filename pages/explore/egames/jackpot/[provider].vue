@@ -1,0 +1,764 @@
+<script setup lang="ts">
+import {
+  MessageCircle,
+  ChevronRight,
+  Play,
+  User,
+} from 'lucide-vue-next'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import usernamesList from '~/data/usernames.json'
+import {
+  JACKPOT_NAV_TABS,
+  JACKPOT_SECTIONS,
+  JACKPOT_WINNERS,
+  type JackpotSection,
+  type JackpotWinner,
+} from '~/data/jackpot'
+import GameCard from '~/components/game-cards/GameCard.vue'
+
+const JACKPOT_REFRESH_INTERVAL_MS = 60_000
+
+const JACKPOT_CHARACTER_IMAGES: Record<JackpotSection['jackpotCharacter'], string> = {
+  dragon: '/images/jackpot/jili-jackpot.png',
+  genie: '/images/jackpot/cq9-jackpot.png',
+  panda: '/images/jackpot/jdb-jackpot.png',
+}
+
+const JACKPOT_DIGIT_IMAGES: Record<string, string> = Object.fromEntries(
+  ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(digit => [
+    digit,
+    `/images/jackpot/${digit}.png`,
+  ]),
+)
+
+const JACKPOT_SEPARATOR_IMAGES: Record<string, string> = {
+  ',': '/images/jackpot/comma.png',
+  '.': '/images/jackpot/dot.png',
+}
+
+const JACKPOT_INCREMENT_RANGES: Record<string, readonly [number, number]> = {
+  jili: [680, 2_800],
+  cq9: [80, 560],
+  jdb: [12, 120],
+}
+
+const JACKPOT_SECTION_ORDER = ['jili', 'jdb', 'cq9']
+
+const jackpotNumberFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
+const route = useRoute()
+const router = useRouter()
+
+const activeProvider = computed(() => {
+  const p = (route.params.provider as string || 'jdb').toLowerCase()
+  return p
+})
+
+const activeGameId = ref<string | null>(null)
+const currentWinners = ref<JackpotWinner[]>([...JACKPOT_WINNERS])
+const jackpotAmounts = ref<Record<string, number>>(
+  Object.fromEntries(JACKPOT_SECTIONS.map(section => [section.id, section.jackpotAmount])),
+)
+const jackpotRevision = ref(0)
+let winnerTimer: ReturnType<typeof setTimeout> | null = null
+let jackpotClockTimer: ReturnType<typeof setInterval> | null = null
+
+const providerLogos = [
+  '/images/providers/jdb.png',
+  '/images/providers/jili.png',
+  '/images/providers/cq9.png',
+  '/images/providers/pg.png',
+  '/images/providers/pp.png',
+  '/images/providers/red-tiger.png',
+]
+
+const maskUsername = (name: string): string => {
+  if (name.includes('*')) return name
+  const clean = name.replace(/[^a-zA-Z0-9]/g, '')
+  if (clean.length <= 2) return `${clean[0] || 'u'}******${clean[1] || '8'}`
+  const first = clean[0]
+  const last = clean[clean.length - 1]
+  const starCount = Math.max(5, Math.min(6, clean.length - 2))
+  return `${first}${'*'.repeat(starCount)}${last}`
+}
+
+const formatDateTime = (date = new Date()): string => {
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${day}-${month} ${hours}:${minutes}`
+}
+
+const generateRandomAmount = (): string => {
+  const val = Math.random() < 0.15
+    ? Math.random() * (12000 - 3000) + 3000
+    : Math.random() * (2200 - 450) + 450
+  return `PHP ${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
+const addNewWinner = (): void => {
+  const randomUsername = usernamesList[Math.floor(Math.random() * usernamesList.length)] || 'player_99'
+  const randomProvider = providerLogos[Math.floor(Math.random() * providerLogos.length)]
+  const newWinner: JackpotWinner = {
+    id: `winner-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    providerLogo: randomProvider,
+    username: maskUsername(randomUsername),
+    amount: generateRandomAmount(),
+    date: formatDateTime(),
+  }
+  currentWinners.value = [newWinner, ...currentWinners.value.slice(0, 4)]
+}
+
+const scheduleRandomWinner = (): void => {
+  if (!import.meta.client) return
+  const delay = Math.floor(Math.random() * (60000 - 5000 + 1)) + 5000
+  winnerTimer = setTimeout(() => {
+    addNewWinner()
+    scheduleRandomWinner()
+  }, delay)
+}
+
+const getJackpotAmount = (section: JackpotSection): number => {
+  return jackpotAmounts.value[section.id] ?? section.jackpotAmount
+}
+
+const getJackpotCharacters = (section: JackpotSection): string[] => {
+  return [...jackpotNumberFormatter.format(getJackpotAmount(section))]
+}
+
+const getJackpotDigitImage = (character: string): string | undefined => {
+  return JACKPOT_DIGIT_IMAGES[character]
+}
+
+const getJackpotSeparatorImage = (character: string): string | undefined => {
+  return JACKPOT_SEPARATOR_IMAGES[character]
+}
+
+const getJackpotLabel = (section: JackpotSection): string => {
+  return `${section.provider} live jackpot: PHP ${jackpotNumberFormatter.format(getJackpotAmount(section))}`
+}
+
+const refreshJackpotAmounts = (): void => {
+  const nextAmounts = { ...jackpotAmounts.value }
+
+  JACKPOT_SECTIONS.filter(section => section.showCounter).forEach((section) => {
+    const [minimum, maximum] = JACKPOT_INCREMENT_RANGES[section.id] ?? [20, 200]
+    const increment = Math.random() * (maximum - minimum) + minimum
+    nextAmounts[section.id] = Math.round((getJackpotAmount(section) + increment) * 100) / 100
+  })
+
+  jackpotAmounts.value = nextAmounts
+  jackpotRevision.value += 1
+}
+
+const handleDocumentClick = (event: MouseEvent): void => {
+  const target = event.target as HTMLElement | null
+  if (!target?.closest('.game-card')) {
+    activeGameId.value = null
+  }
+}
+
+onMounted(() => {
+  if (import.meta.client) {
+    document.addEventListener('click', handleDocumentClick)
+    scheduleRandomWinner()
+    jackpotClockTimer = setInterval(refreshJackpotAmounts, JACKPOT_REFRESH_INTERVAL_MS)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (import.meta.client) {
+    document.removeEventListener('click', handleDocumentClick)
+    if (winnerTimer) {
+      clearTimeout(winnerTimer)
+      winnerTimer = null
+    }
+    if (jackpotClockTimer) {
+      clearInterval(jackpotClockTimer)
+      jackpotClockTimer = null
+    }
+  }
+})
+
+const { context: commentContext, openGameComments, closeComments } = useCommentPanel()
+const { showDemoMessage } = useDemoInteraction()
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+
+const toggleChat = (): void => {
+  if (commentContext.value) {
+    closeComments()
+  } else {
+    openGameComments()
+  }
+}
+
+const selectTab = (key: string): void => {
+  router.push(`/explore/egames/jackpot/${key.toLowerCase()}`)
+}
+
+const showGameDetails = (game: any): void => {
+  showDemoMessage(`${game.title} (${game.provider}) — Jackpot Pool: ${game.jackpotPool || 'Active'} • RTP: ${game.rtpPercent || '97.0%'}`)
+}
+
+const handleCardClick = (game: any): void => {
+  if (activeGameId.value === game.id) {
+    activeGameId.value = null
+  } else {
+    activeGameId.value = game.id
+  }
+}
+
+const handleStartNow = (game: any): void => {
+  showDemoMessage(`Starting ${game.title} (${game.provider})...`)
+  if (import.meta.client) {
+    window.open(game.href || bybetRedirectUrl, '_blank')
+  }
+}
+
+const handleDemo = (game: any): void => {
+  showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
+}
+
+const filteredSections = computed<JackpotSection[]>(() => {
+  if (activeProvider.value === 'all') {
+    return [...JACKPOT_SECTIONS].sort((left, right) => (
+      JACKPOT_SECTION_ORDER.indexOf(left.id) - JACKPOT_SECTION_ORDER.indexOf(right.id)
+    ))
+  }
+  return JACKPOT_SECTIONS.filter((s) => s.id.toLowerCase() === activeProvider.value)
+})
+</script>
+
+<template>
+  <div class="jackpot-page w-full min-w-0 pb-16 pt-1">
+    <!-- Sticky Header (Top Nav Tabs Bar) -->
+    <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
+      <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
+      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-2xl bg-[#171817] border border-white/5 p-1 overflow-x-auto no-scrollbar shadow-sm">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <button
+            v-for="tab in JACKPOT_NAV_TABS"
+            :key="tab.key"
+            type="button"
+            class="nav-tab flex items-center justify-center min-w-[58px] py-1.5 px-3.5 rounded-xl transition-all cursor-pointer select-none"
+            :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md border border-[#047b53]' : 'hover:bg-white/5'"
+            :aria-label="tab.label"
+            @click="selectTab(tab.key)"
+          >
+            <span
+              v-if="tab.isAll"
+              class="text-[13px] font-black tracking-wider"
+              :class="activeProvider === tab.key.toLowerCase() ? 'text-white' : 'text-white/80'"
+            >
+              {{ tab.label }}
+            </span>
+            <img
+              v-else
+              :src="tab.logo"
+              :alt="tab.label"
+              class="h-4 max-w-[42px] object-contain transition-opacity"
+              :class="activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125 opacity-80 '"
+            />
+          </button>
+        </div>
+
+        <!-- Right Chat Toggle -->
+        <button
+          type="button"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0  pl-2"
+          :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
+          aria-label="Toggle chat room"
+          @click="toggleChat"
+        >
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mb-0.5 shrink-0"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M5.17487 19.8675L7.9565 18.1075C8.63891 18.2396 9.31883 18.308 10 18.308C15.4956 18.308 20 14.2442 20 9.15401C20 4.06434 15.4954 0 10 0C4.50461 0 0 4.06434 0 9.15401C0 12.0413 1.46921 14.6858 3.88947 16.3963L3.85501 19.0683C3.84572 19.7874 4.5896 20.2378 5.17487 19.8675ZM5.50007 10.9998C6.32849 10.9998 7.00007 10.3282 7.00007 9.49982C7.00007 8.67139 6.32849 7.99982 5.50007 7.99982C4.67164 7.99982 4.00007 8.67139 4.00007 9.49982C4.00007 10.3282 4.67164 10.9998 5.50007 10.9998ZM12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998C9.67164 10.9998 9.00007 10.3282 9.00007 9.49982C9.00007 8.67139 9.67164 7.99982 10.5001 7.99982C11.3285 7.99982 12.0001 8.67139 12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998ZM15.5001 10.9998C16.3285 10.9998 17.0001 10.3282 17.0001 9.49982C17.0001 8.67139 16.3285 7.99982 15.5001 7.99982C14.6716 7.99982 14.0001 8.67139 14.0001 9.49982C14.0001 10.3282 14.6716 10.9998 15.5001 10.9998Z"
+            />
+          </svg>
+          <span class="text-[11px] leading-tight">Chat</span>
+        </button>
+      </header>
+    </div>
+
+    <!-- Provider Jackpot Section (Layout matches Image 2) -->
+    <section
+      v-for="section in filteredSections"
+      :id="`section-${section.id}`"
+      :key="section.id"
+      class="jackpot-provider-section scroll-mt-[85px]"
+    >
+      <!-- Provider identity, supplied jackpot artwork, and reference-style counter strip -->
+      <div
+        class="jackpot-provider-header"
+        :class="{ 'jackpot-provider-header--with-counter': section.showCounter }"
+      >
+        <div class="jackpot-provider-identity">
+          <img
+            :src="section.providerLogo"
+            :alt="section.provider"
+            class="jackpot-provider-logo object-contain brightness-125"
+          />
+        </div>
+
+        <div class="jackpot-brand-stage" aria-hidden="true">
+          <img
+            src="/images/jackpot/jackpot.png"
+            alt=""
+            class="jackpot-wordmark"
+          />
+          <img
+            :src="JACKPOT_CHARACTER_IMAGES[section.jackpotCharacter]"
+            alt=""
+            class="jackpot-character"
+            :class="`jackpot-character--${section.jackpotCharacter}`"
+          />
+        </div>
+
+        <div
+          v-if="section.showCounter"
+          class="jackpot-counter-track"
+          role="status"
+          aria-live="polite"
+          :aria-label="getJackpotLabel(section)"
+        >
+          <div class="jackpot-counter" aria-hidden="true">
+            <template
+              v-for="(character, index) in getJackpotCharacters(section)"
+              :key="`${section.id}-${jackpotRevision}-${index}-${character}`"
+            >
+              <span v-if="/\d/.test(character)" class="jackpot-counter-character">
+                <img
+                  v-if="getJackpotDigitImage(character)"
+                  :src="getJackpotDigitImage(character)"
+                  alt=""
+                  class="jackpot-digit-image"
+                />
+                <span v-else class="jackpot-digit-fallback">{{ character }}</span>
+              </span>
+              <span v-else class="jackpot-separator">
+                <img
+                  v-if="getJackpotSeparatorImage(character)"
+                  :src="getJackpotSeparatorImage(character)"
+                  alt=""
+                  class="jackpot-separator-image"
+                />
+              </span>
+            </template>
+          </div>
+        </div>
+
+        <div class="jackpot-provider-count">
+          <a
+            :href="bybetRedirectUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="count-badge flex items-center gap-0.5 rounded-full bg-[#202220] hover:bg-[#282a29] px-2.5 py-0.5 text-[11px] font-medium text-[#8e9491] hover:text-white transition-colors cursor-pointer"
+          >
+            <span>{{ section.count }}</span>
+            <ChevronRight class="h-3 w-3" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Single-row game rail, matching the reference carousel layout -->
+      <div class="jackpot-game-rail no-scrollbar">
+        <GameCard
+          v-for="game in section.games"
+          :key="game.id"
+          :game="game"
+          :activeId="activeGameId"
+          @select="handleCardClick"
+          @info="showGameDetails"
+          @start="handleStartNow"
+          @demo="handleDemo"
+        />
+      </div>
+    </section>
+
+    <!-- Winners List Card -->
+    <div class="winners-card rounded-2xl bg-[#171817] border border-white/5 p-4 shadow-sm mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold text-white">Winners List</h3>
+        <span class="flex items-center gap-1.5 text-[11px] text-[#34d399] font-medium">
+          <span class="inline-block h-2 w-2 rounded-full bg-[#34d399] animate-pulse"></span>
+          Live Wins
+        </span>
+      </div>
+
+      <TransitionGroup name="winner-fade" tag="div" class="divide-y divide-white/5">
+        <div
+          v-for="winner in currentWinners"
+          :key="winner.id"
+          class="winner-item flex items-center justify-between py-2.5 text-xs transition-colors hover:bg-white/[0.02] px-1 rounded-lg"
+        >
+          <!-- Left: Provider Logo + Masked Username -->
+          <div class="flex items-center gap-3">
+            <img
+              :src="winner.providerLogo"
+              alt=""
+              class="h-3.5 max-w-[36px] object-contain brightness-125 opacity-80"
+            />
+            <span class="text-[#8e9491] font-mono">{{ winner.username }}</span>
+          </div>
+
+          <!-- Center: Won Amount -->
+          <span class="text-white font-semibold font-mono">{{ winner.amount }}</span>
+
+          <!-- Right: Date Time -->
+          <span class="text-[#626664] text-[11px] font-mono">{{ winner.date }}</span>
+        </div>
+      </TransitionGroup>
+    </div>
+
+    <!-- Regulatory / PAGCOR Footer Block -->
+    <footer class="regulatory-footer flex flex-col items-center justify-center text-center gap-3 pt-4 pb-8">
+      <!-- Certification Badges -->
+      <div class="flex items-center gap-4">
+        <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow p-1">
+          <span class="text-[10px] font-extrabold text-[#0038a8] leading-tight">PAGCOR</span>
+        </div>
+        <div class="h-10 w-28 rounded-lg bg-white flex items-center justify-center gap-1.5 px-2 shadow">
+          <span class="text-xs font-black text-red-600 border border-red-600 rounded-full h-5 w-5 flex items-center justify-center">21</span>
+          <span class="text-[7.5px] font-bold text-black leading-tight text-left">GAMBLING CAN BE ADDICTIVE<br><strong>KNOW WHEN TO STOP</strong></span>
+        </div>
+      </div>
+
+      <!-- Links & Warnings -->
+      <div class="text-[11px] font-semibold text-[#f04438] tracking-wide">
+        <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
+        <span class="mx-2">•</span>
+        <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
+      </div>
+
+      <p class="text-[10px] font-medium text-[#2e90fa] max-w-md uppercase leading-relaxed">
+        GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.
+      </p>
+
+      <div class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#1e201f] px-3 py-1 text-[11px] text-[#9ca3af]">
+        <span>📞</span>
+        <span class="font-mono font-bold text-white">(02) 8248-8686</span>
+      </div>
+    </footer>
+  </div>
+</template>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.jackpot-provider-section {
+  min-width: 0;
+  margin-bottom: 20px;
+}
+
+.jackpot-provider-header {
+  position: relative;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.jackpot-provider-identity,
+.jackpot-provider-count {
+  position: absolute;
+  z-index: 5;
+  top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.jackpot-provider-identity {
+  left: 4px;
+}
+
+.jackpot-provider-count {
+  right: 0;
+}
+
+.jackpot-provider-logo {
+  width: auto;
+  max-width: 82px;
+  height: 28px;
+}
+
+.jackpot-brand-stage {
+  position: relative;
+  width: 100%;
+  height: 105px;
+}
+
+.jackpot-provider-header--with-counter .jackpot-brand-stage {
+  height: 84px;
+}
+
+.jackpot-wordmark {
+  position: absolute;
+  z-index: 2;
+  bottom: 6px;
+  left: 50%;
+  width: clamp(178px, 18vw, 216px);
+  height: auto;
+  filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.72));
+  transform: translateX(-50%);
+}
+
+.jackpot-character {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: calc(50% + 70px);
+  width: clamp(96px, 10vw, 118px);
+  max-height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 7px rgba(0, 0, 0, 0.56));
+}
+
+.jackpot-character--dragon {
+  left: calc(50% + 67px);
+  width: clamp(112px, 12vw, 136px);
+  max-height: 101px;
+}
+
+.jackpot-character--genie {
+  left: calc(50% + 70px);
+  width: clamp(92px, 9vw, 108px);
+  max-height: 86px;
+}
+
+.jackpot-counter-track {
+  display: flex;
+  width: 100%;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #5d5d5d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+
+.jackpot-counter {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.jackpot-counter-character {
+  display: inline-flex;
+  width: 41px;
+  height: 56px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(132, 132, 132, 0.82);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #4b4b4b 0%, #333 48%, #3e3e3e 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 3px rgba(0, 0, 0, 0.4);
+  animation: jackpot-digit-pop 420ms cubic-bezier(0.2, 0.85, 0.35, 1.2) both;
+}
+
+.jackpot-digit-image {
+  display: block;
+  width: 34px;
+  height: auto;
+  max-height: 45px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.78));
+}
+
+.jackpot-digit-fallback {
+  display: inline-flex;
+  width: 34px;
+  height: 45px;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fff3a2 2%, #ffd264 42%, #e8921c 88%);
+  background-clip: text;
+  color: transparent;
+  font-size: 43px;
+  font-weight: 1000;
+  line-height: 1;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2.5px #050505;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 3px 0 #1f1508);
+  transform: rotate(-2deg);
+}
+
+.jackpot-separator {
+  display: inline-flex;
+  width: 9px;
+  height: 56px;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 3px;
+}
+
+.jackpot-separator-image {
+  display: block;
+  width: 9px;
+  height: auto;
+  max-height: 15px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.48));
+}
+
+.jackpot-game-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 70px) / 8);
+  gap: 10px;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding-bottom: 2px;
+  scroll-snap-type: inline proximity;
+}
+
+.jackpot-game-rail > * {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+@keyframes jackpot-digit-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-7px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 1279px) {
+  .jackpot-game-rail {
+    grid-auto-columns: calc((100% - 50px) / 6);
+  }
+}
+
+@media (max-width: 1023px) {
+  .jackpot-game-rail {
+    grid-auto-columns: calc((100% - 30px) / 4);
+  }
+}
+
+@media (max-width: 767px) {
+  .jackpot-brand-stage {
+    height: 98px;
+  }
+
+  .jackpot-provider-header--with-counter .jackpot-brand-stage {
+    height: 82px;
+  }
+
+  .jackpot-wordmark {
+    width: clamp(164px, 42vw, 194px);
+  }
+
+  .jackpot-character {
+    left: calc(50% + 61px);
+    width: clamp(88px, 25vw, 108px);
+  }
+
+  .jackpot-character--dragon {
+    left: calc(50% + 58px);
+    width: clamp(105px, 30vw, 126px);
+  }
+
+  .jackpot-character--genie {
+    left: calc(50% + 60px);
+  }
+
+  .jackpot-game-rail {
+    grid-auto-columns: calc((100% - 20px) / 3);
+  }
+}
+
+@media (max-width: 639px) {
+  .jackpot-provider-identity,
+  .jackpot-provider-count {
+    top: 6px;
+  }
+
+  .jackpot-counter-track {
+    height: 58px;
+  }
+
+  .jackpot-counter-character {
+    width: 34px;
+    height: 50px;
+  }
+
+  .jackpot-digit-image,
+  .jackpot-digit-fallback {
+    width: 29px;
+    max-height: 41px;
+  }
+
+  .jackpot-digit-fallback {
+    height: 41px;
+    font-size: 37px;
+  }
+
+  .jackpot-separator {
+    width: 8px;
+    height: 50px;
+  }
+
+  .jackpot-separator-image {
+    width: 8px;
+  }
+
+  .jackpot-game-rail {
+    grid-auto-columns: minmax(140px, 46%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jackpot-counter-character {
+    animation: none;
+  }
+}
+
+.winner-fade-enter-active {
+  transition: all 400ms ease-out;
+}
+.winner-fade-leave-active {
+  transition: all 300ms ease-in;
+  display: none;
+}
+.winner-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.winner-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+</style>
+

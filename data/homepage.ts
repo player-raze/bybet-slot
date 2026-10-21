@@ -24,6 +24,7 @@ import {
 export interface RailSubItem {
   label: string
   underMaintenance?: boolean
+  showFundsModal?: boolean
   icon?: Component
   iconImage?: string
   to: string
@@ -110,7 +111,7 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
       { label: 'Customer Service', iconImage: '/icons/egames/customer-service.png', to: '/explore/egames/customer-service', accentColor: '#8bd537' },
     ],
   },
-  { label: 'Bonuses', icon: Gift, sectionId: 'promotions' },
+  { label: 'Bonuses', icon: Gift, sectionId: null, to: '/explore/bonuses' },
   {
     label: 'Live Plaza',
     icon: Mic2,
@@ -119,7 +120,7 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
       { label: 'Home', iconImage: '/icons/live-plaza/home.png', to: '/explore/live-plaza/home', accentColor: '#ff9f2f' },
       { label: 'Streamer', iconImage: '/icons/live-plaza/streamer.png', to: '/explore/live-plaza/streamer', accentColor: '#ff9f2f' },
       { label: 'Expert Predictions', iconImage: '/icons/live-plaza/expert-predictions.png', to: '/explore/live-plaza/expert-predictions', accentColor: '#55aef7' },
-      { label: 'Funds', iconImage: '/icons/live-plaza/funds.png', to: bybetRedirectUrl, accentColor: '#f1644d' }, //explore/live-plaza/funds
+      { label: 'Funds', iconImage: '/icons/live-plaza/funds.png', to: '/explore/live-plaza/funds', accentColor: '#f1644d', showFundsModal: true },
     ],
   },
   { label: 'Me', icon: UserRound, sectionId: null, to: '/explore/account/me' },

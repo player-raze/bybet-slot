@@ -7,7 +7,7 @@ const route = useRoute()
 const navigationItems = [
   { label: 'Home', icon: House, to: '/' },
   { label: 'Slots', icon: Dices, to: '/explore/egames/slots' },
-  { label: 'Promotions', icon: Gift, to: '/#promotions' },
+  { label: 'Promotions', icon: Gift, to: '/explore/bonuses' },
   { label: 'Support', icon: Headset, to: '/#support' },
   { label: 'Account', icon: UserRound, to: '/explore/account/me' },
 ]

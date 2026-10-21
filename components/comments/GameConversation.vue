@@ -29,7 +29,7 @@ const getLevelBadge = (level?: string, vip?: number): { src: string; alt: string
 </script>
 
 <template>
-  <div class="space-y-4 p-3 overflow-y-auto">
+  <div class="space-y-4 p-3">
     <article
       v-for="(message, index) in messages"
       :key="message.id || index"

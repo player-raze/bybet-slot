@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { locale } = useSiteLocale()
+const { locale, restoreLocale } = useSiteLocale()
+const { restoreTimeZone } = useTimeZonePreference()
 const {
   applyTheme,
   effectiveTheme,
@@ -15,6 +16,8 @@ useHead(() => ({
 }))
 
 onMounted(() => {
+  restoreLocale()
+  restoreTimeZone()
   applyTheme()
 })
 </script>

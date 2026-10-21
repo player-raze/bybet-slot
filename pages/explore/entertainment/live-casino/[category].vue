@@ -13,6 +13,8 @@ import { liveCasinoGames } from '~/data/casino'
 const route = useRoute()
 const router = useRouter()
 
+const pragmaticPlayLogo = '/images/casino/pragmatic-play.png'
+
 const activeCategory = computed(() => (route.params.category as string) || 'baccarat')
 
 const { context: commentContext, openGameComments, closeComments } = useCommentPanel()
@@ -44,7 +46,13 @@ const handleOkClick = (): void => {
 }
 
 const filteredTables = computed<LiveCasinoTable[]>(() => {
-  return LIVE_CASINO_TABLES.filter(t => t.category === activeCategory.value)
+  const cat = activeCategory.value
+  return LIVE_CASINO_TABLES.filter(t => {
+    if (cat === 'baccarat') {
+      return t.category === 'baccarat' || t.category === 'live-casino'
+    }
+    return t.category === cat
+  })
 })
 
 // Map dice value to dot positions (3x3 grid)
@@ -132,40 +140,42 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 
 <template>
   <div class="live-casino-page w-full min-w-0 pb-16 pt-1 text-white">
-    <!-- Top Bar -->
-    <header class="top-brand-bar flex items-center  justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
-      <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
-        <div class="h-9 w-9 rounded-xl bg-[#036242] flex items-center justify-center shadow-md">
-          <img
-            src="/images/casino/pragmatic-play.png"
-            alt="Pragmatic Play"
-            class="h-6 w-6 object-contain"
-          />
+    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-0.5">
+      <!-- Top Bar -->
+      <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
+        <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
+          <div class="h-6 w-8 rounded-md bg-[#036242] flex items-center justify-center shadow-md">
+            <img
+              :src="pragmaticPlayLogo"
+              alt="Pragmatic Play"
+              class="h-5 w-5 object-contain"
+            />
+          </div>
         </div>
-      </div>
-      <button
-        type="button"
-        class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none  pl-2"
-        :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
-        @click="toggleChat"
-      >
-        <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
-        <span class="text-[11px] leading-tight">Chat</span>
-      </button>
-    </header>
+        <button
+          type="button"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none  pl-2"
+          :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
+          @click="toggleChat"
+        >
+          <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
+          <span class="text-[11px] leading-tight">Chat</span>
+        </button>
+      </header>
 
-    <!-- Category Filter Bar -->
-    <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817]  px-1 py-1.5 mb-1.5 shadow-sm">
-      <button
-        v-for="cat in LIVE_CASINO_CATEGORIES"
-        :key="cat.key"
-        type="button"
-        class="category-pill px-1.5 py-0.5 rounded-md text-[14px]  whitespace-nowrap transition-all cursor-pointer select-none"
-        :class="activeCategory === cat.key ? 'bg-[#036242] text-white font-bold shadow' : 'text-[#8e9491] '"
-        @click="selectCategory(cat.key)"
-      >
-        {{ cat.label }}
-      </button>
+      <!-- Category Filter Bar -->
+      <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817]  px-1 py-1.5 mb-1.5 shadow-sm">
+        <button
+          v-for="cat in LIVE_CASINO_CATEGORIES"
+          :key="cat.key"
+          type="button"
+          class="category-pill px-1.5 py-0.5 rounded-md text-[14px]  whitespace-nowrap transition-all cursor-pointer select-none"
+          :class="activeCategory === cat.key ? 'bg-[#036242] text-white font-bold shadow' : 'text-[#8e9491] '"
+          @click="selectCategory(cat.key)"
+        >
+          {{ cat.label }}
+        </button>
+      </div>
     </div>
 
     <!-- Live Casino Tables Grid -->
@@ -178,17 +188,24 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
         class="relative group cursor-pointer" 
         @click="handleTableClick"
       >
-        <div class="overflow-hidden rounded-md bg-[#141414] shadow-md transition-transform duration-200 group-hover:-translate-y-0.5">
+        <div class="overflow-hidden rounded-md bg-[#141414] shadow-md ">
           
           <!-- Top Part: Image -->
           <div class="relative w-full aspect-[4/3] overflow-hidden">
-            <img :src="table.image" class="w-full h-full object-cover" :alt="table.title" />
-            <div class="absolute top-2 left-2 p-0.5 rounded-full  backdrop-blur-lg text-[12px] font-medium bg-black/10 ">
-              {{ table.title }}
-            </div>
-            <div class="absolute top-2 right-2 p-0.5 rounded-full bg-black/10 backdrop-blur-lg text-[10px] flex items-center gap-0">
-              <User class="h-1.5 w-1.5" />
-              {{ table.players }}
+            <img
+              :src="table.image || '/images/casino/card1.jpg'"
+              class="w-full h-full object-cover"
+              :alt="table.title"
+              @error="($event.target as HTMLImageElement).src = '/images/casino/card1.jpg'"
+            />
+            <div class="absolute top-0.5 inset-x-0.5 flex items-start justify-between gap-0.5 pointer-events-none">
+              <div class="p-0.5 rounded backdrop-blur-lg text-[11px] font-medium bg-black/10 leading-tight break-words min-w-0">
+                {{ table.title }}
+              </div>
+              <div class="p-0.5 rounded-full bg-black/10 backdrop-blur-lg text-[10px] flex items-center gap-0 shrink-0">
+                <User class="h-1.5 w-1.5" />
+                {{ table.players }}
+              </div>
             </div>
           </div>
 
@@ -197,33 +214,36 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
             
             <!-- BACCARAT / DRAGON TIGER LAYOUT -->
             <div v-if="table.category === 'baccarat' || table.category === 'dragon-tiger'">
-              <div class="grid grid-cols-12 gap-0 bg-[#181a19] border-2 border-neutral-500 rounded-sm overflow-hidden mb-2">
+              <div class="grid grid-cols-12 gap-[1px] bg-neutral-500 border-2 border-neutral-500 rounded-sm overflow-hidden mb-2">
                 <div
                   v-for="(col, colIdx) in getRoadmapColumns(table.wins)"
                   :key="colIdx"
-                  class="flex flex-col border-r border-neutral-500 last:border-r-0"
+                  class="flex flex-col gap-[1px]"
                 >
                   <div
                     v-for="(win, rowIdx) in col"
                     :key="rowIdx"
-                    class="aspect-square flex items-center justify-center relative border-b border-neutral-500 last:border-b-0"
+                    class="aspect-square bg-[#181a19] flex items-center justify-center relative min-h-0 min-w-0"
                   >
                     <div
                       v-if="win"
-                      class="w-2 h-2 rounded-full border"
+                      class="w-[75%] h-[75%] rounded-full border flex items-center justify-center relative shrink-0"
                       :class="{
                         'border-blue-500 text-blue-500': win.result === 'P',
                         'border-red-500 text-red-500': win.result === 'B',
                         'border-green-500 text-green-500': win.result === 'T'
                       }"
                     >
-                      <div v-if="win.tie" class="absolute inset-0 flex items-center justify-center text-[8px]">/</div>
+                      <div v-if="win.tie" class="absolute inset-0 flex items-center justify-center text-[7px] leading-none select-none">/</div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="flex items-center justify-between px-1 py-1 text-[10px] font-medium">
-                <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-blue-400"></div><span v-if="table.stats">{{ table.stats.shoe }}</span></div>
+                <div class="flex items-center gap-1">
+                  <img src="/images/casino/shoe-stats.png" alt="Shoe stats" class="w-2.5 h-2.5 object-contain shrink-0" />
+                  <span v-if="table.stats">{{ table.stats.shoe }}</span>
+                </div>
                 <div class="flex items-center gap-1 text-red-500"><span class="font-bold">B</span><span v-if="table.stats">{{ table.stats.banker }}</span></div>
                 <div class="flex items-center gap-1 text-blue-500"><span class="font-bold">P</span><span v-if="table.stats">{{ table.stats.player }}</span></div>
                 <div class="flex items-center gap-1 text-green-500"><span class="font-bold">T</span><span v-if="table.stats">{{ table.stats.tie }}</span></div>
@@ -232,11 +252,11 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 
             <!-- ROULETTE LAYOUT -->
             <div v-else-if="table.category === 'roulette'">
-              <div class="flex flex-wrap gap-0.5 mb-2">
+              <div class="flex items-center justify-center flex-wrap gap-0.5 mb-1 mt-0.5 p-0.5">
                 <div
                   v-for="(res, i) in table.wins"
                   :key="i"
-                  class="w-3 h-3 flex items-center justify-center rounded-sm text-[10px] font-bold "
+                  class="w-2.5 h-2.5 flex items-center justify-center rounded-sm text-[9px] font-bold "
                   :class="[getRouletteColor(res[1]), i === 0 ? 'border-white border-2' : '']"
                 >
                   {{ res[1] }}

@@ -158,40 +158,26 @@ onUnmounted(() => {
       <!-- Top Left: NEW/PROMO Badge -->
       <span
         v-if="game.badge === 'NEW' || game.promo"
-        class="absolute top-2 left-2 rounded bg-[#036242] text-black font-black text-[9px] px-1.5 py-0.5 leading-none shadow tracking-wide"
+        class="absolute top-0 left-0 rounded-br bg-[#036242] text-white font-black text-[10px] px-1 py-0.5 leading-none shadow tracking-wide text-semibold"
       >
         {{ game.badge === 'NEW' ? 'NEW' : 'PROMO' }}
       </span>
 
-      <!-- Top Right: BUY BONUS Badge -->
-      <span
-        v-if="game.buyBonus"
-        class="absolute top-1.5 right-1.5 rounded bg-[#0d594f] px-1 py-0.5 text-[8px] font-black text-[#ffd700] text-center leading-tight shadow"
-      >
-        BUY<br>BONUS
-      </span>
 
       <!-- Top Right: Dual-color RTP Badge -->
       <div
         v-else-if="game.rtpPercent"
-        class="absolute top-2 right-2 flex items-center rounded overflow-hidden shadow-md leading-none border border-black/40 text-[9px] font-black"
+        class="absolute top-1 right-0.5 flex items-center rounded overflow-hidden shadow-md leading-none border border-[#036242]/40 text-[12px]  font-black"
       >
-        <span class="bg-[#00a843] text-white px-1.5 py-0.5">RTP</span>
-        <span class="bg-white text-black px-1.5 py-0.5">{{ game.rtpPercent }}</span>
+        <span class="bg-[#036242] text-white px-1.5 py-0.5">RTP</span>
+        <span class="bg-white/90 text-black px-1.5 py-0.5 font-semibold">{{ game.rtpPercent }}</span>
       </div>
 
-      <!-- Top Right: Multiplier Badge -->
-      <span
-        v-else-if="game.badge && game.badge !== 'NEW'"
-        class="absolute top-2 right-2 text-[#ffd700] font-black text-[12px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] leading-none tracking-tight"
-      >
-        {{ game.badge }}
-      </span>
 
       <!-- Top Right: Live Player Count Badge -->
       <span
         v-else-if="game.livePlayers"
-        class="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-xs px-1.5 py-0.5 text-[10px] font-medium text-white/90"
+        class="absolute top-1 right-0.5 flex items-center gap-0 rounded-full bg-black/40 backdrop-blur-md px-1 py-0.5 text-[12px] font-medium text-white/90"
       >
         <User class="h-2.5 w-2.5 text-white/70" />
         <span>{{ game.livePlayers }}</span>
@@ -200,14 +186,14 @@ onUnmounted(() => {
       <!-- Bottom Left: Hot/Cold/Multiplier Badge -->
       <span
         v-if="game.hotPercent"
-        class="absolute bottom-2 left-2 flex items-center gap-0.5 rounded-full bg-black/60 backdrop-blur-xs px-1.5 py-0.5 text-[10px] font-bold text-[#ffa63d] leading-none"
+        class="absolute bottom-1 left-0.5 flex items-center gap-0.5  text-[12px] font-bold leading-none"
       >
-        <span>🔥</span>
+        <span ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="size-4"><path d="M8.51859 15.8363C10.9091 15.3212 14 13.4708 14 8.68638C14 4.3331 11.0383 1.43365 8.90859 0.101583C8.43524 -0.194615 7.88235 0.194556 7.88235 0.782838V2.28686C7.88235 3.4733 7.41894 5.63884 6.13118 6.53977C5.47353 6.9997 4.76235 6.31104 4.68282 5.47181L4.61706 4.78233C4.54059 3.98095 3.782 3.49469 3.18706 3.98342C2.11724 4.85967 1 6.39825 1 8.68556C1 14.5363 5.04453 16 7.06641 16C7.18469 16 7.30806 15.9959 7.43653 15.9877C6.43782 15.8963 4.82353 15.2299 4.82353 13.0742C4.82353 11.3875 5.96676 10.248 6.83547 9.69263C7.06947 9.54453 7.34247 9.73788 7.34247 10.03V10.5154C7.34247 10.8857 7.47629 11.4657 7.79365 11.8623C8.15306 12.3115 8.67994 11.8409 8.722 11.2501C8.73576 11.0642 8.91012 10.9457 9.06 11.0395C9.55018 11.348 10.1765 12.0063 10.1765 13.0742C10.1765 14.7593 9.31312 15.5343 8.51859 15.8363Z" fill="url(#ck5SdWt3QklFQXpnY1A5Tw==)"></path><defs><linearGradient x1="7.5" y1="0" x2="2.68733" y2="15.8152" gradientUnits="userSpaceOnUse" id="ck5SdWt3QklFQXpnY1A5Tw=="><stop stop-color="#FF8400"></stop><stop offset="0.799537" stop-color="#FFBB02"></stop></linearGradient></defs></svg></span>
         <span>{{ game.hotPercent }}</span>
       </span>
       <span
         v-else-if="game.coldPercent"
-        class="absolute bottom-2 left-2 flex items-center gap-0.5 rounded-full bg-black/60 backdrop-blur-xs px-1.5 py-0.5 text-[10px] font-bold text-[#62d0ff] leading-none"
+        class="absolute bottom-1 left-0.5 flex items-center gap-0.5  text-[12px] font-bold  leading-none"
       >
         <span>❄️</span>
         <span>{{ game.coldPercent }}</span>
@@ -226,10 +212,10 @@ onUnmounted(() => {
       </span>
 
       <!-- Bottom-Right Info Icon -->
-      <div class="absolute bottom-2 right-2 z-10">
+      <div class="absolute bottom-1.5 right-1 z-10">
         <button
           type="button"
-          class="h-3.5 w-3.5 rounded-full bg-black/50 backdrop-blur-xs flex items-center justify-center text-white/80 hover:text-white hover:bg-black/80 transition-colors cursor-pointer"
+          class="h-2 w-2 rounded-full  backdrop-blur-xs flex items-center justify-center text-white/80 hover:text-white hover:bg-black/80 transition-colors cursor-pointer"
           aria-label="Game info"
           @mouseenter="openTooltip"
           @mouseleave="closeTooltip"
@@ -245,29 +231,29 @@ onUnmounted(() => {
       <Transition name="fade-tooltip">
         <div
           v-if="showTooltip && activeId !== game.id"
-          class="absolute inset-2 z-30 rounded-2xl bg-[#202120]/95 backdrop-blur-md p-3.5 sm:p-4 flex flex-col justify-between shadow-2xl border border-white/5 select-none cursor-default"
+          class="absolute top-100 inset-1 right-0 z-55 rounded-md bg-[#202120]/70 backdrop-blur-md px-2 py-2 flex flex-col justify-between shadow-2xl  select-none cursor-default"
           @mouseenter="cancelClose"
           @mouseleave="closeTooltipNow"
           @click.stop="closeTooltipNow"
         >
           <!-- Top Row: Winning Line & RTP -->
-          <div class="flex items-start justify-between">
+          <div class="flex items-start justify-between mb-1">
             <div class="flex flex-col">
-              <span class="text-[12px] sm:text-[13px] font-normal text-[#d6d6d6] leading-tight">Winning Line</span>
-              <span class="text-[18px] sm:text-[21px] font-bold text-white leading-tight mt-1">{{ displayWinningLine }}</span>
+              <span class="text-[10px] sm:text-[10px] font-normal text-white leading-tight">Winning Line</span>
+              <span class="text-[12px] sm:text-[12px] font-bold text-white leading-tight mt-1">{{ displayWinningLine }}</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-[12px] sm:text-[13px] font-normal text-[#d6d6d6] leading-tight">RTP</span>
-              <span class="text-[18px] sm:text-[21px] font-bold text-white leading-tight mt-1">{{ displayRtp }}</span>
+              <span class="text-[10px] sm:text-[10px] font-normal text-[#d6d6d6] leading-tight">RTP</span>
+              <span class="text-[12px] sm:text-[12px] font-bold text-white leading-tight mt-1">{{ displayRtp }}</span>
             </div>
           </div>
 
           <!-- Feature / Tag Pills -->
-          <div class="flex flex-col items-start gap-1.5 sm:gap-2">
+          <div class="flex flex-col items-start gap-0.5 sm:gap-0.5">
             <span
               v-for="tag in displayTags"
               :key="tag"
-              class="inline-flex items-center px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full border border-white/30 text-[11px] sm:text-[12.5px] font-normal text-white bg-transparent leading-normal tracking-wide"
+              class="inline-flex items-center px-1 py-1  rounded-full border border-white/30 text-[10px] sm:text-[10px] font-normal text-white bg-transparent leading-normal tracking-wide"
             >
               {{ tag }}
             </span>
@@ -279,22 +265,14 @@ onUnmounted(() => {
     <Transition name="fade-action">
       <div
         v-if="activeId === game.id"
-        class="absolute inset-0 bg-black/80 backdrop-blur-[2px] p-2 flex flex-col items-center justify-center gap-2 z-20 cursor-default"
+        class="absolute inset-0 bg-neutral-900/50  p-2 flex flex-col items-center justify-center gap-2 z-20 cursor-default"
         @click.stop
       >
-        <!-- Close Button -->
-        <button
-          type="button"
-          class="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-          @click.stop="emit('close')"
-        >
-          <X class="h-3 w-3" />
-        </button>
 
         <!-- Start Now Button -->
         <button
           type="button"
-          class="w-full max-w-[105px] py-1.5 px-3 rounded-full bg-[#036242] hover:bg-[#0e896033] text-white font-extrabold text-[12px] leading-tight text-center transition-all shadow-md active:scale-95 cursor-pointer"
+          class="w-full max-w-[85px] py-1.5 px-0.5 rounded-full bg-[#036242] hover:bg-[#0e896033] text-white font-extrabold text-[12px] leading-tight text-center transition-all shadow-md active:scale-95 cursor-pointer"
           @click.stop="handleStartNowClick"
         >
           Start Now
@@ -304,7 +282,7 @@ onUnmounted(() => {
         <button
           v-if="canShowDemo(game.provider)"
           type="button"
-          class="w-full max-w-[105px] py-1.5 px-3 rounded-full bg-[#242624] hover:bg-[#2e312e] border border-white/20 text-white font-bold text-[11px] leading-tight text-center transition-all active:scale-95 cursor-pointer"
+          class="w-full max-w-[85px] py-1.5 px-0.5 rounded-full bg-[#242624]/90  text-white font-bold text-[11px] leading-tight text-center transition-all active:scale-95 cursor-pointer"
           @click.stop="emit('demo', game)"
         >
           Demo
