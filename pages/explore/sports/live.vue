@@ -10,11 +10,11 @@ useSeoMeta({
 })
 
 const liveTabs = [
-  { key: 'all', label: 'All Live', icon: '/icons/sports/live.png', to: '/explore/sports/live' },
-  { key: 'basketball', label: 'Basketball', icon: '/icons/sports/basketball.png', to: '/explore/sports/live/basketball' },
-  { key: 'soccer', label: 'Soccer', icon: '/icons/sports/soccer.png', to: '/explore/sports/live/soccer' },
-  { key: 'tennis', label: 'Tennis', icon: '/icons/sports/tennis.png', to: '/explore/sports/live/tennis' },
-  { key: 'baseball', label: 'Baseball', icon: '/icons/sports/baseball.png', to: '/explore/sports/live/baseball' },
+  { key: 'all', label: 'All', icon: '', to: '/explore/sports/live' },
+  { key: 'basketball', label: '', icon: '/icons/sports/basketball.png', to: '/explore/sports/live/basketball' },
+  { key: 'soccer', label: '', icon: '/icons/sports/soccer.png', to: '/explore/sports/live/soccer' },
+  { key: 'tennis', label: '', icon: '/icons/sports/tennis.png', to: '/explore/sports/live/tennis' },
+  { key: 'baseball', label: '', icon: '/icons/sports/baseball.png', to: '/explore/sports/live/baseball' },
 ]
 
 const currentSport = computed(() => {
@@ -41,9 +41,10 @@ const currentSport = computed(() => {
         :aria-current="currentSport === tab.key ? 'page' : undefined"
       >
         <img
+          v-if="tab.icon"
           :src="tab.icon"
           :alt="tab.label"
-          class="w-5 h-5 object-contain shrink-0"
+          class="w-[24px] h-[24px] object-contain shrink-0"
         />
         <span>{{ tab.label }}</span>
       </NuxtLink>

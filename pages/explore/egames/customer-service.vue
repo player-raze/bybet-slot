@@ -1,3 +1,123 @@
+<script setup lang="ts">
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+
+const router = useRouter()
+const { closeComments } = useCommentPanel()
+const { showDemoMessage } = useDemoInteraction()
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+
+useSeoMeta({
+  title: '24/7 Services — Customer Service Center | ByBet',
+  description: 'Welcome to ByBet 24/7 Customer Service Center. Get immediate online customer support and assistance 24/7.',
+  ogTitle: '24/7 Services — Customer Service Center | ByBet',
+  ogDescription: 'Welcome to ByBet 24/7 Customer Service Center. Get immediate online customer support and assistance 24/7.',
+})
+
+const handleBack = (): void => {
+  if (import.meta.client && window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/explore/account/me')
+  }
+}
+
+const handleServiceClick = (serviceName: string): void => {
+  showDemoMessage(`Connecting to ${serviceName}...`)
+  if (import.meta.client && bybetRedirectUrl) {
+    window.open(bybetRedirectUrl, '_blank')
+  }
+}
+
+onMounted(() => {
+  closeComments()
+})
+</script>
+
 <template>
-  <ComingSoonFallback />
+  <div class="customer-service-page w-full min-w-0 pb-16 pt-1 text-white">
+    <!-- Top Header Bar -->
+    <header class="service-top-bar flex items-center gap-1 rounded-lg bg-[#1C1C1C] px-2 py-1 mb-2 shadow-sm">
+      <button
+        type="button"
+        class="back-btn flex h-5 w-5 items-center justify-center rounded-full bg-[#141414] text-[#d1d5db] transition-colors  cursor-pointer"
+        aria-label="Go back"
+        @click="handleBack"
+      >
+        <ChevronLeft class="h-3 w-3 text-[#1FA779]" />
+      </button>
+      <h1 class="text-[16px] sm:text-[16px] font-bold text-white tracking-tight">
+        24/7 Services
+      </h1>
+    </header>
+
+    <!-- Welcome Greeting Card -->
+    <div class="welcome-card flex items-center gap-1 rounded-lg bg-[#141414] p-1 sm:p-2 mb-2 shadow-sm">
+      <div class="logo-box h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-[#036242] p-1 flex items-center justify-center shadow-sm">
+        <img
+          src="/icons/bybet-square.png"
+          alt="ByBet"
+          class="h-full w-full object-contain"
+        >
+      </div>
+      <div class="welcome-info flex flex-col justify-center">
+        <h2 class="text-[16px] font-bold leading-tight text-white">
+          Hi, Dear Customer
+        </h2>
+        <p class="text-[12px] text-[#7a807d] mt-1">
+          Welcome to Customer Service Center
+        </p>
+      </div>
+    </div>
+
+    <!-- Service Options Card -->
+    <div class="services-card rounded-xl bg-[#141414] overflow-hidden shadow-sm">
+      <!-- 24/7 Services 1 -->
+      <button
+        type="button"
+        class="service-row flex w-full items-center justify-between p-2 text-left transition-colors  group cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#32d49a]"
+        @click="handleServiceClick('24/7 Services 1')"
+      >
+        <div class="flex items-center gap-3">
+          <div class="p-[1px] rounded-md shrink-0 bg-[#036242] flex items-center justify-center">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Aæçå½©è²icon"><rect width="32" height="32" rx="8" class="fill-primary"></rect><path id="Vector" d="M16.0054 4C10.1217 4 5.33203 8.99722 5.33203 15.1538C5.33203 18.7518 6.97306 22.0833 9.74812 24.1888L8.1071 26.9872C7.96034 27.2271 7.98702 27.5469 8.17381 27.7601C8.29388 27.9067 8.48067 28 8.65411 28C8.73416 28 8.81421 27.9867 8.89426 27.9467L13.3104 25.9478C14.1909 26.1877 15.0981 26.3076 15.992 26.3076C21.8757 26.3076 26.6654 21.3104 26.6654 15.1538C26.6654 8.99722 21.889 4 16.0054 4ZM20.5549 18.5119C20.5149 18.6185 19.4342 21.0705 16.3523 21.0705C13.0168 21.0705 12.163 18.5652 12.1229 18.4586C11.9895 18.0455 12.2163 17.6058 12.6433 17.4725C13.0702 17.3393 13.5238 17.5658 13.6572 17.9789C13.7106 18.1388 14.271 19.5114 16.3523 19.5114C18.4336 19.5114 19.0606 17.9389 19.0606 17.9256C19.2341 17.5258 19.701 17.3393 20.1146 17.4992C20.5282 17.6591 20.7283 18.1255 20.5549 18.5253V18.5119Z" fill="white"></path></g></svg>
+          </div>
+          
+          <span class="text-[13px] sm:text-[14px] font-medium text-white transition-colors">
+            24/7 Services 1
+          </span>
+        </div>
+        <ChevronRight class="h-4 w-4 text-[#7a807d] transition-colors shrink-0" />
+      </button>
+
+      <!-- Divider -->
+      <div class="divider h-px bg-[#262928] mx-3" />
+
+      <!-- 24/7 Services 2 -->
+      <button
+        type="button"
+        class="service-row flex w-full items-center justify-between p-2 text-left transition-colors  group cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#32d49a]"
+        @click="handleServiceClick('24/7 Services 2')"
+      >
+        <div class="flex items-center gap-3">
+          <div class="p-[1px] rounded-md shrink-0 bg-[#036242] flex items-center justify-center">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Aæçå½©è²icon"><rect width="32" height="32" rx="8" class="fill-primary"></rect><path id="Vector" d="M16.0054 4C10.1217 4 5.33203 8.99722 5.33203 15.1538C5.33203 18.7518 6.97306 22.0833 9.74812 24.1888L8.1071 26.9872C7.96034 27.2271 7.98702 27.5469 8.17381 27.7601C8.29388 27.9067 8.48067 28 8.65411 28C8.73416 28 8.81421 27.9867 8.89426 27.9467L13.3104 25.9478C14.1909 26.1877 15.0981 26.3076 15.992 26.3076C21.8757 26.3076 26.6654 21.3104 26.6654 15.1538C26.6654 8.99722 21.889 4 16.0054 4ZM20.5549 18.5119C20.5149 18.6185 19.4342 21.0705 16.3523 21.0705C13.0168 21.0705 12.163 18.5652 12.1229 18.4586C11.9895 18.0455 12.2163 17.6058 12.6433 17.4725C13.0702 17.3393 13.5238 17.5658 13.6572 17.9789C13.7106 18.1388 14.271 19.5114 16.3523 19.5114C18.4336 19.5114 19.0606 17.9389 19.0606 17.9256C19.2341 17.5258 19.701 17.3393 20.1146 17.4992C20.5282 17.6591 20.7283 18.1255 20.5549 18.5253V18.5119Z" fill="white"></path></g></svg>
+          </div>
+          <span class="text-[13px] sm:text-[14px] font-medium text-white ">
+            24/7 Services 2
+          </span>
+        </div>
+        <ChevronRight class="h-4 w-4 text-[#7a807d] group-hover:text-white transition-colors shrink-0" />
+      </button>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.customer-service-page {
+  max-width: 100%;
+}
+
+.service-row {
+  user-select: none;
+}
+</style>

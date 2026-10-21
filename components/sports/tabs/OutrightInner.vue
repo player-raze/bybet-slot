@@ -40,14 +40,25 @@ const expandedCandidates = ref<Record<string, boolean>>({})
 
 const commencementDates = computed(() => {
   const dates: Record<string, { value: string; label: string }> = {}
-  const formatter = new Intl.DateTimeFormat('en-PH', {
-    month: 'short', day: 'numeric', year: 'numeric',
-    hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila',
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
   })
   for (const [key, events] of Object.entries(outrightEvents.value)) {
     const first = events.filter(event => Number.isFinite(Date.parse(event.commence_time)))
       .sort((a, b) => Date.parse(a.commence_time) - Date.parse(b.commence_time))[0]
-    if (first) dates[key] = { value: first.commence_time, label: formatter.format(new Date(first.commence_time)) }
+    if (first) {
+      const parts = formatter.formatToParts(new Date(first.commence_time))
+      const getPart = (type: string) => parts.find(p => p.type === type)?.value ?? '00'
+      const formatted = `${getPart('year')}-${getPart('month')}-${getPart('day')} ${getPart('hour')}:${getPart('minute')}:${getPart('second')}`
+      dates[key] = { value: first.commence_time, label: formatted }
+    }
   }
   return dates
 })

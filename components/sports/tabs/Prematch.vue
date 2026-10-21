@@ -254,8 +254,11 @@ const toggleCollapseAll = (): void => {
       </article>
     </div>
 
-    <div v-else class="flex min-h-[200px] w-full items-center justify-center" role="status">
-      <img src="/images/empty/no-matches.png" alt="No matches available for the selected date" class="h-auto w-full max-w-[400px] object-contain" />
+    <div v-else class="flex min-h-[100px] w-full items-center justify-center" role="status">
+        <div class="flex flex-col items-center mt-14">
+          <img src="/images/empty/no-matches.webp" alt="No matches available for the selected date" class="h-auto w-full max-w-[200px] object-contain" />
+          <p class="text-center text-[16px] text-[#959799]">No Live Streaming</p>
+        </div>
     </div>
   </div>
 </template>
