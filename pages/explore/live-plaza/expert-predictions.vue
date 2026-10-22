@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { LayoutGrid, MoreHorizontal } from 'lucide-vue-next'
 import {
-  EXPERT_PREDICTIONS,
-  PREDICTORS,
+  EXPERT_PREDICTORS,
   type Prediction,
   type PredictionOption,
+  type PredictionsResponse,
 } from '~/data/predictions'
 import type { LivePlazaSportFilter } from '~/components/live-plaza/LivePlazaSportFilters.vue'
 
@@ -16,6 +16,11 @@ const predictionSortOptions: Array<{ value: PredictionSort; label: string }> = [
   { value: 'win-streak', label: 'Win Streak' },
 ]
 
+const visiblePredictors = EXPERT_PREDICTORS
+  .filter(predictor => (predictor.currentPredictions ?? 0) > 0)
+  .slice(0, 10)
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+
 useSeoMeta({
   title: 'Expert Predictions | Live Plaza | ByBet',
   description: 'Follow expert predictions, winning tips, and real-time sports forecasts with high hit rates.',
@@ -24,9 +29,20 @@ useSeoMeta({
 })
 
 const { showDemoMessage } = useDemoInteraction()
+const route = useRoute()
+const {
+  data: predictionData,
+  status: predictionStatus,
+  error: predictionError,
+  refresh: refreshPredictions,
+} = await useFetch<PredictionsResponse>('/api/predictions')
 
 const selectedSport = ref<LivePlazaSportFilter>('all')
-const selectedPredictorId = ref<string | null>(null)
+const getPredictorIdFromQuery = (value: unknown): string | null => {
+  if (typeof value !== 'string') return null
+  return EXPERT_PREDICTORS.some(predictor => predictor.id === value) ? value : null
+}
+const selectedPredictorId = ref<string | null>(getPredictorIdFromQuery(route.query.predictor))
 const predictionSort = ref<PredictionSort>('featured')
 const sortMenuOpen = ref(false)
 const sortControl = ref<HTMLElement | null>(null)
@@ -39,8 +55,8 @@ const selectedSortLabel = computed(() => {
 
 const filteredPredictions = computed(() => {
   let predictions = selectedSport.value === 'all'
-    ? [...EXPERT_PREDICTIONS]
-    : EXPERT_PREDICTIONS.filter(item => item.sport === selectedSport.value)
+    ? [...(predictionData.value?.predictions ?? [])]
+    : (predictionData.value?.predictions ?? []).filter(item => item.sport === selectedSport.value)
 
   if (selectedPredictorId.value) {
     predictions = predictions.filter(item => item.predictorId === selectedPredictorId.value)
@@ -59,8 +75,21 @@ const filteredPredictions = computed(() => {
   return predictions
 })
 
-const selectPredictor = (predictorId: string | null): void => {
-  selectedPredictorId.value = predictorId
+const visiblePredictions = computed(() => filteredPredictions.value.slice(0, 10))
+
+const redirectToByBet = (): void => {
+  void navigateTo(bybetRedirectUrl, { external: true })
+}
+
+watch(() => route.query.predictor, (predictorId) => {
+  selectedPredictorId.value = getPredictorIdFromQuery(predictorId)
+})
+
+const handleAvatarError = (event: Event): void => {
+  const image = event.currentTarget as HTMLImageElement
+  if (!image.src.endsWith('/images/predictions/jedaiah.webp')) {
+    image.src = '/images/predictions/jedaiah.webp'
+  }
 }
 
 const toggleSortMenu = (): void => {
@@ -124,43 +153,43 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
 
     <section class="predictor-panel" aria-label="Prediction experts">
       <div class="predictor-rail">
-        <button
-          type="button"
+        <NuxtLink
+          to="/explore/live-plaza/experts"
           class="predictor-item predictor-item--all"
           :class="{ 'predictor-item--active': selectedPredictorId === null }"
-          :aria-pressed="selectedPredictorId === null"
-          @click="selectPredictor(null)"
+          aria-label="View all experts"
         >
           <span class="predictor-item__all-icon">
             <LayoutGrid :size="25" :stroke-width="0" fill="currentColor" aria-hidden="true" />
           </span>
           <span class="predictor-item__name">All</span>
-        </button>
+        </NuxtLink>
 
         <button
-          v-for="predictor in PREDICTORS"
+          v-for="predictor in visiblePredictors"
           :key="predictor.id"
           type="button"
           class="predictor-item"
           :class="{ 'predictor-item--active': selectedPredictorId === predictor.id }"
           :aria-pressed="selectedPredictorId === predictor.id"
-          @click="selectPredictor(predictor.id)"
+          @click="redirectToByBet"
         >
           <span class="predictor-item__avatar-wrap">
             <img
-              :src="predictor.avatar"
-              :alt="predictor.name"
+              :src="predictor.predictorAvatar"
+              :alt="predictor.predictorName"
               class="predictor-item__avatar"
               width="54"
               height="54"
               loading="lazy"
               decoding="async"
+              @error="handleAvatarError"
             >
-            <span v-if="predictor.badgeCount" class="predictor-item__badge">
-              {{ predictor.badgeCount }}
+            <span v-if="predictor.currentPredictions" class="predictor-item__badge">
+              {{ predictor.currentPredictions }}
             </span>
           </span>
-          <span class="predictor-item__name">{{ predictor.name }}</span>
+          <span class="predictor-item__name">{{ predictor.predictorName }}</span>
         </button>
       </div>
     </section>
@@ -217,9 +246,18 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
         </div>
       </div>
 
-      <div v-if="filteredPredictions.length" class="predictions-grid">
+      <div v-if="predictionStatus === 'pending'" class="predictions-empty">
+        Loading expert predictions…
+      </div>
+
+      <div v-else-if="predictionError" class="predictions-empty predictions-empty--error">
+        <span>Expert predictions are temporarily unavailable.</span>
+        <button type="button" @click="refreshPredictions()">Try again</button>
+      </div>
+
+      <div v-else-if="visiblePredictions.length" class="predictions-grid">
         <LivePlazaPredictionCard
-          v-for="prediction in filteredPredictions"
+          v-for="prediction in visiblePredictions"
           :key="prediction.id"
           :prediction="prediction"
           :unlocked="unlockedPredictionIds.has(prediction.id)"
@@ -279,6 +317,7 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
   padding: 0;
   border: 0;
   color: #eeeeee;
+  text-decoration: none;
   background: transparent;
   cursor: pointer;
   gap: 6px;
@@ -521,6 +560,20 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
   color: #858985;
   font-size: 12px;
   background: #141414;
+}
+
+.predictions-empty--error {
+  align-content: center;
+  gap: 12px;
+}
+
+.predictions-empty--error button {
+  padding: 7px 14px;
+  border: 1px solid #087d5c;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #202322;
+  cursor: pointer;
 }
 
 @media (max-width: 55rem) {

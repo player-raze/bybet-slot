@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     kadarioSite: 'YBa-BnymZ6iN8pkfAUFTWIKn',
   },
   modules: ['@nuxtjs/tailwindcss'],
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/light-mode.css'],
   app: {
     head: {
       htmlAttrs: { lang: 'en' },

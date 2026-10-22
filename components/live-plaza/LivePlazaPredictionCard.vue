@@ -12,6 +12,8 @@ const emit = defineEmits<{
   selectOdd: [prediction: Prediction, option: PredictionOption]
 }>()
 
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+
 const formattedHitRate = computed(() => {
   return Number.isInteger(props.prediction.hitRate)
     ? props.prediction.hitRate.toFixed(0)
@@ -23,10 +25,53 @@ const sportIcon = computed(() => {
     ? '/icons/sports/basketball.webp'
     : '/icons/sports/soccer.webp'
 })
+
+const handleAvatarError = (event: Event): void => {
+  const image = event.currentTarget as HTMLImageElement
+  if (!image.src.endsWith('/images/predictions/jedaiah.webp')) {
+    image.src = '/images/predictions/jedaiah.webp'
+  }
+}
+
+const redirectToByBet = (): void => {
+  void navigateTo(bybetRedirectUrl, { external: true })
+}
+
+const handleCardClick = (event: MouseEvent): void => {
+  const target = event.target
+
+  if (target instanceof Element && target.closest('button, a')) {
+    return
+  }
+
+  redirectToByBet()
+}
+
+const handleCardKeydown = (event: KeyboardEvent): void => {
+  if (event.key !== 'Enter' && event.key !== ' ') {
+    return
+  }
+
+  const target = event.target
+
+  if (target instanceof Element && target.closest('button, a')) {
+    return
+  }
+
+  event.preventDefault()
+  redirectToByBet()
+}
 </script>
 
 <template>
-  <article class="prediction-card">
+  <article
+    class="prediction-card"
+    role="link"
+    tabindex="0"
+    :aria-label="`Open ${prediction.predictorName}'s prediction on ByBet`"
+    @click="handleCardClick"
+    @keydown="handleCardKeydown"
+  >
     <div class="prediction-card__summary">
       <div class="prediction-card__author">
         <img
@@ -37,6 +82,7 @@ const sportIcon = computed(() => {
           height="44"
           loading="lazy"
           decoding="async"
+          @error="handleAvatarError"
         >
         <div class="prediction-card__identity">
           <strong>{{ prediction.predictorName }}</strong>
@@ -120,12 +166,18 @@ const sportIcon = computed(() => {
   border-radius: 12px;
   color: #ffffff;
   background: #141414;
+  cursor: pointer;
   transition: border-color 150ms ease, background-color 150ms ease;
 }
 
 .prediction-card:hover {
   border-color: rgba(255, 255, 255, 0.1);
   background: #161616;
+}
+
+.prediction-card:focus-visible {
+  outline: 2px solid #13ae7d;
+  outline-offset: 2px;
 }
 
 .prediction-card__summary,

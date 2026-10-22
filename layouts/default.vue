@@ -265,7 +265,7 @@ onBeforeUnmount(() => {
 
   .page-content {
     padding: 0.5rem var(--page-padding) 0;
-    background: #000000;
+    background: var(--page);
   }
 }
 

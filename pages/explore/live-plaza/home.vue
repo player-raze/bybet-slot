@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { ChevronRight, MoreHorizontal } from 'lucide-vue-next'
 import {
-  EXPERT_PREDICTIONS,
   type Prediction,
   type PredictionOption,
+  type PredictionsResponse,
 } from '~/data/predictions'
 import {
   POPULAR_GAMES,
   type PopularGame,
 } from '~/data/live-plaza'
 import type { LivePlazaSportFilter } from '~/components/live-plaza/LivePlazaSportFilters.vue'
+
+type PopularGameSort = 'time' | 'predict'
+
+const popularGameSortOptions: Array<{ value: PopularGameSort; label: string }> = [
+  { value: 'time', label: 'Time' },
+  { value: 'predict', label: 'Predict' },
+]
 
 useSeoMeta({
   title: 'Live Plaza — Popular Games & Expert Predictions | ByBet',
@@ -19,29 +26,49 @@ useSeoMeta({
 })
 
 const { showDemoMessage } = useDemoInteraction()
-const router = useRouter()
+const {
+  data: predictionData,
+  status: predictionStatus,
+  error: predictionError,
+  refresh: refreshPredictions,
+} = await useFetch<PredictionsResponse>('/api/predictions')
 
 const popularSport = ref<LivePlazaSportFilter>('all')
 const predictionsSport = ref<LivePlazaSportFilter>('all')
+const popularGameSort = ref<PopularGameSort>('predict')
+const popularSortMenuOpen = ref(false)
+const popularSortControl = ref<HTMLElement | null>(null)
+const popularSortButton = ref<HTMLButtonElement | null>(null)
 const sortByHitRateDesc = ref(false)
 const unlockedIds = ref<Set<string>>(new Set())
 const carouselContainer = ref<HTMLElement | null>(null)
 
+const selectedPopularSortLabel = computed(() => (
+  popularGameSortOptions.find(option => option.value === popularGameSort.value)?.label ?? 'Predict'
+))
+
 const filteredPopularGames = computed(() => {
-  if (popularSport.value === 'all') return POPULAR_GAMES
-  return POPULAR_GAMES.filter(game => game.sport === popularSport.value)
+  const games = popularSport.value === 'all'
+    ? [...POPULAR_GAMES]
+    : POPULAR_GAMES.filter(game => game.sport === popularSport.value)
+
+  if (popularGameSort.value === 'time') {
+    return games.sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`))
+  }
+
+  return games.sort((a, b) => b.predictCount - a.predictCount)
 })
 
 const filteredPredictions = computed(() => {
   const predictions = predictionsSport.value === 'all'
-    ? [...EXPERT_PREDICTIONS]
-    : EXPERT_PREDICTIONS.filter(item => item.sport === predictionsSport.value)
+    ? [...(predictionData.value?.predictions ?? [])]
+    : (predictionData.value?.predictions ?? []).filter(item => item.sport === predictionsSport.value)
 
   if (sortByHitRateDesc.value) {
     predictions.sort((a, b) => b.hitRate - a.hitRate)
   }
 
-  return predictions
+  return predictions.slice(0, 6)
 })
 
 const scrollCarousel = (): void => {
@@ -53,8 +80,26 @@ const togglePredictionSort = (): void => {
   showDemoMessage(sortByHitRateDesc.value ? 'Sorted by highest hit rate' : 'Showing win streak order')
 }
 
-const handlePredictClick = (): void => {
-  router.push('/explore/live-plaza/expert-predictions')
+const togglePopularSortMenu = (): void => {
+  popularSortMenuOpen.value = !popularSortMenuOpen.value
+}
+
+const selectPopularGameSort = (sort: PopularGameSort): void => {
+  popularGameSort.value = sort
+  popularSortMenuOpen.value = false
+}
+
+const handleDocumentClick = (event: MouseEvent): void => {
+  if (popularSortMenuOpen.value && !popularSortControl.value?.contains(event.target as Node)) {
+    popularSortMenuOpen.value = false
+  }
+}
+
+const handleEscape = (event: KeyboardEvent): void => {
+  if (event.key === 'Escape' && popularSortMenuOpen.value) {
+    popularSortMenuOpen.value = false
+    popularSortButton.value?.focus()
+  }
 }
 
 const handleGameClick = (game: PopularGame): void => {
@@ -74,6 +119,16 @@ const handleUnlock = (prediction: Prediction): void => {
 const handleOddClick = (prediction: Prediction, option: PredictionOption): void => {
   showDemoMessage(`Selected ${prediction.homeTeam} vs ${prediction.awayTeam} [${option.label} @ ${option.odd}]`)
 }
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick)
+  document.addEventListener('keydown', handleEscape)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick)
+  document.removeEventListener('keydown', handleEscape)
+})
 </script>
 
 <template>
@@ -89,10 +144,47 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
     <section class="popular-panel" aria-labelledby="popular-games-title">
       <div class="panel-heading">
         <h2 id="popular-games-title">Popular Games</h2>
-        <button type="button" class="panel-action" @click="handlePredictClick">
-          <span>Predict</span>
-          <MoreHorizontal :size="15" aria-hidden="true" />
-        </button>
+        <div ref="popularSortControl" class="popular-sort-control">
+          <button
+            ref="popularSortButton"
+            type="button"
+            class="panel-action panel-action--popular-sort"
+            :class="{ 'panel-action--open': popularSortMenuOpen }"
+            aria-haspopup="menu"
+            :aria-expanded="popularSortMenuOpen"
+            aria-controls="popular-game-sort-menu"
+            @click.stop="togglePopularSortMenu"
+          >
+            <span>{{ selectedPopularSortLabel }}</span>
+            <MoreHorizontal :size="15" aria-hidden="true" />
+          </button>
+
+          <Transition name="sort-menu">
+            <div
+              v-if="popularSortMenuOpen"
+              id="popular-game-sort-menu"
+              class="popular-sort-menu"
+              role="menu"
+              aria-label="Sort popular games"
+            >
+              <span class="popular-sort-menu__label">Sort</span>
+              <div class="popular-sort-menu__options">
+                <button
+                  v-for="option in popularGameSortOptions"
+                  :key="option.value"
+                  type="button"
+                  class="popular-sort-menu__option"
+                  :class="{ 'popular-sort-menu__option--active': popularGameSort === option.value }"
+                  role="menuitemradio"
+                  :aria-checked="popularGameSort === option.value"
+                  @click="selectPopularGameSort(option.value)"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+          </Transition>
+        </div>
       </div>
 
       <div class="panel-filters">
@@ -152,7 +244,16 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
         </div>
       </div>
 
-      <div class="predictions-grid">
+      <div v-if="predictionStatus === 'pending'" class="predictions-empty">
+        Loading expert predictions…
+      </div>
+
+      <div v-else-if="predictionError" class="predictions-empty predictions-empty--error">
+        <span>Expert predictions are temporarily unavailable.</span>
+        <button type="button" @click="refreshPredictions()">Try again</button>
+      </div>
+
+      <div v-else-if="filteredPredictions.length" class="predictions-grid">
         <LivePlazaPredictionCard
           v-for="prediction in filteredPredictions"
           :key="prediction.id"
@@ -161,6 +262,10 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
           @unlock="handleUnlock"
           @select-odd="handleOddClick"
         />
+      </div>
+
+      <div v-else class="predictions-empty">
+        No predictions are available right now.
       </div>
     </section>
   </div>
@@ -184,6 +289,7 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
 }
 
 .popular-panel {
+  position: relative;
   margin-bottom: 8px;
 }
 
@@ -223,6 +329,85 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
 
 .panel-action:hover {
   background: #303030;
+}
+
+.popular-sort-control {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panel-action--popular-sort,
+.panel-action--popular-sort:hover,
+.panel-action--popular-sort.panel-action--open {
+  border: 1px solid #087d5c;
+}
+
+.popular-sort-menu {
+  display: flex;
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 5px);
+  right: -12px;
+  width: 165px;
+  flex-direction: column;
+  padding: 8px 12px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.025);
+  border-radius: 14px;
+  color: #eeeeee;
+  background: #171717;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42);
+}
+
+.popular-sort-menu__label {
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.popular-sort-menu__options {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.popular-sort-menu__option {
+  width: 125px;
+  height: 33px;
+  padding: 0 12px;
+  border: 1px solid #565b58;
+  border-radius: 999px;
+  color: #eeeeee;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  background: #202322;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.popular-sort-menu__option:hover {
+  border-color: #008965;
+  background: #252a28;
+}
+
+.popular-sort-menu__option--active,
+.popular-sort-menu__option--active:hover {
+  border-color: #007653;
+  background: #007653;
+}
+
+.sort-menu-enter-active,
+.sort-menu-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+  transform-origin: top right;
+}
+
+.sort-menu-enter-from,
+.sort-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
 }
 
 .panel-filters {
@@ -363,6 +548,30 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
   min-width: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+}
+
+.predictions-empty {
+  display: grid;
+  min-height: 212px;
+  place-items: center;
+  border-radius: 12px;
+  color: #858985;
+  font-size: 12px;
+  background: #141414;
+}
+
+.predictions-empty--error {
+  align-content: center;
+  gap: 12px;
+}
+
+.predictions-empty--error button {
+  padding: 7px 14px;
+  border: 1px solid #087d5c;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #202322;
+  cursor: pointer;
 }
 
 @media (max-width: 74rem) {

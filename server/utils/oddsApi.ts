@@ -36,9 +36,13 @@ export function createOddsApi(api: string, apiKey: string) {
     return promise
   }
 
-  const upcoming = () => request<SportsEvent[]>('sports/upcoming/odds', {
-    regions: 'us', bookmakers, markets: 'h2h,spreads,totals', oddsFormat: 'decimal',
-  }, 60000)
+  const upcoming = (range: Record<string, string> = {}) => request<SportsEvent[]>('sports/upcoming/odds', {
+    regions: 'us',
+    bookmakers,
+    markets: 'h2h,spreads,totals',
+    oddsFormat: 'decimal',
+    ...range,
+  }, 5 * 60 * 1000)
 
   // Cache the full tournament once so every tab and time filter can reuse it.
   const leagueOdds = async (sport: string, range: Record<string, string> = {}) => {

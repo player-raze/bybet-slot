@@ -112,6 +112,7 @@ const filteredEvents = computed(() => {
         v-else-if="filteredEvents.length"
         ref="matchList"
         :events="filteredEvents"
+        :group-by-sport="!props.sport"
       />
 
       <!-- Empty State -->

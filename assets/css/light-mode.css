@@ -1,0 +1,1169 @@
+/* ==========================================================================
+   Global Light Mode Theme Overrides (html[data-theme='light'])
+   Applies across all pages, layouts, components, and modals while keeping
+   dark mode 100% untouched.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Layout Shell, Sidebar, Mobile Nav, Footer & Chat Panel
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .rail-pill,
+html[data-theme='light']:not(#_) .sidebar--collapsed .rail-pill {
+  border-color: var(--border);
+  background:
+    radial-gradient(120% 16% at 8% 0%, rgba(255, 255, 255, 0.95), transparent 60%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 243, 0.92));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.9),
+    0 0.35rem 1rem rgba(24, 72, 50, 0.08);
+}
+
+html[data-theme='light']:not(#_) .rail-link {
+  color: #24382e;
+}
+
+html[data-theme='light']:not(#_) .rail-icon {
+  color: #20372c;
+}
+
+html[data-theme='light']:not(#_) .rail-chevron {
+  color: #5d7066;
+}
+
+html[data-theme='light']:not(#_) .rail-link--surface {
+  border-color: var(--border);
+  color: #24382e;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .sidebar--collapsed .rail-link--surface {
+  background: transparent;
+}
+
+html[data-theme='light']:not(#_) .rail-submenu-link {
+  color: #3b4f45;
+}
+
+html[data-theme='light']:not(#_) .rail-link:hover,
+html[data-theme='light']:not(#_) .rail-submenu-link:hover {
+  color: #036242;
+  background: rgba(3, 98, 66, 0.08);
+}
+
+html[data-theme='light']:not(#_) .rail-link--active,
+html[data-theme='light']:not(#_) .rail-link--active:hover,
+html[data-theme='light']:not(#_) .rail-submenu-link--active,
+html[data-theme='light']:not(#_) .rail-submenu-link--active:hover {
+  color: #ffffff;
+  background: #036242;
+}
+
+html[data-theme='light']:not(#_) .rail-link--active .rail-icon {
+  color: #ffffff;
+}
+
+html[data-theme='light']:not(#_) .rail-submenu--panel {
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0.25rem 0.7rem rgba(24, 72, 50, 0.08);
+}
+
+html[data-theme='light']:not(#_) .language-option {
+  color: #31443a;
+  background: transparent;
+}
+
+html[data-theme='light']:not(#_) .language-option:hover,
+html[data-theme='light']:not(#_) .language-option--active {
+  color: #036242;
+}
+
+html[data-theme='light']:not(#_) .theme-options button {
+  color: #31443a;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .theme-options button:hover,
+html[data-theme='light']:not(#_) .theme-options .theme-option--active {
+  border-color: rgba(50, 212, 154, 0.45);
+  color: #ffffff;
+  background: #086b4d;
+}
+
+html[data-theme='light']:not(#_) .rail-toggle {
+  border: 1px solid rgba(3, 112, 76, 0.5);
+  color: #ffffff;
+  background: linear-gradient(90deg, #05714e 0%, #0ca171 52%, #05714e 100%);
+}
+
+html[data-theme='light']:not(#_) .mobile-bottom-nav {
+  border-top-color: var(--border);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 -0.25rem 0.9rem rgba(24, 72, 50, 0.08);
+}
+
+html[data-theme='light']:not(#_) .mobile-bottom-link {
+  color: #5d7066;
+}
+
+html[data-theme='light']:not(#_) .mobile-bottom-link--active {
+  color: #036242;
+}
+
+html[data-theme='light']:not(#_) .footer {
+  border-top-color: rgba(3, 98, 66, 0.14);
+  color: #5d7066;
+  background: #e6f0ea;
+}
+
+html[data-theme='light']:not(#_) .footer h2,
+html[data-theme='light']:not(#_) .footer-brand strong,
+html[data-theme='light']:not(#_) .footer-social > strong,
+html[data-theme='light']:not(#_) .footer-brand > a {
+  color: #14251d;
+}
+
+html[data-theme='light']:not(#_) .footer nav a:hover {
+  color: #036242;
+}
+
+html[data-theme='light']:not(#_) .responsible-gaming {
+  border-top-color: rgba(10, 62, 39, 0.12);
+}
+
+html[data-theme='light']:not(#_) .responsible-gaming li.responsible-gaming-tile--transparent img {
+  filter: drop-shadow(0 1px 1.5px rgba(7, 62, 42, 0.55));
+}
+
+html[data-theme='light']:not(#_) .promotion-compliance {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .comment-panel {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .chat-login {
+  border-color: rgba(10, 62, 39, 0.18);
+  color: #4c6357;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(24, 72, 50, 0.1);
+}
+
+html[data-theme='light']:not(#_) #conversation-ground stop:last-child {
+  stop-color: #e4eee8;
+}
+
+/* --------------------------------------------------------------------------
+   2. Homepage & Reference Sections
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .promotions-section h2 {
+  color: var(--heading);
+  background: none;
+  -webkit-text-fill-color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .provider-grid strong {
+  color: var(--heading);
+}
+
+@media (max-width: 63.99rem) {
+  html[data-theme='light']:not(#_) .reference-section--popular .reference-game,
+  html[data-theme='light']:not(#_) .reference-game {
+    border-color: var(--border);
+    background: #ffffff;
+    box-shadow: 0 0.2rem 0.6rem rgba(24, 72, 50, 0.08);
+  }
+
+  html[data-theme='light']:not(#_) .reference-game-caption strong {
+    color: var(--heading);
+  }
+
+  html[data-theme='light']:not(#_) .reference-game-caption small {
+    color: var(--secondary);
+  }
+}
+
+html[data-theme='light']:not(#_) .table-shell {
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 0.2rem 0.6rem rgba(24, 72, 50, 0.06);
+}
+
+html[data-theme='light']:not(#_) .table-shell th {
+  color: var(--secondary);
+  background: #f3f8f5;
+}
+
+html[data-theme='light']:not(#_) .table-shell td.amount-column {
+  color: #036242;
+}
+
+html[data-theme='light']:not(#_) .table-shell .multiplier {
+  color: #036242;
+  background: rgba(3, 98, 66, 0.1);
+}
+
+html[data-theme='light']:not(#_) .demo-label {
+  color: var(--secondary);
+  background: rgba(10, 62, 39, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   3. Tailwind Arbitrary Dark Utility Class Overrides
+   -------------------------------------------------------------------------- */
+
+/* Page & Sticky Header Wrappers */
+html[data-theme='light']:not(#_) .bg-\[\#000000\],
+html[data-theme='light']:not(#_) .sticky.bg-black,
+html[data-theme='light']:not(#_) .seo-header-sticky-wrapper,
+html[data-theme='light']:not(#_) .sticky-header {
+  background-color: var(--page);
+}
+
+/* Inline black controls (search bars, pills, segmented toggles) */
+html[data-theme='light']:not(#_) .bg-black:not(.brand-logo):not(.w-\[3px\]) {
+  background-color: #edf4f0;
+}
+
+/* Primary Card & Panel Surfaces */
+html[data-theme='light']:not(#_) .bg-\[\#121212\],
+html[data-theme='light']:not(#_) .bg-\[\#131313\],
+html[data-theme='light']:not(#_) .bg-\[\#141414\],
+html[data-theme='light']:not(#_) .bg-\[\#151515\],
+html[data-theme='light']:not(#_) .bg-\[\#161616\],
+html[data-theme='light']:not(#_) .bg-\[\#171717\],
+html[data-theme='light']:not(#_) .bg-\[\#171817\],
+html[data-theme='light']:not(#_) .bg-\[\#181818\],
+html[data-theme='light']:not(#_) .bg-\[\#181a19\],
+html[data-theme='light']:not(#_) .bg-\[\#1a1a1a\],
+html[data-theme='light']:not(#_) .bg-\[\#1b1b1b\],
+html[data-theme='light']:not(#_) .bg-\[\#1b1c1b\],
+html[data-theme='light']:not(#_) .bg-\[\#1c1c1c\],
+html[data-theme='light']:not(#_) .bg-\[\#1c1d1c\],
+html[data-theme='light']:not(#_) .bg-\[\#1d1d1d\],
+html[data-theme='light']:not(#_) .bg-\[\#1e1e1e\],
+html[data-theme='light']:not(#_) .bg-\[\#1e201f\],
+html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\],
+html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]\/80,
+html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]\/90 {
+  background-color: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+/* Secondary / Control / Pill / Nested Surfaces */
+html[data-theme='light']:not(#_) .bg-\[\#202020\],
+html[data-theme='light']:not(#_) .bg-\[\#202220\],
+html[data-theme='light']:not(#_) .bg-\[\#222222\],
+html[data-theme='light']:not(#_) .bg-\[\#222423\],
+html[data-theme='light']:not(#_) .bg-\[\#232323\],
+html[data-theme='light']:not(#_) .bg-\[\#242424\],
+html[data-theme='light']:not(#_) .bg-\[\#242523\],
+html[data-theme='light']:not(#_) .bg-\[\#242624\],
+html[data-theme='light']:not(#_) .bg-\[\#242625\],
+html[data-theme='light']:not(#_) .bg-\[\#252525\],
+html[data-theme='light']:not(#_) .bg-\[\#252827\],
+html[data-theme='light']:not(#_) .bg-\[\#262626\],
+html[data-theme='light']:not(#_) .bg-\[\#272827\],
+html[data-theme='light']:not(#_) .bg-\[\#282828\],
+html[data-theme='light']:not(#_) .bg-\[\#282a29\],
+html[data-theme='light']:not(#_) .bg-\[\#292929\],
+html[data-theme='light']:not(#_) .bg-\[\#2a2a2a\],
+html[data-theme='light']:not(#_) .bg-\[\#2b2b2b\],
+html[data-theme='light']:not(#_) .bg-\[\#2c2c2c\],
+html[data-theme='light']:not(#_) .bg-\[\#2e3230\],
+html[data-theme='light']:not(#_) .bg-\[\#303030\],
+html[data-theme='light']:not(#_) .bg-\[\#333333\],
+html[data-theme='light']:not(#_) .bg-\[\#343635\] {
+  background-color: #edf4f0;
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .bg-white\/5,
+html[data-theme='light']:not(#_) .bg-white\/10,
+html[data-theme='light']:not(#_) .bg-white\/\[0\.03\],
+html[data-theme='light']:not(#_) .bg-white\/\[0\.04\] {
+  background-color: rgba(10, 62, 39, 0.06);
+}
+
+html[data-theme='light']:not(#_) .hover\:bg-\[\#242625\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-\[\#252525\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-\[\#262626\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-\[\#282a29\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-\[\#2a2a2a\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-\[\#333333\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-\[\#122F25\]:hover,
+html[data-theme='light']:not(#_) .hover\:bg-white\/5:hover,
+html[data-theme='light']:not(#_) .hover\:bg-white\/10:hover,
+html[data-theme='light']:not(#_) .hover\:bg-white\/20:hover,
+html[data-theme='light']:not(#_) .hover\:bg-white\/\[0\.02\]:hover {
+  background-color: #dfece5;
+}
+
+/* Borders & Dividers */
+html[data-theme='light']:not(#_) .border-white\/5,
+html[data-theme='light']:not(#_) .border-white\/10,
+html[data-theme='light']:not(#_) .border-white\/15,
+html[data-theme='light']:not(#_) .border-white\/20,
+html[data-theme='light']:not(#_) .border-white\/30,
+html[data-theme='light']:not(#_) .border-\[\#222524\],
+html[data-theme='light']:not(#_) .border-\[\#262626\],
+html[data-theme='light']:not(#_) .border-\[\#2b2b2b\],
+html[data-theme='light']:not(#_) .border-\[\#2b2d2b\],
+html[data-theme='light']:not(#_) .border-\[\#333333\],
+html[data-theme='light']:not(#_) .border-\[\#e5e7eb33\] {
+  border-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .divide-white\/5 > :not([hidden]) ~ :not([hidden]),
+html[data-theme='light']:not(#_) .divide-white\/10 > :not([hidden]) ~ :not([hidden]),
+html[data-theme='light']:not(#_) .divide-\[\#222524\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .divider.bg-white\/30,
+html[data-theme='light']:not(#_) .bg-white\/5.h-px,
+html[data-theme='light']:not(#_) .bg-white\/10.h-px {
+  background-color: var(--border);
+}
+
+/* Text Colors */
+html[data-theme='light']:not(#_) .text-white,
+html[data-theme='light']:not(#_) .text-\[\#f0f2f1\],
+html[data-theme='light']:not(#_) .text-\[\#e5e7eb\],
+html[data-theme='light']:not(#_) .text-\[\#e0e2e1\],
+html[data-theme='light']:not(#_) .text-\[\#d1d5db\],
+html[data-theme='light']:not(#_) .text-\[\#ccc\],
+html[data-theme='light']:not(#_) .text-gray-200,
+html[data-theme='light']:not(#_) .text-gray-300,
+html[data-theme='light']:not(#_) .text-neutral-200 {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .text-\[\#959799\],
+html[data-theme='light']:not(#_) .text-\[\#8e9491\],
+html[data-theme='light']:not(#_) .text-\[\#7a807d\],
+html[data-theme='light']:not(#_) .text-\[\#9ca3af\],
+html[data-theme='light']:not(#_) .text-\[\#a2a5a3\],
+html[data-theme='light']:not(#_) .text-\[\#999\],
+html[data-theme='light']:not(#_) .text-\[\#888\],
+html[data-theme='light']:not(#_) .text-\[\#737373\],
+html[data-theme='light']:not(#_) .text-\[\#626664\],
+html[data-theme='light']:not(#_) .text-gray-400,
+html[data-theme='light']:not(#_) .text-neutral-300,
+html[data-theme='light']:not(#_) .text-neutral-400 {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .placeholder-white::placeholder,
+html[data-theme='light']:not(#_) .placeholder-\[\#7a807d\]::placeholder,
+html[data-theme='light']:not(#_) .placeholder-\[\#8e9491\]::placeholder {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .hover\:text-white:hover,
+html[data-theme='light']:not(#_) .group:hover .group-hover\:text-white {
+  color: var(--heading);
+}
+
+/* Preserve white text on brand/accent buttons, active pills, badges, and dark media overlays */
+html[data-theme='light']:not(#_) .bg-\[\#036242\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#036242\]\/95.text-white,
+html[data-theme='light']:not(#_) .bg-\[\#005a3c\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#007653\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#015A3C\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#076b4a\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#07835c\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#047a58\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#047b53\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#006649\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#008d62\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#007c55\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#00828a\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#001e4e\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#5c2d82\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#4C9EEA\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#E7021A\].text-white,
+html[data-theme='light']:not(#_) .bg-\[\#1e201f\]\/95.text-white,
+html[data-theme='light']:not(#_) .bg-red-600.text-white,
+html[data-theme='light']:not(#_) .bg-red-500.text-white,
+html[data-theme='light']:not(#_) .bg-emerald-600.text-white,
+html[data-theme='light']:not(#_) .bg-green-600.text-white,
+html[data-theme='light']:not(#_) .bg-blue-600.text-white,
+html[data-theme='light']:not(#_) .bg-black\/40.text-white,
+html[data-theme='light']:not(#_) .bg-black\/50.text-white,
+html[data-theme='light']:not(#_) .bg-black\/60.text-white,
+html[data-theme='light']:not(#_) .bg-black\/70.text-white,
+html[data-theme='light']:not(#_) .bg-\[\#036242\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#005a3c\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#007653\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#015A3C\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#076b4a\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#006649\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#001e4e\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#5c2d82\] .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#00828a\] .text-white,
+html[data-theme='light']:not(#_) .bg-black\/40 .text-white,
+html[data-theme='light']:not(#_) .bg-black\/50 .text-white,
+html[data-theme='light']:not(#_) .bg-black\/60 .text-white,
+html[data-theme='light']:not(#_) .bg-black\/70 .text-white,
+html[data-theme='light']:not(#_) .bg-\[\#202120\]\/70 .text-white,
+html[data-theme='light']:not(#_) .bg-neutral-900\/50 .text-white,
+html[data-theme='light']:not(#_) .aspect-\[16\/9\] .text-white {
+  color: #ffffff;
+}
+
+/* Game card Demo button inside hover overlay */
+html[data-theme='light']:not(#_) .bg-neutral-900\/50 .bg-\[\#242624\]\/90 {
+  background-color: rgba(255, 255, 255, 0.92);
+  color: #14251d;
+}
+
+/* Blackjack seat icons on Live Casino cards */
+html[data-theme='light']:not(#_) .text-white\/30 {
+  color: rgba(20, 37, 29, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   4. Sportsbook (sports.css & Sports Components)
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .sports-page .sports-tabs {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sports-tabs a {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sports-tabs a.selected {
+  color: #ffffff;
+  background: #076b4a;
+}
+
+html[data-theme='light']:not(#_) .sports-page .search,
+html[data-theme='light']:not(#_) .sports-page select,
+html[data-theme='light']:not(#_) .sports-page .refresh,
+html[data-theme='light']:not(#_) .sports-page .toolbar-circle-btn,
+html[data-theme='light']:not(#_) .sports-page .league-card,
+html[data-theme='light']:not(#_) .sports-page .event-card,
+html[data-theme='light']:not(#_) .sports-page .outright-accordion,
+html[data-theme='light']:not(#_) .league-preview {
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.04);
+}
+
+html[data-theme='light']:not(#_) .sports-page .league-preview .league-card,
+html[data-theme='light']:not(#_) .sports-page .outright-accordion .league-card {
+  border: 0;
+  box-shadow: none;
+}
+
+html[data-theme='light']:not(#_) .sports-page .sort-menu {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgba(16, 38, 28, 0.14);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sort-menu::before {
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sort-menu-title {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sort-menu-item {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sort-menu-item:hover {
+  background: rgba(3, 98, 66, 0.08);
+}
+
+html[data-theme='light']:not(#_) .sports-page .sort-menu-item--active {
+  color: #ffffff;
+  background: #036242;
+}
+
+html[data-theme='light']:not(#_) .winner-match + .winner-match,
+html[data-theme='light']:not(#_) .sports-page .outright-panel {
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .winner-price[aria-pressed='true'],
+html[data-theme='light']:not(#_) .winner-price[aria-pressed='true'] span,
+html[data-theme='light']:not(#_) .winner-price[aria-pressed='true'] strong {
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   5. Account Preferences (Language & Timezone)
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .preference-page {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .preference-header,
+html[data-theme='light']:not(#_) .search-box,
+html[data-theme='light']:not(#_) .preference-list {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .back-button {
+  color: #036242;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .back-button:hover {
+  background: #dfece5;
+}
+
+html[data-theme='light']:not(#_) .search-box input {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .search-box input::placeholder,
+html[data-theme='light']:not(#_) .empty-state {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .preference-row {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .preference-row + .preference-row {
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .preference-row:hover {
+  background: rgba(3, 98, 66, 0.05);
+}
+
+html[data-theme='light']:not(#_) .radio-indicator {
+  border-color: #8fa69b;
+  background: #ffffff;
+}
+
+html[data-theme='light']:not(#_) .preference-row--selected .radio-indicator {
+  border-color: #036242;
+  color: #ffffff;
+  background: #036242;
+}
+
+/* --------------------------------------------------------------------------
+   6. Affiliate Page
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .affiliate-page {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .affiliate-titlebar,
+html[data-theme='light']:not(#_) .affiliate-tabs,
+html[data-theme='light']:not(#_) .cooperation-card,
+html[data-theme='light']:not(#_) .affiliate-surface,
+html[data-theme='light']:not(#_) .advantage-card,
+html[data-theme='light']:not(#_) .question-tabs {
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .affiliate-back {
+  color: #036242;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .affiliate-tabs button {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .affiliate-tabs button:hover {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .affiliate-tabs .affiliate-tab--active {
+  color: #ffffff;
+  background: #007554;
+}
+
+html[data-theme='light']:not(#_) .cooperation-description {
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .cooperation-steps small,
+html[data-theme='light']:not(#_) .cooperation-description p,
+html[data-theme='light']:not(#_) .products-copy,
+html[data-theme='light']:not(#_) .commission-panel > p,
+html[data-theme='light']:not(#_) .questions-content p,
+html[data-theme='light']:not(#_) .advantages-note,
+html[data-theme='light']:not(#_) .advantage-card ul,
+html[data-theme='light']:not(#_) .contact-intro,
+html[data-theme='light']:not(#_) .contact-copy small {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .affiliate-action:not(.affiliate-action--primary) {
+  color: var(--heading);
+  background: #e0ece5;
+}
+
+html[data-theme='light']:not(#_) .affiliate-action--primary {
+  color: #ffffff;
+  background: #007554;
+}
+
+html[data-theme='light']:not(#_) .product-card span {
+  color: #ffffff;
+}
+
+html[data-theme='light']:not(#_) .advantage-card button {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .commission-table-wrap {
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .commission-table {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .commission-table th {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .commission-table td {
+  color: var(--text);
+  background: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .question-tabs button {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .question-tabs .question-tab--active {
+  color: #036242;
+}
+
+html[data-theme='light']:not(#_) .question-tabs button::after {
+  background: #036242;
+}
+
+html[data-theme='light']:not(#_) .contact-row {
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .contact-row button {
+  color: #ffffff;
+  background: #036242;
+}
+
+/* --------------------------------------------------------------------------
+   7. Bonuses & Promotions (List & Detail Pages)
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .bonuses-page,
+html[data-theme='light']:not(#_) .bonus-detail-page {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .bonuses-sticky {
+  background: var(--page);
+}
+
+html[data-theme='light']:not(#_) .bonus-page-header,
+html[data-theme='light']:not(#_) .bonus-detail-header,
+html[data-theme='light']:not(#_) .category-nav,
+html[data-theme='light']:not(#_) .promotion-group,
+html[data-theme='light']:not(#_) .promotion-sheet {
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .philippines-badge {
+  border-color: var(--border);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .category-nav button {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .category-nav button:hover {
+  color: var(--heading);
+  background: rgba(3, 98, 66, 0.07);
+}
+
+html[data-theme='light']:not(#_) .category-nav button.category-nav__button--active {
+  color: #ffffff;
+  background: #07835c;
+}
+
+html[data-theme='light']:not(#_) .promotion-group__heading {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .promotion-row:hover {
+  background: rgba(3, 98, 66, 0.05);
+}
+
+html[data-theme='light']:not(#_) .promotion-row__thumbnail {
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .promotion-row__copy strong {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .promotion-row__copy small {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .promotion-row__details {
+  color: #3b5247;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .promotion-title h1,
+html[data-theme='light']:not(#_) .qualifications-section > h2,
+html[data-theme='light']:not(#_) .reward-section h2,
+html[data-theme='light']:not(#_) .text-section h2,
+html[data-theme='light']:not(#_) .requirements-panel h2 {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .promotion-title p,
+html[data-theme='light']:not(#_) .period-section h2,
+html[data-theme='light']:not(#_) .period-section p,
+html[data-theme='light']:not(#_) .reward-table__footnote,
+html[data-theme='light']:not(#_) .requirements-panel button {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .requirements-panel {
+  border: 1px solid var(--border);
+  background: #f3f8f5;
+}
+
+html[data-theme='light']:not(#_) .requirements-panel li,
+html[data-theme='light']:not(#_) .reward-section__description,
+html[data-theme='light']:not(#_) .text-section p,
+html[data-theme='light']:not(#_) .promotion-list li,
+html[data-theme='light']:not(#_) .qualification-table dd,
+html[data-theme='light']:not(#_) .method-card span,
+html[data-theme='light']:not(#_) .reward-table__subtitle,
+html[data-theme='light']:not(#_) .reward-table td {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .qualification-table,
+html[data-theme='light']:not(#_) .qualification-table > div + div,
+html[data-theme='light']:not(#_) .method-card,
+html[data-theme='light']:not(#_) .reward-table,
+html[data-theme='light']:not(#_) .reward-table tbody tr + tr,
+html[data-theme='light']:not(#_) .reward-table tbody tr:first-child,
+html[data-theme='light']:not(#_) .reward-table__footnote {
+  border-color: rgba(10, 62, 39, 0.2);
+}
+
+html[data-theme='light']:not(#_) .reward-table td:not(:first-child) {
+  color: #036242;
+  font-weight: 700;
+}
+
+html[data-theme='light']:not(#_) .promotion-terms-link {
+  color: #036242;
+}
+
+html[data-theme='light']:not(#_) .join-bar {
+  border-top: 1px solid var(--border);
+  background: rgba(238, 245, 241, 0.92);
+}
+
+/* --------------------------------------------------------------------------
+   8. Live Plaza (Home, Expert Predictions, Experts, Cards & Sport Filters)
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .live-plaza-page,
+html[data-theme='light']:not(#_) .expert-predictions-page,
+html[data-theme='light']:not(#_) .experts-page {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .popular-panel,
+html[data-theme='light']:not(#_) .predictions-toolbar,
+html[data-theme='light']:not(#_) .predictor-panel,
+html[data-theme='light']:not(#_) .experts-filter-bar,
+html[data-theme='light']:not(#_) .expert-card,
+html[data-theme='light']:not(#_) .prediction-card,
+html[data-theme='light']:not(#_) .predictions-empty,
+html[data-theme='light']:not(#_) .experts-empty {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .expert-card:hover {
+  border-color: rgba(3, 98, 66, 0.35);
+  background: #f5faf7;
+}
+
+html[data-theme='light']:not(#_) .panel-heading {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .panel-heading h2 {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .panel-action,
+html[data-theme='light']:not(#_) .experts-sort__button {
+  border-color: rgba(3, 98, 66, 0.28);
+  color: var(--text);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .panel-action:hover,
+html[data-theme='light']:not(#_) .panel-action--open,
+html[data-theme='light']:not(#_) .experts-sort__button:hover,
+html[data-theme='light']:not(#_) .experts-sort__button--open {
+  border-color: #036242;
+  background: #e0ece5;
+}
+
+html[data-theme='light']:not(#_) .popular-sort-menu,
+html[data-theme='light']:not(#_) .sort-menu,
+html[data-theme='light']:not(#_) .experts-sort__menu {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(16, 38, 28, 0.14);
+}
+
+html[data-theme='light']:not(#_) .popular-sort-menu__option,
+html[data-theme='light']:not(#_) .sort-menu__option,
+html[data-theme='light']:not(#_) .experts-sort__option {
+  border-color: rgba(10, 62, 39, 0.22);
+  color: var(--text);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .popular-sort-menu__option--active,
+html[data-theme='light']:not(#_) .popular-sort-menu__option--active:hover,
+html[data-theme='light']:not(#_) .sort-menu__option--active,
+html[data-theme='light']:not(#_) .sort-menu__option--active:hover,
+html[data-theme='light']:not(#_) .experts-sort__option--active,
+html[data-theme='light']:not(#_) .experts-sort__option--active:hover {
+  border-color: #007653;
+  color: #ffffff;
+  background: #007653;
+}
+
+html[data-theme='light']:not(#_) .popular-game span {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .popular-games-next {
+  border: 1px solid var(--border);
+  color: var(--heading);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+html[data-theme='light']:not(#_) .predictor-item {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .predictor-item__name {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .predictor-item--all::after {
+  background: var(--border);
+}
+
+html[data-theme='light']:not(#_) .predictor-item__all-icon {
+  color: #4c6357;
+  background: #e4eee8;
+}
+
+html[data-theme='light']:not(#_) .prediction-card__name,
+html[data-theme='light']:not(#_) .expert-card__details strong,
+html[data-theme='light']:not(#_) .prediction-card__hit-rate small,
+html[data-theme='light']:not(#_) .expert-card__hit-rate small {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .prediction-card__unlock {
+  border-color: #078a63;
+  color: #036242;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .prediction-card__unlock:hover,
+html[data-theme='light']:not(#_) .prediction-card__unlock--active {
+  color: #036242;
+  background: rgba(3, 98, 66, 0.14);
+}
+
+html[data-theme='light']:not(#_) .match-box {
+  border-color: var(--border);
+  background: #f4f9f6;
+}
+
+html[data-theme='light']:not(#_) .match-box__arrow {
+  color: var(--heading);
+  background: #e2ede7;
+}
+
+html[data-theme='light']:not(#_) .match-box__teams,
+html[data-theme='light']:not(#_) .match-box__teams span,
+html[data-theme='light']:not(#_) .match-box__odds strong {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .match-box__odds button {
+  color: var(--secondary);
+  background: #e6f0ea;
+}
+
+html[data-theme='light']:not(#_) .match-box__odds button:hover {
+  color: var(--heading);
+  background: #d8e8df;
+}
+
+html[data-theme='light']:not(#_) .sport-filter {
+  color: var(--secondary);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .sport-filter:hover {
+  color: var(--heading);
+  background: #e0ece5;
+}
+
+html[data-theme='light']:not(#_) .sport-filter--active,
+html[data-theme='light']:not(#_) .sport-filter--active:hover {
+  color: #ffffff;
+  background: #078a63;
+}
+
+/* --------------------------------------------------------------------------
+   9. Tutorials (Game Tutorial, Mock Betting & Deposit/Withdrawal Tutorial)
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .game-tutorial-page {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .game-mode-toolbar,
+html[data-theme='light']:not(#_) .market-tabs,
+html[data-theme='light']:not(#_) .transaction-toolbar {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .game-back,
+html[data-theme='light']:not(#_) .transaction-back {
+  color: #036242;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .game-back:hover,
+html[data-theme='light']:not(#_) .transaction-back:hover {
+  color: #036242;
+  background: #dfece5;
+}
+
+html[data-theme='light']:not(#_) .game-mode-tab:not(.game-mode-tab--active),
+html[data-theme='light']:not(#_) .transaction-tab:not(.transaction-tab--active) {
+  color: var(--text);
+  background: #e4eee8;
+}
+
+html[data-theme='light']:not(#_) .game-mode-tab:not(.game-mode-tab--active):hover,
+html[data-theme='light']:not(#_) .transaction-tab:not(.transaction-tab--active):hover {
+  color: var(--heading);
+  background: #d6e5dd;
+}
+
+html[data-theme='light']:not(#_) .game-mode-tab--active,
+html[data-theme='light']:not(#_) .game-mode-tab--active:hover,
+html[data-theme='light']:not(#_) .transaction-tab--active,
+html[data-theme='light']:not(#_) .transaction-tab--active:hover {
+  color: #ffffff;
+  background: #007653;
+}
+
+html[data-theme='light']:not(#_) .market-tab {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .market-tab:hover {
+  color: var(--heading);
+  background: rgba(3, 98, 66, 0.06);
+}
+
+html[data-theme='light']:not(#_) .market-tab--active,
+html[data-theme='light']:not(#_) .market-tab--active:hover {
+  color: #ffffff;
+  background: #007653;
+}
+
+html[data-theme='light']:not(#_) .market-panel,
+html[data-theme='light']:not(#_) .betting-result,
+html[data-theme='light']:not(#_) .tutorial-intro,
+html[data-theme='light']:not(#_) .tutorial-scenario-card,
+html[data-theme='light']:not(#_) .transaction-board {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .outright-heading,
+html[data-theme='light']:not(#_) .betting-result-copy,
+html[data-theme='light']:not(#_) .transaction-step {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .outright-heading h1,
+html[data-theme='light']:not(#_) .market-panel-title,
+html[data-theme='light']:not(#_) .betting-result-copy h2,
+html[data-theme='light']:not(#_) .tutorial-section-title,
+html[data-theme='light']:not(#_) .tutorial-group h2,
+html[data-theme='light']:not(#_) .tutorial-scenario-card h3,
+html[data-theme='light']:not(#_) .transaction-copy h1,
+html[data-theme='light']:not(#_) .transaction-copy h2 {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .outright-heading p,
+html[data-theme='light']:not(#_) .betting-result-copy p,
+html[data-theme='light']:not(#_) .result-explanation,
+html[data-theme='light']:not(#_) .tutorial-scenario-subtitle,
+html[data-theme='light']:not(#_) .tutorial-scenario-description,
+html[data-theme='light']:not(#_) .transaction-copy p {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .correct-score-filters button {
+  color: var(--secondary);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .correct-score-filters .correct-score-filter--active {
+  color: #ffffff;
+  background: #007653;
+}
+
+html[data-theme='light']:not(#_) .bet-choice {
+  border-color: transparent;
+  color: var(--text);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .bet-choice span {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .bet-choice strong {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .bet-choice:hover {
+  border-color: rgba(3, 98, 66, 0.35);
+  background: #e0ece5;
+}
+
+html[data-theme='light']:not(#_) .bet-choice--selected {
+  border-color: #007653;
+  background: rgba(3, 98, 66, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   10. Jackpots & Modals
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .winner-item:nth-child(even) {
+  background-color: #f3f8f5;
+}
+
+html[data-theme='light']:not(#_) .jackpot-provider-logo,
+html[data-theme='light']:not(#_) .winner-item img,
+html[data-theme='light']:not(#_) .jackpot-page .top-nav-bar .nav-tab:not(.bg-\[\#036242\]) img {
+  filter: drop-shadow(0 1px 1.5px rgba(7, 62, 42, 0.45));
+}
+
+html[data-theme='light']:not(#_) .slot-filter-modal {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 44px rgba(16, 38, 28, 0.18);
+}
+
+html[data-theme='light']:not(#_) .slot-filter-header h2,
+html[data-theme='light']:not(#_) .slot-filter-cancel,
+html[data-theme='light']:not(#_) .slot-filter-group legend {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .slot-filter-option {
+  border-color: var(--border);
+  color: var(--text);
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .slot-filter-option--active {
+  border-color: #008d62;
+  color: #036242;
+  background: rgba(3, 98, 66, 0.12);
+  font-weight: 600;
+}
+
+html[data-theme='light']:not(#_) .slot-filter-reset {
+  color: var(--heading);
+  background: #e4eee8;
+}
+
+html[data-theme='light']:not(#_) .slot-filter-ok {
+  color: #ffffff;
+  background: #007c55;
+}
+
+html[data-theme='light']:not(#_) .reminder-modal,
+html[data-theme='light']:not(#_) .maintenance-modal {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 16px 48px rgba(16, 38, 28, 0.2);
+}
+
+html[data-theme='light']:not(#_) .reminder-modal .reminder-symbol,
+html[data-theme='light']:not(#_) .maintenance-modal .maintenance-symbol {
+  color: #ffffff;
+}
+
+html[data-theme='light']:not(#_) .reminder-modal h2,
+html[data-theme='light']:not(#_) .maintenance-modal h2 {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .reminder-modal p,
+html[data-theme='light']:not(#_) .maintenance-modal p {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .bg-\[\#1e201f\] {
+  background-color: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .me-page svg rect[fill='#ffff'] {
+  fill: #e4eee8;
+}
+

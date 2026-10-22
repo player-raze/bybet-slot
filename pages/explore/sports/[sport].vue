@@ -19,7 +19,9 @@ definePageMeta({
     const base = `/explore/sports/${to.params.sport}`
     if (to.path.replace(/\/$/, '') !== base) return
     const requestedTab = to.query.tab === 'prematch' ? 'pre-match' : String(to.query.tab ?? 'league')
-    const tab = ['league', 'inplay', 'upcoming', 'pre-match', 'smart-pick', 'outright'].includes(requestedTab) ? requestedTab : 'league'
+    const availableTabs = ['league', 'inplay', 'upcoming', 'pre-match', 'smart-pick', 'outright']
+    if (String(to.params.sport).toLowerCase() === 'soccer') availableTabs.push('replay')
+    const tab = availableTabs.includes(requestedTab) ? requestedTab : 'league'
     const { tab: legacyTab, ...query } = to.query
     return navigateTo({ path: `${base}/${tab}`, query }, { replace: true })
   },
