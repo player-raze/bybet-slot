@@ -32,10 +32,10 @@ export const getTournamentLogo = (sport: Sport | string | undefined | null): str
   if (key.includes('nfl')) return '/images/sports/nfl.webp'
   if (key.includes('nbl')) return '/images/sports/nbl.webp'
 
-  if (key.includes('basketball')) return '/icons/sports/basketball.png'
-  if (key.includes('soccer') || key.includes('football')) return '/icons/sports/soccer.png'
-  if (key.includes('tennis')) return '/icons/sports/tennis.png'
-  if (key.includes('baseball')) return '/icons/sports/baseball.png'
+  if (key.includes('basketball')) return '/icons/sports/basketball.webp'
+  if (key.includes('soccer') || key.includes('football')) return '/icons/sports/soccer.webp'
+  if (key.includes('tennis')) return '/icons/sports/tennis.webp'
+  if (key.includes('baseball')) return '/icons/sports/baseball.webp'
 
   return '/images/sports/popular.webp'
 }
@@ -45,16 +45,16 @@ export const getSportBall = (sport: Sport | string | undefined | null, sportPara
   const str = `${sport && typeof sport === 'object' ? `${sport.group || ''} ${sport.key || ''} ${sport.title || ''}` : (sport || '')} ${sportParam || ''}`.toLowerCase()
 
   if (str.includes('basketball') || str.includes('nba') || str.includes('euroleague') || str.includes('ncaa') || str.includes('pba')) {
-    return '/icons/sports/basketball.png'
+    return '/icons/sports/basketball.webp'
   }
   if (str.includes('soccer') || str.includes('epl') || str.includes('bundesliga') || str.includes('serie_a') || str.includes('la_liga') || str.includes('uefa') || str.includes('ligue') || str.includes('football')) {
-    return '/icons/sports/soccer.png'
+    return '/icons/sports/soccer.webp'
   }
   if (str.includes('tennis') || str.includes('atp') || str.includes('wta') || str.includes('utr') || str.includes('wimbledon') || str.includes('open')) {
-    return '/icons/sports/tennis.png'
+    return '/icons/sports/tennis.webp'
   }
   if (str.includes('baseball') || str.includes('mlb') || str.includes('npb')) {
-    return '/icons/sports/baseball.png'
+    return '/icons/sports/baseball.webp'
   }
   return ''
 }

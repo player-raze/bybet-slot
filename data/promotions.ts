@@ -10,6 +10,8 @@ export interface FeaturedPromo {
   endDate: string
   countdownText?: string
   paymentMethods?: string[]
+  showSaveBadge?: boolean
+  imagePosition?: string
 }
 
 export interface PromoCategory {
@@ -27,6 +29,7 @@ export interface PromotionItem {
   thumbnailType?: 'deposit' | 'spins' | 'rebate' | 'loss' | 'chest' | 'angpao' | 'sports' | 'basketball' | 'streak' | 'soccer' | 'live-casino' | 'referral' | 'profile' | 'vip' | 'giveaway' | 'camera'
   accentColor?: string
   badge?: string
+  thumbnailImage?: string
 }
 
 export interface PromoSection {
@@ -65,8 +68,10 @@ export interface BonusDetail {
   subtitle: string
   period: string
   bannerImage: string
+  thumbnailImage?: string
   iconType?: string
   accentColor?: string
+  showRequirements?: boolean
   requirements?: {
     items: BonusRequirement[]
     viewProgressUrl?: string
@@ -88,6 +93,11 @@ export interface BonusDetail {
   hasJoinButton?: boolean
 }
 
+export const PROMOTION_PLACEHOLDER_IMAGES = {
+  banner: '/images/promotions/bonus-placeholder-banner.webp',
+  thumbnail: '/images/promotions/bonus-placeholder-thumbnail.webp',
+} as const
+
 export const PROMO_CATEGORIES: PromoCategory[] = [
   { key: 'all', label: 'All' },
   { key: 'most-popular', label: 'Most Popular' },
@@ -107,52 +117,46 @@ const getFutureDate = (daysAhead: number = 70): string => {
 
 export const FEATURED_PROMOTIONS: FeaturedPromo[] = [
   {
-    id: 'vip-sports-rebate',
-    slug: 'vip-sports-rebate',
-    title: 'VIP Sports Rebate',
-    rate: '1.5%',
-    badgeText: 'VIP SPORTS REBATE 1.5%',
+    id: 'bybet-vip-center',
+    slug: 'bybet-vip-center',
+    title: 'Bybet VIP Center',
+    subtitle: 'Permanent',
+    category: 'others',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    endDate: getFutureDate(71),
+    countdownText: 'Permanent',
+    imagePosition: 'left center',
+  },
+  {
+    id: 'bybet-giveaways-galore',
+    slug: 'bybet-giveaways-galore',
+    title: 'Bybet lang sakalam giveaways galore!',
+    category: 'others',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    endDate: getFutureDate(71),
+    countdownText: '2 Month 9 Day',
+    imagePosition: '38% center',
+  },
+  {
+    id: 'spot-it-snap-it-win-it',
+    slug: 'spot-it-snap-it-win-it',
+    title: 'Spot It. Snap It. Win It.',
+    category: 'others',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    endDate: getFutureDate(71),
+    countdownText: '2 Month 9 Day',
+    showSaveBadge: true,
+    imagePosition: '68% center',
+  },
+  {
+    id: 'champions-streak-fever',
+    slug: 'champions-streak-fever',
+    title: 'Champions Streak Fever',
     category: 'sports',
-    bannerImage: '/hero/promotions.png',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
     endDate: getFutureDate(71),
     countdownText: '2 Month 10 Day',
-    paymentMethods: ['maya', 'gcash'],
-  },
-  {
-    id: 'vip-live-casino-rebate',
-    slug: 'vip-live-casino-rebate',
-    title: 'VIP Live Casino Rebate',
-    rate: '1.0%',
-    badgeText: 'VIP LIVE CASINO REBATE 1.0%',
-    category: 'live-casino',
-    bannerImage: '/reference/promotion-cashback.png',
-    endDate: getFutureDate(71),
-    countdownText: '2 Month 10 Day',
-    paymentMethods: ['maya', 'gcash'],
-  },
-  {
-    id: 'slot-loss-rebate',
-    slug: 'slot-loss-rebate',
-    title: 'Slot Loss Rebate',
-    rate: '₱60,000',
-    badgeText: 'SLOT LOSS REBATE ₱60,000',
-    category: 'slots',
-    bannerImage: '/reference/promotion-tournament.png',
-    endDate: getFutureDate(71),
-    countdownText: '2 Month 10 Day',
-    paymentMethods: ['maya', 'gcash'],
-  },
-  {
-    id: 'lucky-rankings',
-    slug: 'lucky-rankings',
-    title: 'Lucky Rankings – Let\'s Meet on Payday!',
-    rate: 'Rankings',
-    badgeText: 'LUCKY RANKINGS',
-    category: 'slots',
-    bannerImage: '/reference/promotion-gift.png',
-    endDate: getFutureDate(71),
-    countdownText: '2 Month 10 Day',
-    paymentMethods: ['maya', 'gcash'],
+    imagePosition: 'right center',
   },
 ]
 
@@ -216,7 +220,7 @@ export const PROMOTION_SECTIONS: PromoSection[] = [
         id: 'mp-umuulan-ng-angpao',
         slug: 'umuulan-ng-angpao',
         title: 'Umuulan ng Angpao',
-        description: 'Angpao falling — piliin, abot, kaho!',
+        description: 'Angpao falling — piliin, abot, kuha!',
         category: 'others',
         thumbnailType: 'angpao',
         accentColor: '#ef4444',
@@ -398,16 +402,6 @@ export const PROMOTION_SECTIONS: PromoSection[] = [
         endDate: getFutureDate(71),
       },
       {
-        id: 'oth-referral',
-        slug: 'referral-bonus',
-        title: 'Referral Bonus',
-        description: 'Refer a friend bonus pa!',
-        category: 'others',
-        thumbnailType: 'referral',
-        accentColor: '#14b8a6',
-        endDate: getFutureDate(100),
-      },
-      {
         id: 'oth-complete-info',
         slug: 'complete-account-information',
         title: 'Complete account information to get ₱20 Reward!',
@@ -416,6 +410,26 @@ export const PROMOTION_SECTIONS: PromoSection[] = [
         thumbnailType: 'profile',
         accentColor: '#eab308',
         endDate: getFutureDate(85),
+      },
+      {
+        id: 'oth-umuulan-ng-angpao',
+        slug: 'umuulan-ng-angpao',
+        title: 'Umuulan ng Angpao',
+        description: 'Angpao falling — piliin, abot, kuha!',
+        category: 'others',
+        thumbnailType: 'angpao',
+        accentColor: '#ef4444',
+        endDate: getFutureDate(45),
+      },
+      {
+        id: 'oth-referral',
+        slug: 'referral-bonus',
+        title: 'Referral Bonus',
+        description: 'Refer na may bonus pa!',
+        category: 'others',
+        thumbnailType: 'referral',
+        accentColor: '#14b8a6',
+        endDate: getFutureDate(100),
       },
       {
         id: 'oth-vip-center',
@@ -447,16 +461,6 @@ export const PROMOTION_SECTIONS: PromoSection[] = [
         accentColor: '#10b981',
         endDate: getFutureDate(60),
       },
-      {
-        id: 'oth-umuulan-ng-angpao',
-        slug: 'umuulan-ng-angpao',
-        title: 'Umuulan ng Angpao',
-        description: 'Angpao falling — piliin, abot, kaho!',
-        category: 'others',
-        thumbnailType: 'angpao',
-        accentColor: '#ef4444',
-        endDate: getFutureDate(45),
-      },
     ],
   },
 ]
@@ -469,9 +473,11 @@ export const BONUS_DETAILS: Record<string, BonusDetail> = {
     title: '1.5% UNLIMITED REBATE',
     subtitle: 'DAILY SLOT REBATE • ALL MEMBERS',
     period: '2026-07-08 12:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)',
-    bannerImage: '/hero/promotions.png',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    thumbnailImage: PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     iconType: 'rebate',
     accentColor: '#10b981',
+    showRequirements: false,
     qualifications: [
       { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
     ],
@@ -514,9 +520,11 @@ export const BONUS_DETAILS: Record<string, BonusDetail> = {
     title: 'Your Deposit. Your Reward.',
     subtitle: 'Unlock bonus with first deposit of the everyday.',
     period: '2026-10-20 12:00:00 ~ 2026-10-26 11:59:59 (GMT+08:00)',
-    bannerImage: '/reference/promotion-tournament.png',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    thumbnailImage: PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     iconType: 'deposit',
     accentColor: '#10b981',
+    showRequirements: false,
     qualifications: [
       { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
     ],
@@ -564,9 +572,11 @@ export const BONUS_DETAILS: Record<string, BonusDetail> = {
     title: 'Spins Bring Spins',
     subtitle: '100 Free Spins Every Day!',
     period: '2026-10-18 12:00:00 ~ 2026-10-26 11:59:59 (GMT+08:00)',
-    bannerImage: '/reference/promotion-gift.png',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    thumbnailImage: PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     iconType: 'spins',
     accentColor: '#f59e0b',
+    showRequirements: true,
     requirements: {
       items: [
         { text: 'Daily total spins 500', completed: false },
@@ -656,9 +666,11 @@ export const getBonusDetail = (slugOrId: string): BonusDetail => {
     title: matchedTitle,
     subtitle: matchedDesc,
     period: '2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)',
-    bannerImage: '/hero/promotions.png',
+    bannerImage: PROMOTION_PLACEHOLDER_IMAGES.banner,
+    thumbnailImage: PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     iconType: 'rebate',
     accentColor: matchedColor,
+    showRequirements: false,
     qualifications: [
       { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
     ],

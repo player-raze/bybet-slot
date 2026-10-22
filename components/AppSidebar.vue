@@ -75,7 +75,9 @@ const getItemAttributes = (item: RailItem): Record<string, string> => {
 }
 
 const isItemActive = (item: RailItem): boolean => {
-  return item.to ? route.path === item.to : item.label === activeItemLabel.value
+  return item.to
+    ? route.path === item.to || route.path.startsWith(`${item.to}/`)
+    : item.label === activeItemLabel.value
 }
 
 const toggleMenu = (item: RailItem): void => {

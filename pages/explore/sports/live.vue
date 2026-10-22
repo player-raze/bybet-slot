@@ -11,10 +11,10 @@ useSeoMeta({
 
 const liveTabs = [
   { key: 'all', label: 'All', icon: '', to: '/explore/sports/live' },
-  { key: 'basketball', label: '', icon: '/icons/sports/basketball.png', to: '/explore/sports/live/basketball' },
-  { key: 'soccer', label: '', icon: '/icons/sports/soccer.png', to: '/explore/sports/live/soccer' },
-  { key: 'tennis', label: '', icon: '/icons/sports/tennis.png', to: '/explore/sports/live/tennis' },
-  { key: 'baseball', label: '', icon: '/icons/sports/baseball.png', to: '/explore/sports/live/baseball' },
+  { key: 'basketball', label: '', icon: '/icons/sports/basketball.webp', to: '/explore/sports/live/basketball' },
+  { key: 'soccer', label: '', icon: '/icons/sports/soccer.webp', to: '/explore/sports/live/soccer' },
+  { key: 'tennis', label: '', icon: '/icons/sports/tennis.webp', to: '/explore/sports/live/tennis' },
+  { key: 'baseball', label: '', icon: '/icons/sports/baseball.webp', to: '/explore/sports/live/baseball' },
 ]
 
 const currentSport = computed(() => {

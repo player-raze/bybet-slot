@@ -47,7 +47,7 @@ onMounted(() => {
     <div class="welcome-card flex items-center gap-1 rounded-lg bg-[#141414] p-1 sm:p-2 mb-2 shadow-sm">
       <div class="logo-box h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-[#036242] p-1 flex items-center justify-center shadow-sm">
         <img
-          src="/icons/bybet-square.png"
+          src="/icons/bybet-square.webp"
           alt="ByBet"
           class="h-full w-full object-contain"
         >

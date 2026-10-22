@@ -48,7 +48,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 
     <NuxtLink class="brand" to="/" aria-label="ByBet home">
       <img
-        src="/brand/bybet-logo.png"
+        src="/brand/bybet-logo.webp"
         alt="ByBet"
         width="195"
         height="64"

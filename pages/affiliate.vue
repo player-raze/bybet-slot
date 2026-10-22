@@ -68,7 +68,7 @@ const cooperationSteps = [
 
 const products = [
   { label: 'SPORTS', image: '/images/sports/soccer.webp' },
-  { label: 'LIVE CASINO', image: '/images/casino/card1.jpg' },
+  { label: 'LIVE CASINO', image: '/images/casino/card1.webp' },
   { label: 'SLOTS', image: '/images/games/popular/gates-of-olympus.webp' },
   { label: 'LOTTERY', image: '/images/games/new-releases/777-strike.webp' },
 ]
@@ -417,15 +417,15 @@ onBeforeUnmount(() => {
 
     <footer class="affiliate-regulatory">
       <div class="regulatory-logos">
-        <img src="/responsible-gaming/pagcor.png" alt="PAGCOR">
-        <img src="/responsible-gaming/age-restriction.png" alt="21 and above. Gambling can be addictive. Know when to stop.">
+        <img src="/responsible-gaming/pagcor.webp" alt="PAGCOR">
+        <img src="/responsible-gaming/age-restriction.webp" alt="21 and above. Gambling can be addictive. Know when to stop.">
       </div>
       <div class="regulatory-links">
         <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer">WWW.PAGCOR.PH/REGULATORY</a>
         <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
       </div>
       <strong>GAMBLING DOESN'T GUARANTEE EARNINGS OR<br>FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.</strong>
-      <img class="regulatory-hotline" src="/responsible-gaming/support-hotline.png" alt="Responsible gaming support hotline">
+      <img class="regulatory-hotline" src="/responsible-gaming/support-hotline.webp" alt="Responsible gaming support hotline">
     </footer>
   </div>
 </template>
@@ -536,7 +536,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   border-radius: 12px;
   padding: 24px 32px;
-  background: linear-gradient(90deg, rgba(12, 24, 31, 0.52), rgba(79, 52, 7, 0.22)), url('/hero/promotions.png') center 58% / cover no-repeat;
+  background: linear-gradient(90deg, rgba(12, 24, 31, 0.52), rgba(79, 52, 7, 0.22)), url('/hero/promotions.webp') center 58% / cover no-repeat;
 }
 
 .affiliate-hero::after {

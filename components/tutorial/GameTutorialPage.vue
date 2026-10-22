@@ -3,7 +3,16 @@ import { ChevronLeft, CircleDot, Flag } from 'lucide-vue-next'
 
 type TutorialMode = 'mock-betting' | 'tutorial'
 type MarketKey = 'hdp' | 'o-u' | '1x2' | 'corners' | 'odd-even' | 'correct-score' | 'outright'
-type BetOutcome = 'WIN' | 'LOSE' | 'PUSH'
+type BetOutcome = 'WIN' | 'LOSE' | 'WIN_HALF' | 'LOSE_HALF' | 'REFUND'
+type CorrectScoreFilter = 'popular' | 'all'
+
+const outcomeStampMap: Record<BetOutcome, { src: string; alt: string }> = {
+  WIN: { src: '/tutorial-assets/result-stamp-win.webp', alt: 'WIN' },
+  LOSE: { src: '/tutorial-assets/result-stamp-lose.webp', alt: 'LOSE' },
+  WIN_HALF: { src: '/tutorial-assets/result-stamp-win-half.webp', alt: 'WIN HALF' },
+  LOSE_HALF: { src: '/tutorial-assets/result-stamp-lose-half.webp', alt: 'LOSE HALF' },
+  REFUND: { src: '/tutorial-assets/result-stamp-refund.webp', alt: 'Refund' },
+}
 
 const props = withDefaults(defineProps<{
   mode?: TutorialMode
@@ -90,14 +99,14 @@ const markets: MarketDefinition[] = [
     label: 'HDP',
     panelTitle: 'HDP',
     choices: [
-      choice('barcelona-0', '0', 'Barcelona 0', '1.98', 'WIN', 'When the handicap is 0, betting on the winning team will result in a win. For example, bets on Barcelona (0) win when Barcelona wins.'),
-      choice('madrid-0', '0', 'Real Madrid 0', '1.98', 'LOSE', 'The handicap is 0, so the selection follows the match result. Real Madrid lost 0–2, so this selection loses.'),
-      choice('barcelona-025', '−0/0.5', 'Barcelona −0/0.5', '1.98', 'WIN', 'Barcelona won the match, so the split handicap of 0 and −0.5 is settled as a full win.'),
-      choice('madrid-025', '+0/0.5', 'Real Madrid +0/0.5', '1.98', 'LOSE', 'Real Madrid lost by two goals, so the quarter-goal head start does not cover the final margin.'),
-      choice('barcelona-1', '−1', 'Barcelona −1', '1.98', 'WIN', 'Barcelona won by two goals. After applying the −1 handicap, Barcelona still leads by one goal.'),
-      choice('madrid-1', '+1', 'Real Madrid +1', '1.98', 'LOSE', 'Adding one goal to Real Madrid changes the handicap score to 2–1, which is still a Barcelona win.'),
-      choice('barcelona-175', '−1.5/2', 'Barcelona −1.5/2', '1.98', 'WIN', 'A two-goal Barcelona victory fully wins the −1.5 half and pushes the −2 half.'),
-      choice('madrid-175', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE', 'The two-goal defeat does not fully cover this split positive handicap.'),
+      choice('barcelona-0', '0', 'Barcelona 0', '1.98', 'WIN', 'When the handicap is 0, betting on the winning team will result in a win. For example, bets on Barcelona (0) to win when they win.'),
+      choice('madrid-0', '0', 'Real Madrid 0', '1.98', 'LOSE', 'When the handicap is 0, betting on the winning team to win, Real Madrid loses, so betting on Real Madrid (0) lose.'),
+      choice('barcelona-025', '−0/0.5', 'Barcelona −0/0.5', '1.98', 'WIN', 'After Real Madrid receives the handicap, and if the final score is 2-0 or 2-0.5, Barcelona wins, so bets on Barcelona (-0/0.5) will result in a win.'),
+      choice('madrid-025', '+0/0.5', 'Real Madrid +0/0.5', '1.98', 'LOSE', 'After Real Madrid receives the handicap, if the final score is 2-0 or 2-0.5, both are Real Madrid losses, so bets on Real Madrid (+0/0.5) loses.'),
+      choice('barcelona-1', '−1', 'Barcelona −1', '1.98', 'WIN', 'After Real Madrid receives the handicap, and if the final score is 2-1, Barcelona wins, so bets on Barcelona (-1) will result in a win.'),
+      choice('madrid-1', '+1', 'Real Madrid +1', '1.98', 'LOSE', 'After Real Madrid receives the handicap, if the final score is 2-1, Real Madrid loses, so bets on Real Madrid (+1) lose.'),
+      choice('barcelona-175', '−1.5/2', 'Barcelona −1.5/2', '1.98', 'WIN_HALF', 'After Real Madrid receives the handicap, if the final score is 2-1.5 or 2-2; 2-1.5 results in a win for Barcelona, and half the result is also a win for Barcelona, so bets on Barcelona (-1.5/2) will result in a half-win.'),
+      choice('madrid-175', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE_HALF', 'After Real Madrid receives the handicap, if the final score is 2-1.5 or 2-2; 2-1.5 results in a lose for Real Madrid, and half the result is also a lose for Real Madrid, so bets on Real Madrid (-1.5/2) will result in a half-lose.'),
     ],
     lesson: {
       title: 'Asian Handicap (HDP)',
@@ -115,14 +124,14 @@ const markets: MarketDefinition[] = [
     label: 'O/U',
     panelTitle: 'O/U',
     choices: [
-      choice('over-15', 'Over 1.5', 'Over 1.5', '1.98', 'WIN', 'Two goals were scored. Because 2 is greater than 1.5, the Over selection wins.'),
-      choice('under-15', 'Under 1.5', 'Under 1.5', '1.98', 'LOSE', 'The match produced two goals, which is above the 1.5 line.'),
-      choice('over-175', 'Over 1.5/2', 'Over 1.5/2', '1.98', 'WIN', 'The stake is split between Over 1.5 and Over 2. The first half wins and the second half pushes.'),
-      choice('under-175', 'Under 1.5/2', 'Under 1.5/2', '1.98', 'LOSE', 'At exactly two goals, half the selection loses and half is refunded.'),
-      choice('over-2', 'Over 2', 'Over 2', '1.98', 'PUSH', 'The total finished exactly on the line at two goals, so the stake is refunded.'),
-      choice('under-2', 'Under 2', 'Under 2', '1.98', 'PUSH', 'The total finished exactly on the line at two goals, so the stake is refunded.'),
-      choice('over-225', 'Over 2/2.5', 'Over 2/2.5', '1.98', 'LOSE', 'Two goals do not clear either part of the 2/2.5 split line.'),
-      choice('under-225', 'Under 2/2.5', 'Under 2/2.5', '1.98', 'WIN', 'Two goals push the Under 2 half and win the Under 2.5 half.'),
+      choice('over-15', 'Over 1.5', 'Over 1.5', '1.98', 'WIN', 'The number of goals is 2, which is greater than 1.5, so bets on (over 1.5) win.'),
+      choice('under-15', 'Under 1.5', 'Under 1.5', '1.98', 'LOSE', 'The number of goals is 2, which is greater than 1.5, so bets on (under 1.5) lose.'),
+      choice('over-175', 'Over 1.5/2', 'Over 1.5/2', '1.98', 'WIN_HALF', 'The number of goals is 2, greater than the bet of 1.5 is a win, equal to the bet of 2 is a draw, and half the result is a win, so bets on (over 1.5/2) is a half-win.'),
+      choice('under-175', 'Under 1.5/2', 'Under 1.5/2', '1.98', 'LOSE_HALF', 'If the number of goals is 2, greater than the bet of 1.5 is a loss, equal to the bet item of 2 is a draw, and half the result is a loss, so bets on (Under 1.5/2) is a half-lose.'),
+      choice('over-2', 'Over 2', 'Over 2', '1.98', 'REFUND', 'The number of goals is 2, equal to the bet of 2 is a draw, so bets on (Over 2) will be refunded.'),
+      choice('under-2', 'Under 2', 'Under 2', '1.98', 'REFUND', 'The number of goals is 2, equal to the bet of 2 is a draw, so bets on (Under 2) will be refunded.'),
+      choice('over-225', 'Over 2/2.5', 'Over 2/2.5', '1.98', 'LOSE_HALF', 'The number of goals is 2, equal to the bet of 2 is a draw, less than the bet of 2.5 is a loss, and half the result is a win, so bets on (Over1.5/2) is a half-win.'),
+      choice('under-225', 'Under 2/2.5', 'Under 2/2.5', '1.98', 'WIN_HALF', 'If the number of goals is 2, equal to the bet of 2 is a draw, and less than the bet of 2.5 is a win. Half the result is a win, so bets on (Under 2/2.5) is a half-win.'),
     ],
     lesson: {
       title: 'Over / Under (O/U)',
@@ -140,9 +149,9 @@ const markets: MarketDefinition[] = [
     label: '1X2',
     panelTitle: '1X2',
     choices: [
-      choice('home-win', '1  Barcelona', 'Barcelona (1)', '1.98', 'WIN', 'Barcelona is the home team and won 2–0, so the Home Win (1) selection wins.'),
-      choice('draw', 'X  Draw', 'Draw (X)', '3.20', 'LOSE', 'The match did not finish level, so the Draw selection loses.'),
-      choice('away-win', '2  Real Madrid', 'Real Madrid (2)', '3.80', 'LOSE', 'Real Madrid is the away team and lost the match, so Away Win (2) loses.'),
+      choice('home-win', '1  Barcelona', 'Barcelona (1)', '1.98', 'WIN', 'Barcelona wins by 2 goals, so bets on (Home Win) win.'),
+      choice('draw', 'X  Draw', 'Draw (X)', '3.20', 'LOSE', 'Barcelona wins by 2 goals, not a draw, so bets on (Draw) lose'),
+      choice('away-win', '2  Real Madrid', 'Real Madrid (2)', '3.80', 'LOSE', 'Real Madrid loses by 2 goals, so bets on (Away Win) lose.'),
     ],
     lesson: {
       title: '1X2 Match Result',
@@ -164,8 +173,8 @@ const markets: MarketDefinition[] = [
       choice('corners-under-75', 'Under 7.5', 'Corners Under 7.5', '1.98', 'LOSE', 'Nine corners were taken, exceeding the 7.5 line.'),
       choice('corners-over-85', 'Over 8.5', 'Corners Over 8.5', '1.98', 'WIN', 'Nine total corners are enough for Over 8.5 to win.'),
       choice('corners-under-85', 'Under 8.5', 'Corners Under 8.5', '1.98', 'LOSE', 'Nine total corners are above the 8.5 line.'),
-      choice('corners-over-9', 'Over 9', 'Corners Over 9', '1.98', 'PUSH', 'The example total lands exactly on nine, so the stake is refunded.'),
-      choice('corners-under-9', 'Under 9', 'Corners Under 9', '1.98', 'PUSH', 'The example total lands exactly on nine, so the stake is refunded.'),
+      choice('corners-over-9', 'Over 9', 'Corners Over 9', '1.98', 'REFUND', 'The example total lands exactly on nine, so the stake is refunded.'),
+      choice('corners-under-9', 'Under 9', 'Corners Under 9', '1.98', 'REFUND', 'The example total lands exactly on nine, so the stake is refunded.'),
       choice('barca-corners', 'Barcelona −1', 'Barcelona Corners −1', '1.98', 'WIN', 'Barcelona takes two more corners, covering the −1 corner handicap.'),
       choice('madrid-corners', 'Real Madrid +1', 'Real Madrid Corners +1', '1.98', 'LOSE', 'The one-corner allowance is not enough to cover a two-corner deficit.'),
     ],
@@ -204,14 +213,9 @@ const markets: MarketDefinition[] = [
     label: 'Correct Score',
     panelTitle: 'Correct Score',
     choices: [
-      choice('score-20', '2–0', 'Barcelona 2–0', '8.50', 'WIN', 'The predicted score exactly matches the 2–0 result, so the selection wins.'),
-      choice('score-21', '2–1', 'Barcelona 2–1', '7.50', 'LOSE', 'Real Madrid did not score, so the 2–1 prediction loses.'),
-      choice('score-10', '1–0', 'Barcelona 1–0', '6.80', 'LOSE', 'Barcelona scored twice rather than once, so the exact-score selection loses.'),
-      choice('score-11', '1–1', 'Draw 1–1', '7.20', 'LOSE', 'The match did not finish level, so the 1–1 selection loses.'),
-      choice('score-30', '3–0', 'Barcelona 3–0', '11.0', 'LOSE', 'Barcelona scored two goals, not three, so the selection loses.'),
-      choice('score-12', '1–2', 'Real Madrid 2–1', '12.0', 'LOSE', 'Real Madrid did not win 2–1, so the prediction loses.'),
-      choice('score-00', '0–0', 'Draw 0–0', '10.0', 'LOSE', 'Two goals were scored, so the goalless draw selection loses.'),
-      choice('score-other', 'Any Other Score', 'Any Other Score', '13.0', 'LOSE', 'The 2–0 score is listed separately, so it is not settled under Any Other Score.'),
+      choice('score-20', '2–0', 'Barcelona 2–0', '1.98', 'WIN', 'The predicted score exactly matches the 2–0 result, so the selection wins.'),
+      choice('score-other', 'Others', 'Other correct score', '1.98', 'LOSE', 'The final score is listed as 2–0, so the Others selection loses.'),
+      choice('score-02', '0–2', 'Real Madrid 2–0', '1.98', 'LOSE', 'The teams finished in the opposite order, so the 0–2 prediction loses.'),
     ],
     lesson: {
       title: 'Correct Score',
@@ -663,11 +667,13 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
 const activeMode = computed(() => props.mode)
 const activeMarketKey = ref<MarketKey>('hdp')
 const selectedChoiceId = ref<string | null>(null)
+const correctScoreFilter = ref<CorrectScoreFilter>('all')
 
 const activeMarket = computed(() => markets.find(market => market.key === activeMarketKey.value) ?? markets[0]!)
 const activeTutorial = computed(() => tutorialDefinitions[activeMarketKey.value])
 const selectedChoice = computed(() => activeMarket.value.choices.find(item => item.id === selectedChoiceId.value) ?? null)
 const isOutright = computed(() => activeMarketKey.value === 'outright')
+const isThreeChoiceMarket = computed(() => activeMarketKey.value === '1x2' || activeMarketKey.value === 'correct-score')
 
 const selectMarket = (market: MarketKey): void => {
   activeMarketKey.value = market
@@ -754,10 +760,31 @@ const selectChoice = (id: string): void => {
           <p>Real Madrid wins the championship, Barcelona is the runner-up, and Atletico Madrid is third place</p>
         </div>
 
-        <h1 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h1>
-        <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
+        <div class="market-panel-heading">
+          <h1 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h1>
+          <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
 
-        <div class="choice-grid" :class="{ 'choice-grid--short': activeMarket.choices.length < 4 }">
+          <div v-if="activeMarketKey === 'correct-score'" class="correct-score-filters" aria-label="Correct score selections">
+            <button
+              type="button"
+              :class="{ 'correct-score-filter--active': correctScoreFilter === 'popular' }"
+              :aria-pressed="correctScoreFilter === 'popular'"
+              @click="correctScoreFilter = 'popular'"
+            >
+              Popular
+            </button>
+            <button
+              type="button"
+              :class="{ 'correct-score-filter--active': correctScoreFilter === 'all' }"
+              :aria-pressed="correctScoreFilter === 'all'"
+              @click="correctScoreFilter = 'all'"
+            >
+              All
+            </button>
+          </div>
+        </div>
+
+        <div class="choice-grid" :class="{ 'choice-grid--three': isThreeChoiceMarket }">
           <button
             v-for="item in activeMarket.choices"
             :key="item.id"
@@ -779,24 +806,14 @@ const selectChoice = (id: string): void => {
             <h2>Betting Result</h2>
             <p>{{ selectedChoice.selection }} @{{ selectedChoice.odds }}</p>
           </div>
-          <div class="result-stamp" :class="`result-stamp--${selectedChoice.outcome.toLowerCase()}`">
+          <div class="result-stamp" :class="`result-stamp--${selectedChoice.outcome.toLowerCase().replace('_', '-')}`">
             <img
-              v-if="selectedChoice.outcome === 'WIN'"
-              src="/tutorial-assets/result-stamp-win.webp"
-              alt="WIN"
+              :src="outcomeStampMap[selectedChoice.outcome].src"
+              :alt="outcomeStampMap[selectedChoice.outcome].alt"
               class="result-stamp-img"
               width="44"
               height="44"
             />
-            <img
-              v-else-if="selectedChoice.outcome === 'LOSE'"
-              src="/tutorial-assets/result-stamp-lose.webp"
-              alt="LOSE"
-              class="result-stamp-img"
-              width="44"
-              height="44"
-            />
-            <span v-else>{{ selectedChoice.outcome }}</span>
           </div>
           <p class="result-explanation">{{ selectedChoice.explanation }}</p>
         </article>
@@ -840,17 +857,17 @@ const selectChoice = (id: string): void => {
 
     <footer class="tutorial-responsible">
       <div class="tutorial-responsible-logos" aria-label="Responsible gaming partners">
-        <img src="/responsible-gaming/pagcor.png" alt="PAGCOR">
-        <img src="/responsible-gaming/age-restriction.png" alt="Gambling can be addictive. Know when to stop. 21 and above.">
+        <img src="/responsible-gaming/pagcor.webp" alt="PAGCOR">
+        <img src="/responsible-gaming/age-restriction.webp" alt="Gambling can be addictive. Know when to stop. 21 and above.">
       </div>
 
-      <div v-if="activeMode === 'tutorial'" class="tutorial-compliance-copy">
+      <div class="tutorial-compliance-copy">
         <p>
           <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer">WWW.PAGCOR.PH/REGULATORY</a>
           <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
         </p>
         <strong>GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.</strong>
-        <img src="/responsible-gaming/support-hotline.png" alt="Responsible gaming support hotline">
+        <img src="/responsible-gaming/support-hotline.webp" alt="Responsible gaming support hotline">
       </div>
     </footer>
   </section>
@@ -859,7 +876,7 @@ const selectChoice = (id: string): void => {
 <style scoped>
 .game-tutorial-page {
   display: flex;
-  width: min(100%, 1170px);
+  width: min(100%, 1285px);
   min-height: calc(100vh - var(--header-height) + 12px);
   flex-direction: column;
   margin: -12px auto 0;
@@ -1088,7 +1105,7 @@ const selectChoice = (id: string): void => {
 }
 
 .market-panel-title {
-  margin: 0 0 9px;
+  margin: 0;
   color: #969696;
   font-size: 14px;
   font-weight: 500;
@@ -1096,10 +1113,59 @@ const selectChoice = (id: string): void => {
 }
 
 .market-panel--outright .market-panel-title {
-  margin-top: 9px;
   color: #f2f2f2;
   font-size: 16px;
   font-weight: 700;
+}
+
+.market-panel-heading {
+  display: flex;
+  min-height: 25px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.market-panel--outright .market-panel-heading {
+  min-height: 0;
+  margin-top: 9px;
+}
+
+.correct-score-filters {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.correct-score-filters button {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid #858585;
+  border-radius: 999px;
+  color: #979797;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.correct-score-filters button:hover {
+  border-color: #b4b4b4;
+  color: #e5e5e5;
+}
+
+.correct-score-filters .correct-score-filter--active,
+.correct-score-filters .correct-score-filter--active:hover {
+  border-color: #007653;
+  color: #fff;
+  background: #007653;
 }
 
 .outright-heading h1 {
@@ -1121,6 +1187,10 @@ const selectChoice = (id: string): void => {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px 8px;
+}
+
+.choice-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .bet-choice {

@@ -53,16 +53,16 @@ const footerGroups: FooterGroup[] = [
 ]
 
 const responsibleGamingResources: ResponsibleGamingResource[] = [
-  { name: 'Bridges of Hope', image: '/responsible-gaming/bridges-of-hope.png', width: 130, height: 64, presentation: 'pill' },
-  { name: 'GA Pilipinas', image: '/responsible-gaming/ga-pilipinas.png', width: 130, height: 66, presentation: 'pill' },
-  { name: '21 and above', image: '/responsible-gaming/age-restriction.png', width: 88, height: 32, presentation: 'compact' },
-  { name: 'Responsible gaming support hotline', image: '/responsible-gaming/support-hotline.png', width: 130, height: 72, presentation: 'pill' },
-  { name: 'PAGCOR', image: '/responsible-gaming/pagcor.png', width: 175, height: 175, presentation: 'circle' },
-  { name: 'Milestone', image: '/responsible-gaming/milestone.png', width: 130, height: 27, presentation: 'transparent' },
-  { name: 'DPO/DPS', image: '/responsible-gaming/dpo-dps.png', width: 61, height: 112, presentation: 'transparent' },
-  { name: 'Technical Systems Testing', image: '/responsible-gaming/technical-systems-testing.png', width: 88, height: 43, presentation: 'transparent' },
-  { name: 'GamCare', image: '/responsible-gaming/gamcare.png', width: 96, height: 99, presentation: 'transparent' },
-  { name: 'Be Gamble Aware', image: '/responsible-gaming/be-gamble-aware.png', width: 88, height: 64, presentation: 'transparent' },
+  { name: 'Bridges of Hope', image: '/responsible-gaming/bridges-of-hope.webp', width: 130, height: 64, presentation: 'pill' },
+  { name: 'GA Pilipinas', image: '/responsible-gaming/ga-pilipinas.webp', width: 130, height: 66, presentation: 'pill' },
+  { name: '21 and above', image: '/responsible-gaming/age-restriction.webp', width: 88, height: 32, presentation: 'compact' },
+  { name: 'Responsible gaming support hotline', image: '/responsible-gaming/support-hotline.webp', width: 130, height: 72, presentation: 'pill' },
+  { name: 'PAGCOR', image: '/responsible-gaming/pagcor.webp', width: 175, height: 175, presentation: 'circle' },
+  { name: 'Milestone', image: '/responsible-gaming/milestone.webp', width: 130, height: 27, presentation: 'transparent' },
+  { name: 'DPO/DPS', image: '/responsible-gaming/dpo-dps.webp', width: 61, height: 112, presentation: 'transparent' },
+  { name: 'Technical Systems Testing', image: '/responsible-gaming/technical-systems-testing.webp', width: 88, height: 43, presentation: 'transparent' },
+  { name: 'GamCare', image: '/responsible-gaming/gamcare.webp', width: 96, height: 99, presentation: 'transparent' },
+  { name: 'Be Gamble Aware', image: '/responsible-gaming/be-gamble-aware.webp', width: 88, height: 64, presentation: 'transparent' },
 ]
 
 const responsibleGamingResourceGroups = [

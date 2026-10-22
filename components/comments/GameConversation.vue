@@ -10,21 +10,21 @@ const isImageUrl = (avatar?: string): boolean => {
 
 const getLevelBadge = (level?: string, vip?: number): { src: string; alt: string } => {
   if (vip === 0 || level === 'K0' || level === 'VIP 0' || level === 'VIP0') {
-    return { src: '/images/vip/vip-0.png', alt: 'VIP 0' }
+    return { src: '/images/vip/vip-0.webp', alt: 'VIP 0' }
   }
   if (vip === 2 || level === 'K2' || level === 'VIP 2' || level === 'VIP2') {
-    return { src: '/images/vip/vip-2.png', alt: 'VIP 2' }
+    return { src: '/images/vip/vip-2.webp', alt: 'VIP 2' }
   }
   if (vip === 1 || level === 'K1' || level === 'VIP 1' || level === 'VIP1') {
-    return { src: '/images/vip/vip-1.png', alt: 'VIP 1' }
+    return { src: '/images/vip/vip-1.webp', alt: 'VIP 1' }
   }
   if (level?.includes('0')) {
-    return { src: '/images/vip/vip-0.png', alt: 'VIP 0' }
+    return { src: '/images/vip/vip-0.webp', alt: 'VIP 0' }
   }
   if (level?.includes('2')) {
-    return { src: '/images/vip/vip-2.png', alt: 'VIP 2' }
+    return { src: '/images/vip/vip-2.webp', alt: 'VIP 2' }
   }
-  return { src: '/images/vip/vip-1.png', alt: 'VIP 1' }
+  return { src: '/images/vip/vip-1.webp', alt: 'VIP 1' }
 }
 </script>
 

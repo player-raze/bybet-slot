@@ -16,7 +16,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   description: 'ByBet — Premier Online Gaming, Live Casino, Sports Betting, and Slots in the Philippines.',
   keywords: 'ByBet, sports betting, online casino, slots, live casino, Philippines gaming',
-  ogImage: '/brand/bybet-logo.png',
+  ogImage: '/brand/bybet-logo.webp',
   showBack: true,
   showFlag: true,
   sticky: false,
@@ -78,7 +78,7 @@ const handleBack = (): void => {
     class="seo-header-sticky-wrapper sticky top-[var(--header-height,64px)] z-20 bg-[#000000] -mx-1 px-1 pt-1 pb-1"
   >
     <header
-      class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f] px-1 py-2 shadow-sm select-none"
+      class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f] px-2.5 py-2 shadow-sm select-none"
       :class="customClass"
     >
       <!-- Left: Back Button & Title -->
@@ -94,12 +94,14 @@ const handleBack = (): void => {
         </button>
 
         <!-- Page Title (SEO H1) -->
-        <h1 class="text-[15px] font-bold text-white tracking-tight truncate leading-tight">
+        <h1 class="text-[16px] font-bold text-white tracking-tight truncate leading-tight">
           <slot name="title">
             {{ title }}
           </slot>
         </h1>
       </div>
+
+      <slot name="actions" />
     </header>
   </div>
 
@@ -127,6 +129,8 @@ const handleBack = (): void => {
         </slot>
       </h1>
     </div>
+
+    <slot name="actions" />
   </header>
 </template>
 

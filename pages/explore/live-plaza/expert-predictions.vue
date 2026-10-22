@@ -1,705 +1,559 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import {
-  ChevronRight,
-  LayoutGrid,
-  Lock,
-  MoreHorizontal,
-  Star,
-  Unlock,
-} from 'lucide-vue-next'
+import { LayoutGrid, MoreHorizontal } from 'lucide-vue-next'
 import {
   EXPERT_PREDICTIONS,
   PREDICTORS,
   type Prediction,
-  type Predictor,
+  type PredictionOption,
 } from '~/data/predictions'
+import type { LivePlazaSportFilter } from '~/components/live-plaza/LivePlazaSportFilters.vue'
+
+type PredictionSort = 'featured' | 'hit' | 'win-streak'
+
+const predictionSortOptions: Array<{ value: PredictionSort; label: string }> = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'hit', label: 'Hit' },
+  { value: 'win-streak', label: 'Win Streak' },
+]
 
 useSeoMeta({
-  title: 'Expert Predictions | Live Plaza | Bybet',
+  title: 'Expert Predictions | Live Plaza | ByBet',
   description: 'Follow expert predictions, winning tips, and real-time sports forecasts with high hit rates.',
-  ogTitle: 'Expert Predictions | Live Plaza | Bybet',
+  ogTitle: 'Expert Predictions | Live Plaza | ByBet',
   ogDescription: 'Follow expert predictions, winning tips, and real-time sports forecasts with high hit rates.',
 })
 
 const { showDemoMessage } = useDemoInteraction()
 
-const selectedSport = ref<'all' | 'basketball' | 'soccer'>('all')
+const selectedSport = ref<LivePlazaSportFilter>('all')
 const selectedPredictorId = ref<string | null>(null)
-const sortByHitRateDesc = ref(true)
+const predictionSort = ref<PredictionSort>('featured')
+const sortMenuOpen = ref(false)
+const sortControl = ref<HTMLElement | null>(null)
+const sortButton = ref<HTMLButtonElement | null>(null)
 const unlockedPredictionIds = ref<Set<string>>(new Set())
 
-const filteredPredictions = computed(() => {
-  let list = [...EXPERT_PREDICTIONS]
-
-  if (selectedSport.value !== 'all') {
-    list = list.filter(item => item.sport === selectedSport.value)
-  }
-
-  if (selectedPredictorId.value) {
-    list = list.filter(item => item.predictorId === selectedPredictorId.value)
-  }
-
-  if (sortByHitRateDesc.value) {
-    list.sort((a, b) => b.hitRate - a.hitRate)
-  } else {
-    list.sort((a, b) => a.hitRate - b.hitRate)
-  }
-
-  return list
+const selectedSortLabel = computed(() => {
+  return predictionSortOptions.find(option => option.value === predictionSort.value)?.label ?? 'Featured'
 })
 
-const selectSportFilter = (sport: 'all' | 'basketball' | 'soccer'): void => {
-  selectedSport.value = sport
-}
+const filteredPredictions = computed(() => {
+  let predictions = selectedSport.value === 'all'
+    ? [...EXPERT_PREDICTIONS]
+    : EXPERT_PREDICTIONS.filter(item => item.sport === selectedSport.value)
+
+  if (selectedPredictorId.value) {
+    predictions = predictions.filter(item => item.predictorId === selectedPredictorId.value)
+  }
+
+  if (predictionSort.value === 'hit') {
+    predictions.sort((a, b) => b.hitRate - a.hitRate)
+  } else if (predictionSort.value === 'win-streak') {
+    predictions.sort((a, b) => {
+      const aStreak = Number(a.winStreak?.match(/\d+/)?.[0] ?? 0)
+      const bStreak = Number(b.winStreak?.match(/\d+/)?.[0] ?? 0)
+      return bStreak - aStreak
+    })
+  }
+
+  return predictions
+})
 
 const selectPredictor = (predictorId: string | null): void => {
-  if (selectedPredictorId.value === predictorId) {
-    selectedPredictorId.value = null
-  } else {
-    selectedPredictorId.value = predictorId
+  selectedPredictorId.value = predictorId
+}
+
+const toggleSortMenu = (): void => {
+  sortMenuOpen.value = !sortMenuOpen.value
+}
+
+const selectPredictionSort = (sort: PredictionSort): void => {
+  predictionSort.value = sort
+  sortMenuOpen.value = false
+  const label = predictionSortOptions.find(option => option.value === sort)?.label ?? 'Featured'
+  showDemoMessage(`Sorted by ${label}`)
+}
+
+const handleDocumentClick = (event: MouseEvent): void => {
+  if (sortMenuOpen.value && !sortControl.value?.contains(event.target as Node)) {
+    sortMenuOpen.value = false
   }
 }
 
-const toggleHitRateSort = (): void => {
-  sortByHitRateDesc.value = !sortByHitRateDesc.value
-  showDemoMessage(sortByHitRateDesc.value ? 'Sorted by Highest Hit Rate' : 'Sorted by Lowest Hit Rate')
+const handleEscape = (event: KeyboardEvent): void => {
+  if (event.key === 'Escape' && sortMenuOpen.value) {
+    sortMenuOpen.value = false
+    sortButton.value?.focus()
+  }
 }
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick)
+  document.addEventListener('keydown', handleEscape)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick)
+  document.removeEventListener('keydown', handleEscape)
+})
 
 const handleUnlock = (prediction: Prediction): void => {
   if (unlockedPredictionIds.value.has(prediction.id)) {
     showDemoMessage(`Already unlocked predictions from ${prediction.predictorName}`)
     return
   }
+
   unlockedPredictionIds.value.add(prediction.id)
   showDemoMessage(`Unlocked expert prediction by ${prediction.predictorName}!`)
 }
 
-const handleOddClick = (prediction: Prediction, option: { label: string; odd: string }): void => {
+const handleOddClick = (prediction: Prediction, option: PredictionOption): void => {
   showDemoMessage(`Selected ${prediction.homeTeam} vs ${prediction.awayTeam} [${option.label} @ ${option.odd}]`)
 }
 </script>
 
 <template>
-  <div class="predictions-page">
-    <div class="predictions-container">
-      <!-- Section 1: Predict (Top Avatars Rail) -->
-      <section class="predict-card">
-        <h2 class="predict-card__title">Predict</h2>
-        <div class="predict-rail">
-          <!-- All Button -->
-          <button
-            type="button"
-            class="predict-rail__item"
-            :class="{ 'predict-rail__item--active': selectedPredictorId === null }"
-            @click="selectPredictor(null)"
-          >
-            <div class="predict-rail__squircle">
-              <LayoutGrid class="w-6 h-6" />
-            </div>
-            <span class="predict-rail__name">All</span>
-          </button>
+  <div class="expert-predictions-page">
+    <SeoHeader
+      sticky
+      title="Predict"
+      description="Follow expert sports predictions, winning streaks, and real-time forecasts on ByBet."
+      :show-back="false"
+      :show-flag="false"
+    />
 
-          <!-- Predictor Avatars -->
-          <button
-            v-for="predictor in PREDICTORS"
-            :key="predictor.id"
-            type="button"
-            class="predict-rail__item"
-            :class="{ 'predict-rail__item--active': selectedPredictorId === predictor.id }"
-            @click="selectPredictor(predictor.id)"
-          >
-            <div class="predict-rail__avatar-wrapper">
-              <img
-                :src="predictor.avatar"
-                :alt="predictor.name"
-                class="predict-rail__avatar-img"
-              />
-              <span
-                v-if="predictor.badgeCount"
-                class="predict-rail__badge"
+    <section class="predictor-panel" aria-label="Prediction experts">
+      <div class="predictor-rail">
+        <button
+          type="button"
+          class="predictor-item predictor-item--all"
+          :class="{ 'predictor-item--active': selectedPredictorId === null }"
+          :aria-pressed="selectedPredictorId === null"
+          @click="selectPredictor(null)"
+        >
+          <span class="predictor-item__all-icon">
+            <LayoutGrid :size="25" :stroke-width="0" fill="currentColor" aria-hidden="true" />
+          </span>
+          <span class="predictor-item__name">All</span>
+        </button>
+
+        <button
+          v-for="predictor in PREDICTORS"
+          :key="predictor.id"
+          type="button"
+          class="predictor-item"
+          :class="{ 'predictor-item--active': selectedPredictorId === predictor.id }"
+          :aria-pressed="selectedPredictorId === predictor.id"
+          @click="selectPredictor(predictor.id)"
+        >
+          <span class="predictor-item__avatar-wrap">
+            <img
+              :src="predictor.avatar"
+              :alt="predictor.name"
+              class="predictor-item__avatar"
+              width="54"
+              height="54"
+              loading="lazy"
+              decoding="async"
+            >
+            <span v-if="predictor.badgeCount" class="predictor-item__badge">
+              {{ predictor.badgeCount }}
+            </span>
+          </span>
+          <span class="predictor-item__name">{{ predictor.name }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="predictions-block" aria-labelledby="expert-predictions-title">
+      <div class="predictions-toolbar">
+        <div class="panel-heading">
+          <h2 id="expert-predictions-title">Expert Predictions</h2>
+          <div ref="sortControl" class="sort-control">
+            <button
+              ref="sortButton"
+              type="button"
+              class="panel-action"
+              :class="{ 'panel-action--open': sortMenuOpen }"
+              aria-haspopup="menu"
+              :aria-expanded="sortMenuOpen"
+              aria-controls="prediction-sort-menu"
+              @click.stop="toggleSortMenu"
+            >
+              <span>{{ selectedSortLabel }}</span>
+              <MoreHorizontal :size="15" aria-hidden="true" />
+            </button>
+
+            <Transition name="sort-menu">
+              <div
+                v-if="sortMenuOpen"
+                id="prediction-sort-menu"
+                class="sort-menu"
+                role="menu"
+                aria-label="Sort predictions"
               >
-                {{ predictor.badgeCount }}
-              </span>
-            </div>
-            <span class="predict-rail__name">{{ predictor.name }}</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Section 2: Expert Predictions & Filter Bar -->
-      <section class="predictions-section">
-        <div class="predictions-section__header">
-          <h2 class="predictions-section__title">Expert Predictions</h2>
-          <button
-            type="button"
-            class="predictions-section__sort-btn"
-            @click="toggleHitRateSort"
-          >
-            <span>Hit</span>
-            <MoreHorizontal class="w-4 h-4" />
-          </button>
-        </div>
-
-        <!-- Sport Filter Chips -->
-        <div class="filter-chips">
-          <button
-            type="button"
-            class="filter-chip"
-            :class="{ 'filter-chip--active': selectedSport === 'all' }"
-            @click="selectSportFilter('all')"
-          >
-            <Star class="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span>All</span>
-          </button>
-          <button
-            type="button"
-            class="filter-chip"
-            :class="{ 'filter-chip--active': selectedSport === 'basketball' }"
-            @click="selectSportFilter('basketball')"
-          >
-            <span class="filter-chip__icon">🏀</span>
-            <span>Basketball</span>
-          </button>
-          <button
-            type="button"
-            class="filter-chip"
-            :class="{ 'filter-chip--active': selectedSport === 'soccer' }"
-            @click="selectSportFilter('soccer')"
-          >
-            <span class="filter-chip__icon">⚽</span>
-            <span>Soccer</span>
-          </button>
-        </div>
-
-        <!-- Predictions Grid -->
-        <div class="predictions-grid">
-          <article
-            v-for="item in filteredPredictions"
-            :key="item.id"
-            class="prediction-card"
-          >
-            <!-- Card Header: Predictor & Hit Rate -->
-            <div class="prediction-card__header">
-              <div class="prediction-card__author">
-                <img
-                  :src="item.predictorAvatar"
-                  :alt="item.predictorName"
-                  class="prediction-card__author-avatar"
-                />
-                <div class="prediction-card__author-info">
-                  <h3 class="prediction-card__author-name">{{ item.predictorName }}</h3>
-                  <p class="prediction-card__author-time">{{ item.publishedAgo }}</p>
+                <span class="sort-menu__label">Sort</span>
+                <div class="sort-menu__options">
+                  <button
+                    v-for="option in predictionSortOptions"
+                    :key="option.value"
+                    type="button"
+                    class="sort-menu__option"
+                    :class="{ 'sort-menu__option--active': predictionSort === option.value }"
+                    role="menuitemradio"
+                    :aria-checked="predictionSort === option.value"
+                    @click="selectPredictionSort(option.value)"
+                  >
+                    {{ option.label }}
+                  </button>
                 </div>
               </div>
-
-              <div class="prediction-card__meta">
-                <div class="prediction-card__hit-rate">
-                  <span class="prediction-card__hit-label">Hit Rate</span>
-                  <span class="prediction-card__hit-value">{{ item.hitRate.toFixed(2) }} <small>%</small></span>
-                </div>
-                <button
-                  type="button"
-                  class="prediction-card__unlock-btn"
-                  :class="{ 'prediction-card__unlock-btn--unlocked': unlockedPredictionIds.has(item.id) }"
-                  @click="handleUnlock(item)"
-                >
-                  <Unlock v-if="unlockedPredictionIds.has(item.id)" class="w-3.5 h-3.5 text-emerald-400" />
-                  <Lock v-else class="w-3.5 h-3.5 text-white" />
-                  <span>{{ unlockedPredictionIds.has(item.id) ? 'Unlocked' : 'Unlock' }}</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Inner Match Card -->
-            <div class="match-box">
-              <div class="match-box__header">
-                <div class="match-box__league-meta">
-                  <span class="match-box__badge">{{ item.marketType }}</span>
-                  <span class="match-box__sport-icon">
-                    {{ item.sport === 'basketball' ? '🏀' : '⚽' }}
-                  </span>
-                  <span class="match-box__league">{{ item.league }}</span>
-                  <span class="match-box__time">{{ item.matchTime }}</span>
-                </div>
-                <ChevronRight class="w-4 h-4 text-white/40" />
-              </div>
-
-              <div class="match-box__teams">
-                <span class="match-box__team match-box__team--home">{{ item.homeTeam }}</span>
-                <span class="match-box__vs">vs</span>
-                <span class="match-box__team match-box__team--away">{{ item.awayTeam }}</span>
-              </div>
-
-              <div class="match-box__odds">
-                <button
-                  v-for="(opt, idx) in item.options"
-                  :key="idx"
-                  type="button"
-                  class="match-box__odd-btn"
-                  @click="handleOddClick(item, opt)"
-                >
-                  <span class="match-box__odd-label">{{ opt.label }}</span>
-                  <span class="match-box__odd-val">{{ opt.odd }}</span>
-                </button>
-              </div>
-            </div>
-          </article>
+            </Transition>
+          </div>
         </div>
-      </section>
-    </div>
+
+        <div class="panel-filters">
+          <LivePlazaSportFilters v-model="selectedSport" />
+        </div>
+      </div>
+
+      <div v-if="filteredPredictions.length" class="predictions-grid">
+        <LivePlazaPredictionCard
+          v-for="prediction in filteredPredictions"
+          :key="prediction.id"
+          :prediction="prediction"
+          :unlocked="unlockedPredictionIds.has(prediction.id)"
+          @unlock="handleUnlock"
+          @select-odd="handleOddClick"
+        />
+      </div>
+
+      <div v-else class="predictions-empty">
+        No predictions are available for this expert yet.
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.predictions-page {
-  min-height: 100vh;
-  background-color: #0b0f0d;
-  color: #ffffff;
-  padding: 1.25rem 1rem 3rem;
-}
-
-@media (min-width: 768px) {
-  .predictions-page {
-    padding: 1.5rem 2rem 4rem;
-  }
-}
-
-.predictions-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-/* Top Predict Card */
-.predict-card {
-  position: sticky;
-  top: var(--header-height);
-  z-index: 20;
-  background-color: #171d1a;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  padding: 1.25rem;
-}
-
-.predict-card__title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 1rem;
-}
-
-.predict-rail {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
-
-.predict-rail::-webkit-scrollbar {
-  height: 4px;
-}
-
-.predict-rail::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-}
-
-.predict-rail__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-}
-
-.predict-rail__item:hover {
-  transform: translateY(-2px);
-}
-
-.predict-rail__squircle {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 1rem;
-  background-color: #242c27;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.7);
-  transition: all 0.2s ease;
-}
-
-.predict-rail__item--active .predict-rail__squircle {
-  background-color: #1e4533;
-  color: #34d399;
-  box-shadow: 0 0 0 2px #34d399;
-}
-
-.predict-rail__avatar-wrapper {
-  position: relative;
-  width: 3.5rem;
-  height: 3.5rem;
-}
-
-.predict-rail__avatar-img {
+.expert-predictions-page {
   width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid transparent;
-  transition: border-color 0.2s ease;
-}
-
-.predict-rail__item--active .predict-rail__avatar-img {
-  border-color: #34d399;
-  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.3);
-}
-
-.predict-rail__badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background-color: #ef4444;
+  min-width: 0;
+  padding-top: 0.16rem;
+  padding-bottom: 2rem;
   color: #ffffff;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #171d1a;
 }
 
-.predict-rail__name {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-  max-width: 4rem;
-  text-align: center;
-  white-space: nowrap;
+.predictor-panel,
+.predictions-toolbar {
+  border: 1px solid rgba(255, 255, 255, 0.025);
+  border-radius: 12px;
+  background: #141414;
+}
+
+.predictor-panel {
   overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 8px;
+  padding: 12px 13px 10px;
 }
 
-/* Predictions Section */
-.predictions-section {
+.predictor-rail {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.predictions-section__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.predictions-section__title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.predictions-section__sort-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  background-color: #1e2622;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 9999px;
-  padding: 0.375rem 0.875rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.predictions-section__sort-btn:hover {
-  background-color: #27332d;
-  color: #ffffff;
-}
-
-/* Filter Chips */
-.filter-chips {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-}
-
-.filter-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  background-color: #171d1a;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 9999px;
-  padding: 0.4rem 1rem;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filter-chip:hover {
-  background-color: #1f2723;
-  color: #ffffff;
-}
-
-.filter-chip--active {
-  background-color: #1e4533;
-  border-color: rgba(52, 211, 153, 0.4);
-  color: #ffffff;
-}
-
-.filter-chip__icon {
-  font-size: 0.875rem;
-}
-
-/* Grid */
-.predictions-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-@media (min-width: 1024px) {
-  .predictions-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Card */
-.prediction-card {
-  background-color: #171d1a;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition: border-color 0.2s ease;
-}
-
-.prediction-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-.prediction-card__header {
-  display: flex;
+  min-width: 0;
   align-items: flex-start;
-  justify-content: space-between;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 18px;
 }
 
-.prediction-card__author {
+.predictor-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.predictor-item {
   display: flex;
+  width: 64px;
+  min-width: 64px;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+  color: #eeeeee;
+  background: transparent;
+  cursor: pointer;
+  gap: 6px;
 }
 
-.prediction-card__author-avatar {
-  width: 2.75rem;
-  height: 2.75rem;
+.predictor-item--all {
+  position: relative;
+  width: 71px;
+  min-width: 71px;
+  padding-right: 13px;
+}
+
+.predictor-item--all::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 79px;
+  background: #2b2b2b;
+  content: '';
+}
+
+.predictor-item__all-icon,
+.predictor-item__avatar-wrap {
+  position: relative;
+  width: 55px;
+  height: 55px;
+  flex: 0 0 auto;
+}
+
+.predictor-item__all-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #777a78;
+  background: #383a39;
+}
+
+.predictor-item__all-icon :deep(svg) {
+  opacity: 0.9;
+}
+
+.predictor-item__avatar-wrap {
+  display: block;
+}
+
+.predictor-item__avatar {
+  display: block;
+  width: 55px;
+  height: 55px;
+  border: 2px solid #777b79;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #242424;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
-.prediction-card__author-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.prediction-card__author-name {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.prediction-card__author-time {
-  font-size: 0.6875rem;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 0.125rem;
-}
-
-.prediction-card__meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.375rem;
-}
-
-.prediction-card__hit-rate {
-  display: flex;
-  align-items: baseline;
-  gap: 0.375rem;
-}
-
-.prediction-card__hit-label {
-  font-size: 0.6875rem;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.prediction-card__hit-value {
-  font-size: 1.5rem;
+.predictor-item__badge {
+  display: grid;
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  color: #ef3348;
+  font-size: 10px;
   font-weight: 800;
-  color: #34d399;
-  letter-spacing: -0.025em;
+  line-height: 1;
+  background: #ffffff;
+}
+
+.predictor-item__name {
+  overflow: hidden;
+  width: 100%;
+  color: #efefef;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.predictor-item--active .predictor-item__avatar {
+  border-color: #1cc48f;
+  box-shadow: 0 0 0 2px rgba(28, 196, 143, 0.2);
+}
+
+.predictor-item--active .predictor-item__all-icon {
+  color: #a2a5a3;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.predictions-block {
+  min-width: 0;
+}
+
+.predictions-toolbar {
+  position: relative;
+  z-index: 10;
+  overflow: visible;
+  margin-bottom: 8px;
+}
+
+.panel-heading {
+  display: flex;
+  min-height: 47px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  border-bottom: 1px solid #2b2b2b;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  color: #f7f7f7;
+  font-size: 16px;
+  font-weight: 800;
   line-height: 1;
 }
 
-.prediction-card__hit-value small {
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.prediction-card__unlock-btn {
-  display: flex;
+.panel-action {
+  display: inline-flex;
+  min-height: 32px;
   align-items: center;
-  gap: 0.375rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 9999px;
-  padding: 0.25rem 0.75rem;
-  color: #ffffff;
-  font-size: 0.6875rem;
-  font-weight: 600;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid #087d5c;
+  border-radius: 999px;
+  color: #e8e8e8;
+  font-size: 11px;
+  font-weight: 500;
+  background: #202322;
   cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 4px;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
-.prediction-card__unlock-btn:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.4);
+.panel-action:hover,
+.panel-action--open {
+  border-color: #00a676;
+  background: #272a29;
 }
 
-.prediction-card__unlock-btn--unlocked {
-  border-color: rgba(52, 211, 153, 0.4);
-  color: #34d399;
+.sort-control {
+  position: relative;
+  flex: 0 0 auto;
 }
 
-/* Inner Match Box */
-.match-box {
-  background-color: #101512;
-  border-radius: 0.75rem;
-  padding: 0.875rem 1rem;
+.sort-menu {
   display: flex;
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 5px);
+  right: -12px;
+  width: 165px;
   flex-direction: column;
-  gap: 0.75rem;
+  padding: 8px 12px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.025);
+  border-radius: 14px;
+  color: #eeeeee;
+  background: #171717;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42);
 }
 
-.match-box__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.match-box__league-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.match-box__badge {
-  font-size: 0.625rem;
-  font-weight: 700;
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.4);
-  background-color: rgba(52, 211, 153, 0.08);
-  border-radius: 0.25rem;
-  padding: 0.125rem 0.375rem;
-}
-
-.match-box__sport-icon {
-  font-size: 0.8125rem;
-}
-
-.match-box__league {
+.sort-menu__label {
+  margin-bottom: 7px;
+  font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.2;
 }
 
-.match-box__time {
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.match-box__teams {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.25rem 0;
-}
-
-.match-box__team {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #ffffff;
-  flex: 1;
-}
-
-.match-box__team--home {
-  text-align: right;
-  padding-right: 0.75rem;
-}
-
-.match-box__team--away {
-  text-align: left;
-  padding-left: 0.75rem;
-}
-
-.match-box__vs {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 400;
-}
-
-.match-box__odds {
+.sort-menu__options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  justify-items: center;
+  gap: 4px;
 }
 
-.match-box__odd-btn {
-  background-color: #1a221d;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.match-box__odd-btn:hover {
-  background-color: #222d26;
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.match-box__odd-label {
-  font-size: 0.75rem;
+.sort-menu__option {
+  width: 125px;
+  height: 33px;
+  padding: 0 12px;
+  border: 1px solid #565b58;
+  border-radius: 999px;
+  color: #eeeeee;
+  font: inherit;
+  font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  line-height: 1;
+  background: #202322;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
 }
 
-.match-box__odd-val {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ffffff;
+.sort-menu__option:hover {
+  border-color: #008965;
+  background: #252a28;
+}
+
+.sort-menu__option--active,
+.sort-menu__option--active:hover {
+  border-color: #007653;
+  background: #007653;
+}
+
+.sort-menu-enter-active,
+.sort-menu-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+  transform-origin: top right;
+}
+
+.sort-menu-enter-from,
+.sort-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+}
+
+.panel-filters {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  padding: 0 11px;
+}
+
+.predictions-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.predictions-empty {
+  display: grid;
+  min-height: 212px;
+  place-items: center;
+  border-radius: 12px;
+  color: #858985;
+  font-size: 12px;
+  background: #141414;
+}
+
+@media (max-width: 55rem) {
+  .predictions-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .expert-predictions-page {
+    padding-top: 0;
+    padding-bottom: 5rem;
+  }
+
+  .predictor-panel {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .predictor-rail {
+    gap: 12px;
+  }
+
+  .panel-heading {
+    min-height: 44px;
+  }
+
+  .panel-heading h2 {
+    font-size: 14px;
+  }
+
+  .panel-filters {
+    min-height: 42px;
+  }
 }
 </style>

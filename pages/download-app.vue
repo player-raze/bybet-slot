@@ -60,7 +60,7 @@ const handleAppStore = (): void => {
       <div class="relative w-full max-w-[560px] mx-auto flex items-center justify-center min-h-[300px] sm:min-h-[460px]">
         <!-- Center Image matching 2nd photo -->
         <img
-          src="/images/app/league-player.png"
+          src="/images/app/league-player.webp"
           alt="ByBet App League"
           class="w-full h-auto max-h-[480px] object-contain select-none pointer-events-none drop-shadow-2xl"
           loading="eager"
@@ -104,7 +104,7 @@ const handleAppStore = (): void => {
       <div class="flex items-center justify-center gap-3">
         <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center p-1 shadow">
           <img
-            src="/responsible-gaming/pagcor.png"
+            src="/responsible-gaming/pagcor.webp"
             alt="PAGCOR Regulated"
             class="h-7 w-7 object-contain"
           />

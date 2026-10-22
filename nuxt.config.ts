@@ -39,11 +39,11 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#080D0B' },
       ],
       link: [
-        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon.webp' },
         {
           rel: 'preload',
           as: 'image',
-          href: '/hero/slots-games.png',
+          href: '/hero/slots-games.webp',
           fetchpriority: 'high',
         },
       ],

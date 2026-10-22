@@ -36,7 +36,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
   {
     id: 'msg_2',
     name: 'Ito',
-    avatar: '/images/avatars/ito.png',
+    avatar: '/images/avatars/ito.webp',
     avatarType: 'image',
     avatarBg: '#3b1d54',
     level: 'K2',

@@ -332,7 +332,7 @@ const resetFilters = (): void => {
             v-for="prov in SLOT_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-4 py-1.5 rounded-full text-[16px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
+            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
             :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
             @click="toggleProvider(prov.key)"
           >

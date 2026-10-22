@@ -10,6 +10,8 @@ const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/') &&
 const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
 const isAffiliatePage = computed(() => route.path === '/affiliate')
+const isBonusesPage = computed(() => route.path.startsWith('/explore/bonuses'))
+const isLivePlazaPage = computed(() => route.path.startsWith('/explore/live-plaza'))
 const isAccountSettingsPage = computed(() => [
   '/explore/account/me',
   '/explore/account/language',
@@ -19,11 +21,13 @@ const isAccountSettingsPage = computed(() => [
 ].some(path => route.path.startsWith(path)))
 const isDockedChatPage = computed(() => isSportsPage.value || isGameChatPage.value)
 const isTutorialPage = computed(() => route.path === '/tutorial' || route.path.startsWith('/tutorial/'))
-const railCollapsed = ref(!(isTutorialPage.value || isAffiliatePage.value))
+const railCollapsed = ref(!(isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value))
 
 watch(() => route.path, () => {
-  if (isTutorialPage.value || isAffiliatePage.value) {
+  if (isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value) {
     railCollapsed.value = false
+  } else if (isTutorialPage.value) {
+    railCollapsed.value = true
   }
 
   if (isSportsPage.value) {
@@ -107,7 +111,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="home" class="site-shell" :class="{ 'site-shell--rail-collapsed': railCollapsed, 'site-shell--sports-chat': isDockedChatPage && Boolean(commentContext) }">
+  <div
+    id="home"
+    class="site-shell"
+    :class="{
+      'site-shell--rail-collapsed': railCollapsed,
+      'site-shell--sports-chat': isDockedChatPage && Boolean(commentContext),
+      'site-shell--bonuses': isBonusesPage,
+    }"
+  >
     <AppHeader
       :drawer-open="drawerOpen"
       @toggle-drawer="drawerOpen = !drawerOpen"
@@ -132,7 +144,7 @@ onBeforeUnmount(() => {
       />
     </div>
 
-    <AppFooter v-if="!isAccountSettingsPage" />
+    <AppFooter v-if="!isAccountSettingsPage && !isBonusesPage" />
     <MobileBottomNav />
 
     <Transition name="toast">
@@ -162,6 +174,10 @@ onBeforeUnmount(() => {
 
 .site-shell--rail-collapsed {
   --sidebar-width: 72px;
+}
+
+.site-shell--bonuses {
+  max-width: 1360px;
 }
 
 .content-layout {

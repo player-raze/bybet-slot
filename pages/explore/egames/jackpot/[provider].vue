@@ -19,30 +19,30 @@ import GameCard from '~/components/game-cards/GameCard.vue'
 const JACKPOT_REFRESH_INTERVAL_MS = 60_000
 
 const JACKPOT_CHARACTER_IMAGES: Record<JackpotSection['jackpotCharacter'], string> = {
-  dragon: '/images/jackpot/jili-jackpot.png',
-  genie: '/images/jackpot/cq9-jackpot.png',
-  panda: '/images/jackpot/jdb-jackpot.png',
+  dragon: '/images/jackpot/jili-jackpot.webp',
+  genie: '/images/jackpot/cq9-jackpot.webp',
+  panda: '/images/jackpot/jdb-jackpot.webp',
 }
 
 const JACKPOT_DIGIT_IMAGES: Record<string, string> = Object.fromEntries(
   ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(digit => [
     digit,
-    `/images/jackpot/${digit}.png`,
+    `/images/jackpot/${digit}.webp`,
   ]),
 )
 
 const JACKPOT_SEPARATOR_IMAGES: Record<string, string> = {
-  ',': '/images/jackpot/comma.png',
-  '.': '/images/jackpot/dot.png',
+  ',': '/images/jackpot/comma.webp',
+  '.': '/images/jackpot/dot.webp',
 }
 
 const JACKPOT_INCREMENT_RANGES: Record<string, readonly [number, number]> = {
   jili: [680, 2_800],
-  cq9: [80, 560],
+  cq9: [0, 0],
   jdb: [12, 120],
 }
 
-const JACKPOT_SECTION_ORDER = ['jili', 'jdb', 'cq9']
+const JACKPOT_SECTION_ORDER = ['jili', 'cq9', 'jdb']
 
 const jackpotNumberFormatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
@@ -66,14 +66,7 @@ const jackpotRevision = ref(0)
 let winnerTimer: ReturnType<typeof setTimeout> | null = null
 let jackpotClockTimer: ReturnType<typeof setInterval> | null = null
 
-const providerLogos = [
-  '/images/providers/jdb.png',
-  '/images/providers/jili.png',
-  '/images/providers/cq9.png',
-  '/images/providers/pg.png',
-  '/images/providers/pp.png',
-  '/images/providers/red-tiger.png',
-]
+const WINNER_PROVIDER_LOGO = '/images/providers/jdb.webp'
 
 const maskUsername = (name: string): string => {
   if (name.includes('*')) return name
@@ -102,10 +95,9 @@ const generateRandomAmount = (): string => {
 
 const addNewWinner = (): void => {
   const randomUsername = usernamesList[Math.floor(Math.random() * usernamesList.length)] || 'player_99'
-  const randomProvider = providerLogos[Math.floor(Math.random() * providerLogos.length)]
   const newWinner: JackpotWinner = {
     id: `winner-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    providerLogo: randomProvider,
+    providerLogo: WINNER_PROVIDER_LOGO,
     username: maskUsername(randomUsername),
     amount: generateRandomAmount(),
     date: formatDateTime(),
@@ -249,15 +241,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
             :aria-label="tab.label"
             @click="selectTab(tab.key)"
           >
-            <span
-              v-if="tab.isAll"
-              class="text-[13px] font-black tracking-wider"
-              :class="activeProvider === tab.key.toLowerCase() ? 'text-white' : 'text-white/80'"
-            >
-              {{ tab.label }}
-            </span>
             <img
-              v-else
               :src="tab.logo"
               :alt="tab.label"
               class="h-4 max-w-[42px] object-contain transition-opacity"
@@ -314,7 +298,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
         <div class="jackpot-brand-stage" aria-hidden="true">
           <img
-            src="/images/jackpot/jackpot.png"
+            src="/images/jackpot/jackpot.webp"
             alt=""
             class="jackpot-wordmark"
           />
@@ -388,33 +372,30 @@ const filteredSections = computed<JackpotSection[]>(() => {
     </section>
 
     <!-- Winners List Card -->
-    <div class="winners-card rounded-2xl bg-[#171817] border border-white/5 p-4 shadow-sm mb-8">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold text-white">Winners List</h3>
-        <span class="flex items-center gap-1.5 text-[11px] text-[#34d399] font-medium">
-          <span class="inline-block h-2 w-2 rounded-full bg-[#34d399] animate-pulse"></span>
-          Live Wins
-        </span>
+    <div class="winners-card rounded-md bg-[#171817] shadow-sm mb-8">
+      <div class="flex items-center justify-between pt-2 px-4">
+        <h3 class="font-bold text-white text-[16px]">Winners List</h3>
+        
       </div>
 
       <TransitionGroup name="winner-fade" tag="div" class="divide-y divide-white/5">
         <div
           v-for="winner in currentWinners"
           :key="winner.id"
-          class="winner-item flex items-center justify-between py-2.5 text-xs transition-colors hover:bg-white/[0.02] px-1 rounded-lg"
+          class="winner-item flex items-center justify-between py-1.5 text-[12px] transition-colors  px-2 "
         >
           <!-- Left: Provider Logo + Masked Username -->
           <div class="flex items-center gap-3">
             <img
               :src="winner.providerLogo"
               alt=""
-              class="h-3.5 max-w-[36px] object-contain brightness-125 opacity-80"
+              class="h-4 max-w-[36px] object-contain brightness-125 opacity-80"
             />
-            <span class="text-[#8e9491] font-mono">{{ winner.username }}</span>
+            <span class="text-white font-mono">{{ winner.username }}</span>
           </div>
 
           <!-- Center: Won Amount -->
-          <span class="text-white font-semibold font-mono">{{ winner.amount }}</span>
+          <span class="text-white ">{{ winner.amount }}</span>
 
           <!-- Right: Date Time -->
           <span class="text-[#626664] text-[11px] font-mono">{{ winner.date }}</span>
@@ -422,35 +403,6 @@ const filteredSections = computed<JackpotSection[]>(() => {
       </TransitionGroup>
     </div>
 
-    <!-- Regulatory / PAGCOR Footer Block -->
-    <footer class="regulatory-footer flex flex-col items-center justify-center text-center gap-3 pt-4 pb-8">
-      <!-- Certification Badges -->
-      <div class="flex items-center gap-4">
-        <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow p-1">
-          <span class="text-[10px] font-extrabold text-[#0038a8] leading-tight">PAGCOR</span>
-        </div>
-        <div class="h-10 w-28 rounded-lg bg-white flex items-center justify-center gap-1.5 px-2 shadow">
-          <span class="text-xs font-black text-red-600 border border-red-600 rounded-full h-5 w-5 flex items-center justify-center">21</span>
-          <span class="text-[7.5px] font-bold text-black leading-tight text-left">GAMBLING CAN BE ADDICTIVE<br><strong>KNOW WHEN TO STOP</strong></span>
-        </div>
-      </div>
-
-      <!-- Links & Warnings -->
-      <div class="text-[11px] font-semibold text-[#f04438] tracking-wide">
-        <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
-        <span class="mx-2">•</span>
-        <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
-      </div>
-
-      <p class="text-[10px] font-medium text-[#2e90fa] max-w-md uppercase leading-relaxed">
-        GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.
-      </p>
-
-      <div class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#1e201f] px-3 py-1 text-[11px] text-[#9ca3af]">
-        <span>📞</span>
-        <span class="font-mono font-bold text-white">(02) 8248-8686</span>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -494,7 +446,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 .jackpot-provider-logo {
   width: auto;
   max-width: 82px;
-  height: 28px;
+  height: 71px;
 }
 
 .jackpot-brand-stage {
@@ -509,7 +461,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
 .jackpot-wordmark {
   position: absolute;
-  z-index: 2;
+  z-index: 20;
   bottom: 6px;
   left: 50%;
   width: clamp(178px, 18vw, 216px);
@@ -559,7 +511,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
   height: 100%;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0.5px;
 }
 
 .jackpot-counter-character {
@@ -620,7 +572,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
 .jackpot-separator-image {
   display: block;
-  width: 9px;
+  width: 3px;
   height: auto;
   max-height: 15px;
   object-fit: contain;
@@ -642,6 +594,10 @@ const filteredSections = computed<JackpotSection[]>(() => {
 .jackpot-game-rail > * {
   min-width: 0;
   scroll-snap-align: start;
+}
+
+.winner-item:nth-child(even) {
+  background-color: #000;
 }
 
 @keyframes jackpot-digit-pop {

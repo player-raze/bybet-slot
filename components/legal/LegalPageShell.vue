@@ -10,7 +10,7 @@ const props = withDefaults(
   }>(),
   {
     backTo: '/explore/account/me',
-    bannerSrc: '/brand/about-hero-banner.png',
+    bannerSrc: '/brand/about-hero-banner.webp',
     bannerAlt: 'ByBet',
   }
 )

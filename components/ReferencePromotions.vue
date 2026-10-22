@@ -15,14 +15,14 @@ const promotions: Promotion[] = [
     label: 'Welcome Rewards',
     value: 'Up to ₱1,000',
     action: 'Register Now',
-    image: '/reference/promotion-gift.png',
+    image: '/reference/promotion-gift.webp',
     tone: 'emerald',
   },
   {
     label: 'Daily Cashback',
     value: 'Up to 15%',
     action: 'Learn More',
-    image: '/reference/promotion-cashback.png',
+    image: '/reference/promotion-cashback.webp',
     tone: 'violet',
   },
   {
@@ -30,7 +30,7 @@ const promotions: Promotion[] = [
     value: '₱100,000',
     detail: 'Prize Pool',
     action: 'Join Now',
-    image: '/reference/promotion-tournament.png',
+    image: '/reference/promotion-tournament.webp',
     tone: 'crimson',
   },
 ]
