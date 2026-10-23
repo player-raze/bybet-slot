@@ -297,7 +297,7 @@ onBeforeUnmount(() => {
 <template>
   <section class="sports-page">
     <nav
-      class="sports-tabs"
+      class="sports-tabs bg-[#1f1f1f]/95"
       aria-label="Sports categories"
     >
       <NuxtLink

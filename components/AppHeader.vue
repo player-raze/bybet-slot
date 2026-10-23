@@ -114,7 +114,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 
   display: flex;
   position: fixed;
-  z-index: 10;
+  z-index: 30;
   top: 0;
   right: 0;
   left: 0;
@@ -123,11 +123,16 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
   padding:
     0 max(0.55rem, calc((100vw - var(--site-max-width)) / 2 + 0.55rem))
     0 max(0.85rem, calc((100vw - var(--site-max-width)) / 2 + 0.85rem));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: #036242;
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.08),
-    0 0.18rem 0.65rem rgba(0, 16, 11, 0.22);
+  pointer-events: none;
+  background: transparent;
+}
+
+.brand,
+.header-actions,
+.menu-button {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto;
 }
 
 .brand {

@@ -234,7 +234,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 <template>
   <div class="jackpot-page w-full min-w-0 pb-16">
     <!-- Sticky Header (Top Nav Tabs Bar) -->
-    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1 pt-1 pb-2">
+    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1  pb-2">
       <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
       <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm">
         <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm">

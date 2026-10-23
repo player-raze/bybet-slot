@@ -144,7 +144,7 @@ watch(() => context.value, () => {
 
 <style scoped>
 .comment-panel {
-  width: min(375px, 23.4375rem);
+  width: var(--comment-width, min(375px, 23.4375rem));
   height: 100dvh;
   max-width: 100vw;
   max-height: 100dvh;
@@ -158,7 +158,7 @@ watch(() => context.value, () => {
   top: var(--content-sticky-top, var(--header-height));
   align-self: start;
   z-index: 40;
-  width: 100%;
+  width: var(--comment-width, 100%);
   min-width: 0;
   height: calc(100dvh - var(--content-sticky-top, var(--header-height)));
   max-height: calc(100dvh - var(--content-sticky-top, var(--header-height)));

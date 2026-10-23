@@ -167,6 +167,8 @@ onBeforeUnmount(() => {
       'site-shell--dedicated-header': isDedicatedMobileHeaderPage,
     }"
   >
+    <div class="app-header-underlay" aria-hidden="true" />
+    <div class="app-header-occlusion-plate" aria-hidden="true" />
     <AppHeader
       :drawer-open="drawerOpen"
       @toggle-drawer="drawerOpen = !drawerOpen"
@@ -209,7 +211,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .site-shell {
   --content-gutter: 0.5rem;
-  --comment-panel-width: min(375px, 23.4375rem);
+  --comment-width: 0px;
   --desktop-top-overlap: 12px;
   --content-sticky-top: var(--header-height);
   --sidebar-width: 190px;
@@ -226,9 +228,42 @@ onBeforeUnmount(() => {
   --sidebar-width: 72px;
 }
 
+.site-shell--sports-chat {
+  --comment-width: min(375px, 23.4375rem);
+  --comment-panel-width: 23.4375rem;
+}
+
 .site-shell--bonuses {
   --site-max-width: 100%;
   max-width: 100%;
+}
+
+.app-header-underlay,
+.app-header-occlusion-plate {
+  position: fixed;
+  top: 0;
+  pointer-events: none;
+  background: #036242;
+}
+
+.app-header-underlay {
+  z-index: 10;
+  right: 0;
+  left: 0;
+  height: var(--header-height);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.app-header-occlusion-plate {
+  z-index: 25;
+  left: 50%;
+  width: min(100%, var(--site-max-width));
+  height: var(--content-sticky-top);
+  overflow: hidden;
+  transform: translateX(-50%);
+  margin-right: var(--comment-width);
+  margin-left: var(--sidebar-width);
+  transition: margin-right 180ms ease, margin-left 180ms ease;
 }
 
 .content-layout {
@@ -236,7 +271,7 @@ onBeforeUnmount(() => {
   z-index: 20;
   min-width: 0;
   margin-left: var(--sidebar-width);
-  background: var(--page);
+  background: transparent;
   transition: margin-left 180ms ease;
 }
 
@@ -317,7 +352,7 @@ onBeforeUnmount(() => {
 
   .site-shell--sports-chat .content-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--comment-panel-width);
+    grid-template-columns: minmax(0, 1fr) var(--comment-width);
     align-items: start;
     gap: 8px;
   }
@@ -330,7 +365,11 @@ onBeforeUnmount(() => {
   }
 
   .site-shell--me > .app-header-shell,
-  .site-shell--dedicated-header > .app-header-shell {
+  .site-shell--dedicated-header > .app-header-shell,
+  .site-shell--me > .app-header-underlay,
+  .site-shell--me > .app-header-occlusion-plate,
+  .site-shell--dedicated-header > .app-header-underlay,
+  .site-shell--dedicated-header > .app-header-occlusion-plate {
     display: none !important;
   }
 

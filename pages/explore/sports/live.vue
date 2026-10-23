@@ -29,9 +29,9 @@ const currentSport = computed(() => {
 <template>
   <section class="sports-page live-page">
     <!-- Sports Tabs Navigation: Sport Ball Icons -->
-    <div class="sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-1">
+    <div class="sticky top-[var(--content-sticky-top)] z-30  -mx-1 px-1 pb-1">
       <nav
-        class="sports-tabs"
+        class="sports-tabs bg-[#141414]"
         aria-label="Live sports categories"
       >
         <NuxtLink
