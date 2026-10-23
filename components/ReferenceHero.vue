@@ -282,6 +282,7 @@ onBeforeUnmount(() => {
 .hero {
   position: relative;
   width: 100%;
+  margin-top: 15px;
   aspect-ratio: 4.58 / 1;
   min-height: 7.55rem;
   overflow: hidden;
@@ -517,6 +518,12 @@ onBeforeUnmount(() => {
 @media (min-width: 48rem) {
   .hero-copy > span {
     font-size: 0.54rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .hero {
+    z-index: 1;
   }
 }
 

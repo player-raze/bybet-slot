@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, Flame, Star, ThumbsUp, UsersRound } from 'lucide-vue-next'
+import { ArrowRight, Flame, Spade, Star, ThumbsUp, UsersRound } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import type { ReferenceGame } from '~/data/homepage'
 
@@ -7,7 +7,7 @@ interface Props {
   id: string
   title: string
   games: ReferenceGame[]
-  variant: 'popular' | 'new' | 'recommended'
+  variant: 'popular' | 'new' | 'recommended' | 'live'
   to: string
 }
 
@@ -19,6 +19,7 @@ const sectionIcons: Record<Props['variant'], Component> = {
   popular: Flame,
   new: Star,
   recommended: ThumbsUp,
+  live: Spade,
 }
 
 const gameTitles = computed(() => props.games.map((game) => game.title))
@@ -130,6 +131,8 @@ watch(
       </NuxtLink>
     </header>
 
+    <slot name="after-heading" />
+
     <div
       ref="gameRowElement"
       class="reference-game-row"
@@ -142,7 +145,7 @@ watch(
     >
       <a
         v-for="game in games"
-        :key="game.title"
+        :key="game.id ?? game.title"
         class="reference-game"
         :class="{ 'reference-game--fallback': game.image === '/brand/bybet-logo.png' }"
         :href="externalSiteUrl"
@@ -172,7 +175,7 @@ watch(
           <small>{{ game.provider }}</small>
         </span>
         <span
-          v-if="variant === 'popular' || variant === 'new' || variant === 'recommended'"
+          v-if="variant === 'popular' || variant === 'new' || variant === 'recommended' || variant === 'live'"
           class="popular-hover-overlay"
           aria-hidden="true"
         >
@@ -197,6 +200,10 @@ watch(
 
 .reference-section--recommended {
   margin-top: 0.6rem;
+}
+
+.reference-section--live .reference-heading > div {
+  color: #e2c37b;
 }
 
 .reference-heading {
@@ -459,14 +466,16 @@ watch(
 
 .reference-section--popular .reference-game:focus-visible .popular-hover-overlay,
 .reference-section--new .reference-game:focus-visible .popular-hover-overlay,
-.reference-section--recommended .reference-game:focus-visible .popular-hover-overlay {
+.reference-section--recommended .reference-game:focus-visible .popular-hover-overlay,
+.reference-section--live .reference-game:focus-visible .popular-hover-overlay {
   opacity: 1;
 }
 
 @media (hover: hover) {
   .reference-section--popular .reference-game:hover .popular-hover-overlay,
   .reference-section--new .reference-game:hover .popular-hover-overlay,
-  .reference-section--recommended .reference-game:hover .popular-hover-overlay {
+  .reference-section--recommended .reference-game:hover .popular-hover-overlay,
+  .reference-section--live .reference-game:hover .popular-hover-overlay {
     opacity: 1;
   }
 }

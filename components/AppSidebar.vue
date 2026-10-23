@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const railItems = createRailItems(useRuntimeConfig().public.bybetRedirectUrl)
-import { Check, ChevronLeft, ChevronRight, Wrench } from 'lucide-vue-next'
+import { Check, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
 import DepositReminderModal from '~/components/modals/DepositReminderModal.vue'
 import { createRailItems } from '~/data/homepage'
@@ -235,7 +235,6 @@ onBeforeUnmount(() => {
                 aria-hidden="true"
               />
               <span>{{ translate(childItem.label) }}</span>
-              <Wrench v-if="childItem.underMaintenance" class="maintenance-indicator" :size="15" aria-hidden="true" />
             </component>
           </div>
 
@@ -411,7 +410,7 @@ onBeforeUnmount(() => {
   border: 0;
   border-radius: 0.5rem;
   color: #fff;
-  font-size: 0.6rem;
+  font-size: 0.52rem;
   font-weight: 500;
   text-align: left;
   background: transparent;
@@ -488,7 +487,7 @@ onBeforeUnmount(() => {
   padding: 0 0.65rem;
   border-radius: 0.4rem;
   color: #e8eeeb;
-  font-size: 0.55rem;
+  font-size: 0.48rem;
   font-weight: 500;
   gap: 0.62rem;
 }
@@ -506,10 +505,6 @@ onBeforeUnmount(() => {
   text-align: left;
   opacity: 0.55;
   cursor: pointer;
-}
-
-.maintenance-indicator {
-  margin-left: auto;
 }
 
 .rail-submenu-icon-image {
@@ -557,7 +552,7 @@ onBeforeUnmount(() => {
   padding: 0 0.35rem;
   border: 0;
   color: #afc0b7;
-  font-size: 0.52rem;
+  font-size: 0.46rem;
   font-weight: 500;
   text-align: left;
   background: transparent;
@@ -596,7 +591,7 @@ onBeforeUnmount(() => {
   border: 1px solid transparent;
   border-radius: 0.3rem;
   color: #c9d3ce;
-  font-size: 0.46rem;
+  font-size: 0.42rem;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.07);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
@@ -754,7 +749,7 @@ onBeforeUnmount(() => {
     margin: 0;
     overflow: visible;
     clip: auto;
-    font-size: 0.6rem;
+    font-size: 0.52rem;
     font-weight: 500;
   }
 
