@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="egames-history-page w-full min-w-0 pb-16 pt-2">
+  <div class="egames-history-page w-full min-w-0 pb-16">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6 pb-3 border-b border-white/5">
       <div class="flex items-center gap-2.5">

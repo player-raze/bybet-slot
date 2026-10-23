@@ -6,6 +6,7 @@ import ReminderModal from '~/components/modals/ReminderModal.vue'
 import {
   PROMOTION_PLACEHOLDER_IMAGES,
   getBonusDetail,
+  getPromoHeaderUrl,
   type BonusDetail,
 } from '~/data/promotions'
 
@@ -21,6 +22,119 @@ const bonus = computed<BonusDetail>(() => getBonusDetail(bonusId.value))
 const bannerImageError = ref(false)
 const isReminderOpen = ref(false)
 const reminderMessage = ref('Please login first to join this promotion.')
+
+const bonusHeaderImageSrc = computed(() => {
+  return getPromoHeaderUrl(bonus.value.headerImage || bonus.value.bannerImage, bonus.value.slug)
+})
+
+const isSvgString = (icon?: string): boolean => {
+  return Boolean(icon && typeof icon === 'string' && icon.trim().startsWith('<svg'))
+}
+
+const seoTitle = computed(() => bonus.value.seoTitle || `${bonus.value.title} — ByBet Bonus & Promotions`)
+
+const seoDescription = computed(() => {
+  if (bonus.value.seoDesc) return bonus.value.seoDesc
+  if (bonus.value.seoDescription) return bonus.value.seoDescription
+  const desc = bonus.value.subtitle || bonus.value.eventContent?.description || `Participate in ${bonus.value.title} on ByBet.`
+  return `${desc} Join ByBet Philippines for exclusive casino promotions, free spins, deposit bonuses, and daily rebates.`
+})
+
+const seoKeywords = computed(() => {
+  return [
+    bonus.value.title,
+    'ByBet bonus',
+    'ByBet promotion',
+    bonus.value.slug,
+    'Philippines online casino',
+    'free spins',
+    'daily rebate',
+    'casino bonus 2026',
+    'sports betting promotion',
+  ].join(', ')
+})
+
+const seoImage = computed(() => {
+  const raw = bonusHeaderImageSrc.value || (typeof bonus.value.bannerImage === 'string' ? bonus.value.bannerImage : bonus.value.bannerImage?.banner) || bonus.value.thumbnailImage || '/brand/bybet-logo.webp'
+  return raw.startsWith('http') ? raw : `https://bybet.com${raw}`
+})
+
+const canonicalUrl = computed(() => `https://bybet.com/explore/bonuses/${bonus.value.slug}`)
+
+const jsonLd = computed(() => ({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        {
+          '@type': 'ListItem',
+          'position': 1,
+          'name': 'Home',
+          'item': 'https://bybet.com',
+        },
+        {
+          '@type': 'ListItem',
+          'position': 2,
+          'name': 'Bonuses',
+          'item': 'https://bybet.com/explore/bonuses',
+        },
+        {
+          '@type': 'ListItem',
+          'position': 3,
+          'name': bonus.value.title,
+          'item': canonicalUrl.value,
+        },
+      ],
+    },
+    {
+      '@type': 'SaleEvent',
+      'name': bonus.value.title,
+      'description': seoDescription.value,
+      'url': canonicalUrl.value,
+      'image': seoImage.value,
+      'eventStatus': 'https://schema.org/EventScheduled',
+      'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
+      'location': {
+        '@type': 'VirtualLocation',
+        'url': canonicalUrl.value,
+      },
+      'organizer': {
+        '@type': 'Organization',
+        'name': 'ByBet Philippines',
+        'url': 'https://bybet.com',
+        'logo': 'https://bybet.com/brand/bybet-logo.webp',
+      },
+    },
+  ],
+}))
+
+useHead(() => ({
+  title: seoTitle.value,
+  meta: [
+    { name: 'description', content: seoDescription.value },
+    { name: 'keywords', content: seoKeywords.value },
+    { property: 'og:title', content: seoTitle.value },
+    { property: 'og:description', content: seoDescription.value },
+    { property: 'og:image', content: seoImage.value },
+    { property: 'og:url', content: canonicalUrl.value },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:site_name', content: 'ByBet' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: seoTitle.value },
+    { name: 'twitter:description', content: seoDescription.value },
+    { name: 'twitter:image', content: seoImage.value },
+  ],
+  link: [
+    { rel: 'canonical', href: canonicalUrl.value },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(jsonLd.value),
+    },
+  ],
+}))
 
 watch(bonusId, () => {
   bannerImageError.value = false
@@ -49,7 +163,10 @@ const handleModalOk = (): void => {
     <SeoHeader
       sticky
       title="Bonuses"
-      :description="bonus.subtitle || `Participate in ${bonus.title} on ByBet.`"
+      :meta-title="seoTitle"
+      :description="seoDescription"
+      :keywords="seoKeywords"
+      :og-image="seoImage"
       back-to="/explore/bonuses"
       custom-class="bonus-detail-header"
     >
@@ -63,7 +180,7 @@ const handleModalOk = (): void => {
         <span class="promotion-banner__save">◎ Save</span>
         <img
           v-if="!bannerImageError"
-          :src="bonus.bannerImage"
+          :src="bonusHeaderImageSrc"
           :alt="bonus.title"
           decoding="async"
           @error="bannerImageError = true"
@@ -76,8 +193,27 @@ const handleModalOk = (): void => {
 
       <article class="promotion-sheet">
         <header class="promotion-title">
+          <div
+            v-if="bonus.innerIcon || bonus.innerPageIcon"
+            class="promotion-title__icon"
+          >
+            <div
+              v-if="isSvgString(bonus.innerIcon || bonus.innerPageIcon)"
+              class="promotion-title__svg"
+              v-html="bonus.innerIcon || bonus.innerPageIcon"
+            />
+            <img
+              v-else
+              :src="(bonus.innerIcon || bonus.innerPageIcon)!"
+              :alt="bonus.title"
+              width="40"
+              height="41"
+              decoding="async"
+            >
+          </div>
           <img
-            :src="bonus.thumbnailImage || PROMOTION_PLACEHOLDER_IMAGES.thumbnail"
+            v-else
+            :src="bonus.thumbnailImage || (typeof bonus.bannerImage === 'object' && bonus.bannerImage.thumbnail) || PROMOTION_PLACEHOLDER_IMAGES.thumbnail"
             :alt="bonus.title"
             width="64"
             height="64"
@@ -250,7 +386,7 @@ const handleModalOk = (): void => {
 :deep(.seo-header-sticky-wrapper) {
   margin-right: -0.05rem;
   margin-left: -0.05rem;
-  padding: 0.2rem 0.05rem 0.28rem;
+  padding: 0 0.05rem 0.28rem;
 }
 
 :deep(.bonus-detail-header) {
@@ -353,6 +489,28 @@ const handleModalOk = (): void => {
   flex: 0 0 2.35rem;
   border-radius: 0.43rem;
   object-fit: cover;
+}
+
+.promotion-title__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  border-radius: 0.43rem;
+}
+
+.promotion-title__svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promotion-title__svg :deep(svg) {
+  display: block;
+}
+
+:deep(.fill-tab-bar-big-button) {
+  fill: var(--bright, #32d49a);
 }
 
 .promotion-title h1 {
@@ -655,9 +813,9 @@ const handleModalOk = (): void => {
   display: flex;
   position: fixed;
   z-index: 45;
-  right: max(0px, calc((100vw - var(--site-max-width)) / 2));
+  right: 0;
   bottom: 0;
-  left: max(var(--sidebar-width), calc((100vw - var(--site-max-width)) / 2 + var(--sidebar-width)));
+  left: var(--sidebar-width);
   padding: 0.38rem 0.58rem;
   background: rgba(0, 0, 0, 0.92);
   backdrop-filter: blur(12px);

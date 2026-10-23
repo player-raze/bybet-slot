@@ -29,7 +29,7 @@ const currentSport = computed(() => {
 <template>
   <section class="sports-page live-page">
     <!-- Sports Tabs Navigation: Sport Ball Icons -->
-    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-1 pt-1">
+    <div class="sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-1">
       <nav
         class="sports-tabs"
         aria-label="Live sports categories"

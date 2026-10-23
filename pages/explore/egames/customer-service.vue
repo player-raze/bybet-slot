@@ -34,7 +34,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="customer-service-page w-full min-w-0 pb-16 pt-1 text-white">
+  <div class="customer-service-page w-full min-w-0 pb-16 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
       sticky

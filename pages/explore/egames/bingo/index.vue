@@ -250,16 +250,16 @@ const resetFilters = (): void => {
 </script>
 
 <template>
-  <div class="bingo-page w-full min-w-0 pb-16 pt-1">
+  <div class="bingo-page w-full min-w-0 pb-16">
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-0.5">
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-x-auto no-scrollbar shadow-sm">
-        <div class="flex items-center gap-1.5 min-w-0">
+    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-0.5">
+      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
+        <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
             v-for="cat in BINGO_CATEGORIES"
             :key="cat.key"
             type="button"
-            class="nav-tab flex flex-col items-center justify-center min-w-[48px] py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
+            class="nav-tab flex flex-col items-center justify-center min-w-[48px] shrink-0 py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
             :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#959799] '"
             :aria-label="cat.label"
             @click="selectCategory(cat.key)"
@@ -304,12 +304,12 @@ const resetFilters = (): void => {
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
       <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in BINGO_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
+            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0"
             :class="activeProvider === prov.key ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
             @click="selectProvider(prov.key)"
           >
@@ -533,31 +533,37 @@ const resetFilters = (): void => {
     <!-- Filter Modal -->
     <div
       v-if="isFilterOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-[2px]"
       @click.self="isFilterOpen = false"
     >
-      <div class="w-full max-w-md rounded-2xl bg-[#171817] border border-white/10 p-5 shadow-2xl">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-base font-bold text-white">Filter Bingo Games</h3>
-          <button
-            type="button"
-            class="p-1 text-[#8e9491] hover:text-white rounded-lg"
-            @click="isFilterOpen = false"
-          >
-            <X class="h-5 w-5" />
-          </button>
+      <div class="w-full max-w-[480px] sm:rounded-2xl rounded-t-[20px] bg-[#181919] border-t sm:border border-white/10 shadow-2xl flex flex-col max-h-[calc(100dvh-56px)] overflow-hidden">
+        <!-- Pull bar / Handle at the top -->
+        <div class="flex justify-center pt-2.5 pb-0.5">
+          <span class="w-9 h-1 rounded-full bg-white/20" />
         </div>
 
-        <div class="space-y-4">
+        <header class="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-1">
+          <button
+            type="button"
+            class="justify-self-start text-sm font-medium text-[#c5cac7] hover:text-white py-1"
+            @click="isFilterOpen = false"
+          >
+            Cancel
+          </button>
+          <h2 class="text-base font-bold text-white text-center">Filter</h2>
+          <span class="w-[52px]" aria-hidden="true" />
+        </header>
+
+        <div class="flex-1 overflow-y-auto no-scrollbar px-4 py-2 space-y-5">
           <div>
-            <label class="block text-xs text-[#8e9491] mb-1.5">Theme</label>
-            <div class="flex flex-wrap gap-1.5">
+            <h3 class="text-[15px] font-bold text-white mb-2.5">Theme</h3>
+            <div class="grid grid-cols-3 gap-2.5">
               <button
                 v-for="th in ['All', 'Classic', 'Jackpot', 'Carnaval', 'Adventure']"
                 :key="th"
                 type="button"
-                class="px-3 py-1 rounded-full text-xs transition-colors"
-                :class="filterState.theme === th ? 'bg-[#036242] text-white font-semibold' : 'bg-[#202220] text-[#8e9491] hover:text-white'"
+                class="h-[42px] px-1.5 rounded-[10px] text-[13px] transition-all flex items-center justify-center text-center"
+                :class="filterState.theme === th ? 'bg-[#161817] border border-[#008d62] text-white font-medium' : 'bg-[#1e201f] text-[#e2e8e5] border border-transparent hover:bg-[#252726] hover:text-white'"
                 @click="filterState.theme = th"
               >
                 {{ th }}
@@ -566,14 +572,14 @@ const resetFilters = (): void => {
           </div>
 
           <div>
-            <label class="block text-xs text-[#8e9491] mb-1.5">Features</label>
-            <div class="flex flex-wrap gap-1.5">
+            <h3 class="text-[15px] font-bold text-white mb-2.5">Features</h3>
+            <div class="grid grid-cols-3 gap-2.5">
               <button
                 v-for="ft in ['All', 'Multi-Card', 'Bonus Ball', 'Extra Ball', 'Jackpot']"
                 :key="ft"
                 type="button"
-                class="px-3 py-1 rounded-full text-xs transition-colors"
-                :class="filterState.feature === ft ? 'bg-[#036242] text-white font-semibold' : 'bg-[#202220] text-[#8e9491] hover:text-white'"
+                class="h-[42px] px-1.5 rounded-[10px] text-[13px] transition-all flex items-center justify-center text-center"
+                :class="filterState.feature === ft ? 'bg-[#161817] border border-[#008d62] text-white font-medium' : 'bg-[#1e201f] text-[#e2e8e5] border border-transparent hover:bg-[#252726] hover:text-white'"
                 @click="filterState.feature = ft"
               >
                 {{ ft }}
@@ -582,22 +588,22 @@ const resetFilters = (): void => {
           </div>
         </div>
 
-        <div class="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-white/5">
+        <footer class="shrink-0 grid grid-cols-2 gap-3 p-3 pb-[max(16px,env(safe-area-inset-bottom))] bg-[#181919] border-t border-white/5">
           <button
             type="button"
-            class="px-4 py-2 rounded-xl text-xs font-semibold text-[#8e9491] hover:text-white bg-[#202220]"
+            class="h-[46px] rounded-xl text-[15px] font-semibold text-white bg-[#2a2c2b] hover:bg-[#343735] transition-colors"
             @click="filterState = { theme: 'All', feature: 'All', winningLine: 'All' }"
           >
             Reset
           </button>
           <button
             type="button"
-            class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#036242] hover:bg-[#047b53]"
+            class="h-[46px] rounded-xl text-[15px] font-bold text-white bg-[#036242] hover:bg-[#047a52] transition-colors"
             @click="isFilterOpen = false"
           >
-            Apply Filters
+            OK
           </button>
-        </div>
+        </footer>
       </div>
     </div>
   </div>

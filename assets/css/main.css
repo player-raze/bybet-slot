@@ -520,6 +520,10 @@ input {
   background: var(--odd-btn-hover);
 }
 
+.fill-tab-bar-big-button {
+  fill: var(--bright, #32d49a);
+}
+
 @media (max-width: 35rem) {
   :root {
     --sidebar-width: 0rem;

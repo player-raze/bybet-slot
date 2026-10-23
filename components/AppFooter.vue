@@ -1,398 +1,344 @@
 <script setup lang="ts">
-import { Facebook, Instagram, Music2, Twitter } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { useSiteTheme } from '~/composables/useSitePreferences'
 
-interface ResponsibleGamingResource {
-  name: string
-  image: string
-  width: number
-  height: number
-  presentation: 'circle' | 'compact' | 'pill' | 'transparent'
+const { effectiveTheme } = useSiteTheme()
+
+const partnerLogos = computed(() => {
+  const isLight = effectiveTheme.value === 'light'
+  return [
+    {
+      name: 'DPO DPS',
+      src: '/responsible-gaming/dpo-dps.webp',
+      heightClass: 'h-7',
+    },
+    {
+      name: 'GamCare',
+      src: isLight
+        ? '/responsible-gaming/gamcare-light.webp'
+        : '/responsible-gaming/gamcare-dark.webp',
+      heightClass: 'h-6',
+    },
+    {
+      name: 'Be Gamble Aware',
+      src: isLight
+        ? '/responsible-gaming/be-gamble-aware-light.webp'
+        : '/responsible-gaming/be-gamble-aware-dark.webp',
+      heightClass: 'h-6',
+    },
+    {
+      name: 'Technical Systems Testing',
+      src: isLight
+        ? '/responsible-gaming/technical-systems-testing-light.webp'
+        : '/responsible-gaming/technical-systems-testing-dark.webp',
+      heightClass: 'h-7',
+    },
+  ]
+})
+
+const footerBrandLogo = computed(() => {
+  return effectiveTheme.value === 'light'
+    ? '/brand/bybet-footer-logo-dark.webp'
+    : '/brand/bybet-logo.webp'
+})
+
+const openSections = reactive({
+  specialPromotion: true,
+  help: true,
+  responsibility: true,
+  aboutUs: true,
+})
+
+const toggleSection = (key: keyof typeof openSections): void => {
+  openSections[key] = !openSections[key]
 }
 
-interface FooterLink {
-  label: string
-  to: string
+// Real-time GMT+8 clock
+const serverTime = ref('')
+let clockTimer: ReturnType<typeof setInterval> | undefined
+
+const updateServerTime = (): void => {
+  const now = new Date()
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000
+  const gmt8 = new Date(utc + 3600000 * 8)
+  const hours = String(gmt8.getHours()).padStart(2, '0')
+  const minutes = String(gmt8.getMinutes()).padStart(2, '0')
+  const seconds = String(gmt8.getSeconds()).padStart(2, '0')
+  serverTime.value = `${hours}:${minutes}:${seconds}`
 }
 
-interface FooterGroup {
-  title: string
-  links: FooterLink[]
-}
+updateServerTime()
 
-const footerGroups: FooterGroup[] = [
-  {
-    title: 'Explore',
-    links: [
-      { label: 'Slots', to: '/explore/egames/slots' },
-      { label: 'Live Casino', to: '/explore/entertainment/live-casino' },
-      { label: 'Sports', to: '/explore/sports/popular' },
-      { label: 'Promotions', to: '/explore/bonuses' },
-      { label: 'VIP', to: '/explore/account/vip' },
-    ],
-  },
-  {
-    title: 'Help & Support',
-    links: [
-      { label: 'Contact Us', to: '/explore/help/contact-us' },
-      { label: 'FAQ', to: '/#faq-title' },
-      { label: 'Responsible Gaming', to: '/responsible-gaming' },
-      { label: 'Terms of Service', to: '/terms-of-use' },
-      { label: 'Privacy Policy', to: '/privacy-policy' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'General Terms', to: '/terms-of-use' },
-      { label: 'Bonus Terms', to: '/explore/legal/bonus-terms' },
-      { label: 'Betting Rules', to: '/game-rules/sports-betting-rules' },
-      { label: 'Privacy Policy', to: '/privacy-policy' },
-      { label: 'Cookie Policy', to: '/explore/legal/cookie-policy' },
-    ],
-  },
-]
+onMounted(() => {
+  updateServerTime()
+  clockTimer = setInterval(updateServerTime, 1000)
+})
 
-const responsibleGamingResources: ResponsibleGamingResource[] = [
-  { name: 'Bridges of Hope', image: '/responsible-gaming/bridges-of-hope.webp', width: 130, height: 64, presentation: 'pill' },
-  { name: 'GA Pilipinas', image: '/responsible-gaming/ga-pilipinas.webp', width: 130, height: 66, presentation: 'pill' },
-  { name: '21 and above', image: '/responsible-gaming/age-restriction.webp', width: 88, height: 32, presentation: 'compact' },
-  { name: 'Responsible gaming support hotline', image: '/responsible-gaming/support-hotline.webp', width: 130, height: 72, presentation: 'pill' },
-  { name: 'PAGCOR', image: '/responsible-gaming/pagcor.webp', width: 175, height: 175, presentation: 'circle' },
-  { name: 'Milestone', image: '/responsible-gaming/milestone.webp', width: 130, height: 27, presentation: 'transparent' },
-  { name: 'DPO/DPS', image: '/responsible-gaming/dpo-dps.webp', width: 61, height: 112, presentation: 'transparent' },
-  { name: 'Technical Systems Testing', image: '/responsible-gaming/technical-systems-testing.webp', width: 88, height: 43, presentation: 'transparent' },
-  { name: 'GamCare', image: '/responsible-gaming/gamcare.webp', width: 96, height: 99, presentation: 'transparent' },
-  { name: 'Be Gamble Aware', image: '/responsible-gaming/be-gamble-aware.webp', width: 88, height: 64, presentation: 'transparent' },
-]
-
-const responsibleGamingResourceGroups = [
-  responsibleGamingResources.slice(0, 6),
-  responsibleGamingResources.slice(6),
-]
-
-const { translate } = useSiteLocale()
+onBeforeUnmount(() => {
+  if (clockTimer) clearInterval(clockTimer)
+})
 </script>
 
 <template>
-  <footer id="support" class="footer">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <NuxtLink to="/">ByBet</NuxtLink>
-        <strong>{{ translate('Bigger Games. Brighter Wins.') }}</strong>
-        <p>{{ translate('ByBet is your destination for premium online slots, with top providers, exciting jackpots and rewards made for every player.') }}</p>
-      </div>
-
-      <nav v-for="group in footerGroups" :key="group.title" :aria-label="translate(group.title)">
-        <h2>{{ translate(group.title) }}</h2>
-        <NuxtLink
-          v-for="link in group.links"
-          :key="`${group.title}-${link.label}`"
-          :to="link.to"
+  <footer id="support" class="app-footer w-full bg-black text-[#8e9491] select-none border-t border-white/[0.04]">
+    <div class="footer-inner max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20 sm:pb-12">
+      <!-- Section 1: Special Promotion -->
+      <div class="footer-accordion-item border-b border-white/[0.06] py-3.5">
+        <button
+          type="button"
+          class="flex w-full items-center justify-between text-left cursor-pointer group"
+          :aria-expanded="openSections.specialPromotion"
+          @click="toggleSection('specialPromotion')"
         >
-          {{ translate(link.label) }}
-        </NuxtLink>
-      </nav>
+          <span class="text-[14px] sm:text-[15px] font-bold text-white tracking-tight group-hover:text-[#1fa779] transition-colors">Special Promotion</span>
+          <ChevronUp v-if="openSections.specialPromotion" class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+          <ChevronDown v-else class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+        </button>
 
-      <div class="footer-social">
-        <h2>{{ translate('Follow Us') }}</h2>
-        <div>
-          <a
-            href="https://www.facebook.com/bybetph/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit ByBet on Facebook"
-          >
-            <Facebook :size="11" fill="currentColor" />
-          </a>
-          <a
-            href="https://www.facebook.com/bybetph/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit ByBet on TikTok"
-          >
-            <Music2 :size="11" />
-          </a>
-          <a
-            href="https://www.instagram.com/bybetph/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit ByBet on Instagram"
-          >
-            <Instagram :size="11" />
-          </a>
-          <a
-            href="https://www.instagram.com/bybetph/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit ByBet on Twitter"
-          >
-            <Twitter :size="11" fill="currentColor" />
-          </a>
-        </div>
-        <strong>{{ translate('Play responsibly. Set your limits.') }}</strong>
-        <p>© {{ new Date().getFullYear() }} ByBet. {{ translate('All rights reserved.') }}</p>
+        <Transition name="accordion">
+          <div v-show="openSections.specialPromotion" class="pt-3 pb-1 text-[13px] sm:text-[14px] text-[#8e9491] space-y-2">
+            <div>
+              <NuxtLink to="/explore/bonuses" class="hover:text-white transition-colors inline-block">
+                Your Deposit. Your Reward.
+              </NuxtLink>
+            </div>
+            <div>
+              <NuxtLink to="/explore/bonuses" class="hover:text-white transition-colors inline-block">
+                Latest Deals
+              </NuxtLink>
+            </div>
+          </div>
+        </Transition>
       </div>
 
-      <section class="responsible-gaming" :aria-label="translate('Responsible Gaming')">
-        <h2>{{ translate('Responsible Gaming') }}</h2>
-        <div class="responsible-gaming-row">
-          <ul
-            v-for="(resourceGroup, groupIndex) in responsibleGamingResourceGroups"
-            :key="groupIndex"
-            :class="{ 'responsible-gaming-list--right': groupIndex === 1 }"
-          >
-            <li
-              v-for="resource in resourceGroup"
-              :key="resource.name"
-              :class="`responsible-gaming-tile--${resource.presentation}`"
-            >
+      <!-- Section 2: HELP -->
+      <div class="footer-accordion-item border-b border-white/[0.06] py-3.5">
+        <button
+          type="button"
+          class="flex w-full items-center justify-between text-left cursor-pointer group"
+          :aria-expanded="openSections.help"
+          @click="toggleSection('help')"
+        >
+          <span class="text-[14px] sm:text-[15px] font-bold text-white uppercase tracking-wider group-hover:text-[#1fa779] transition-colors">HELP</span>
+          <ChevronUp v-if="openSections.help" class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+          <ChevronDown v-else class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+        </button>
+
+        <Transition name="accordion">
+          <div v-show="openSections.help" class="pt-3 pb-1 text-[13px] sm:text-[14px] text-[#8e9491] space-y-2">
+            <div><NuxtLink to="/explore/egames/customer-service" class="hover:text-white transition-colors inline-block">24/7 Services</NuxtLink></div>
+            <div><NuxtLink to="/game-rules/sports-betting-rules" class="hover:text-white transition-colors inline-block">Game Rules</NuxtLink></div>
+            <div><NuxtLink to="/responsible-gaming" class="hover:text-white transition-colors inline-block">Responsible Gaming</NuxtLink></div>
+            <div><NuxtLink to="/terms-of-use" class="hover:text-white transition-colors inline-block">Terms of Use</NuxtLink></div>
+            <div><NuxtLink to="/privacy-policy" class="hover:text-white transition-colors inline-block">Privacy Policy</NuxtLink></div>
+            <div><NuxtLink to="/about-us" class="hover:text-white transition-colors inline-block">About Us</NuxtLink></div>
+          </div>
+        </Transition>
+      </div>
+
+      <!-- Section 3: Responsibility & Reputation -->
+      <div class="footer-accordion-item border-b border-white/[0.06] py-3.5">
+        <button
+          type="button"
+          class="flex w-full items-center justify-between text-left cursor-pointer group"
+          :aria-expanded="openSections.responsibility"
+          @click="toggleSection('responsibility')"
+        >
+          <span class="text-[14px] sm:text-[15px] font-bold text-white tracking-tight group-hover:text-[#1fa779] transition-colors">Responsibility & Reputation</span>
+          <ChevronUp v-if="openSections.responsibility" class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+          <ChevronDown v-else class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+        </button>
+
+        <Transition name="accordion">
+          <div v-show="openSections.responsibility" class="flex flex-wrap items-center gap-6 pt-4 pb-2">
+            <img
+              v-for="logo in partnerLogos"
+              :key="logo.name"
+              :src="logo.src"
+              :alt="logo.name"
+              :class="[logo.heightClass, 'w-auto object-contain opacity-85 hover:opacity-100 transition-opacity']"
+              loading="lazy"
+            />
+          </div>
+        </Transition>
+      </div>
+
+      <!-- Section 4: About Us -->
+      <div class="footer-accordion-item border-b border-white/[0.06] py-3.5">
+        <button
+          type="button"
+          class="flex w-full items-center justify-between text-left cursor-pointer group"
+          :aria-expanded="openSections.aboutUs"
+          @click="toggleSection('aboutUs')"
+        >
+          <span class="text-[14px] sm:text-[15px] font-bold text-white tracking-tight group-hover:text-[#1fa779] transition-colors">About Us</span>
+          <ChevronUp v-if="openSections.aboutUs" class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+          <ChevronDown v-else class="h-4 w-4 text-white/50 group-hover:text-white transition-colors" />
+        </button>
+
+        <Transition name="accordion">
+          <div v-show="openSections.aboutUs" class="pt-4 pb-2 text-[13px] sm:text-[13.5px] text-[#8e9491] leading-relaxed space-y-3">
+            <!-- Brand Logo -->
+            <NuxtLink to="/" class="inline-block mb-1">
               <img
-                :src="resource.image"
-                :alt="resource.name"
-                :width="resource.width"
-                :height="resource.height"
+                :src="footerBrandLogo"
+                alt="ByBet"
+                class="h-6 sm:h-7 w-auto object-contain"
                 loading="lazy"
-                decoding="async"
-              >
-            </li>
-          </ul>
+              />
+            </NuxtLink>
+
+            <p>
+              ByBet is an online sports betting and gaming platform designed to provide users with a secure, reliable, and premium wagering experience. We uphold the highest standards of integrity, transparency, and responsible gaming—earning the trust of sports fans and bettors alike.
+            </p>
+            <p>
+              Our platform is designed with the user in mind, offering secure technology, seamless navigation, and competitive markets across a wide range of sports and gaming options. ByBet continuously invests in innovation, compliance, and customer protection to ensure a fair and enjoyable experience for every player.
+            </p>
+            <p>
+              At ByBet, player safety and data security are paramount. We implement robust safeguards and follow applicable regulatory requirements to protect personal information and transactions, providing our users with confidence and peace of mind.
+            </p>
+            <p>
+              Join ByBet today and experience a trusted platform that elevates your sports betting journey to the next level.
+            </p>
+
+            <h4 class="font-bold text-white pt-2 text-[14px]">Cookies & User Experience</h4>
+            <p>
+              To enhance your experience and improve platform performance, ByBet uses cookies and similar technologies to collect information from our servers when you access or use the website. By registering with ByBet or continuing to use the platform, you consent to our use of cookies in accordance with our Cookie Policy.
+            </p>
+            <p>
+              Please note that deleting or disabling cookies may limit your access to certain features or areas of the platform and may affect overall functionality.
+            </p>
+          </div>
+        </Transition>
+      </div>
+
+
+      <!-- Server Time & Copyright -->
+      <div class="text-[11px] sm:text-[12px] mt-5 text-[#717673] space-y-1 mb-8">
+        <p>Server Time: {{ serverTime }} (GMT+08:00)</p>
+        <p>Copyright © {{ new Date().getFullYear() }} ByBet Group. All Rights Reserved.</p>
+      </div>
+
+      <!-- Regulatory / Compliance Footer Block (Centered) -->
+      <div class="compliance-footer flex flex-col items-center justify-center text-center gap-3">
+        <!-- Badges: Circular PAGCOR + 21+ Box -->
+        <div class="flex items-center justify-center gap-3">
+          <div class=" rounded-full bg-white flex items-center justify-center shadow">
+            <img
+              src="/responsible-gaming/pagcor.webp"
+              alt="PAGCOR Regulated"
+              class="h-11 w-11 object-cover"
+              loading="lazy"
+            />
+          </div>
+          <div class="h-10 rounded-lg bg-white flex items-center px-2.5 shadow">
+            <img
+              src="/responsible-gaming/age-restriction.webp"
+              alt="21+ Gambling Can Be Addictive. Know When To Stop."
+              class="h-7 w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
         </div>
-      </section>
+
+        <!-- Links in Red -->
+        <div class="text-[11px] font-bold text-[#f04438] tracking-wide mt-1">
+          <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
+          <span class="mx-2.5">•</span>
+          <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
+        </div>
+
+        <!-- Warning in Blue -->
+        <p class="text-[10px] font-bold text-[#2e90fa] max-w-sm uppercase leading-relaxed text-center mt-0.5">
+          GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.
+        </p>
+
+        <!-- Hotline image banner -->
+        <div class="mt-1 flex items-center justify-center">
+          <img
+            src="/responsible-gaming/support-hotline.webp"
+            alt="Responsible gaming support hotline"
+            class="h-9 w-auto object-contain rounded"
+            loading="lazy"
+          />
+        </div>
+      </div>
     </div>
   </footer>
 </template>
 
 <style scoped>
-.footer {
-  margin-top: 0.55rem;
-  border-top: 1px solid rgba(50, 212, 154, 0.14);
-  color: #8fa198;
-  background: transparent;
-}
-
-.footer-content {
-  display: grid;
+.app-footer {
+  position: relative;
+  z-index: 20;
+  width: auto;
   margin-left: var(--sidebar-width);
-  padding: 0.8rem 0.62rem 0.78rem var(--content-gutter);
-  grid-template-columns: 188fr 76fr 88fr 117fr 116fr;
-  gap: 0;
+  background: #000000;
+  color: #8e9491;
   transition: margin-left 180ms ease;
 }
 
-.footer-brand {
-  max-width: 7.6rem;
-}
-
-.footer-brand > a {
-  display: block;
-  margin-bottom: 0.4rem;
-  color: white;
-  font-size: 1.12rem;
-  font-style: italic;
-  font-weight: 850;
-  letter-spacing: -0.06em;
-}
-
-.footer h2,
-.footer-brand strong,
-.footer-social > strong {
-  display: block;
-  white-space: nowrap;
-  margin: 0 0 0.3rem;
-  color: #eef4f1;
-  font-size: var(--font-footer-heading);
-}
-
-.footer p {
-  margin: 0;
-  font-size: var(--font-footer-copy);
-  line-height: 1.5;
-}
-
-.footer nav {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 0.18rem;
-}
-
-.footer nav a {
-  font-size: 0.35rem;
-}
-
-.footer nav a:hover {
-  color: white;
-}
-
-.footer-social > div {
-  display: flex;
-  margin: 0.38rem 0 1rem;
-  gap: 0.34rem;
-}
-
-.footer-social a {
-  display: grid;
-  width: 0.95rem;
-  height: 0.95rem;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  color: var(--brand);
-  font-size: 0.6rem;
-  background: #eef4f1;
-}
-
-.footer-social a:hover {
-  color: var(--brand-hover);
-  background: white;
-  transform: translateY(-1px);
-}
-
-.footer-social a:focus-visible {
-  outline-color: var(--bright);
-  outline-offset: 2px;
-}
-
-.responsible-gaming {
-  margin-top: 0.7rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  grid-column: 1 / -1;
-}
-
-.responsible-gaming h2 {
-  margin-bottom: 0.45rem;
-  color: var(--secondary);
-}
-
-.responsible-gaming-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  overflow-x: auto;
-  scrollbar-width: none;
-  gap: clamp(1rem, 10vw, 8rem);
-}
-
-.responsible-gaming-row::-webkit-scrollbar {
-  display: none;
-}
-
-.responsible-gaming ul {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: stretch;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  gap: 0.3rem;
-}
-
-.responsible-gaming li {
-  display: grid;
-  width: 3.55rem;
-  height: 1.75rem;
-  flex: 0 0 3.55rem;
-  place-items: center;
-  padding: 0.2rem 0.3rem;
-  border: 1px solid transparent;
-  background: transparent;
-}
-
-.responsible-gaming-list--right li {
-  width: 2.45rem;
-  flex-basis: 2.45rem;
-}
-
-.responsible-gaming img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.responsible-gaming li.responsible-gaming-tile--pill {
-  border-color: rgba(255, 255, 255, 0.16);
-  border-radius: 0.7rem;
-  background: #f4f7f5;
-}
-
-.responsible-gaming li.responsible-gaming-tile--compact {
-  padding: 0.35rem 0.42rem;
-  border-radius: 0.38rem;
-  background: #f4f7f5;
-}
-
-.responsible-gaming li.responsible-gaming-tile--circle img {
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0.12rem;
-  border-radius: 50%;
-  background: #f4f7f5;
-}
-
-.responsible-gaming li.responsible-gaming-tile--transparent {
-  padding-right: 0.2rem;
-  padding-left: 0.2rem;
-}
-
-@media (min-width: 48rem) {
-  .footer nav a {
-    font-size: 0.48rem;
-  }
-}
-
 @media (max-width: 63.99rem) {
-  .footer-content {
+  .app-footer {
     margin-left: 0;
-    grid-template-columns: repeat(2, 1fr);
-    padding: 1rem 1rem 4.6rem;
-  }
-
-  .footer-brand,
-  .footer-social {
-    max-width: none;
-    grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 35rem) {
-  .footer-content {
-    row-gap: 0.45rem;
-  }
+.footer-inner {
+  width: 100%;
+}
 
-  .footer-brand {
-    grid-row: 1;
-    grid-column: 1 / -1;
-  }
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: opacity 160ms ease, transform 160ms ease;
+}
 
-  .footer nav:nth-of-type(1) {
-    grid-row: 2;
-    grid-column: 1;
-  }
+.accordion-enter-from,
+.accordion-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
 
-  .footer nav:nth-of-type(2) {
-    grid-row: 2;
-    grid-column: 2;
-  }
+/* Light Mode Overrides */
+:global(html[data-theme='light']) .app-footer {
+  background: #edf4f0 !important;
+  color: #5d7066 !important;
+  border-top-color: rgba(3, 98, 66, 0.12) !important;
+}
 
-  .footer nav:nth-of-type(3) {
-    grid-row: 3;
-    grid-column: 1;
-  }
+:global(html[data-theme='light']) .app-footer .footer-accordion-item {
+  border-bottom-color: rgba(10, 62, 39, 0.08) !important;
+}
 
-  .footer-social {
-    min-width: 0;
-    align-self: start;
-    grid-row: 3;
-    grid-column: 2;
-  }
+:global(html[data-theme='light']) .app-footer button span {
+  color: #14251d !important;
+}
 
-  .responsible-gaming {
-    grid-row: 4;
-  }
+:global(html[data-theme='light']) .app-footer button svg {
+  color: #5d7066 !important;
+}
+
+:global(html[data-theme='light']) .app-footer button:hover span {
+  color: #036242 !important;
+}
+
+:global(html[data-theme='light']) .app-footer a {
+  color: #5d7066;
+}
+
+:global(html[data-theme='light']) .app-footer a:hover {
+  color: #036242 !important;
+}
+
+:global(html[data-theme='light']) .app-footer h4 {
+  color: #14251d !important;
+}
+
+:global(html[data-theme='light']) .app-footer p {
+  color: #5d7066;
+}
+
+:global(html[data-theme='light']) .app-footer .border-white\/\[0\.08\] {
+  border-top-color: rgba(10, 62, 39, 0.08) !important;
 }
 </style>
-
-

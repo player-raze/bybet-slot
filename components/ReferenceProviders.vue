@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ArrowRight, Sparkles } from 'lucide-vue-next'
 import { providerLogoByName } from '~/data/homepage'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
 defineProps<{
   providers: string[]
 }>()
 
 const { translate } = useSiteLocale()
+const { effectiveTheme } = useSiteTheme()
 const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
+
+const providerLogo = (provider: string): string => {
+  return getProviderLogoForTheme(providerLogoByName[provider], effectiveTheme.value)
+}
 </script>
 
 <template>
@@ -26,8 +32,8 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
         :aria-label="provider"
       >
         <img
-          v-if="providerLogoByName[provider]"
-          :src="providerLogoByName[provider]"
+          v-if="providerLogo(provider)"
+          :src="providerLogo(provider)"
           alt=""
           width="120"
           height="44"

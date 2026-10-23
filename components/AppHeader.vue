@@ -122,7 +122,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 
   display: flex;
   position: fixed;
-  z-index: 50;
+  z-index: 10;
   top: 0;
   right: 0;
   left: 0;

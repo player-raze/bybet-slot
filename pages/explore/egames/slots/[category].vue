@@ -283,16 +283,16 @@ const displayedGames = computed<SlotGame[]>(() => {
 </script>
 
 <template>
-  <div class="slots-page w-full min-w-0 pb-16 pt-1">
+  <div class="slots-page w-full min-w-0 pb-16">
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
-      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-x-auto no-scrollbar">
-        <div class="flex items-center gap-1 min-w-0">
+    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-2">
+      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
+        <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
             v-for="cat in SLOT_CATEGORIES"
             :key="cat.key"
             type="button"
-            class="nav-tab flex flex-col items-center justify-center min-w-[48px] py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
+            class="nav-tab flex flex-col items-center justify-center min-w-[48px] shrink-0 py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
             :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#959799]'"
             :aria-label="cat.label"
             @click="selectCategory(cat.key)"
@@ -337,12 +337,12 @@ const displayedGames = computed<SlotGame[]>(() => {
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
       <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in SLOT_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
+            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0"
             :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
             @click="toggleProvider(prov.key)"
           >

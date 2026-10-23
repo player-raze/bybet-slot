@@ -96,6 +96,9 @@ const tabPath = (key: string): string => {
   }
   return `${route.path}?tab=${slug}`
 }
+
+const redirectsToByBet = (key: string): boolean => key === 'smart-pick' || key === 'outright'
+
 const selectedSport = ref('')
 const now = ref(Date.now())
 let timer: ReturnType<typeof setInterval> | undefined
@@ -300,8 +303,8 @@ onBeforeUnmount(() => {
       <NuxtLink
         v-for="tab in visibleTabs"
         :key="tab.key"
-        :to="tab.key === 'smart-pick' ? bybetRedirectUrl : tabPath(tab.key)"
-        :external="tab.key === 'smart-pick'"
+        :to="redirectsToByBet(tab.key) ? bybetRedirectUrl : tabPath(tab.key)"
+        :external="redirectsToByBet(tab.key)"
         :class="{ selected: activeTab === tab.key }"
         :aria-current="activeTab === tab.key ? 'page' : undefined"
       >
@@ -321,14 +324,10 @@ onBeforeUnmount(() => {
       <Replay v-else-if="activeTab === 'replay'" />
       <div
         v-else-if="loading && (isFixtureTab || !leagues)"
-        class="empty"
+        class="empty py-8 flex flex-col items-center justify-center"
         role="status"
       >
-        <RefreshCw
-          :size="28"
-          aria-hidden="true"
-        />
-        <p>Loading {{ activeLabel?.toLowerCase() }}…</p>
+        <ByBetSpinner size="sm" :label="`Loading ${activeLabel?.toLowerCase() || 'sports'}…`" />
       </div>
       <div
         v-else-if="error"

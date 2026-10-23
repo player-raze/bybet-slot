@@ -110,10 +110,11 @@ html[data-theme='light']:not(#_) .mobile-bottom-link--active {
   color: #036242;
 }
 
-html[data-theme='light']:not(#_) .footer {
+html[data-theme='light']:not(#_) .footer,
+html[data-theme='light']:not(#_) .app-footer {
   border-top-color: rgba(3, 98, 66, 0.14);
   color: #5d7066;
-  background: #e6f0ea;
+  background: #edf4f0;
 }
 
 html[data-theme='light']:not(#_) .footer h2,
@@ -1124,6 +1125,15 @@ html[data-theme='light']:not(#_) .slot-filter-option--active {
   color: #036242;
   background: rgba(3, 98, 66, 0.12);
   font-weight: 600;
+}
+
+html[data-theme='light']:not(#_) .slot-filter-actions {
+  background: rgba(255, 255, 255, 0.98);
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .slot-filter-pill-handle {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 html[data-theme='light']:not(#_) .slot-filter-reset {

@@ -17,7 +17,7 @@ const handleAllStreamersClick = (): void => {
 </script>
 
 <template>
-  <div class="live-plaza-streamer-page w-full min-w-0 pb-16 pt-1 text-white">
+  <div class="live-plaza-streamer-page w-full min-w-0 pb-16 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
       sticky

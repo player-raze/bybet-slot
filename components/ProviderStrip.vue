@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { providerLogoByName } from '~/data/homepage'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
 defineProps<{
   providers: string[]
 }>()
 
 const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
+const { effectiveTheme } = useSiteTheme()
+
+const providerLogo = (provider: string): string => {
+  return getProviderLogoForTheme(providerLogoByName[provider], effectiveTheme.value)
+}
 </script>
 
 <template>
@@ -21,8 +27,8 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
         :aria-label="`Browse ${provider} games on ByBet in a new tab`"
       >
         <img
-          v-if="providerLogoByName[provider]"
-          :src="providerLogoByName[provider]"
+          v-if="providerLogo(provider)"
+          :src="providerLogo(provider)"
           :alt="`${provider} logo`"
           width="120"
           height="44"

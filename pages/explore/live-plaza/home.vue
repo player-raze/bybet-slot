@@ -275,7 +275,7 @@ onBeforeUnmount(() => {
 .live-plaza-page {
   width: 100%;
   min-width: 0;
-  padding-top: 0.16rem;
+  padding-top: 0;
   padding-bottom: 2rem;
   color: #ffffff;
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronLeft } from 'lucide-vue-next'
+import SubpageHeader from '~/components/SubpageHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -78,40 +78,32 @@ watch(() => route.path, () => {
 </script>
 
 <template>
-  <div class="game-rules-sticky-wrapper sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-2 sm:-mx-4 px-2 sm:px-4 pt-1 pb-2 mb-2 sm:mb-3">
+  <div class="game-rules-sticky-wrapper sticky top-0 lg:top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-2 sm:-mx-4 pb-2 mb-2 sm:mb-3">
     <header class="game-rules-header-wrapper">
-      <!-- Top Bar: [ < ] Game Rules ........... [ AA ] -->
-      <div class="game-rules-top-bar flex items-center justify-between bg-[#171817] rounded-xl px-3 sm:px-4 py-2 border border-white/5 shadow-md mb-2">
-        <div class="flex items-center gap-2.5">
+      <!-- Universal Emerald Subpage Header with AA text scaler -->
+      <SubpageHeader
+        title="Game Rules"
+        back-to="/explore/account/me"
+        :sticky="false"
+        class="mb-2"
+      >
+        <template #right>
           <button
             type="button"
-            class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/90 hover:text-white transition-colors cursor-pointer"
-            aria-label="Back"
-            title="Back"
-            @click="handleBack"
+            class="flex items-center justify-center px-2 py-0.5 text-white/90 hover:text-white bg-white/10 hover:bg-white/20 rounded font-bold text-xs sm:text-sm tracking-tight transition-colors cursor-pointer select-none"
+            :title="`Text size: ${textSizeLevel} (click to cycle)`"
+            aria-label="Adjust font size"
+            @click="cycleTextSize"
           >
-            <ChevronLeft class="h-4 w-4" />
+            AA
           </button>
-          <span class="text-sm sm:text-base font-bold text-white tracking-wide select-none">
-            Game Rules
-          </span>
-        </div>
-
-        <button
-          type="button"
-          class="flex items-center justify-center px-2 py-0.5 text-[#1fa779] hover:text-[#32d49a] hover:bg-white/5 rounded font-bold text-sm sm:text-base tracking-tight transition-colors cursor-pointer select-none"
-          :title="`Text size: ${textSizeLevel} (click to cycle)`"
-          aria-label="Adjust font size"
-          @click="cycleTextSize"
-        >
-          AA
-        </button>
-      </div>
+        </template>
+      </SubpageHeader>
 
       <!-- Category Navigation Tabs (cornered layout matching screenshot) -->
       <nav
         ref="navContainerRef"
-        class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none"
+        class="flex items-center gap-2 overflow-x-auto py-1 px-2 sm:px-4 scrollbar-none"
         aria-label="Game Rules Categories"
       >
         <NuxtLink

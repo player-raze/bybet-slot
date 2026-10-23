@@ -16,9 +16,23 @@ const predictionSortOptions: Array<{ value: PredictionSort; label: string }> = [
   { value: 'win-streak', label: 'Win Streak' },
 ]
 
-const visiblePredictors = EXPERT_PREDICTORS
-  .filter(predictor => (predictor.currentPredictions ?? 0) > 0)
-  .slice(0, 10)
+const visiblePredictors = computed(() => {
+  const seen = new Set<string>()
+  return [...EXPERT_PREDICTORS]
+    .filter(predictor => (predictor.currentPredictions ?? 0) > 0)
+    .sort((a, b) => {
+      const predDiff = (b.currentPredictions ?? 0) - (a.currentPredictions ?? 0)
+      if (predDiff !== 0) return predDiff
+      return (b.hitRate ?? 0) - (a.hitRate ?? 0)
+    })
+    .filter((predictor) => {
+      const key = predictor.predictorName.toLowerCase()
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .slice(0, 10)
+})
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
 useSeoMeta({
@@ -277,7 +291,7 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
 .expert-predictions-page {
   width: 100%;
   min-width: 0;
-  padding-top: 0.16rem;
+  padding-top: 0;
   padding-bottom: 2rem;
   color: #ffffff;
 }

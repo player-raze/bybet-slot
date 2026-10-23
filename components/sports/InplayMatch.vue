@@ -280,7 +280,7 @@ const copyMatchLink = async (): Promise<void> => {
 <style scoped>
 .winner-match {
   padding: 0.5rem 16px 16px;
-  scroll-margin-top: calc(var(--header-height) + 16px);
+  scroll-margin-top: calc(var(--content-sticky-top) + 16px);
 }
 .winner-match:hover {
   background: rgb(var(--color-primary) / 0.1);

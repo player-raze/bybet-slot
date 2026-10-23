@@ -12,6 +12,7 @@ const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.val
 const isAffiliatePage = computed(() => route.path === '/affiliate')
 const isBonusesPage = computed(() => route.path.startsWith('/explore/bonuses'))
 const isLivePlazaPage = computed(() => route.path.startsWith('/explore/live-plaza'))
+const isJackpotPage = computed(() => route.path.startsWith('/explore/egames/jackpot'))
 const isAccountSettingsPage = computed(() => [
   '/explore/account/me',
   '/explore/account/language',
@@ -21,16 +22,43 @@ const isAccountSettingsPage = computed(() => [
 ].some(path => route.path.startsWith(path)))
 const isDockedChatPage = computed(() => isSportsPage.value || isGameChatPage.value)
 const isTutorialPage = computed(() => route.path === '/tutorial' || route.path.startsWith('/tutorial/'))
-const railCollapsed = ref(!(isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value))
+const isDedicatedMobileHeaderPage = computed(() => {
+  const path = route.path.replace(/\/$/, '')
+  return [
+    '/tutorial',
+    '/affiliate',
+    '/responsible-gaming',
+    '/terms-of-use',
+    '/privacy-policy',
+    '/about-us',
+    '/game-rules',
+    '/download-app',
+    '/explore/live-plaza/experts',
+    '/explore/account/language',
+    '/explore/account/timezone',
+  ].some(prefix => path === prefix || path.startsWith(prefix + '/'))
+})
+const railCollapsed = ref(!(isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value || isJackpotPage.value))
+
+const isMobileDevice = (): boolean => {
+  if (import.meta.client) {
+    return window.innerWidth < 1024
+  }
+  const headers = useRequestHeaders(['user-agent'])
+  const ua = headers['user-agent'] || ''
+  return /mobile|android|iphone|ipad|ipod/i.test(ua)
+}
 
 watch(() => route.path, () => {
-  if (isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value) {
+  if (isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value || isJackpotPage.value) {
     railCollapsed.value = false
   } else if (isTutorialPage.value) {
     railCollapsed.value = true
   }
 
-  if (isSportsPage.value) {
+  if (isMobileDevice()) {
+    closeComments()
+  } else if (isSportsPage.value) {
     openSportsComments()
   } else if (isGameChatPage.value) {
     openGameComments()
@@ -98,13 +126,26 @@ const initializeSectionMotion = (): void => {
   })
 }
 
+const handleResize = (): void => {
+  if (window.innerWidth < 1024 && commentContext.value) {
+    closeComments()
+  }
+}
+
 onMounted(() => {
   window.addEventListener('keydown', handleEscape)
+  window.addEventListener('resize', handleResize, { passive: true })
+
+  if (window.innerWidth < 1024) {
+    closeComments()
+  }
+
   initializeSectionMotion()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEscape)
+  window.removeEventListener('resize', handleResize)
   sectionRevealObserver?.disconnect()
   clearDemoMessage()
 })
@@ -118,6 +159,8 @@ onBeforeUnmount(() => {
       'site-shell--rail-collapsed': railCollapsed,
       'site-shell--sports-chat': isDockedChatPage && Boolean(commentContext),
       'site-shell--bonuses': isBonusesPage,
+      'site-shell--me': route.path === '/explore/account/me',
+      'site-shell--dedicated-header': isDedicatedMobileHeaderPage,
     }"
   >
     <AppHeader
@@ -144,8 +187,9 @@ onBeforeUnmount(() => {
       />
     </div>
 
-    <AppFooter v-if="!isAccountSettingsPage && !isBonusesPage" />
+    <AppFooter />
     <MobileBottomNav />
+    <ResponsibleGamingGate />
 
     <Transition name="toast">
       <div v-if="toastMessage" class="demo-toast" role="status">
@@ -162,6 +206,8 @@ onBeforeUnmount(() => {
 .site-shell {
   --content-gutter: 0.5rem;
   --comment-panel-width: min(375px, 23.4375rem);
+  --desktop-top-overlap: 12px;
+  --content-sticky-top: var(--header-height);
   --sidebar-width: 175px;
 
   position: relative;
@@ -177,13 +223,16 @@ onBeforeUnmount(() => {
 }
 
 .site-shell--bonuses {
-  max-width: 1360px;
+  --site-max-width: 100%;
+  max-width: 100%;
 }
 
 .content-layout {
   position: relative;
+  z-index: 20;
   min-width: 0;
   margin-left: var(--sidebar-width);
+  background: var(--page);
   transition: margin-left 180ms ease;
 }
 
@@ -250,6 +299,18 @@ onBeforeUnmount(() => {
 }
 
 @media (min-width: 64rem) {
+  .site-shell {
+    --content-sticky-top: calc(var(--header-height) - var(--desktop-top-overlap));
+  }
+
+  .content-layout {
+    margin-top: calc(0px - var(--desktop-top-overlap));
+  }
+
+  .page-content {
+    min-height: calc(100vh - var(--header-height) + var(--desktop-top-overlap));
+  }
+
   .site-shell--sports-chat .content-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--comment-panel-width);
@@ -259,6 +320,26 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 63.99rem) {
+  .site-shell--me,
+  .site-shell--dedicated-header {
+    padding-top: 0 !important;
+  }
+
+  .site-shell--me > .app-header-shell,
+  .site-shell--dedicated-header > .app-header-shell {
+    display: none !important;
+  }
+
+  .site-shell--me .content-layout,
+  .site-shell--dedicated-header .content-layout {
+    margin-top: 0 !important;
+  }
+
+  .site-shell--me .page-content,
+  .site-shell--dedicated-header .page-content {
+    padding: 0 !important;
+  }
+
   .content-layout {
     margin-left: 0;
   }

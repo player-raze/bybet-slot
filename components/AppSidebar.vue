@@ -389,8 +389,7 @@ onBeforeUnmount(() => {
 
 @media (min-width: 64rem) {
   .sidebar {
-    z-index: 55;
-    top: calc(var(--header-height) - 12px);
+    top: var(--content-sticky-top);
     bottom: 8px;
   }
 
@@ -672,6 +671,10 @@ onBeforeUnmount(() => {
   height: 18px;
 }
 
+.sidebar--collapsed .maintenance-indicator {
+  display: none !important;
+}
+
 .rail-toggle {
   display: grid;
   position: absolute;
@@ -781,6 +784,10 @@ onBeforeUnmount(() => {
     margin: 0;
     overflow: visible;
     clip: auto;
+  }
+
+  .sidebar--collapsed .maintenance-indicator {
+    display: inline-block !important;
   }
 
   .rail-toggle {

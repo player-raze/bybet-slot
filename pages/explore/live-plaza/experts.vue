@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SubpageHeader from '~/components/SubpageHeader.vue'
 import { MoreHorizontal } from 'lucide-vue-next'
 import {
   EXPERT_PREDICTORS,
@@ -141,14 +142,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="experts-page">
-    <SeoHeader
-      sticky
+    <SubpageHeader
       title="All Experts"
-      description="Browse all ByBet Live Plaza prediction experts, hit rates, and current winning streaks."
       back-to="/explore/live-plaza/expert-predictions"
-      :show-flag="false"
+      class="mb-2 sm:mb-3"
     >
-      <template #actions>
+      <template #right>
         <div ref="sortControl" class="experts-sort">
           <button
             ref="sortButton"
@@ -189,13 +188,14 @@ onBeforeUnmount(() => {
           </Transition>
         </div>
       </template>
-    </SeoHeader>
+    </SubpageHeader>
 
-    <section class="experts-filter-bar" aria-label="Filter experts">
-      <LivePlazaSportFilters v-model="selectedSport" />
-    </section>
+    <div class="experts-content-container px-2.5 sm:px-0">
+      <section class="experts-filter-bar" aria-label="Filter experts">
+        <LivePlazaSportFilters v-model="selectedSport" />
+      </section>
 
-    <section v-if="displayedExperts.length" class="experts-grid" aria-label="All prediction experts">
+      <section v-if="displayedExperts.length" class="experts-grid" aria-label="All prediction experts">
       <NuxtLink
         v-for="expert in displayedExperts"
         :key="expert.id"
@@ -247,6 +247,7 @@ onBeforeUnmount(() => {
     <div v-if="!visibleExperts.length" class="experts-empty">
       No experts are available for this sport.
     </div>
+    </div>
   </div>
 </template>
 
@@ -254,7 +255,7 @@ onBeforeUnmount(() => {
 .experts-page {
   width: 100%;
   min-width: 0;
-  padding-top: 0.16rem;
+  padding-top: 0;
   padding-bottom: 3rem;
   color: #ffffff;
 }
@@ -266,17 +267,17 @@ onBeforeUnmount(() => {
 
 .experts-sort__button {
   display: inline-flex;
-  min-width: 72px;
-  min-height: 31px;
+  min-width: 68px;
+  min-height: 28px;
   align-items: center;
   justify-content: center;
-  padding: 0 11px;
-  border: 1px solid transparent;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  color: #eeeeee;
-  font-size: 11px;
+  color: #ffffff;
+  font-size: 11.5px;
   font-weight: 500;
-  background: #292929;
+  background: #0a402d;
   cursor: pointer;
   gap: 4px;
   transition: border-color 150ms ease, background-color 150ms ease;
@@ -284,8 +285,8 @@ onBeforeUnmount(() => {
 
 .experts-sort__button:hover,
 .experts-sort__button--open {
-  border-color: #087d5c;
-  background: #303332;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: #0d4d37;
 }
 
 .experts-sort__menu {

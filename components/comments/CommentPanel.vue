@@ -11,8 +11,15 @@ const { context, closeComments } = useCommentPanel()
 const dialog = ref<HTMLElement | null>(null)
 const scrollContainer = ref<HTMLElement | null>(null)
 const isScrolledUp = ref(false)
+const isMobile = ref(false)
 const route = useRoute()
 let previousOverflow = ''
+
+const updateIsMobile = (): void => {
+  if (import.meta.client) {
+    isMobile.value = window.innerWidth < 1024
+  }
+}
 
 const handleScroll = (): void => {
   if (!scrollContainer.value) return
@@ -36,6 +43,9 @@ const handleBackdropClick = (event: MouseEvent): void => {
 }
 
 onMounted(() => {
+  updateIsMobile()
+  window.addEventListener('resize', updateIsMobile, { passive: true })
+
   if (!props.docked) {
     previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -49,6 +59,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateIsMobile)
   if (props.docked) return
 
   if (dialog.value instanceof HTMLDialogElement) dialog.value.close()
@@ -79,9 +90,9 @@ watch(() => context.value, () => {
       @click="handleBackdropClick"
     >
       <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 pb-2 pr-2 text-white">
-        <header  v-if="context.kind != 'sports'" class="flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2">
+        <header v-if="context.kind !== 'sports' || isMobile" class="flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2">
           <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
-          <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] " aria-label="Close comments" autofocus @click="closeComments">
+          <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
             <X :size="10" aria-hidden="true" />
           </button>
         </header>
@@ -144,13 +155,13 @@ watch(() => context.value, () => {
 
 .comment-panel--docked {
   position: sticky;
-  top: var(--header-height);
+  top: var(--content-sticky-top, var(--header-height));
   align-self: start;
   z-index: 40;
   width: 100%;
   min-width: 0;
-  height: calc(100dvh - var(--header-height));
-  max-height: calc(100dvh - var(--header-height));
+  height: calc(100dvh - var(--content-sticky-top, var(--header-height)));
+  max-height: calc(100dvh - var(--content-sticky-top, var(--header-height)));
 }
 
 @media (max-width: 63.99rem) {

@@ -15,6 +15,7 @@ import {
   type JackpotWinner,
 } from '~/data/jackpot'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
 const JACKPOT_REFRESH_INTERVAL_MS = 60_000
 
@@ -51,6 +52,11 @@ const jackpotNumberFormatter = new Intl.NumberFormat('en-US', {
 
 const route = useRoute()
 const router = useRouter()
+const { effectiveTheme } = useSiteTheme()
+
+const themedProviderLogo = (providerLogo: string): string => {
+  return getProviderLogoForTheme(providerLogo, effectiveTheme.value)
+}
 
 const activeProvider = computed(() => {
   const p = (route.params.provider as string || 'jdb').toLowerCase()
@@ -226,26 +232,33 @@ const filteredSections = computed<JackpotSection[]>(() => {
 </script>
 
 <template>
-  <div class="jackpot-page w-full min-w-0 pb-16 pt-1">
+  <div class="jackpot-page w-full min-w-0 pb-16">
     <!-- Sticky Header (Top Nav Tabs Bar) -->
-    <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
+    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1 pt-1 pb-2">
       <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-2xl bg-[#171817] border border-white/5 p-1 overflow-x-auto no-scrollbar shadow-sm">
-        <div class="flex items-center gap-1.5 min-w-0">
+      <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm">
+        <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm">
           <button
             v-for="tab in JACKPOT_NAV_TABS"
             :key="tab.key"
             type="button"
-            class="nav-tab flex items-center justify-center min-w-[58px] py-1.5 px-3.5 rounded-xl transition-all cursor-pointer select-none"
-            :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md border border-[#047b53]' : 'hover:bg-white/5'"
+            class="nav-tab flex h-6 min-w-[48px] shrink-0 cursor-pointer select-none items-center justify-center rounded-md px-2 transition-all"
+            :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md' : 'hover:bg-white/5'"
             :aria-label="tab.label"
+            :aria-current="activeProvider === tab.key.toLowerCase() ? 'page' : undefined"
             @click="selectTab(tab.key)"
           >
             <img
-              :src="tab.logo"
+              :src="themedProviderLogo(tab.logo)"
               :alt="tab.label"
-              class="h-4 max-w-[42px] object-contain transition-opacity"
-              :class="activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125 opacity-80 '"
+              class="object-contain transition-opacity"
+              :class="[
+                tab.isAll ? 'h-5 w-5' : 'h-4 max-w-[42px]',
+                activeProvider === tab.key.toLowerCase() ? '' : 'opacity-80',
+                effectiveTheme === 'dark'
+                  ? activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125'
+                  : '',
+              ]"
             />
           </button>
         </div>
@@ -253,7 +266,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
         <!-- Right Chat Toggle -->
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0  pl-2"
+          class="nav-tab nav-tab--chat flex min-w-[56px] shrink-0 cursor-pointer select-none flex-col items-center justify-center rounded-xl px-2.5 py-1 transition-all"
           :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
           aria-label="Toggle chat room"
           @click="toggleChat"
@@ -290,9 +303,10 @@ const filteredSections = computed<JackpotSection[]>(() => {
       >
         <div class="jackpot-provider-identity">
           <img
-            :src="section.providerLogo"
+            :src="themedProviderLogo(section.providerLogo)"
             :alt="section.provider"
-            class="jackpot-provider-logo object-contain brightness-125"
+            class="jackpot-provider-logo object-contain"
+            :class="{ 'brightness-125': effectiveTheme === 'dark' }"
           />
         </div>
 
@@ -387,9 +401,10 @@ const filteredSections = computed<JackpotSection[]>(() => {
           <!-- Left: Provider Logo + Masked Username -->
           <div class="flex items-center gap-3">
             <img
-              :src="winner.providerLogo"
+              :src="themedProviderLogo(winner.providerLogo)"
               alt=""
-              class="h-4 max-w-[36px] object-contain brightness-125 opacity-80"
+              class="h-4 max-w-[36px] object-contain opacity-80"
+              :class="{ 'brightness-125': effectiveTheme === 'dark' }"
             />
             <span class="text-white font-mono">{{ winner.username }}</span>
           </div>

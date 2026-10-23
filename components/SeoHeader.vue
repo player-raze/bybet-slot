@@ -3,9 +3,11 @@ import { ChevronLeft } from 'lucide-vue-next'
 
 interface Props {
   title: string
+  metaTitle?: string
   description?: string
   keywords?: string
   ogImage?: string
+  ogType?: 'website' | 'article' | 'book' | 'profile'
   backTo?: string
   showBack?: boolean
   showFlag?: boolean
@@ -32,6 +34,9 @@ const route = useRoute()
 const config = useRuntimeConfig()
 
 const fullTitle = computed(() => {
+  if (props.metaTitle) {
+    return props.metaTitle.includes('ByBet') ? props.metaTitle : `${props.metaTitle} | ByBet`
+  }
   return props.title ? `${props.title} | ByBet` : 'ByBet'
 })
 
@@ -43,6 +48,7 @@ useSeoMeta({
   ogDescription: () => props.description,
   keywords: () => props.keywords,
   ogImage: () => props.ogImage,
+  ogType: () => props.ogType || 'website',
   twitterTitle: fullTitle,
   twitterDescription: () => props.description,
   twitterImage: () => props.ogImage,
@@ -75,7 +81,7 @@ const handleBack = (): void => {
 <template>
   <div
     v-if="sticky"
-    class="seo-header-sticky-wrapper sticky top-[var(--header-height,64px)] z-20 bg-[#000000] -mx-1 px-1 pt-1 pb-1"
+    class="seo-header-sticky-wrapper sticky top-[var(--content-sticky-top)] z-20  -mx-1 px-1 pb-1"
   >
     <header
       class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f] px-2.5 py-2 shadow-sm select-none"
@@ -107,7 +113,7 @@ const handleBack = (): void => {
 
   <header
     v-else
-    class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f]/80 px-1 py-2 mb-2 shadow-sm select-none"
+    class="seo-header flex items-center justify-between gap-2 rounded-lg  px-1 py-2 mb-2 shadow-sm select-none"
     :class="customClass"
   >
     <!-- Left: Back Button & Title -->

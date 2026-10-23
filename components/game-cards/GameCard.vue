@@ -2,6 +2,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { User, X } from 'lucide-vue-next'
 import ReminderModal from '~/components/modals/ReminderModal.vue'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
 interface Game {
   id: string
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { effectiveTheme } = useSiteTheme()
 const emit = defineEmits<{
   (e: 'select', game: Game): void
   (e: 'info', game: Game): void
@@ -129,6 +131,10 @@ const displayTags = computed(() => {
   if (props.game.tags && props.game.tags.length > 0) return props.game.tags
   if (props.game.features && props.game.features.length > 0) return props.game.features
   return ['Entertainment', 'Auto Game', 'Free Spins', 'Buy Spins']
+})
+
+const providerLogo = computed(() => {
+  return getProviderLogoForTheme(props.game.providerLogo, effectiveTheme.value)
 })
 
 onUnmounted(() => {
@@ -299,10 +305,11 @@ onUnmounted(() => {
 
     <div class="flex items-center shrink-0">
       <img
-        v-if="game.providerLogo"
-        :src="game.providerLogo"
+        v-if="providerLogo"
+        :src="providerLogo"
         :alt="game.provider"
-        class="h-3.5 max-w-[36px] object-contain opacity-90 transition-opacity brightness-125"
+        class="h-3.5 max-w-[36px] object-contain opacity-90 transition-opacity"
+        :class="{ 'brightness-125': effectiveTheme === 'dark' }"
         loading="lazy"
         decoding="async"
       />

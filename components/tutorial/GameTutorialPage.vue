@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ChevronLeft, CircleDot, Flag } from 'lucide-vue-next'
+import SubpageHeader from '~/components/SubpageHeader.vue'
+import { CircleDot, Flag } from 'lucide-vue-next'
 
 type TutorialMode = 'mock-betting' | 'tutorial'
 type MarketKey = 'hdp' | 'o-u' | '1x2' | 'corners' | 'odd-even' | 'correct-score' | 'outright'
@@ -690,30 +691,33 @@ const selectChoice = (id: string): void => {
     class="game-tutorial-page"
     :class="{ 'game-tutorial-page--lesson': activeMode === 'tutorial' }"
   >
-    <nav class="game-mode-toolbar" aria-label="Game tutorial mode">
-      <NuxtLink class="game-back" to="/explore/account/me" aria-label="Back to account settings">
-        <ChevronLeft :size="18" :stroke-width="2.5" />
-      </NuxtLink>
+    <SubpageHeader back-to="/explore/account/me" class="mb-2">
+      <template #center>
+        <div class="tutorial-pill-group" role="tablist">
+          <NuxtLink
+            to="/tutorial/mock-betting"
+            class="tutorial-pill"
+            :class="{ 'tutorial-pill--active': activeMode === 'mock-betting' }"
+            role="tab"
+            :aria-selected="activeMode === 'mock-betting'"
+          >
+            Mock Betting
+          </NuxtLink>
+          <NuxtLink
+            to="/tutorial"
+            class="tutorial-pill"
+            :class="{ 'tutorial-pill--active': activeMode === 'tutorial' }"
+            role="tab"
+            :aria-selected="activeMode === 'tutorial'"
+          >
+            Tutorial
+          </NuxtLink>
+        </div>
+      </template>
+    </SubpageHeader>
 
-      <NuxtLink
-        to="/tutorial/mock-betting"
-        class="game-mode-tab"
-        :class="{ 'game-mode-tab--active': activeMode === 'mock-betting' }"
-        :aria-current="activeMode === 'mock-betting' ? 'page' : undefined"
-      >
-        Mock Betting
-      </NuxtLink>
-      <NuxtLink
-        to="/tutorial"
-        class="game-mode-tab"
-        :class="{ 'game-mode-tab--active': activeMode === 'tutorial' }"
-        :aria-current="activeMode === 'tutorial' ? 'page' : undefined"
-      >
-        Tutorial
-      </NuxtLink>
-    </nav>
-
-    <nav class="market-tabs" aria-label="Betting markets">
+    <div class="tutorial-content-container px-2 sm:px-0">
+      <nav class="market-tabs" aria-label="Betting markets">
       <button
         v-for="market in markets"
         :key="market.key"
@@ -727,21 +731,21 @@ const selectChoice = (id: string): void => {
       </button>
     </nav>
 
-    <div v-if="activeMode === 'mock-betting'" class="mock-betting-content">
-      <div v-if="!isOutright" class="match-banner">
+    <div v-if="activeMode === 'mock-betting'" class="mock-betting-content ">
+      <div v-if="!isOutright" class="match-banner ">
         <div class="match-team match-team--home">
           <div class="match-name">
             <strong>Barcelona</strong>
             <span>2</span>
           </div>
-          <img src="/tutorial-assets/barcelona-crest.svg" alt="Barcelona crest">
+          <img src="/tutorial-assets/barcelona-crest.webp" alt="Barcelona crest">
         </div>
 
         <div class="match-score">
           <strong>2 - 0</strong>
           <div>
-            <span><CircleDot :size="11" /> 0–0</span>
-            <span><Flag :size="11" /> 0–0</span>
+            <span><svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 p-[1px]"><title>ht@0.5x</title><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="ht" fill="#999999" class="fill-icon-8"><path d="M10,0 C15.5166667,0 20,4.48333333 20,10 C20,15.5166667 15.5166667,20 10,20 C4.48333333,20 0,15.5166667 0,10 C0,4.48333333 4.48333333,0 10,0 Z M10,1.25 C5.16666667,1.25 1.25,5.16666667 1.25,10 C1.25,14.8333333 5.16666667,18.75 10,18.75 C14.8333333,18.75 18.75,14.8333333 18.75,10 C18.75,5.16666667 14.8333333,1.25 10,1.25 Z M4.90096842,6.21826172 L4.90096842,9.26826172 L8.11763509,9.26826172 L8.11763509,6.21826172 L9.73430176,6.21826172 L9.73430176,13.7849284 L8.11763509,13.7849284 L8.11763509,10.6682617 L4.90096842,10.6682617 L4.90096842,13.7849284 L3.28430176,13.7849284 L3.28430176,6.21826172 L4.90096842,6.21826172 Z M16.7218058,6.21826172 L16.7218058,7.53492839 L14.5551392,7.53492839 L14.5551392,13.7849284 L12.9384725,13.7849284 L12.9384725,7.53492839 L10.7884725,7.53492839 L10.7884725,6.21826172 L16.7218058,6.21826172 Z" id="Combined-Shape"></path></g></g></svg>0–0</span>
+            <span><svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 p-[1px]"><title>corner kick@0.5x</title><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="corner-kick" fill="#999999" class="fill-icon-8"><path d="M9.4,0 L17.3166667,4.01666667 L10.9,7.28333333 C10.7166667,7.35 10.5666667,7.58333333 10.5833333,7.83333333 L10.5833333,11.9833333 C10.5833333,12.1166667 10.5666667,12.3 10.7,12.45 C10.8333333,12.6333333 11.0333333,12.6333333 11.1333333,12.65 C12.35,12.8666667 13.4666667,13.4166667 14.3666667,14.25 L14.75,14.55 L15.0166667,14.3666667 L19.0666667,10.9833333 C19.1666667,10.9333333 19.2833333,10.8833333 19.4,10.8833333 C19.7333333,10.8833333 20,11.15 20,11.4833333 C20,11.65 19.9166667,11.8 19.8,11.9166667 L10,20 L0.166666667,11.9666667 L0.183333333,11.95 C0.0666666667,11.8333333 0,11.6833333 0,11.5166667 C0,11.2 0.266666667,10.9166667 0.6,10.9166667 C0.716666667,10.9166667 0.816666667,10.9666667 0.9,11.0166667 L0.966666667,11.0666667 C0.983333333,11.0833333 1.01666667,11.1 1.03333333,11.1166667 L5.25,14.6 L5.5,14.35 C6,13.8833333 6.55,13.5 7.16666667,13.2 C7.76666667,12.9 8.4,12.7 9.06666667,12.6 L9.4,12.55 L9.4,0 Z M10.594991,13.7801107 L10.594991,17.963444 L13.8283244,15.3467773 L13.4616577,15.0301107 C12.7783244,14.4467773 11.944991,14.0467773 11.0616577,13.8801107 L10.594991,13.7801107 Z M9.40248617,13.7874349 L8.91915283,13.8707682 C8.05248617,14.0541016 7.21915283,14.4374349 6.5358195,15.0207682 L6.40248617,15.1374349 L6.40248617,15.5207682 L6.55248617,15.6541016 L9.40248617,17.9541016 L9.40248617,13.7874349 Z M10.5937703,1.96858724 L10.5937703,6.08525391 L14.6437703,4.01858724 L10.5937703,1.96858724 Z" id="路径-16856"></path></g></g></svg>0–0</span>
           </div>
         </div>
 
@@ -750,7 +754,7 @@ const selectChoice = (id: string): void => {
             <span>2</span>
             <strong>Real Madrid</strong>
           </div>
-          <img src="/tutorial-assets/real-madrid-crest.svg" alt="Real Madrid crest">
+          <img src="/tutorial-assets/real-madrid-crest.webp" alt="Real Madrid crest">
         </div>
       </div>
 
@@ -854,22 +858,7 @@ const selectChoice = (id: string): void => {
         </section>
       </div>
     </div>
-
-    <footer class="tutorial-responsible">
-      <div class="tutorial-responsible-logos" aria-label="Responsible gaming partners">
-        <img src="/responsible-gaming/pagcor.webp" alt="PAGCOR">
-        <img src="/responsible-gaming/age-restriction.webp" alt="Gambling can be addictive. Know when to stop. 21 and above.">
-      </div>
-
-      <div class="tutorial-compliance-copy">
-        <p>
-          <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer">WWW.PAGCOR.PH/REGULATORY</a>
-          <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
-        </p>
-        <strong>GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.</strong>
-        <img src="/responsible-gaming/support-hotline.webp" alt="Responsible gaming support hotline">
-      </div>
-    </footer>
+    </div>
   </section>
 </template>
 
@@ -877,17 +866,50 @@ const selectChoice = (id: string): void => {
 .game-tutorial-page {
   display: flex;
   width: min(100%, 1285px);
-  min-height: calc(100vh - var(--header-height) + 12px);
+  min-height: calc(100vh - var(--header-height));
   flex-direction: column;
-  margin: -12px auto 0;
+  margin: 0 auto;
   color: #f4f4f4;
 }
 
 .game-tutorial-page--lesson {
-  min-height: calc(100vh - var(--header-height) + 172px);
+  min-height: calc(100vh - var(--header-height) + 160px);
 }
 
-.game-mode-toolbar,
+.tutorial-pill-group {
+  display: inline-flex;
+  align-items: center;
+  background-color: #0a402d;
+  border-radius: 9999px;
+  padding: 2.5px;
+  gap: 2px;
+}
+
+.tutorial-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  transition: all 150ms ease;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.tutorial-pill:hover {
+  color: #ffffff;
+}
+
+.tutorial-pill--active {
+  background-color: #ffffff;
+  color: #036242;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
 .market-tabs {
   display: flex;
   align-items: center;
@@ -895,34 +917,7 @@ const selectChoice = (id: string): void => {
   background: #1c1d1c;
 }
 
-.game-mode-toolbar {
-  position: sticky;
-  z-index: 60;
-  top: calc(var(--header-height) - 12px);
-  min-height: 44px;
-  padding: 6px 14px;
-  background: linear-gradient(180deg, rgba(37, 43, 41, 0.98), rgba(22, 24, 23, 0.99));
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
-  gap: 8px;
-}
-
-.game-back {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 auto;
-  place-items: center;
-  margin-right: 4px;
-  border-radius: 50%;
-  color: #00a474;
-  background: #111514;
-  transition: color 160ms ease, background-color 160ms ease;
-}
-
-.game-back:hover {
-  color: #35d5a0;
-  background: #0a0e0d;
-}
+/* market-tabs sticky position */
 
 .game-mode-tab {
   display: inline-flex;
@@ -955,7 +950,7 @@ const selectChoice = (id: string): void => {
 .market-tabs {
   position: sticky;
   z-index: 59;
-  top: calc(var(--header-height) + 40px);
+  top: calc(var(--content-sticky-top) + 52px);
   min-height: 44px;
   margin-top: 8px;
   padding: 6px 9px;
@@ -1050,10 +1045,10 @@ const selectChoice = (id: string): void => {
   height: 13px;
   place-items: center;
   border-radius: 1px;
-  color: #312900;
+  color: #fff;
   font-size: 9px;
   font-weight: 800;
-  background: #ffd300;
+  background: #FEBA00;
 }
 
 .match-team img {
@@ -1082,6 +1077,10 @@ const selectChoice = (id: string): void => {
   color: #d8dedb;
   font-size: 11px;
   gap: 8px;
+}
+
+html[data-theme='light']:not(#_) .game-tutorial-page .match-score{
+  color: #fff;
 }
 
 .match-score span {
@@ -1447,27 +1446,12 @@ const selectChoice = (id: string): void => {
     min-height: calc(100vh - var(--header-height) + 152px);
   }
 
-  .game-mode-toolbar {
-    top: calc(var(--header-height) + 6px);
-  }
-
   .market-tabs {
-    top: calc(var(--header-height) + 58px);
+    top: 48px;
   }
 }
 
 @media (max-width: 46rem) {
-  .game-mode-toolbar {
-    padding-inline: 9px;
-  }
-
-  .game-mode-tab {
-    min-width: 0;
-    flex: 1;
-    padding-inline: 10px;
-    font-size: 13px;
-  }
-
   .market-tabs {
     justify-content: flex-start;
   }

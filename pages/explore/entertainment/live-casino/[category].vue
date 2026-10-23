@@ -139,8 +139,8 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 </script>
 
 <template>
-  <div class="live-casino-page w-full min-w-0 pb-16 pt-1 text-white">
-    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-0.5">
+  <div class="live-casino-page w-full min-w-0 pb-16 text-white">
+    <div class="sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-0.5">
       <!-- Top Bar -->
       <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
         <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">

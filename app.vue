@@ -6,6 +6,7 @@ const {
   effectiveTheme,
   themePreference,
 } = useSiteTheme()
+const { isLoading, loadingLabel } = useByBetLoader()
 
 useHead(() => ({
   htmlAttrs: {
@@ -32,4 +33,24 @@ onMounted(() => {
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+
+  <Transition name="fade">
+    <ByBetSpinner
+      v-if="isLoading"
+      fullscreen
+      :label="loadingLabel"
+    />
+  </Transition>
 </template>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 200ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

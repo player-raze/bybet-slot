@@ -7,11 +7,12 @@ import {
 } from '~/data/homepage'
 
 useSeoMeta({
-  title: 'ByBet Slots — Spin Big Wins',
-  description: 'Explore ByBet’s demo slots homepage with popular games, jackpots, promotions, providers, and new releases.',
-  ogTitle: 'ByBet Slots — Spin Big Wins',
-  ogDescription: 'A polished responsive slots homepage interface built with Nuxt.',
+  title: 'ByBet Casino Ph | The Premium Online Sports Betting Site',
+  description: 'Experience top-tier gaming on the ByBet Casino Ph. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
+  ogTitle: 'ByBet Casino Ph | Your Premium Online Sports Betting Site',
+  ogDescription: 'Experience top-tier gaming on the ByBet homepage. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
   ogType: 'website',
+  ogImage: '',
   twitterCard: 'summary_large_image',
 })
 

@@ -3,10 +3,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import SeoHeader from '~/components/SeoHeader.vue'
 import PromotionComplianceFooter from '~/components/PromotionComplianceFooter.vue'
 import {
-  FEATURED_PROMOTIONS,
+  PROMOTIONS,
   PROMO_CATEGORIES,
   PROMOTION_PLACEHOLDER_IMAGES,
   PROMOTION_SECTIONS,
+  getPromoBannerUrl,
 } from '~/data/promotions'
 
 const selectedCategory = ref('all')
@@ -80,14 +81,14 @@ const getFeaturedMeta = (countdownText?: string): string => {
 
       <div ref="featuredTrack" class="featured-promotions__track">
         <NuxtLink
-          v-for="promotion in FEATURED_PROMOTIONS"
+          v-for="promotion in PROMOTIONS"
           :key="promotion.id"
           :to="`/explore/bonuses/${promotion.slug}`"
           class="featured-card"
         >
           <div class="featured-card__media">
             <img
-              :src="promotion.bannerImage"
+              :src="getPromoBannerUrl(promotion.bannerImage)"
               :alt="promotion.title"
               :style="{ objectPosition: promotion.imagePosition || 'center' }"
               loading="eager"
@@ -131,7 +132,7 @@ const getFeaturedMeta = (countdownText?: string): string => {
         <div class="promotion-group__list">
           <NuxtLink
             v-for="promotion in section.items"
-            :key="promotion.id"
+            :key="`${section.id}-${promotion.id}`"
             :to="`/explore/bonuses/${promotion.slug}`"
             class="promotion-row"
           >
@@ -162,16 +163,16 @@ const getFeaturedMeta = (countdownText?: string): string => {
 .bonuses-page {
   width: 100%;
   min-width: 0;
-  padding: 0.2rem 0 0;
+  padding: 0;
   color: #f5f5f5;
 }
 
 .bonuses-sticky {
   position: sticky;
   z-index: 24;
-  top: var(--header-height);
-  margin: -0.2rem -0.05rem 0;
-  padding: 0.2rem 0.05rem 0.28rem;
+  top: var(--content-sticky-top);
+  margin: 0 -0.05rem 0;
+  padding: 0 0.05rem 0.28rem;
   background: #000000;
 }
 
