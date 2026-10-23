@@ -43,6 +43,7 @@ export interface RailItem {
 }
 
 export interface ReferenceGame {
+  id?: string
   title: string
   provider: string
   image: string

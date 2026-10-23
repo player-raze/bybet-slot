@@ -88,6 +88,10 @@ const initializeSectionMotion = (): void => {
   )
 
   sectionElements.forEach((sectionElement, index) => {
+    if (sectionElement.classList.contains('hero') || sectionElement.querySelector('.hero')) {
+      return
+    }
+
     sectionElement.classList.add('section-reveal')
     sectionElement.style.setProperty('--section-reveal-delay', `${(index % 3) * 35}ms`)
     sectionRevealObserver?.observe(sectionElement)
@@ -150,7 +154,7 @@ onBeforeUnmount(() => {
 .site-shell {
   --content-gutter: 0.5rem;
   --comment-panel-width: min(375px, 23.4375rem);
-  --sidebar-width: 175px;
+  --sidebar-width: 190px;
 
   position: relative;
   width: 100%;
