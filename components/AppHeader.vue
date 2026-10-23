@@ -58,15 +58,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
     </NuxtLink>
 
     <div class="header-actions">
-      <button
-        type="button"
-        class="header-glass-icon"
-        aria-label="Open chat room"
-        title="Chat Room"
-        @click="openPageComments"
-      >
-        <MessageCircle :size="15" :stroke-width="2" aria-hidden="true" />
-      </button>
+    
       <a
         class="header-glass-icon header-glass-icon--utility"
         :href="externalSiteUrl"
@@ -175,25 +167,10 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
   border-radius: 50%;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.2);
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.22),
-    inset 0 -1px rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(12px) saturate(1.25);
-  -webkit-backdrop-filter: blur(12px) saturate(1.25);
+  box-shadow: none;
   transition:
     border-color 160ms ease,
     background-color 160ms ease;
-}
-
-.header-glass-icon::after {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    radial-gradient(88% 72% at 14% 10%, rgba(255, 255, 255, 0.34), transparent 56%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 36%);
-  content: '';
-  pointer-events: none;
 }
 
 .header-glass-icon:hover {
@@ -220,40 +197,22 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
   letter-spacing: 0.01em;
   line-height: 1;
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px) saturate(1.22);
-  -webkit-backdrop-filter: blur(12px) saturate(1.22);
+  box-shadow: none;
   transition:
     border-color 160ms ease,
     filter 160ms ease,
     background-color 160ms ease;
 }
 
-.header-glass-button::after {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    radial-gradient(80% 65% at 10% 0%, rgba(255, 255, 255, 0.26), transparent 54%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 45%);
-  content: '';
-  pointer-events: none;
-}
-
 .header-glass-button--login {
   min-width: 68px;
   background: rgba(255, 255, 255, 0.2);
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 -1px rgba(0, 0, 0, 0.22);
 }
 
 .header-glass-button--signup {
   min-width: 80px;
   border-color: rgba(255, 255, 255, 0.54);
   background: rgba(255, 255, 255, 0.2);
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.24),
-    inset 0 -1px rgba(0, 0, 0, 0.1);
 }
 
 .header-glass-button:hover {

@@ -23,16 +23,16 @@ useSeoMeta({
     <ReferenceHero />
     <ReferenceCategoryTabs />
     <ReferenceGameSection
-    id="popular"
-    title="Popular Slots"
-    variant="popular"
-    :games="popularGames"
-    to="/explore/egames/slots"
-  />
-  <ReferenceJackpots />
-  <ReferenceProviders :providers="providers" />
-  <ReferencePromotions />
-  <ReferenceGameSection
+      id="popular"
+      title="Popular Slots"
+      variant="popular"
+      :games="popularGames"
+      to="/explore/egames/slots"
+    />
+    <ReferenceJackpots />
+    <ReferenceProviders :providers="providers" />
+    <ReferencePromotions />
+    <ReferenceGameSection
     id="new-releases"
     title="New Releases"
     variant="new"
