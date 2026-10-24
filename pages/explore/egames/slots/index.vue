@@ -34,6 +34,23 @@ import {
 import GameCard from '~/components/game-cards/GameCard.vue'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 
+useAppSeo({
+  title: 'Online Slots — Real Money Slots & Jackpots | ByBet',
+  description: 'Play top online slot games at ByBet Philippines. Spin popular titles, megaways, and progressive jackpots from JILI, PG Soft, Pragmatic Play, and FC.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'E-Games', path: '/explore/egames/slots' },
+    { name: 'Slots', path: '/explore/egames/slots' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Online Slots',
+    url: 'https://bybet.com/explore/egames/slots',
+    description: 'Play top online slot games at ByBet Philippines. Spin popular titles, megaways, and progressive jackpots.',
+  },
+})
+
 const categoryIcons: Record<string, Component> = {
   House,
   Percent,
@@ -275,7 +292,7 @@ const resetFilters = (): void => {
 <template>
   <div class="slots-page w-full min-w-0 pb-16">
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-0.5">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-0.5">
       <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
         <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
@@ -326,7 +343,7 @@ const resetFilters = (): void => {
       </header>
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
-      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
+      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm bg-black">
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in SLOT_PROVIDERS"

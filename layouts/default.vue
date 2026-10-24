@@ -5,6 +5,56 @@ import CommentPanel from '~/components/comments/CommentPanel.vue'
 
 const { context: commentContext, openSportsComments, openGameComments, closeComments } = useCommentPanel()
 const route = useRoute()
+const normalizedPath = computed(() => route.path.replace(/\/+$/, '') || '/')
+const desktopShellKind = computed<'sports' | 'games' | null>(() => {
+  const path = normalizedPath.value
+
+  if (
+    path === '/explore/sports/live'
+    || /^\/explore\/sports\/[^/]+\/[^/]+(?:\/.*)?$/.test(path)
+  ) {
+    return 'sports'
+  }
+
+  if (
+    /^\/explore\/entertainment\/live-casino\/[^/]+(?:\/.*)?$/.test(path)
+    || path === '/explore/egames/slots'
+    || path.startsWith('/explore/egames/slots/')
+    || path === '/explore/egames/bingo'
+    || path.startsWith('/explore/egames/bingo/')
+    || /^\/explore\/egames\/jackpot\/[^/]+(?:\/.*)?$/.test(path)
+  ) {
+    return 'games'
+  }
+
+  return null
+})
+const usesDesktopReferenceShell = computed(() => desktopShellKind.value !== null)
+const usesDesktopContentReferenceShell = computed(() => {
+  const path = normalizedPath.value
+
+  return path === '/explore/egames/customer-service'
+    || path === '/explore/bonuses'
+    || path.startsWith('/explore/bonuses/')
+    || path === '/explore/live-plaza'
+    || path.startsWith('/explore/live-plaza/')
+    || path === '/explore/account/me'
+    || path.startsWith('/explore/account/')
+    || path === '/tutorial/transactions'
+    || path.startsWith('/tutorial/transactions/')
+    || path === '/game-rules'
+    || path.startsWith('/game-rules/')
+    || path === '/tutorial/mock-betting'
+    || path === '/tutorial'
+    || [
+      '/responsible-gaming',
+      '/privacy-policy',
+      '/affiliate',
+      '/download-app',
+      '/about-us',
+      '/terms-of-use',
+    ].includes(path)
+})
 const isSportsPage = computed(() => route.path.startsWith('/explore/sports/'))
 const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/') && route.path !== '/explore/egames/customer-service')
 const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
@@ -20,7 +70,7 @@ const isAccountSettingsPage = computed(() => [
   '/tutorial',
   '/affiliate',
 ].some(path => route.path.startsWith(path)))
-const isDockedChatPage = computed(() => isSportsPage.value || isGameChatPage.value)
+const isDockedChatPage = computed(() => usesDesktopReferenceShell.value)
 const isTutorialPage = computed(() => route.path === '/tutorial' || route.path.startsWith('/tutorial/'))
 const isDedicatedMobileHeaderPage = computed(() => {
   const path = route.path.replace(/\/$/, '')
@@ -38,8 +88,6 @@ const isDedicatedMobileHeaderPage = computed(() => {
     '/explore/account/timezone',
   ].some(prefix => path === prefix || path.startsWith(prefix + '/'))
 })
-const railCollapsed = ref(!(isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value || isJackpotPage.value))
-
 const isMobileDevice = (): boolean => {
   if (import.meta.client) {
     return window.innerWidth < 1024
@@ -49,18 +97,25 @@ const isMobileDevice = (): boolean => {
   return /mobile|android|iphone|ipad|ipod/i.test(ua)
 }
 
+const shouldExpandRailByDefault = (): boolean => {
+  return isAffiliatePage.value
+    || isBonusesPage.value
+    || isLivePlazaPage.value
+    || isJackpotPage.value
+    || usesDesktopReferenceShell.value
+    || usesDesktopContentReferenceShell.value
+}
+
+const railCollapsed = ref(!shouldExpandRailByDefault())
+
 watch(() => route.path, () => {
-  if (isAffiliatePage.value || isBonusesPage.value || isLivePlazaPage.value || isJackpotPage.value) {
-    railCollapsed.value = false
-  } else if (isTutorialPage.value) {
-    railCollapsed.value = true
-  }
+  railCollapsed.value = !shouldExpandRailByDefault()
 
   if (isMobileDevice()) {
     closeComments()
-  } else if (isSportsPage.value) {
+  } else if (desktopShellKind.value === 'sports') {
     openSportsComments()
-  } else if (isGameChatPage.value) {
+  } else if (desktopShellKind.value === 'games') {
     openGameComments()
   } else {
     closeComments()
@@ -162,6 +217,8 @@ onBeforeUnmount(() => {
     :class="{
       'site-shell--rail-collapsed': railCollapsed,
       'site-shell--sports-chat': isDockedChatPage && Boolean(commentContext),
+      'site-shell--desktop-reference': usesDesktopReferenceShell,
+      'site-shell--desktop-content-reference': usesDesktopContentReferenceShell,
       'site-shell--bonuses': isBonusesPage,
       'site-shell--me': route.path === '/explore/account/me',
       'site-shell--dedicated-header': isDedicatedMobileHeaderPage,
@@ -182,9 +239,13 @@ onBeforeUnmount(() => {
     />
 
     <div class="content-layout">
-      <main ref="pageContentElement" class="page-content pt-0">
-        <slot />
-      </main>
+      <div class="content-main-area">
+        <main ref="pageContentElement" class="page-content pt-0">
+          <slot />
+        </main>
+
+        <AppFooter />
+      </div>
 
       <CommentPanel
         v-if="commentContext"
@@ -193,7 +254,6 @@ onBeforeUnmount(() => {
       />
     </div>
 
-    <AppFooter />
     <MobileBottomNav />
     <ResponsibleGamingGate />
 
@@ -275,6 +335,13 @@ onBeforeUnmount(() => {
   transition: margin-left 180ms ease;
 }
 
+.content-main-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
 .page-content {
   min-width: 0;
   min-height: calc(100vh - var(--header-height));
@@ -338,6 +405,50 @@ onBeforeUnmount(() => {
 }
 
 @media (min-width: 64rem) {
+  .site-shell--desktop-content-reference {
+    --desktop-content-max-width: 1368px;
+    --site-max-width: 100vw;
+
+    max-width: 100%;
+  }
+
+  .site-shell--desktop-content-reference :deep(.sidebar) {
+    left: max(0px, calc((100% - var(--desktop-content-max-width)) / 2));
+  }
+
+  .site-shell--desktop-content-reference .content-layout {
+    width: min(
+      calc(100% - var(--sidebar-width)),
+      calc(var(--desktop-content-max-width) - var(--sidebar-width))
+    );
+    margin-left: calc(
+      max(0px, calc((100% - var(--desktop-content-max-width)) / 2))
+      + var(--sidebar-width)
+    );
+  }
+
+  .site-shell--desktop-content-reference .app-header-occlusion-plate {
+    right: 0;
+    left: 0;
+    width: auto;
+    margin: 0;
+    transform: none;
+  }
+
+  .site-shell--desktop-reference {
+    --site-max-width: 100vw;
+
+    max-width: 100%;
+  }
+
+  .site-shell--desktop-reference .app-header-occlusion-plate {
+    right: var(--comment-width);
+    left: var(--sidebar-width);
+    width: auto;
+    margin: 0;
+    transform: none;
+  }
+
   .site-shell {
     --content-sticky-top: calc(var(--header-height) - var(--desktop-top-overlap));
   }

@@ -2,6 +2,16 @@
 import { History, Trash2, Gamepad2, ArrowRight } from 'lucide-vue-next'
 import GameCard from '~/components/game-cards/GameCard.vue'
 
+useAppSeo({
+  title: 'E-Games History — Slots & Casino Session Logs | ByBet',
+  description: 'View your past slot rounds, bingo games, wager amounts, and win records on ByBet. Complete transparency for all electronic gaming sessions.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'E-Games', path: '/explore/egames/slots' },
+    { name: 'Game History', path: '/explore/egames/history' },
+  ],
+})
+
 const { recentGames, clearRecentGames } = useRecentGames()
 const { showDemoMessage } = useDemoInteraction()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl

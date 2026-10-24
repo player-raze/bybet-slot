@@ -1,4 +1,14 @@
 <script setup lang="ts">
+useAppSeo({
+  title: 'Deposit & Withdrawal Transaction Guides | ByBet Help',
+  description: 'Step-by-step guides for deposits and withdrawals on ByBet. Learn how to cash in and cash out using GCash, Maya, and online bank transfer seamlessly.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Tutorials', path: '/tutorial' },
+    { name: 'Transactions', path: '/tutorial/transactions/deposit' },
+  ],
+})
+
 navigateTo('/tutorial/transactions/deposit', { redirectCode: 301 })
 </script>
 

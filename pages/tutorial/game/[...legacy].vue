@@ -1,4 +1,14 @@
 <script setup lang="ts">
+useAppSeo({
+  title: 'Interactive Casino Game Guides & Rules | ByBet Help',
+  description: 'Read comprehensive game guides and gameplay walkthroughs for ByBet slots and table games. Understand payout mechanics, bonus rounds, and odds.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Tutorials', path: '/tutorial' },
+    { name: 'Game Guides', path: '/tutorial/game' },
+  ],
+})
+
 const route = useRoute()
 const legacySegments = Array.isArray(route.params.legacy)
   ? route.params.legacy

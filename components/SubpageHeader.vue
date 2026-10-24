@@ -38,7 +38,7 @@ const handleBack = (): void => {
   <header
     class="subpage-header"
     :class="[
-      sticky ? 'subpage-header--sticky' : 'relative',
+      sticky ? 'subpage-header--sticky sticky-header-seal' : 'relative',
       customClass,
     ]"
     role="banner"

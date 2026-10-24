@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import GameTutorialPage from '~/components/tutorial/GameTutorialPage.vue'
 
-useSeoMeta({
-  title: 'Mock Betting Tutorial | ByBet',
-  description: 'Practice HDP, Over/Under, 1X2, corners, odd/even, correct score, and outright bets with interactive examples.',
-  ogTitle: 'Mock Betting Tutorial | ByBet',
-  ogDescription: 'Practice popular sports betting markets with interactive mock bets.',
+useAppSeo({
+  title: 'Mock Betting Simulator & Practice Tutorial | ByBet',
+  description: 'Practice sports wagering with ByBet interactive mock betting simulator. Test handicap, over/under, and 1X2 bet types with zero financial risk.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Tutorials', path: '/tutorial' },
+    { name: 'Mock Betting', path: '/tutorial/mock-betting' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'How to Practice Sports Betting on ByBet',
+    description: 'Learn and practice sports betting risk-free using the ByBet interactive mock betting simulator.',
+  },
 })
 </script>
 

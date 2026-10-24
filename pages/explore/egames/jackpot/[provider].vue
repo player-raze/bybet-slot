@@ -63,6 +63,28 @@ const activeProvider = computed(() => {
   return p
 })
 
+const providerName = computed(() => {
+  const p = activeProvider.value
+  if (p === 'all') return 'All Providers'
+  return p.toUpperCase()
+})
+
+useAppSeo({
+  title: computed(() => `${providerName.value} Progressive Jackpots — Casino Slots | ByBet`),
+  description: computed(() => `Spin high-paying progressive jackpot slots from ${providerName.value} on ByBet Philippines. Live prize counters, daily winners, and mega jackpot payouts.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Jackpots', path: '/explore/egames/jackpot/all' },
+    { name: providerName.value, path: `/explore/egames/jackpot/${activeProvider.value}` },
+  ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${providerName.value} Progressive Jackpots - ByBet`,
+    url: `https://bybet.com/explore/egames/jackpot/${activeProvider.value}`,
+  })),
+})
+
 const activeGameId = ref<string | null>(null)
 const currentWinners = ref<JackpotWinner[]>([...JACKPOT_WINNERS])
 const jackpotAmounts = ref<Record<string, number>>(
@@ -234,7 +256,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 <template>
   <div class="jackpot-page w-full min-w-0 pb-16">
     <!-- Sticky Header (Top Nav Tabs Bar) -->
-    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1  pb-2">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1 pb-2">
       <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
       <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm">
         <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm">

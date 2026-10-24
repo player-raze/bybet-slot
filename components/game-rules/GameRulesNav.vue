@@ -78,7 +78,7 @@ watch(() => route.path, () => {
 </script>
 
 <template>
-  <div class="game-rules-sticky-wrapper sticky top-0 lg:top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-2 sm:-mx-4 pb-2 mb-2 sm:mb-3">
+  <div class="game-rules-sticky-wrapper sticky-header-seal sticky top-0 lg:top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-2 sm:-mx-4 pb-2 mb-2 sm:mb-3">
     <header class="game-rules-header-wrapper">
       <!-- Universal Emerald Subpage Header with AA text scaler -->
       <SubpageHeader

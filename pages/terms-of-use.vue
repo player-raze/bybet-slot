@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import LegalPageShell from '~/components/legal/LegalPageShell.vue'
 
-useSeoMeta({
-  title: 'Terms of Use & Service Agreement | ByBet',
-  description: 'ByBet official terms of use. Account eligibility, 21+ policy, wagering terms, payment compliance, and PAGCOR player protection regulations.',
-  ogTitle: 'Terms of Use & Service Agreement | ByBet',
-  ogDescription: 'Read the official ByBet terms and conditions. Fair play standards, legal age requirements, and betting rules.',
+useAppSeo({
+  title: 'Terms of Use & Player Service Agreement | ByBet Platform',
+  description: 'Read the official ByBet Terms of Use. Review player account rules, wagering standards, verification requirements, and responsible gaming compliance terms.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Terms of Use', path: '/terms-of-use' },
+  ],
 })
 </script>
 

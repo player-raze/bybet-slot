@@ -3,6 +3,16 @@ import SubpageHeader from '~/components/SubpageHeader.vue'
 import { Check } from 'lucide-vue-next'
 
 const { locale, setLocale } = useSiteLocale()
+
+useAppSeo({
+  title: 'Language Settings — Choose Your Preferred Locale | ByBet',
+  description: 'Customize your language and regional display preferences on ByBet. Select English, Filipino, or regional settings for a tailored gaming experience.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Account', path: '/explore/account/me' },
+    { name: 'Language', path: '/explore/account/language' },
+  ],
+})
 </script>
 
 <template>

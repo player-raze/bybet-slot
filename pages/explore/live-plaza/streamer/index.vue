@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { ChevronRight } from 'lucide-vue-next'
 
-useSeoMeta({
-  title: 'Streamer | Live Plaza | ByBet',
-  description: 'Watch live sports streamers, follow popular game broadcasts, and interact with the ByBet live plaza streaming community.',
-  ogTitle: 'Streamer | Live Plaza | ByBet',
-  ogDescription: 'Watch live sports streamers, follow popular game broadcasts, and interact with the ByBet live plaza streaming community.',
+useAppSeo({
+  title: 'Live Streamers & Match Broadcasts | ByBet Live Plaza',
+  description: 'Watch live sports broadcasts and interactive game streams on ByBet Live Plaza. Follow your favorite streamers and view real-time match betting tips.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+    { name: 'Streamers', path: '/explore/live-plaza/streamer' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Live Streamers',
+    url: 'https://bybet.com/explore/live-plaza/streamer',
+  },
 })
 
 const router = useRouter()

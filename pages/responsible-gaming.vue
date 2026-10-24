@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import LegalPageShell from '~/components/legal/LegalPageShell.vue'
 
-useSeoMeta({
+useAppSeo({
   title: 'Responsible Gaming & Player Protection | ByBet Philippines',
   description: 'ByBet is committed to safe, responsible entertainment. Learn about PAGCOR self-exclusion, deposit limits, support hotlines, and underage gambling prevention.',
-  ogTitle: 'Responsible Gaming & Player Protection | ByBet Philippines',
-  ogDescription: 'Play responsibly with ByBet. Access self-exclusion tools, player limits, and 24/7 problem gambling support resources.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Responsible Gaming', path: '/responsible-gaming' },
+  ],
 })
 </script>
 

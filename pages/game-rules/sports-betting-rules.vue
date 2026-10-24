@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { sportsBettingRulesHtml } from '~/data/sports-betting-rules'
 
-useSeoMeta({
+useAppSeo({
   title: 'General Sports Betting Rules & Settlement Standards | ByBet',
   description: 'Official ByBet sportsbook rules. Acceptance of bets, dead heat calculations, in-play procedures, maximum payouts, and postponement policies.',
-  ogTitle: 'General Sports Betting Rules & Settlement Standards | ByBet',
-  ogDescription: 'Official ByBet sports betting rulebook. Understand how bets are accepted, verified, and settled.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Sports Betting Rules', path: '/game-rules/sports-betting-rules' },
+  ],
 })
 </script>
 

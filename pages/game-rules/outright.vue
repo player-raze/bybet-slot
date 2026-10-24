@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { outrightRulesHtml } from '~/data/outright-rules'
 
-useSeoMeta({
+useAppSeo({
   title: 'Outright Betting Rules & Tournament Futures | ByBet',
-  description: 'Official ByBet rules for Outright & Futures betting: All-In Ante-Post rules, Dead Heat tie reductions, regular season finishing positions, and monthly cutoff terms.',
-  ogTitle: 'Outright Betting Rules & Tournament Futures | ByBet',
-  ogDescription: 'Master Outright futures betting rules on ByBet: Dead Heat calculations, Ante-Post participation, and tournament winner regulations.',
+  description: 'Official ByBet Outright and Futures rules: All-In Ante-Post terms, Dead Heat tie reductions, regular season finishing positions, and monthly cutoff terms.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Outright Rules', path: '/game-rules/outright' },
+  ],
 })
 </script>
 

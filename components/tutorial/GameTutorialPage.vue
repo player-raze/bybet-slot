@@ -170,14 +170,10 @@ const markets: MarketDefinition[] = [
     label: 'Corners',
     panelTitle: 'Corners',
     choices: [
-      choice('corners-over-75', 'Over 7.5', 'Corners Over 7.5', '1.98', 'WIN', 'The example match finishes with nine corners, so Over 7.5 wins.'),
-      choice('corners-under-75', 'Under 7.5', 'Corners Under 7.5', '1.98', 'LOSE', 'Nine corners were taken, exceeding the 7.5 line.'),
-      choice('corners-over-85', 'Over 8.5', 'Corners Over 8.5', '1.98', 'WIN', 'Nine total corners are enough for Over 8.5 to win.'),
-      choice('corners-under-85', 'Under 8.5', 'Corners Under 8.5', '1.98', 'LOSE', 'Nine total corners are above the 8.5 line.'),
-      choice('corners-over-9', 'Over 9', 'Corners Over 9', '1.98', 'REFUND', 'The example total lands exactly on nine, so the stake is refunded.'),
-      choice('corners-under-9', 'Under 9', 'Corners Under 9', '1.98', 'REFUND', 'The example total lands exactly on nine, so the stake is refunded.'),
-      choice('barca-corners', 'Barcelona −1', 'Barcelona Corners −1', '1.98', 'WIN', 'Barcelona takes two more corners, covering the −1 corner handicap.'),
-      choice('madrid-corners', 'Real Madrid +1', 'Real Madrid Corners +1', '1.98', 'LOSE', 'The one-corner allowance is not enough to cover a two-corner deficit.'),
+      choice('corners-barcelona-15', '-1.5', 'Barcelona -1.5', '1.98', 'WIN', 'After receiving handicap points, Real Madrid vs. Barcelona corner handicap result is: 7-6.5, Barcelona wins, so bets on Barcelona (-1.5) win.'),
+      choice('corners-real-madrid-15', '+1.5', 'Real Madrid +1.5', '1.98', 'LOSE', 'After receiving handicap points, Real Madrid vs. Barcelona corner handicap result is: 7-6.5, Real Madrid loses, so bets on Real Madrid (+1.5) lose.'),
+      choice('corners-barcelona-152', '-1.5/2', 'Barcelona -1.5/2', '1.98', 'WIN_HALF', 'After receiving the handicap, if the final score of corner handicap is 7-6.5 or 7-7; 7-6.5 results in a win for Real Madrid, and half the result is also a win for Real Madrid, so bets on Real Madrid (+1.5/2) will result in a half-loss'),
+      choice('corners-real-madrid-152', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE', 'After receiving the handicap, if the final score of corner handicap is 7-6.5 or 7-7; 7-6.5 results in a loss for Real Madrid, and half the result is also a loss for Real Madrid, so bets on Real Madrid (+1.5/2) will result in a half-loss.'),
     ],
     lesson: {
       title: 'Corner Betting',
@@ -195,8 +191,8 @@ const markets: MarketDefinition[] = [
     label: 'Odd / Even',
     panelTitle: 'Odd / Even',
     choices: [
-      choice('odd', 'Odd', 'Total Goals — Odd', '1.98', 'LOSE', 'The final total is two goals. Two is an even number, so Odd loses.'),
-      choice('even', 'Even', 'Total Goals — Even', '1.98', 'WIN', 'The final total is two goals. Two is even, so this selection wins.'),
+      choice('odd', 'Odd', 'Odd', '1.98', 'LOSE', 'The number of goals is 2, which is an even number, so bets on (odd) lose.'),
+      choice('even', 'Even', 'Even', '1.98', 'WIN', 'The number of goals is 2, which is an even number, so bets on (even) win.'),
     ],
     lesson: {
       title: 'Odd / Even',
@@ -214,9 +210,9 @@ const markets: MarketDefinition[] = [
     label: 'Correct Score',
     panelTitle: 'Correct Score',
     choices: [
-      choice('score-20', '2–0', 'Barcelona 2–0', '1.98', 'WIN', 'The predicted score exactly matches the 2–0 result, so the selection wins.'),
-      choice('score-other', 'Others', 'Other correct score', '1.98', 'LOSE', 'The final score is listed as 2–0, so the Others selection loses.'),
-      choice('score-02', '0–2', 'Real Madrid 2–0', '1.98', 'LOSE', 'The teams finished in the opposite order, so the 0–2 prediction loses.'),
+      choice('score-20', '2–0', '2–0', '1.98', 'WIN', 'The result is exactly the same as the bet item, so bets on (2-0) win.'),
+      choice('score-other', 'Others', 'Others', '1.98', 'LOSE', 'Only when the match result is inconsistent with all score options, the bet on "other score" wins; as there is a bet item that matches the result score, the bet (other score) lose.'),
+      choice('score-02', '0–2', '0-2', '1.98', 'LOSE', 'Betting score is inconsistent with result score, so bets (0-2) lose.'),
     ],
     lesson: {
       title: 'Correct Score',
@@ -235,9 +231,9 @@ const markets: MarketDefinition[] = [
     panelTitle: 'Outright',
     choices: [
       choice('real-madrid-outright', 'Real Madrid', 'Real Madrid', '13.0', 'WIN', 'Real Madrid wins the championship, so bets on Real Madrid win.'),
-      choice('barcelona-outright', 'Barcelona', 'Barcelona', '13.0', 'LOSE', 'Barcelona finishes as runner-up, so the outright selection loses.'),
-      choice('atletico-outright', 'Atletico Madrid', 'Atletico Madrid', '13.0', 'LOSE', 'Atletico Madrid finishes third and does not win the championship.'),
-      choice('villarreal-outright', 'Villarreal', 'Villarreal', '13.0', 'LOSE', 'Villarreal does not win the championship, so the outright selection loses.'),
+      choice('barcelona-outright', 'Barcelona', 'Barcelona', '13.0', 'LOSE', 'Barcelona is the runner-up without winning, so bets on (Barcelona) lose.'),
+      choice('atletico-outright', 'Atletico Madrid', 'Atletico Madrid', '13.0', 'LOSE', 'Atletico Madrid is third place without winning, so bets on (Atletico Madrid) lose.'),
+      choice('villarreal-outright', 'Villarreal', 'Villarreal', '13.0', 'LOSE', 'Villarreal is not listed as winner, so bets on (Villarreal) lose.'),
     ],
     lesson: {
       title: 'Outright Betting',
@@ -717,7 +713,7 @@ const selectChoice = (id: string): void => {
     </SubpageHeader>
 
     <div class="tutorial-content-container px-2 sm:px-0">
-      <nav class="market-tabs" aria-label="Betting markets">
+      <nav class="market-tabs sticky-header-seal" aria-label="Betting markets">
       <button
         v-for="market in markets"
         :key="market.key"

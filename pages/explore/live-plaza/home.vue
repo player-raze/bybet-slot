@@ -18,11 +18,19 @@ const popularGameSortOptions: Array<{ value: PopularGameSort; label: string }> =
   { value: 'predict', label: 'Predict' },
 ]
 
-useSeoMeta({
+useAppSeo({
   title: 'Live Plaza — Popular Games & Expert Predictions | ByBet',
-  description: 'Explore live plaza popular sports games and expert predictions with real-time hit rates, winning forecasts, and match odds.',
-  ogTitle: 'Live Plaza — Popular Games & Expert Predictions | ByBet',
-  ogDescription: 'Explore live plaza popular sports games and expert predictions with real-time hit rates, winning forecasts, and match odds.',
+  description: 'Explore ByBet Live Plaza for trending sports broadcasts, expert game predictions, verified hit rates, and real-time community betting discussions.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Live Plaza',
+    url: 'https://bybet.com/explore/live-plaza/home',
+  },
 })
 
 const { showDemoMessage } = useDemoInteraction()
@@ -336,7 +344,6 @@ onBeforeUnmount(() => {
   flex: 0 0 auto;
 }
 
-.panel-action--popular-sort,
 .panel-action--popular-sort:hover,
 .panel-action--popular-sort.panel-action--open {
   border: 1px solid #087d5c;

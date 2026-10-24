@@ -28,6 +28,23 @@ import {
 } from '~/data/bingo'
 import GameCard from '~/components/game-cards/GameCard.vue'
 
+useAppSeo({
+  title: 'Online Bingo Games — Fast Paced Fun & Wins | ByBet',
+  description: 'Play online bingo games at ByBet Philippines. Experience fast-paced ball draws, multi-card action, mega multipliers, and instant cash prizes 24/7.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'E-Games', path: '/explore/egames/slots' },
+    { name: 'Bingo', path: '/explore/egames/bingo' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Online Bingo',
+    url: 'https://bybet.com/explore/egames/bingo',
+    description: 'Play online bingo games at ByBet Philippines. Experience fast-paced ball draws, multi-card action, and instant cash prizes.',
+  },
+})
+
 const categoryIcons: Record<string, Component> = {
   House,
   Crown,
@@ -252,7 +269,7 @@ const resetFilters = (): void => {
 <template>
   <div class="bingo-page w-full min-w-0 pb-16">
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-30  -mx-1 px-1 pb-0.5">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-0.5">
       <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
         <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
@@ -303,7 +320,7 @@ const resetFilters = (): void => {
       </header>
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
-      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
+      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm bg-black">
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in BINGO_PROVIDERS"

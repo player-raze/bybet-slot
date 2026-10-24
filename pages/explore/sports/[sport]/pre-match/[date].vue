@@ -4,6 +4,25 @@ defineProps<{
   selectedTournaments?: Record<string, string[]>
 }>()
 
+const route = useRoute()
+
+const sportName = computed(() => {
+  const s = String(route.params.sport || 'sports')
+  return s.charAt(0).toUpperCase() + s.slice(1)
+})
+
+useAppSeo({
+  title: computed(() => `${sportName.value} Pre-Match Odds (${route.params.date}) | ByBet`),
+  description: computed(() => `Browse pre-match ${sportName.value} odds for games scheduled on ${route.params.date} at ByBet. Analyze matchup stats and lock in competitive betting lines early.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Sports', path: '/explore/sports/popular' },
+    { name: sportName.value, path: `/explore/sports/${route.params.sport}` },
+    { name: 'Pre-Match', path: `/explore/sports/${route.params.sport}/pre-match` },
+    { name: String(route.params.date), path: route.path },
+  ]),
+})
+
 definePageMeta({
   validate: route => {
     const value = String(route.params.date)

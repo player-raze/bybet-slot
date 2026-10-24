@@ -80,8 +80,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <footer id="support" class="app-footer w-full bg-black text-[#8e9491] select-none border-t border-white/[0.04]">
-    <div class="footer-inner max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20 sm:pb-12">
+  <footer id="support" class="app-footer w-full text-[#8e9491] select-none border-t border-white/[0.04] mt-4">
+    <div class="footer-inner max-w-5xl mx-auto px-4 sm:px-6  pb-20 sm:pb-12">
       <!-- Section 1: Special Promotion -->
       <div class="footer-accordion-item border-b border-white/[0.06] py-3.5">
         <button
@@ -227,30 +227,30 @@ onBeforeUnmount(() => {
             <img
               src="/responsible-gaming/pagcor.webp"
               alt="PAGCOR Regulated"
-              class="h-11 w-11 object-cover"
+              class="h-12 w-12 object-cover"
               loading="lazy"
             />
           </div>
-          <div class="h-10 rounded-lg bg-white flex items-center px-2.5 shadow">
+          <div class="h-10 rounded-lg bg-white flex items-center  shadow">
             <img
               src="/responsible-gaming/age-restriction.webp"
               alt="21+ Gambling Can Be Addictive. Know When To Stop."
-              class="h-7 w-auto object-contain"
+              class="h-15 w-auto object-cover"
               loading="lazy"
             />
           </div>
         </div>
 
         <!-- Links in Red -->
-        <div class="text-[11px] font-bold text-[#f04438] tracking-wide mt-1">
+        <div class="text-[10px] font-bold text-[#c10001] tracking-wide mt-1">
           <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
           <span class="mx-2.5">•</span>
           <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
         </div>
 
         <!-- Warning in Blue -->
-        <p class="text-[10px] font-bold text-[#2e90fa] max-w-sm uppercase leading-relaxed text-center mt-0.5">
-          GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.
+        <p class="text-[12px] font-bold text-[#25408e] max-w-sm uppercase leading-relaxed text-center mt-0.5">
+          GAMBLING DOESN'T GUARANTEE EARNINGS OR <br/>FINANCIAL IMPROVEMENT. STAY WITHIN YOUR<br/> LIMITS.
         </p>
 
         <!-- Hotline image banner -->
@@ -258,7 +258,7 @@ onBeforeUnmount(() => {
           <img
             src="/responsible-gaming/support-hotline.webp"
             alt="Responsible gaming support hotline"
-            class="h-9 w-auto object-contain rounded"
+            class="h-15 w-auto object-contain rounded"
             loading="lazy"
           />
         </div>
@@ -271,17 +271,8 @@ onBeforeUnmount(() => {
 .app-footer {
   position: relative;
   z-index: 20;
-  width: auto;
-  margin-left: var(--sidebar-width);
-  background: #000000;
+  width: 100%;
   color: #8e9491;
-  transition: margin-left 180ms ease;
-}
-
-@media (max-width: 63.99rem) {
-  .app-footer {
-    margin-left: 0;
-  }
 }
 
 .footer-inner {

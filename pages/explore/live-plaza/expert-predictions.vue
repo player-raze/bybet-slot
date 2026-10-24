@@ -35,11 +35,20 @@ const visiblePredictors = computed(() => {
 })
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
-useSeoMeta({
-  title: 'Expert Predictions | Live Plaza | ByBet',
-  description: 'Follow expert predictions, winning tips, and real-time sports forecasts with high hit rates.',
-  ogTitle: 'Expert Predictions | Live Plaza | ByBet',
-  ogDescription: 'Follow expert predictions, winning tips, and real-time sports forecasts with high hit rates.',
+useAppSeo({
+  title: 'Expert Predictions & High Hit Rate Tips | ByBet Plaza',
+  description: 'Get daily expert predictions and verified betting tips on ByBet Live Plaza. Boost your wagering strategy with data-driven insights and match previews.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+    { name: 'Expert Predictions', path: '/explore/live-plaza/expert-predictions' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Expert Predictions',
+    url: 'https://bybet.com/explore/live-plaza/expert-predictions',
+  },
 })
 
 const { showDemoMessage } = useDemoInteraction()

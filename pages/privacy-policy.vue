@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import LegalPageShell from '~/components/legal/LegalPageShell.vue'
 
-useSeoMeta({
+useAppSeo({
   title: 'Privacy Policy & Data Protection (RA 10173) | ByBet',
   description: 'ByBet official privacy policy. Learn how player personal data, payment information, and betting logs are safeguarded in compliance with RA 10173.',
-  ogTitle: 'Privacy Policy & Data Protection (RA 10173) | ByBet',
-  ogDescription: 'Your privacy matters. Discover how ByBet protects and processes your personal data securely.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Privacy Policy', path: '/privacy-policy' },
+  ],
 })
 </script>
 

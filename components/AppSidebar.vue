@@ -324,18 +324,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   border: 1px solid rgba(232, 245, 239, 0.16);
   border-radius: 0.5rem;
-  background:
-    radial-gradient(
-      120% 16% at 8% 0%,
-      rgba(255, 255, 255, 0.14),
-      transparent 60%
-    ),
-    linear-gradient(
-      165deg,
-      rgba(37, 44, 41, 0.52),
-      rgba(16, 21, 19, 0.42) 45%,
-      rgba(8, 11, 10, 0.5)
-    );
+  background:rgba(255, 255, 255, 0.10);
   box-shadow:
     inset 1px 0 rgba(255, 255, 255, 0.1),
     inset -1px 0 rgba(255, 255, 255, 0.035),
@@ -518,8 +507,7 @@ onBeforeUnmount(() => {
 
 .rail-submenu-link:hover {
   color: white;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045));
-  box-shadow: inset 1px 0 rgba(50, 212, 154, 0.42);
+  background: #5B5B5B;
 }
 
 .rail-submenu-link--active,

@@ -6,14 +6,35 @@ import {
   recommendedGames,
 } from '~/data/homepage'
 
-useSeoMeta({
+useAppSeo({
   title: 'ByBet Casino Ph | The Premium Online Sports Betting Site',
   description: 'Experience top-tier gaming on the ByBet Casino Ph. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
-  ogTitle: 'ByBet Casino Ph | Your Premium Online Sports Betting Site',
-  ogDescription: 'Experience top-tier gaming on the ByBet homepage. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
-  ogType: 'website',
-  ogImage: '',
-  twitterCard: 'summary_large_image',
+  image: '/brand/bybet-logo.webp',
+  schema: [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'ByBet Philippines',
+      url: 'https://bybet.com/',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://bybet.com/explore/egames/slots?q={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'ByBet',
+      url: 'https://bybet.com/',
+      logo: 'https://bybet.com/brand/bybet-logo.webp',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        availableLanguage: ['English', 'Filipino'],
+      },
+    },
+  ],
 })
 
 </script>

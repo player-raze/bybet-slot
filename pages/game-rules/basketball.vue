@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { basketballRulesHtml } from '~/data/basketball-rules'
 
-useSeoMeta({
-  title: 'Basketball Betting Rules (NBA, PBA, FIBA) | ByBet',
-  description: 'Official basketball rules: Overtime inclusion, minimum playing times (43 mins for NBA / 35 mins for FIBA & PBA), quarter settlements, and player prop conditions.',
-  ogTitle: 'Basketball Betting Rules (NBA, PBA, FIBA) | ByBet',
-  ogDescription: 'Basketball betting rules for NBA, PBA, and international leagues. Learn how points, spreads, and player props are settled.',
+useAppSeo({
+  title: 'Basketball Betting Rules (NBA, PBA & FIBA) | ByBet',
+  description: 'Official basketball rules: Overtime inclusion, regulation times (43m NBA, 35m FIBA & PBA), quarter settlements, and player prop conditions on ByBet.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Basketball Rules', path: '/game-rules/basketball' },
+  ],
 })
 </script>
 

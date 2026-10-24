@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { cashOutRulesHtml } from '~/data/cash-out-rules'
 
-useSeoMeta({
-  title: 'Cash Out Rules & Settlement Policy | ByBet',
-  description: 'Official ByBet Cash Out rules: full and partial cash out unit stake rules, settlement for interrupted/cancelled events, reversal protocols, and straight accumulator adjustments.',
-  ogTitle: 'Cash Out Rules & Settlement Policy | ByBet',
-  ogDescription: 'Master ByBet Cash Out rules: full & partial cash out calculation, cancellation reversal terms, and accumulator settlement.',
+useAppSeo({
+  title: 'Cash Out Rules, Terms & Settlement Standards | ByBet',
+  description: 'Official ByBet Cash Out rules: full and partial cash out unit stake rules, settlement for interrupted events, reversal protocols, and accumulator terms.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Cash Out Rules', path: '/game-rules/cash-out' },
+  ],
 })
 </script>
 

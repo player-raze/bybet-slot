@@ -59,6 +59,27 @@ const normalizeCategory = (param: string): string => {
 
 const activeCategory = computed(() => normalizeCategory(route.params.category as string || 'bonus'))
 
+const categoryLabel = computed(() => {
+  const match = SLOT_CATEGORIES.find(c => c.key === activeCategory.value)
+  return match?.label || 'Featured'
+})
+
+useAppSeo({
+  title: computed(() => `${categoryLabel.value} Online Slots — Real Money Games | ByBet`),
+  description: computed(() => `Explore ${categoryLabel.value} online slots at ByBet Philippines. Spin certified high RTP slot machines, free spins, and jackpot games with instant payouts.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Slots', path: '/explore/egames/slots' },
+    { name: categoryLabel.value, path: `/explore/egames/slots/${activeCategory.value}` },
+  ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${categoryLabel.value} Slots - ByBet`,
+    url: `https://bybet.com/explore/egames/slots/${activeCategory.value}`,
+  })),
+})
+
 const sectionId = computed(() => {
   const cat = activeCategory.value
   if (cat === 'bonus') return 'bonuses'
@@ -285,7 +306,7 @@ const displayedGames = computed<SlotGame[]>(() => {
 <template>
   <div class="slots-page w-full min-w-0 pb-16">
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-2">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 bg-[#000000] -mx-1 px-1 pb-2">
       <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
         <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
@@ -336,7 +357,7 @@ const displayedGames = computed<SlotGame[]>(() => {
       </header>
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
-      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
+      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm bg-black">
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in SLOT_PROVIDERS"

@@ -14,6 +14,15 @@ const { selectedLanguageLabel } = useSiteLocale()
 const { selectedTimeZone } = useTimeZonePreference()
 const { setThemePreference, themePreference } = useSiteTheme()
 
+useAppSeo({
+  title: 'My Account Profile & VIP Overview | ByBet Philippines',
+  description: 'Manage your ByBet account profile, security settings, VIP tier status, and transaction history. Fast, secure account management on ByBet Philippines.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'My Account', path: '/explore/account/me' },
+  ],
+})
+
 const openSections = reactive({
   general: true,
   livePlaza: true,
@@ -41,7 +50,7 @@ const selectedTheme = ref<'International' | 'Asia'>('International')
     <!-- Hero Area with Green Felt Texture & "ByBet" Watermark -->
     <div class="me-hero-wrapper relative w-full overflow-hidden">
       <!-- Mobile Dedicated Header (Hidden on Desktop) -->
-      <header class="me-mobile-header lg:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#071f14]/65 backdrop-blur-md border-b border-white/[0.04]">
+      <header class="me-mobile-header sticky-header-seal lg:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#071f14]/65 backdrop-blur-md border-b border-white/[0.04]">
         <h1 class="text-[19px] font-bold text-white tracking-tight">Me</h1>
         <div class="flex items-center gap-2">
           <NuxtLink
@@ -571,9 +580,9 @@ const selectedTheme = ref<'International' | 'Asia'>('International')
     </div>
 
     <!-- Desktop View: Classic Dashboard Layout (>= 1024px) -->
-    <div class="me-desktop-view hidden lg:block w-full min-w-0 pb-12 pt-1 text-white">
+    <div class="me-desktop-view hidden lg:block w-full min-w-0  pt-1 text-white">
     <!-- Top Account Card: Login / Sign Up & Action Buttons -->
-    <div class="sticky top-[var(--content-sticky-top)] z-20 bg-[#000000] -mx-1 px-1 pt-0.5 pb-1 mb-2">
+    <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] z-20 bg-[#000000] -mx-1 px-1 pt-0.5 pb-1 mb-2">
       <div class="account-card rounded-lg bg-[#141414] px-2 py-3 shadow-sm">
       <div class="px-2">
         <div class="flex items-center gap-1">

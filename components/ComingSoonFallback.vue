@@ -34,11 +34,22 @@ const formatSegment = (segment: string): string => {
 const sectionTitle = computed(() => formatSegment(pathSegments.value[0] ?? 'Explore'))
 const pageTitle = computed(() => formatSegment(pathSegments.value.at(-1) ?? 'Coming Soon'))
 
-useSeoMeta({
-  title: () => `${pageTitle.value} — Coming Soon | ByBet`,
-  description: () => `${pageTitle.value} in ${sectionTitle.value} is coming soon to ByBet.`,
-  robots: 'noindex, follow',
-})
+const props = withDefaults(
+  defineProps<{
+    disableSeo?: boolean
+  }>(),
+  {
+    disableSeo: false,
+  }
+)
+
+if (!props.disableSeo) {
+  useSeoMeta({
+    title: () => `${pageTitle.value} — Coming Soon | ByBet`,
+    description: () => `${pageTitle.value} in ${sectionTitle.value} is coming soon to ByBet.`,
+    robots: 'noindex, follow',
+  })
+}
 </script>
 
 <template>

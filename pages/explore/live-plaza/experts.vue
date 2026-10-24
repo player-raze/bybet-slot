@@ -18,11 +18,20 @@ const sortOptions: Array<{ value: ExpertSort; label: string }> = [
 
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
-useSeoMeta({
-  title: 'All Experts | Live Plaza | ByBet',
-  description: 'Browse all ByBet Live Plaza sports experts by hit rate, win streak, and sport.',
-  ogTitle: 'All Experts | Live Plaza | ByBet',
-  ogDescription: 'Browse all ByBet Live Plaza sports experts by hit rate, win streak, and sport.',
+useAppSeo({
+  title: 'Top Sports Betting Experts & Tipsters | ByBet Plaza',
+  description: 'Discover verified sports betting experts on ByBet Live Plaza. Compare accuracy hit rates, win streaks, and recent forecasts for NBA, football, and more.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+    { name: 'Experts', path: '/explore/live-plaza/experts' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Sports Experts',
+    url: 'https://bybet.com/explore/live-plaza/experts',
+  },
 })
 
 const selectedSport = ref<LivePlazaSportFilter>('all')

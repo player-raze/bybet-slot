@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { parlaysRulesHtml } from '~/data/parlays-rules'
 
-useSeoMeta({
-  title: 'Parlays / Multiples / Combo Bets Rules | ByBet',
-  description: 'Official ByBet rules for Parlays, Multiples, and Combo Bets: Trixie, Yankee, Super Yankee, Heinz, Super Heinz, Goliath, and Block permutations and settlement rules.',
-  ogTitle: 'Parlays / Multiples / Combo Bets Rules | ByBet',
-  ogDescription: 'Master parlay and combo betting rules on ByBet: system bets, push settlements, permutation breakdown, and calculation tables.',
+useAppSeo({
+  title: 'Parlay & Multiples Combo Bet Settlement Rules | ByBet',
+  description: 'Official ByBet rules for Parlays and Multiples: Trixie, Yankee, Super Yankee, Heinz, Goliath, system block permutations, and pushed leg settlement terms.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Parlays & Multiples Rules', path: '/game-rules/parlays-multiples' },
+  ],
 })
 
 // Wrap each table inside a dedicated horizontal scroll container

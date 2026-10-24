@@ -10,6 +10,16 @@ const {
   timeZone,
 } = useTimeZonePreference()
 
+useAppSeo({
+  title: 'Time Zone Settings — Match Schedule Preference | ByBet',
+  description: 'Adjust your display time zone on ByBet to ensure sports match schedules, live in-play start times, and event countdowns match your local clock.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Account', path: '/explore/account/me' },
+    { name: 'Time Zone', path: '/explore/account/timezone' },
+  ],
+})
+
 const filteredTimeZones = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase()
 

@@ -44,11 +44,13 @@ const expandedAdvantages = ref<Set<string>>(new Set([
 const copiedContact = ref<'phone' | 'email' | null>(null)
 let copyResetTimer: ReturnType<typeof setTimeout> | null = null
 
-useSeoMeta({
-  title: 'Affiliate Partnership Program | ByBet',
-  description: 'Join the ByBet affiliate program and earn up to 50% commission through the official ByBet partnership platform.',
-  ogTitle: 'Affiliate Partnership Program | ByBet',
-  ogDescription: 'Become a ByBet affiliate partner and earn commission from referred players.',
+useAppSeo({
+  title: 'Affiliate Partnership Program — Earn Up to 50% | ByBet',
+  description: 'Join the official ByBet Affiliate Program. Earn up to 50% revenue commission, access dedicated marketing support, and enjoy reliable weekly payouts.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Affiliate Program', path: '/affiliate' },
+  ],
 })
 
 const affiliateTabs: AffiliateTab[] = [

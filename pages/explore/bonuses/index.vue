@@ -39,14 +39,30 @@ const getFeaturedMeta = (countdownText?: string): string => {
 
   return `Event Countdown: ${countdownText}`
 }
+useAppSeo({
+  title: 'Latest Promotions, Rebates & Deposit Bonuses | ByBet',
+  description: 'Explore all exclusive ByBet promotions: daily deposit matches, unlimited cash rebates, weekly treasure chests, and VIP sports bonuses. Claim today!',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Promotions', path: '/explore/bonuses' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Promotions & Bonuses',
+    url: 'https://bybet.com/explore/bonuses',
+    description: 'Explore all exclusive ByBet promotions: daily deposit matches, unlimited cash rebates, weekly treasure chests, and VIP sports bonuses.',
+  },
+})
 </script>
 
 <template>
   <div class="bonuses-page">
-    <div class="bonuses-sticky">
+    <div class="bonuses-sticky sticky-header-seal">
       <SeoHeader
         title="Bonuses"
-        description="Explore ByBet bonuses, free spins, rebates, deposit rewards, and member promotions."
+        meta-title="Latest Promotions, Rebates & Deposit Bonuses | ByBet"
+        description="Explore all exclusive ByBet promotions: daily deposit matches, unlimited cash rebates, weekly treasure chests, and VIP sports bonuses. Claim today!"
         keywords="ByBet bonuses, free spins, rebate, deposit rewards, promotions"
         custom-class="bonus-page-header"
       >

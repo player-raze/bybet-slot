@@ -4,11 +4,25 @@ import SubpageHeader from '~/components/SubpageHeader.vue'
 const { showDemoMessage } = useDemoInteraction()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
-useSeoMeta({
-  title: 'Download ByBet Mobile App — Android APK & iOS | Official ByBet',
-  description: 'Download the official ByBet mobile application for Android and iOS. Ultra-fast live sports odds, casino slots, and instant gaming.',
-  ogTitle: 'Download ByBet Mobile App — Android APK & iOS | Official ByBet',
-  ogDescription: 'Experience mobile gaming at its finest. Download ByBet for Google Play and App Store.',
+useAppSeo({
+  title: 'Download ByBet App — Android APK & iOS | Official Mobile',
+  description: 'Download the official ByBet mobile app for Android and iOS devices. Enjoy real-time sports odds, seamless live casino streams, and lightning-fast deposits.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Download App', path: '/download-app' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'ByBet Mobile App',
+    operatingSystem: 'Android, iOS',
+    applicationCategory: 'GameApplication',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'PHP',
+    },
+  },
 })
 
 const selectedPlatform = ref<'ios' | 'android'>('ios')

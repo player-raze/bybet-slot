@@ -156,6 +156,13 @@ const handleModalOk = (): void => {
     window.location.href = bybetRedirectUrl
   }
 }
+
+const handleContentClick = (event: MouseEvent): void => {
+  const target = (event.target as HTMLElement)?.closest('.promotion-terms-trigger, .text-green-1')
+  if (target) {
+    navigateTo('/explore/legal/bonus-terms')
+  }
+}
 </script>
 
 <template>
@@ -192,159 +199,201 @@ const handleModalOk = (): void => {
       </section>
 
       <article class="promotion-sheet">
-        <header class="promotion-title">
-          <div
-            v-if="bonus.innerIcon || bonus.innerPageIcon"
-            class="promotion-title__icon"
-          >
-            <div
-              v-if="isSvgString(bonus.innerIcon || bonus.innerPageIcon)"
-              class="promotion-title__svg"
-              v-html="bonus.innerIcon || bonus.innerPageIcon"
-            />
-            <img
-              v-else
-              :src="(bonus.innerIcon || bonus.innerPageIcon)!"
-              :alt="bonus.title"
-              width="40"
-              height="41"
-              decoding="async"
+        <div
+          v-if="bonus.contentHtml"
+          class="promotion-custom-content"
+          @click="handleContentClick"
+          v-html="bonus.contentHtml"
+        />
+
+        <template v-else>
+          <div class="flex w-full flex-col lg:px-0 p-0">
+            <!-- Header with Icon and Titles -->
+            <header class="flex items-center lg:px-0">
+              <div
+                v-if="bonus.innerIcon || bonus.innerPageIcon"
+                class="min-w-10 min-h-9 flex items-center justify-center fill-tab-bar-big-button"
+              >
+                <div
+                  v-if="isSvgString(bonus.innerIcon || bonus.innerPageIcon)"
+                  class="promotion-title__svg fill-tab-bar-big-button"
+                  v-html="bonus.innerIcon || bonus.innerPageIcon"
+                />
+                <img
+                  v-else
+                  :src="(bonus.innerIcon || bonus.innerPageIcon)!"
+                  :alt="bonus.title"
+                  width="40"
+                  height="41"
+                  decoding="async"
+                >
+              </div>
+              <img
+                v-else
+                :src="bonus.thumbnailImage || (typeof bonus.bannerImage === 'object' && bonus.bannerImage.thumbnail) || PROMOTION_PLACEHOLDER_IMAGES.thumbnail"
+                :alt="bonus.title"
+                width="40"
+                height="40"
+                class="min-w-10 min-h-9 rounded-8 object-cover"
+                decoding="async"
+              >
+              <div class="h-full w-full overflow-hidden ml-3">
+                <h1 class="mb-1 break-words text-button-8 font-semibold not-italic text-lgx leading-6 max-h-unset">{{ bonus.title }}</h1>
+                <p class="break-words text-button-8 font-normal not-italic text-sm leading-4_5">{{ bonus.subtitle }}</p>
+              </div>
+            </header>
+
+            <!-- Requirements Panel (if any) -->
+            <section
+              v-if="bonus.showRequirements && bonus.requirements?.items.length"
+              class="requirements-panel mt-6"
+              aria-labelledby="requirements-title"
             >
-          </div>
-          <img
-            v-else
-            :src="bonus.thumbnailImage || (typeof bonus.bannerImage === 'object' && bonus.bannerImage.thumbnail) || PROMOTION_PLACEHOLDER_IMAGES.thumbnail"
-            :alt="bonus.title"
-            width="64"
-            height="64"
-            decoding="async"
-          >
-          <div>
-            <h1>{{ bonus.title }}</h1>
-            <p>{{ bonus.subtitle }}</p>
-          </div>
-        </header>
+              <div class="requirements-panel__heading">
+                <h2 id="requirements-title">Requirements:</h2>
+                <button type="button" @click="handleProgressClick">
+                  View Progress
+                  <ChevronRight :size="13" />
+                </button>
+              </div>
 
-        <section
-          v-if="bonus.showRequirements && bonus.requirements?.items.length"
-          class="requirements-panel"
-          aria-labelledby="requirements-title"
-        >
-          <div class="requirements-panel__heading">
-            <h2 id="requirements-title">Requirements:</h2>
-            <button type="button" @click="handleProgressClick">
-              View Progress
-              <ChevronRight :size="13" />
-            </button>
-          </div>
+              <ul>
+                <li v-for="requirement in bonus.requirements.items" :key="requirement.text">
+                  <span class="requirement-check" :class="{ 'requirement-check--complete': requirement.completed }">
+                    {{ requirement.completed ? '✓' : '' }}
+                  </span>
+                  {{ requirement.text }}
+                </li>
+              </ul>
+            </section>
 
-          <ul>
-            <li v-for="requirement in bonus.requirements.items" :key="requirement.text">
-              <span class="requirement-check" :class="{ 'requirement-check--complete': requirement.completed }">
-                {{ requirement.completed ? '✓' : '' }}
-              </span>
-              {{ requirement.text }}
-            </li>
-          </ul>
-        </section>
+            <!-- Period -->
+            <section v-if="bonus.period" class="text-sm leading-4_75 mt-6 text-text-4 lg:px-0" aria-labelledby="period-title">
+              <div id="period-title" class="text-text-4 font-normal not-italic text-sm leading-4_5">Period：</div>
+              <small class="text-text-4 font-normal not-italic text-sm leading-4_5 mt-1 block">
+                <span>{{ bonus.period }}</span>
+              </small>
+            </section>
 
-        <section class="period-section" aria-labelledby="period-title">
-          <h2 id="period-title">Period:</h2>
-          <p>{{ bonus.period }}</p>
-        </section>
-
-        <section
-          v-if="bonus.qualifications.length"
-          class="qualifications-section"
-          aria-labelledby="qualifications-title"
-        >
-          <h2 id="qualifications-title">Qualifications:</h2>
-          <dl class="qualification-table">
-            <div v-for="qualification in bonus.qualifications" :key="qualification.label">
-              <dt>{{ qualification.label }}</dt>
-              <dd>{{ qualification.value }}</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section class="reward-section" aria-labelledby="reward-content-title">
-          <div class="reward-section__heading">
-            <h2 id="reward-content-title">Event Content:</h2>
-            <span v-if="bonus.eventContent.badge">{{ bonus.eventContent.badge }}</span>
-          </div>
-
-          <p class="reward-section__description">{{ bonus.eventContent.description }}</p>
-
-          <div v-if="bonus.eventContent.methodCard" class="method-card">
-            <strong>{{ bonus.eventContent.methodCard.title }}</strong>
-            <span>{{ bonus.eventContent.methodCard.content }}</span>
-          </div>
-
-          <div v-if="bonus.eventContent.tables?.length" class="reward-tables">
-            <div
-              v-for="(table, tableIndex) in bonus.eventContent.tables"
-              :key="`${table.headerTitle || 'reward'}-${tableIndex}`"
-              class="reward-table"
+            <!-- Qualifications -->
+            <section
+              v-if="bonus.qualifications?.length"
+              class="mt-6"
+              aria-labelledby="qualifications-title"
             >
-              <div v-if="table.headerTitle" class="reward-table__title">
-                {{ table.headerTitle }}
+              <div id="qualifications-title" class="text-lg font-bold leading-7">Qualifications:</div>
+              <div class="overflow-hidden border border-button-8 mt-4 rounded-8">
+                <div
+                  v-for="qualification in bonus.qualifications"
+                  :key="qualification.label"
+                  class="last:border-b-0 border-button-8 border-b-0_25 _row_18lm5_1 flex"
+                >
+                  <div class="tw-layout-center flex flex-wrap content-center items-center justify-center text-theme-tab-text bg-primary font-semibold not-italic text-sm leading-4_5 w-30 min-w-24 px-1 py-3 text-center">
+                    {{ qualification.label }}
+                  </div>
+                  <div class="self-center flex-1 px-4 text-button-8 font-normal not-italic text-sm leading-4_5 py-3">
+                    {{ qualification.value }}
+                  </div>
+                </div>
               </div>
-              <div v-if="table.subHeaderTitle" class="reward-table__subtitle">
-                {{ table.subHeaderTitle }}
+            </section>
+
+            <!-- Event Content -->
+            <section v-if="bonus.eventContent" class="mt-6" aria-labelledby="reward-content-title">
+              <div class="flex items-center mb-4 gap-2">
+                <div id="reward-content-title" class="text-lg font-bold leading-5_25">Event Content:</div>
+                <span v-if="bonus.eventContent.badge" class="px-2 py-0.5 rounded text-xs bg-primary text-theme-tab-text font-semibold">{{ bonus.eventContent.badge }}</span>
               </div>
 
-              <div class="reward-table__scroller">
-                <table>
-                  <thead>
-                    <tr>
-                      <th v-for="column in table.columns" :key="column.key">
-                        <span v-if="column.icon">{{ column.icon }}</span>
-                        {{ column.label }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(row, rowIndex) in table.rows" :key="rowIndex">
-                      <td v-for="column in table.columns" :key="column.key">
-                        {{ row[column.key] }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <p v-if="bonus.eventContent.description" class="text-button-8 font-normal not-italic text-sm leading-4_5 mb-4">{{ bonus.eventContent.description }}</p>
+
+              <!-- Method Card -->
+              <div v-if="bonus.eventContent.methodCard" class="overflow-hidden border border-button-8 rounded-8 mb-4">
+                <div class="tw-layout-center text-theme-tab-text bg-primary font-semibold text-sm py-2 px-3 text-center">
+                  {{ bonus.eventContent.methodCard.title }}
+                </div>
+                <div class="text-button-8 text-sm py-2 px-3 text-center bg-layer-12">
+                  {{ bonus.eventContent.methodCard.content }}
+                </div>
               </div>
 
-              <p v-if="table.footnote" class="reward-table__footnote">{{ table.footnote }}</p>
-            </div>
+              <!-- Tables -->
+              <div v-if="bonus.eventContent.tables?.length" class="flex flex-col gap-4">
+                <div
+                  v-for="(table, tableIndex) in bonus.eventContent.tables"
+                  :key="`${table.headerTitle || 'reward'}-${tableIndex}`"
+                  class="overflow-hidden border border-button-8 rounded-8"
+                >
+                  <div v-if="table.headerTitle" class="text-theme-tab-text bg-primary font-semibold text-sm py-2 px-3 text-center">
+                    {{ table.headerTitle }}
+                  </div>
+                  <div v-if="table.subHeaderTitle" class="text-button-8 text-xs py-1.5 px-3 text-center border-b border-button-8 bg-layer-12">
+                    {{ table.subHeaderTitle }}
+                  </div>
+
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-center border-collapse">
+                      <thead>
+                        <tr class="bg-primary text-theme-tab-text">
+                          <th v-for="column in table.columns" :key="column.key" class="py-2.5 px-3 text-sm font-semibold border-r border-button-8 last:border-r-0">
+                            <span v-if="column.icon">{{ column.icon }} </span>
+                            {{ column.label }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(row, rowIndex) in table.rows" :key="rowIndex" class="border-t border-button-8 text-button-8 hover:bg-layer-12/40">
+                          <td v-for="column in table.columns" :key="column.key" class="py-2.5 px-3 text-sm border-r border-button-8 last:border-r-0">
+                            {{ row[column.key] }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <p v-if="table.footnote" class="text-xs text-text-4 p-2 text-center border-t border-button-8">{{ table.footnote }}</p>
+                </div>
+              </div>
+
+              <!-- Bullets -->
+              <div v-if="bonus.eventContent.bullets?.length" class="mt-4 flex flex-col font-normal text-sm leading-4_5 text-button-8 space-y-1">
+                <span v-for="bullet in bonus.eventContent.bullets" :key="bullet" class="font-normal not-italic text-sm leading-4_5 text-button-8">
+                  • {{ bullet.replace(/^[•\-\*]\s*/, '') }}
+                </span>
+              </div>
+            </section>
+
+            <!-- Promotion T&C -->
+            <section v-if="bonus.promotionTerms" class="mt-6 text-text-2">
+              <div class="mb-4 text-lg font-bold leading-7">Promotion T&amp;C:</div>
+              <ol v-if="Array.isArray(bonus.promotionTerms)" class="list-decimal pl-4 mb-0 text-button-8 font-normal not-italic text-sm leading-4_5 space-y-1">
+                <li v-for="term in bonus.promotionTerms" :key="term" class="mb-0">{{ term.replace(/^\d+\.\s*/, '') }}</li>
+              </ol>
+              <p v-else class="text-button-8 font-normal not-italic text-sm leading-4_5">{{ bonus.promotionTerms }}</p>
+            </section>
+
+            <!-- Rules -->
+            <section v-if="bonus.rules?.length" class="mt-6 text-button-8">
+              <div class="mb-4 font-semibold not-italic text-lg leading-5_5 text-button-8">Rules:</div>
+              <div class="flex flex-col font-normal not-italic text-sm leading-4_5 text-button-8 space-y-1">
+                <span v-for="rule in bonus.rules" :key="rule" class="font-normal not-italic text-sm leading-4_5 text-button-8">
+                  • {{ rule.replace(/^[•\-\*]\s*/, '') }}
+                </span>
+              </div>
+            </section>
+
+            <!-- Withdrawal Terms -->
+            <section v-if="bonus.withdrawalTerms" class="mt-6 text-button-8">
+              <div class="mb-4 font-semibold not-italic text-lg leading-5_5 text-button-8">Withdrawal Terms:</div>
+              <p class="font-normal not-italic text-sm leading-4_5 text-button-8">{{ bonus.withdrawalTerms }}</p>
+            </section>
+
+            <!-- Terms Link -->
+            <NuxtLink to="/explore/legal/bonus-terms" class="cursor-pointer underline font-normal not-italic text-sm leading-4_5 text-green-1 pt-6 block">
+              Terms and Conditions for Promotion
+            </NuxtLink>
           </div>
-
-          <ul v-if="bonus.eventContent.bullets?.length" class="promotion-list">
-            <li v-for="bullet in bonus.eventContent.bullets" :key="bullet">{{ bullet }}</li>
-          </ul>
-        </section>
-
-        <section v-if="bonus.promotionTerms" class="text-section">
-          <h2>Promotion T&amp;C:</h2>
-          <div v-if="Array.isArray(bonus.promotionTerms)" class="text-section__stack">
-            <p v-for="term in bonus.promotionTerms" :key="term">{{ term }}</p>
-          </div>
-          <p v-else>{{ bonus.promotionTerms }}</p>
-        </section>
-
-        <section class="text-section">
-          <h2>Rules:</h2>
-          <ul class="promotion-list">
-            <li v-for="rule in bonus.rules" :key="rule">{{ rule }}</li>
-          </ul>
-        </section>
-
-        <section v-if="bonus.withdrawalTerms" class="text-section">
-          <h2>Withdrawal Terms:</h2>
-          <p>{{ bonus.withdrawalTerms }}</p>
-        </section>
-
-        <NuxtLink to="/explore/legal/bonus-terms" class="promotion-terms-link">
-          Terms and Conditions for Promotion
-        </NuxtLink>
+        </template>
       </article>
     </main>
 
@@ -368,7 +417,6 @@ const handleModalOk = (): void => {
 .bonus-detail-page {
   width: 100%;
   min-width: 0;
-  padding-top: 0.2rem;
   color: #e8e9e8;
 }
 
@@ -386,7 +434,9 @@ const handleModalOk = (): void => {
 :deep(.seo-header-sticky-wrapper) {
   margin-right: -0.05rem;
   margin-left: -0.05rem;
-  padding: 0 0.05rem 0.28rem;
+  /* padding: 0 0.05rem 0.28rem; */
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
 :deep(.bonus-detail-header) {
@@ -475,6 +525,291 @@ const handleModalOk = (): void => {
   background: #151515;
 }
 
+.promotion-custom-content {
+  width: 100%;
+  color: #e8e9e8;
+}
+
+.promotion-custom-content :deep(.text-button-8) {
+  color: #f4f7f5;
+}
+
+.promotion-custom-content :deep(.text-text-4) {
+  color: #8e9491;
+}
+
+.promotion-custom-content :deep(.text-text-2) {
+  color: #f4f7f5;
+}
+
+.promotion-custom-content :deep(.text-green-1) {
+  color: #32d49a;
+}
+
+.promotion-custom-content :deep(.border-button-8) {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.promotion-custom-content :deep(.rounded-8) {
+  border-radius: 8px;
+}
+
+.promotion-custom-content :deep(.w-30) {
+  width: 8.5rem;
+}
+
+.promotion-custom-content :deep(.text-lgx) {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.promotion-custom-content :deep(.leading-4_5) {
+  line-height: 1.15rem;
+}
+
+.promotion-custom-content :deep(.leading-4_75) {
+  line-height: 1.2rem;
+}
+
+.promotion-custom-content :deep(.leading-5_25) {
+  line-height: 1.35rem;
+}
+
+.promotion-custom-content :deep(.leading-5_5) {
+  line-height: 1.4rem;
+}
+
+.promotion-custom-content :deep(.bg-primary) {
+  background-color: #036242;
+}
+
+.promotion-custom-content :deep(.text-theme-tab-text) {
+  color: #ffffff;
+}
+
+.promotion-custom-content :deep(._row_18lm5_1) {
+  display: flex;
+}
+
+.promotion-custom-content :deep(.fill-tab-bar-big-button) {
+  fill: #32d49a;
+}
+
+.promotion-custom-content :deep(iframe) {
+  display: block;
+  border: none;
+  background: transparent;
+  color-scheme: dark;
+}
+
+.promotion-custom-content :deep(._component-treasure-box__grid-common_1eql6_1) {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 0.35rem 0.25rem 0.45rem;
+  background-color: #1a1e1b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 9.375rem;
+}
+
+.promotion-custom-content :deep(._component-treasure-box__qualification_1eql6_5) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0.25rem 0;
+}
+
+.promotion-custom-content :deep([data-testid^="treasure-box-button"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 0.5rem);
+  margin: 0 auto;
+  border: none;
+  cursor: not-allowed;
+  border-radius: 10px;
+  height: 1.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.promotion-custom-content :deep(._tableColumn_1k2zb_1) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1a1e1b;
+}
+
+.promotion-custom-content :deep(.bg-layer-12) {
+  background-color: #1a1e1b;
+}
+
+.promotion-custom-content :deep(.bg-icon-5) {
+  background-color: #242c27;
+}
+
+.promotion-custom-content :deep(.text-button-11) {
+  color: #8e9491;
+}
+
+.promotion-custom-content :deep(.text-item-4) {
+  color: #ffc83b;
+  font-weight: 600;
+}
+
+.promotion-custom-content :deep(.text-primary-text) {
+  color: #32d49a;
+  font-weight: 600;
+}
+
+.promotion-custom-content :deep(.border-dividers-7) {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.promotion-custom-content :deep(.text-dividers-7) {
+  color: #e4e7e6;
+}
+
+.promotion-custom-content :deep(.border-primary) {
+  border-color: #036242;
+}
+
+.promotion-custom-content :deep(.text-black-1) {
+  color: #f4f7f5;
+}
+
+.promotion-custom-content :deep(.rounded-10) {
+  border-radius: 10px;
+}
+
+.promotion-custom-content :deep(.rounded-20) {
+  border-radius: 20px;
+}
+
+.promotion-custom-content :deep(.h-37_5) {
+  height: 9.375rem;
+}
+
+.promotion-custom-content :deep(.h-6_25) {
+  height: 1.5625rem;
+}
+
+.promotion-custom-content :deep(.min-w-24) {
+  min-width: 6rem;
+}
+
+.promotion-custom-content :deep(.w-11) {
+  width: 2.75rem;
+}
+
+.promotion-custom-content :deep(.border-b-0_25) {
+  border-bottom-width: 1px;
+}
+
+.promotion-custom-content :deep(.leading-4) {
+  line-height: 1rem;
+}
+
+.promotion-custom-content :deep(.leading-6) {
+  line-height: 1.5rem;
+}
+
+.promotion-custom-content :deep(.leading-6_75) {
+  line-height: 1.6875rem;
+}
+
+.promotion-custom-content :deep(.leading-7) {
+  line-height: 1.75rem;
+}
+
+.promotion-custom-content :deep(.max-h-unset) {
+  max-height: unset;
+}
+
+.promotion-custom-content :deep(.tw-layout-center) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.promotion-custom-content :deep(picture) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.promotion-custom-content :deep(picture img) {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content {
+  color: #14251d;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-button-8) {
+  color: #14251d;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-text-4) {
+  color: #5d7066;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-text-2) {
+  color: #14251d;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.border-button-8) {
+  border-color: rgba(3, 98, 66, 0.14);
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-green-1) {
+  color: #036242;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(._component-treasure-box__grid-common_1eql6_1) {
+  background-color: #f0f5f2;
+  border-color: rgba(3, 98, 66, 0.12);
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(._tableColumn_1k2zb_1) {
+  background-color: #ffffff;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.bg-layer-12) {
+  background-color: #f0f5f2;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.bg-icon-5) {
+  background-color: #e2e8e5;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-button-11) {
+  color: #5d7066;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-primary-text) {
+  color: #036242;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.border-dividers-7) {
+  border-color: rgba(3, 98, 66, 0.14);
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-dividers-7) {
+  color: #22332a;
+}
+
+:global(html[data-theme='light']) .promotion-custom-content :deep(.text-black-1) {
+  color: #14251d;
+}
+
 .promotion-title {
   display: flex;
   align-items: center;
@@ -513,45 +848,26 @@ const handleModalOk = (): void => {
   fill: var(--bright, #32d49a);
 }
 
-.promotion-title h1 {
-  margin: 0;
-  color: #f6f6f6;
-  font-size: 0.82rem;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.promotion-title p {
-  margin: 0.12rem 0 0;
-  color: #a2a5a3;
-  font-size: 0.58rem;
-  line-height: 1.25;
-}
-
 .requirements-panel {
-  margin-bottom: 0.78rem;
-  padding: 0.52rem 0.55rem 0.58rem;
-  border-radius: 0.42rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.48rem;
   background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .requirements-panel__heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
   gap: 0.5rem;
 }
 
-.requirements-panel h2,
-.requirements-panel button {
-  margin: 0;
-  font-size: 0.52rem;
-}
-
 .requirements-panel h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: #f1f1f1;
-  font-weight: 800;
 }
 
 .requirements-panel button {
@@ -561,12 +877,12 @@ const handleModalOk = (): void => {
   border: 0;
   color: #888c89;
   background: transparent;
+  font-size: 0.75rem;
   cursor: pointer;
-  gap: 0.08rem;
+  gap: 0.15rem;
 }
 
-.requirements-panel ul,
-.promotion-list {
+.requirements-panel ul {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -575,22 +891,22 @@ const handleModalOk = (): void => {
 .requirements-panel li {
   display: flex;
   align-items: center;
-  min-height: 1.25rem;
+  min-height: 1.5rem;
   color: #d0d1d0;
-  font-size: 0.54rem;
-  gap: 0.34rem;
+  font-size: 0.875rem;
+  gap: 0.5rem;
 }
 
 .requirement-check {
   display: grid;
-  width: 0.66rem;
-  height: 0.66rem;
-  flex: 0 0 0.66rem;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
   place-items: center;
   border: 1px solid #707370;
   border-radius: 50%;
   color: #ffffff;
-  font-size: 0.42rem;
+  font-size: 0.65rem;
 }
 
 .requirement-check--complete {
@@ -598,215 +914,17 @@ const handleModalOk = (): void => {
   background: #0f8d64;
 }
 
-.period-section {
-  margin-bottom: 0.76rem;
+:global(html[data-theme='light']) .requirements-panel {
+  background: #f0f5f2;
+  border-color: rgba(3, 98, 66, 0.14);
 }
 
-.period-section h2,
-.period-section p {
-  margin: 0;
-  color: #747875;
-  font-size: 0.56rem;
-  font-weight: 500;
-  line-height: 1.35;
+:global(html[data-theme='light']) .requirements-panel h2 {
+  color: #14251d;
 }
 
-.qualifications-section,
-.reward-section,
-.text-section {
-  margin-top: 0.8rem;
-}
-
-.qualifications-section > h2,
-.reward-section h2,
-.text-section h2 {
-  margin: 0 0 0.5rem;
-  color: #ececec;
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
-.qualification-table {
-  overflow: hidden;
-  margin: 0;
-  border: 1px solid #8d918f;
-  border-radius: 0.38rem;
-}
-
-.qualification-table > div {
-  display: grid;
-  min-height: 2.1rem;
-  grid-template-columns: 5.2rem minmax(0, 1fr);
-}
-
-.qualification-table > div + div {
-  border-top: 1px solid #8d918f;
-}
-
-.qualification-table dt,
-.qualification-table dd {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0.34rem 0.5rem;
-  font-size: 0.55rem;
-}
-
-.qualification-table dt {
-  color: #ffffff;
-  font-weight: 800;
-  text-align: center;
-  background: #087653;
-}
-
-.qualification-table dd {
-  justify-content: center;
-  color: #d9d9d9;
-}
-
-.reward-section__heading {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  gap: 0.28rem;
-}
-
-.reward-section__heading h2 {
-  margin: 0;
-}
-
-.reward-section__heading > span {
-  padding: 0.12rem 0.35rem;
-  border-radius: 0.18rem;
-  color: #d4f6e8;
-  font-size: 0.46rem;
-  background: #087653;
-}
-
-.reward-section__description,
-.text-section p,
-.promotion-list li {
-  color: #d0d1d0;
-  font-size: 0.55rem;
-  line-height: 1.42;
-}
-
-.reward-section__description {
-  margin: 0 0 0.72rem;
-}
-
-.method-card,
-.reward-table {
-  overflow: hidden;
-  border: 1px solid #8d918f;
-  border-radius: 0.38rem;
-}
-
-.method-card {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.7rem;
-  text-align: center;
-}
-
-.method-card strong,
-.reward-table__title {
-  padding: 0.36rem 0.45rem;
-  color: #ffffff;
-  font-size: 0.54rem;
-  font-weight: 800;
-  text-align: center;
-  background: #087653;
-}
-
-.method-card span,
-.reward-table__subtitle {
-  padding: 0.42rem 0.5rem;
-  color: #d4d5d4;
-  font-size: 0.54rem;
-  text-align: center;
-}
-
-.reward-tables {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.reward-table__scroller {
-  overflow-x: auto;
-}
-
-.reward-table table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.reward-table th,
-.reward-table td {
-  min-width: 5.5rem;
-  padding: 0.43rem 0.46rem;
-  color: #d7d8d7;
-  font-size: 0.53rem;
-  font-weight: 500;
-  text-align: center;
-}
-
-.reward-table th {
-  color: #ffffff;
-  font-weight: 800;
-  background: #087653;
-}
-
-.reward-table tbody tr + tr,
-.reward-table tbody tr:first-child {
-  border-top: 1px solid #8d918f;
-}
-
-.reward-table td:not(:first-child) {
-  color: #0ca477;
-}
-
-.reward-table__footnote {
-  margin: 0;
-  padding: 0.35rem 0.48rem;
-  border-top: 1px solid #8d918f;
-  color: #8e918f;
-  font-size: 0.48rem;
-}
-
-.promotion-list {
-  margin-top: 0.65rem;
-}
-
-.promotion-list li {
-  position: relative;
-  padding-left: 0.54rem;
-}
-
-.promotion-list li::before {
-  position: absolute;
-  left: 0;
-  content: '•';
-}
-
-.text-section__stack p,
-.text-section > p {
-  margin: 0;
-}
-
-.text-section__stack p + p {
-  margin-top: 0.1rem;
-}
-
-.promotion-terms-link {
-  display: inline-block;
-  margin-top: 0.8rem;
-  color: #79a600;
-  font-size: 0.54rem;
-  text-decoration: underline;
-  text-underline-offset: 0.09rem;
+:global(html[data-theme='light']) .requirements-panel li {
+  color: #14251d;
 }
 
 .join-bar {

@@ -81,10 +81,10 @@ const handleBack = (): void => {
 <template>
   <div
     v-if="sticky"
-    class="seo-header-sticky-wrapper sticky top-[var(--content-sticky-top)] z-20  -mx-1 px-1 pb-1"
+    class="seo-header-sticky-wrapper sticky-header-seal sticky top-[var(--content-sticky-top)] z-20 -mx-1 p-0 pb-1 bg-black rounded-t-xl"
   >
     <header
-      class="seo-header flex items-center justify-between gap-2 rounded-lg bg-[#1f1f1f] px-2.5 py-2 shadow-sm select-none"
+      class="seo-header flex items-center justify-between  rounded-lg bg-[#1f1f1f] px-2.5  shadow-sm select-none"
       :class="customClass"
     >
       <!-- Left: Back Button & Title -->

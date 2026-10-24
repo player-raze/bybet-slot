@@ -17,6 +17,27 @@ const pragmaticPlayLogo = '/images/casino/pragmatic-play.webp'
 
 const activeCategory = computed(() => (route.params.category as string) || 'baccarat')
 
+const categoryLabel = computed(() => {
+  const match = LIVE_CASINO_CATEGORIES.find(c => c.key === activeCategory.value)
+  return match?.label || 'Live Tables'
+})
+
+useAppSeo({
+  title: computed(() => `${categoryLabel.value} Live Casino — Real Dealer Tables | ByBet`),
+  description: computed(() => `Join live ${categoryLabel.value} tables on ByBet Philippines. HD streaming, professional dealers, dynamic side bets, and seamless mobile wagering 24/7.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Live Casino', path: '/explore/entertainment/live-casino/all' },
+    { name: categoryLabel.value, path: `/explore/entertainment/live-casino/${activeCategory.value}` },
+  ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${categoryLabel.value} Live Casino - ByBet`,
+    url: `https://bybet.com/explore/entertainment/live-casino/${activeCategory.value}`,
+  })),
+})
+
 const { context: commentContext, openGameComments, closeComments } = useCommentPanel()
 const { showDemoMessage } = useDemoInteraction()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
@@ -140,7 +161,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 
 <template>
   <div class="live-casino-page w-full min-w-0 pb-16 text-white">
-    <div class="sticky top-[var(--content-sticky-top)] z-30  -mx-1 px-1 pb-0.5">
+    <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] bg-black rounded-t-2xl z-30 -mx-1 px-1 pb-0.5">
       <!-- Top Bar -->
       <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
         <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
