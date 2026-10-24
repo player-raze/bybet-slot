@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import LegalPageShell from '~/components/legal/LegalPageShell.vue'
 
-useSeoMeta({
-  title: 'About Us | ByBet Official Platform',
-  description: 'ByBet is an online sports betting and gaming platform designed to provide users with a secure, reliable, and premium wagering experience.',
-  ogTitle: 'About Us | ByBet Official Platform',
-  ogDescription: 'Learn about ByBet, player protection, 24/7 customer care, and our commitment to transparency and excellence.',
+useAppSeo({
+  title: 'About Us — Online Sports & Casino Gaming | ByBet',
+  description: 'Learn about ByBet Philippines: our commitment to fair gaming, player protection, 24/7 customer support, and premier online sports and casino betting.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about-us' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About ByBet',
+    url: 'https://bybet.com/about-us',
+    description: 'Learn about ByBet Philippines, player protection, and our premier online sports and casino gaming platform.',
+  },
 })
 </script>
 

@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { ChevronRight } from 'lucide-vue-next'
 
-useSeoMeta({
-  title: 'Streamer | Live Plaza | ByBet',
-  description: 'Watch live sports streamers, follow popular game broadcasts, and interact with the ByBet live plaza streaming community.',
-  ogTitle: 'Streamer | Live Plaza | ByBet',
-  ogDescription: 'Watch live sports streamers, follow popular game broadcasts, and interact with the ByBet live plaza streaming community.',
+useAppSeo({
+  title: 'Live Streamers & Match Broadcasts | ByBet Live Plaza',
+  description: 'Watch live sports broadcasts and interactive game streams on ByBet Live Plaza. Follow your favorite streamers and view real-time match betting tips.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+    { name: 'Streamers', path: '/explore/live-plaza/streamer' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Live Streamers',
+    url: 'https://bybet.com/explore/live-plaza/streamer',
+  },
 })
 
 const router = useRouter()
@@ -17,7 +26,7 @@ const handleAllStreamersClick = (): void => {
 </script>
 
 <template>
-  <div class="live-plaza-streamer-page w-full min-w-0 pb-16 pt-1 text-white">
+  <div class="live-plaza-streamer-page w-full min-w-0 pb-16 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
       sticky
@@ -27,35 +36,35 @@ const handleAllStreamersClick = (): void => {
     />
 
     <!-- Section 1: You may be interested -->
-    <section class="streamer-card rounded-xl bg-[#141414] p-3.5 sm:p-4 mb-2 shadow-sm">
+    <section class="streamer-card rounded-xl bg-[#141414] px-2.5 sm:px-2.5 pt-1.5 mb-2 shadow-sm">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm sm:text-[15px] font-bold text-white tracking-tight">
+        <h2 class="text-sm sm:text-[18px] font-bold text-white tracking-tight">
           {{ translate('You may be interested') }}
         </h2>
         <button
           type="button"
-          class="all-streamers-btn flex items-center gap-0.5 sm:gap-1 text-xs text-[#8e8e8e] hover:text-white transition-colors cursor-pointer select-none"
+          class="all-streamers-btn flex items-center gap-0.5 sm:gap-1 text-[13px] text-white  transition-colors cursor-pointer select-none"
           @click="handleAllStreamersClick"
         >
           <span>{{ translate('All Streamers') }}</span>
-          <ChevronRight class="w-3.5 h-3.5" />
+          <ChevronRight class="w-3.5 h-3.5 bg-[#232323] rounded-full" />
         </button>
       </div>
 
-      <div class="empty-state-box flex items-center justify-center min-h-[90px] sm:min-h-[110px] text-xs sm:text-sm text-[#737373] select-none">
+      <div class="empty-state-box flex items-center justify-center min-h-[90px] sm:min-h-[110px] text-[18px]  text-[#666] select-none">
         {{ translate('No related streamer') }}
       </div>
     </section>
 
     <!-- Section 2: Streaming -->
-    <section class="streamer-card rounded-xl bg-[#141414] p-3.5 sm:p-4 mb-2 shadow-sm">
+    <section class="streamer-card rounded-xl bg-[#141414] px-2.5 sm:px-2.5 pt-1.5 mb-2 shadow-sm">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm sm:text-[15px] font-bold text-white tracking-tight">
+        <h2 class="text-sm sm:text-[18px] font-bold text-white tracking-tight">
           {{ translate('Streaming') }}
         </h2>
       </div>
 
-      <div class="empty-state-box flex items-center justify-center min-h-[220px] sm:min-h-[300px] text-xs sm:text-sm text-[#737373] select-none">
+      <div class="empty-state-box flex items-center justify-center min-h-[220px] sm:min-h-[300px] text-[18px]  text-[#666] select-none">
         {{ translate('No related streamer') }}
       </div>
     </section>

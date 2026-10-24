@@ -18,6 +18,7 @@ import Inplay from './sports/tabs/Inplay.vue'
 import Upcoming from './sports/tabs/Upcoming.vue'
 import Prematch from './sports/tabs/Prematch.vue'
 import SmartPick from './sports/tabs/SmartPick.vue'
+import Replay from './sports/tabs/Replay.vue'
 import Outright from './sports/tabs/Outright.vue'
 import OutrightInner from './sports/tabs/OutrightInner.vue'
 import '~/assets/css/sports.css'
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<{
 })
 
 const route = useRoute()
+const sportsRouteBase = useSportsRouteBase()
 
 const tabs = [
   { key: 'league', label: 'League', icon: Trophy },
@@ -39,8 +41,23 @@ const tabs = [
   { key: 'upcoming', label: 'Upcoming', icon: CalendarDays },
   { key: 'prematch', label: 'Pre-Match', icon: ChartNoAxesCombined },
   { key: 'smart-pick', label: 'Smart Pick', icon: Sparkles },
+  { key: 'replay', label: 'Replay', icon: Radio },
   { key: 'outright', label: 'Outright', icon: Flag },
 ] as const
+
+const visibleTabs = computed(() => (
+  sportsRouteBase.value === '/explore/sports/soccer'
+    ? tabs
+    : tabs.filter(tab => tab.key !== 'replay')
+))
+
+const tabLabel = (tab: typeof tabs[number]): string => {
+  if (tab.key === 'smart-pick' && sportsRouteBase.value !== '/explore/sports/popular') {
+    return 'Parlay'
+  }
+
+  return tab.label
+}
 
 const tournamentSlug = computed(() => {
   if (route.params.tournament) return String(route.params.tournament)
@@ -54,8 +71,6 @@ const tournamentKey = computed(() => {
   const tournament = tournamentSlug.value.replaceAll('-', '_')
   return `${route.params.tournamentSport ?? route.params.sport}_${tournament}`
 })
-
-const sportsRouteBase = useSportsRouteBase()
 
 const activeTab = computed(() => {
   if (isOutrightDetail.value) {
@@ -81,14 +96,14 @@ const tabPath = (key: string): string => {
   }
   return `${route.path}?tab=${slug}`
 }
+
+const redirectsToByBet = (key: string): boolean => key === 'smart-pick' || key === 'outright'
+
 const selectedSport = ref('')
 const now = ref(Date.now())
 let timer: ReturnType<typeof setInterval> | undefined
 
-useSeoMeta({
-  title: () => `${tabs.find(tab => tab.key === activeTab.value)?.label ?? 'Popular Sports'} | ByBet`,
-  description: 'Explore leagues, live scores, upcoming fixtures and sports odds.',
-})
+
 
 const {
   data: leagues,
@@ -130,11 +145,7 @@ const tournamentTitle = computed(() => {
   return tournament?.title ?? String(route.params.tournament ?? '').replaceAll('-', ' ').toUpperCase()
 })
 
-useSeoMeta({
-  title: () => isOutrightDetail.value
-    ? `${tournamentTitle.value} Outrights | ByBet`
-    : `${tabs.find(tab => tab.key === activeTab.value)?.label ?? 'Popular Sports'} | ByBet`,
-})
+
 
 watch(availableSports, (sports) => {
   const requestedSport = typeof route.query.sport === 'string' ? route.query.sport : ''
@@ -167,7 +178,7 @@ const query = computed(() => ({
 }))
 
 const isFixtureTab = computed(() => {
-  return !['league', 'smart-pick', 'outright'].includes(activeTab.value)
+  return !['league', 'smart-pick', 'replay', 'outright'].includes(activeTab.value)
 })
 
 const {
@@ -279,18 +290,19 @@ onBeforeUnmount(() => {
 <template>
   <section class="sports-page">
     <nav
-      class="sports-tabs"
+      class="sports-tabs bg-[#1f1f1f]/95"
       aria-label="Sports categories"
     >
       <NuxtLink
-        v-for="tab in tabs"
+        v-for="tab in visibleTabs"
         :key="tab.key"
-        :to="tabPath(tab.key)"
+        :to="redirectsToByBet(tab.key) ? bybetRedirectUrl : tabPath(tab.key)"
+        :external="redirectsToByBet(tab.key)"
         :class="{ selected: activeTab === tab.key }"
         :aria-current="activeTab === tab.key ? 'page' : undefined"
       >
         
-        {{ tab.label }}
+        {{ tabLabel(tab) }}
       </NuxtLink>
     </nav>
 
@@ -302,16 +314,13 @@ onBeforeUnmount(() => {
         v-if="activeTab === 'smart-pick'"
         @explore="selectTab('league')"
       />
+      <Replay v-else-if="activeTab === 'replay'" />
       <div
         v-else-if="loading && (isFixtureTab || !leagues)"
-        class="empty"
+        class="empty py-8 flex flex-col items-center justify-center"
         role="status"
       >
-        <RefreshCw
-          :size="28"
-          aria-hidden="true"
-        />
-        <p>Loading {{ activeLabel?.toLowerCase() }}…</p>
+        <ByBetSpinner size="sm" :label="`Loading ${activeLabel?.toLowerCase() || 'sports'}…`" />
       </div>
       <div
         v-else-if="error"

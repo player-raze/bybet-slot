@@ -1,46 +1,57 @@
 <script setup lang="ts">
-import { Check, ChevronLeft } from 'lucide-vue-next'
+import SubpageHeader from '~/components/SubpageHeader.vue'
+import { Check } from 'lucide-vue-next'
 
 const { locale, setLocale } = useSiteLocale()
+
+useAppSeo({
+  title: 'Language Settings — Choose Your Preferred Locale | ByBet',
+  description: 'Customize your language and regional display preferences on ByBet. Select English, Filipino, or regional settings for a tailored gaming experience.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Account', path: '/explore/account/me' },
+    { name: 'Language', path: '/explore/account/language' },
+  ],
+})
 </script>
 
 <template>
-  <section class="preference-page language-page w-full min-w-0 pb-16 pt-1 text-white">
-    <SeoHeader
-      sticky
+  <section class="preference-page language-page w-full min-w-0 pb-16 text-white">
+    <SubpageHeader
       title="Language"
-      description="Choose your preferred display language on ByBet."
       back-to="/explore/account/me"
-      custom-class="mb-2"
+      class="mb-2 sm:mb-3"
     />
 
-    <div class="preference-list overflow-hidden rounded-xl">
-      <button
-        v-for="language in languageOptions"
-        :key="language.code"
-        type="button"
-        class="preference-row flex w-full items-center justify-between px-3 text-left"
-        :class="{ 'preference-row--selected': locale === language.code }"
-        :aria-current="locale === language.code ? 'true' : undefined"
-        @click="setLocale(language.code)"
-      >
-        <span class="flex min-w-0 items-center gap-3">
-          <span class="flag" aria-hidden="true">{{ language.flag }}</span>
-          <span
-            class="truncate text-[14px]"
-            :class="locale === language.code ? 'font-bold text-[#20c997]' : 'text-[#eceeed]'"
-          >
-            {{ language.label }}
-          </span>
-        </span>
-        <span
-          v-if="locale === language.code"
-          class="selected-check grid h-[15px] w-[15px] shrink-0 place-items-center rounded-full"
-          aria-label="Selected"
+    <div class="px-2.5 sm:px-0">
+      <div class="preference-list overflow-hidden rounded-xl">
+        <button
+          v-for="language in languageOptions"
+          :key="language.code"
+          type="button"
+          class="preference-row flex w-full items-center justify-between px-3 text-left"
+          :class="{ 'preference-row--selected': locale === language.code }"
+          :aria-current="locale === language.code ? 'true' : undefined"
+          @click="setLocale(language.code)"
         >
-          <Check class="h-3 w-3" :stroke-width="3.5" aria-hidden="true" />
-        </span>
-      </button>
+          <span class="flex min-w-0 items-center gap-3">
+            <span class="flag" aria-hidden="true">{{ language.flag }}</span>
+            <span
+              class="truncate text-[14px]"
+              :class="locale === language.code ? 'font-bold text-[#20c997]' : 'text-[#eceeed]'"
+            >
+              {{ language.label }}
+            </span>
+          </span>
+          <span
+            v-if="locale === language.code"
+            class="selected-check grid h-[15px] w-[15px] shrink-0 place-items-center rounded-full"
+            aria-label="Selected"
+          >
+            <Check class="h-3 w-3" :stroke-width="3.5" aria-hidden="true" />
+          </span>
+        </button>
+      </div>
     </div>
   </section>
 </template>

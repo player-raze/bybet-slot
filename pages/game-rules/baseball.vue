@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { baseballRulesHtml } from '~/data/baseball-rules'
 
-useSeoMeta({
-  title: 'Baseball Betting Rules (MLB, NPB, KBO) | ByBet',
-  description: 'Official baseball rules: International mercy rule (10 runs / 7 innings, 15 runs / 5 innings), 8.5/9 inning rule for runlines & totals, extra innings, and 1st half settlement.',
-  ogTitle: 'Baseball Betting Rules (MLB, NPB, KBO) | ByBet',
-  ogDescription: 'Master baseball betting rules on ByBet: MLB official inning standards, extra innings, runlines, and totals.',
+useAppSeo({
+  title: 'Baseball Betting Rules (MLB, NPB & KBO) | ByBet Sports',
+  description: 'Official baseball rules on ByBet: International mercy rules, 8.5/9 inning standards for runlines and totals, extra innings, and 1st half settlements.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Baseball Rules', path: '/game-rules/baseball' },
+  ],
 })
 </script>
 

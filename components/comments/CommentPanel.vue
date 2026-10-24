@@ -11,8 +11,15 @@ const { context, closeComments } = useCommentPanel()
 const dialog = ref<HTMLElement | null>(null)
 const scrollContainer = ref<HTMLElement | null>(null)
 const isScrolledUp = ref(false)
+const isMobile = ref(false)
 const route = useRoute()
 let previousOverflow = ''
+
+const updateIsMobile = (): void => {
+  if (import.meta.client) {
+    isMobile.value = window.innerWidth < 1024
+  }
+}
 
 const handleScroll = (): void => {
   if (!scrollContainer.value) return
@@ -36,6 +43,9 @@ const handleBackdropClick = (event: MouseEvent): void => {
 }
 
 onMounted(() => {
+  updateIsMobile()
+  window.addEventListener('resize', updateIsMobile, { passive: true })
+
   if (!props.docked) {
     previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -49,6 +59,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateIsMobile)
   if (props.docked) return
 
   if (dialog.value instanceof HTMLDialogElement) dialog.value.close()
@@ -79,7 +90,7 @@ watch(() => context.value, () => {
       @click="handleBackdropClick"
     >
       <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 pb-2 pr-2 text-white">
-        <header  v-if="context.kind != 'sports'" class="flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2">
+        <header v-if="context.kind !== 'sports' || isMobile" class="flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2">
           <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
           <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
             <X :size="10" aria-hidden="true" />
@@ -106,12 +117,11 @@ watch(() => context.value, () => {
               <button
                 v-if="isScrolledUp"
                 type="button"
-                class="back-to-latest-btn absolute bottom-[62px] right-3 z-20 flex items-center gap-1.5 rounded-full bg-[#1b221f]/95 px-3 py-1.5 text-xs font-semibold text-[#32d49a] border border-[#32d49a]/35 shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-md hover:bg-[#232c28] hover:border-[#32d49a]/60 active:scale-95 transition-all cursor-pointer select-none whitespace-nowrap"
+                class="back-to-latest-btn absolute bottom-[62px] right-3 z-20 flex items-center rounded-full bg-[#036242]/95 px-1 py-1  text-white  shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-md  transition-all cursor-pointer select-none whitespace-nowrap"
                 aria-label="Back to latest comments"
                 @click="scrollToLatest('smooth')"
               >
-                <span>Back to latest</span>
-                <ChevronDown class="h-3.5 w-3.5 transition-transform" />
+                <ChevronDown class="h-4 w-4 transition-transform" />
               </button>
             </Transition>
 
@@ -134,7 +144,7 @@ watch(() => context.value, () => {
 
 <style scoped>
 .comment-panel {
-  width: min(375px, 23.4375rem);
+  width: var(--comment-width, min(375px, 23.4375rem));
   height: 100dvh;
   max-width: 100vw;
   max-height: 100dvh;
@@ -145,13 +155,13 @@ watch(() => context.value, () => {
 
 .comment-panel--docked {
   position: sticky;
-  top: var(--header-height);
+  top: var(--content-sticky-top, var(--header-height));
   align-self: start;
   z-index: 40;
-  width: 100%;
+  width: var(--comment-width, 100%);
   min-width: 0;
-  height: calc(100dvh - var(--header-height));
-  max-height: calc(100dvh - var(--header-height));
+  height: calc(100dvh - var(--content-sticky-top, var(--header-height)));
+  max-height: calc(100dvh - var(--content-sticky-top, var(--header-height)));
 }
 
 @media (max-width: 63.99rem) {
@@ -175,7 +185,7 @@ watch(() => context.value, () => {
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.025) 55%, rgba(255, 255, 255, 0.07));
   color: #b8bfbd;
-  backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.32),
@@ -184,11 +194,6 @@ watch(() => context.value, () => {
   transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
-.chat-login:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background-color: rgba(255, 255, 255, 0.06);
-  color: #fff;
-}
 
 .chat-login--icon svg {
   display: block;

@@ -1,352 +1,620 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ChevronRight, MoreHorizontal } from 'lucide-vue-next'
 import {
-  ChevronRight,
-  Lock,
-  MoreHorizontal,
-  Star,
-  Unlock,
-} from 'lucide-vue-next'
+  type Prediction,
+  type PredictionOption,
+  type PredictionsResponse,
+} from '~/data/predictions'
 import {
   POPULAR_GAMES,
-  LIVE_PLAZA_PREDICTIONS,
   type PopularGame,
-  type LivePlazaPrediction,
-  type LivePlazaPredictionOption,
 } from '~/data/live-plaza'
+import type { LivePlazaSportFilter } from '~/components/live-plaza/LivePlazaSportFilters.vue'
 
-useSeoMeta({
+type PopularGameSort = 'time' | 'predict'
+
+const popularGameSortOptions: Array<{ value: PopularGameSort; label: string }> = [
+  { value: 'time', label: 'Time' },
+  { value: 'predict', label: 'Predict' },
+]
+
+useAppSeo({
   title: 'Live Plaza — Popular Games & Expert Predictions | ByBet',
-  description: 'Explore live plaza popular sports games and expert predictions with real-time hit rates, winning forecasts, and match odds.',
-  ogTitle: 'Live Plaza — Popular Games & Expert Predictions | ByBet',
-  ogDescription: 'Explore live plaza popular sports games and expert predictions with real-time hit rates, winning forecasts, and match odds.',
+  description: 'Explore ByBet Live Plaza for trending sports broadcasts, expert game predictions, verified hit rates, and real-time community betting discussions.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Live Plaza',
+    url: 'https://bybet.com/explore/live-plaza/home',
+  },
 })
 
 const { showDemoMessage } = useDemoInteraction()
-const router = useRouter()
+const {
+  data: predictionData,
+  status: predictionStatus,
+  error: predictionError,
+  refresh: refreshPredictions,
+} = await useFetch<PredictionsResponse>('/api/predictions')
 
-const popularSport = ref<'all' | 'basketball' | 'soccer'>('all')
-const predictionsSport = ref<'all' | 'basketball' | 'soccer'>('all')
-const sortByHitRateDesc = ref(true)
+const popularSport = ref<LivePlazaSportFilter>('all')
+const predictionsSport = ref<LivePlazaSportFilter>('all')
+const popularGameSort = ref<PopularGameSort>('predict')
+const popularSortMenuOpen = ref(false)
+const popularSortControl = ref<HTMLElement | null>(null)
+const popularSortButton = ref<HTMLButtonElement | null>(null)
+const sortByHitRateDesc = ref(false)
 const unlockedIds = ref<Set<string>>(new Set())
 const carouselContainer = ref<HTMLElement | null>(null)
 
+const selectedPopularSortLabel = computed(() => (
+  popularGameSortOptions.find(option => option.value === popularGameSort.value)?.label ?? 'Predict'
+))
+
 const filteredPopularGames = computed(() => {
-  if (popularSport.value === 'all') {
-    return POPULAR_GAMES
+  const games = popularSport.value === 'all'
+    ? [...POPULAR_GAMES]
+    : POPULAR_GAMES.filter(game => game.sport === popularSport.value)
+
+  if (popularGameSort.value === 'time') {
+    return games.sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`))
   }
-  return POPULAR_GAMES.filter(g => g.sport === popularSport.value)
+
+  return games.sort((a, b) => b.predictCount - a.predictCount)
 })
 
 const filteredPredictions = computed(() => {
-  let list = [...LIVE_PLAZA_PREDICTIONS]
-
-  if (predictionsSport.value !== 'all') {
-    list = list.filter(item => item.sport === predictionsSport.value)
-  }
+  const predictions = predictionsSport.value === 'all'
+    ? [...(predictionData.value?.predictions ?? [])]
+    : (predictionData.value?.predictions ?? []).filter(item => item.sport === predictionsSport.value)
 
   if (sortByHitRateDesc.value) {
-    list.sort((a, b) => b.hitRate - a.hitRate)
-  } else {
-    list.sort((a, b) => a.hitRate - b.hitRate)
+    predictions.sort((a, b) => b.hitRate - a.hitRate)
   }
 
-  return list
+  return predictions.slice(0, 6)
 })
 
-const scrollCarousel = (direction: 'left' | 'right'): void => {
-  if (!carouselContainer.value) return
-  const amount = direction === 'right' ? 240 : -240
-  carouselContainer.value.scrollBy({ left: amount, behavior: 'smooth' })
+const scrollCarousel = (): void => {
+  carouselContainer.value?.scrollBy({ left: 275, behavior: 'smooth' })
 }
 
-const toggleHitRateSort = (): void => {
+const togglePredictionSort = (): void => {
   sortByHitRateDesc.value = !sortByHitRateDesc.value
-  showDemoMessage(sortByHitRateDesc.value ? 'Sorted by Highest Hit Rate' : 'Sorted by Lowest Hit Rate')
+  showDemoMessage(sortByHitRateDesc.value ? 'Sorted by highest hit rate' : 'Showing win streak order')
 }
 
-const handlePredictClick = (): void => {
-  router.push('/explore/live-plaza/expert-predictions')
+const togglePopularSortMenu = (): void => {
+  popularSortMenuOpen.value = !popularSortMenuOpen.value
+}
+
+const selectPopularGameSort = (sort: PopularGameSort): void => {
+  popularGameSort.value = sort
+  popularSortMenuOpen.value = false
+}
+
+const handleDocumentClick = (event: MouseEvent): void => {
+  if (popularSortMenuOpen.value && !popularSortControl.value?.contains(event.target as Node)) {
+    popularSortMenuOpen.value = false
+  }
+}
+
+const handleEscape = (event: KeyboardEvent): void => {
+  if (event.key === 'Escape' && popularSortMenuOpen.value) {
+    popularSortMenuOpen.value = false
+    popularSortButton.value?.focus()
+  }
 }
 
 const handleGameClick = (game: PopularGame): void => {
   showDemoMessage(`Selected ${game.homeTeam.name} vs ${game.awayTeam.name} (${game.league})`)
 }
 
-const handleUnlock = (prediction: LivePlazaPrediction): void => {
+const handleUnlock = (prediction: Prediction): void => {
   if (unlockedIds.value.has(prediction.id)) {
     showDemoMessage(`Already unlocked predictions from ${prediction.predictorName}`)
     return
   }
+
   unlockedIds.value.add(prediction.id)
   showDemoMessage(`Unlocked expert prediction by ${prediction.predictorName}!`)
 }
 
-const handleOddClick = (prediction: LivePlazaPrediction, option: LivePlazaPredictionOption): void => {
+const handleOddClick = (prediction: Prediction, option: PredictionOption): void => {
   showDemoMessage(`Selected ${prediction.homeTeam} vs ${prediction.awayTeam} [${option.label} @ ${option.odd}]`)
 }
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick)
+  document.addEventListener('keydown', handleEscape)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick)
+  document.removeEventListener('keydown', handleEscape)
+})
 </script>
 
 <template>
-  <div class="live-plaza-home-page w-full min-w-0 pb-16 pt-1 text-white">
-    <!-- Reusable Top SEO Header Bar -->
+  <div class="live-plaza-page">
     <SeoHeader
       sticky
       title="Live Plaza"
       description="Live Plaza on ByBet Philippines. Real-time game streaming, popular matches, and expert sports predictions."
       :show-back="false"
+      :show-flag="false"
     />
 
-    <!-- Section 1: Popular Games -->
-    <section class="popular-games-section rounded-xl bg-[#141414] p-3.5 sm:p-4 mb-2 shadow-sm">
-      <!-- Section Header -->
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-[15px] font-bold text-white">
-          Popular Games
-        </h2>
-        <button
-          type="button"
-          class="predict-header-btn flex items-center gap-1.5 rounded-full bg-[#1e2421] border border-white/10 px-3 py-1 text-xs font-semibold text-white/90 hover:bg-[#252f2a] transition-all cursor-pointer"
-          @click="handlePredictClick"
-        >
-          <span>Predict</span>
-          <MoreHorizontal class="h-3.5 w-3.5" />
-        </button>
+    <section class="popular-panel" aria-labelledby="popular-games-title">
+      <div class="panel-heading">
+        <h2 id="popular-games-title">Popular Games</h2>
+        <div ref="popularSortControl" class="popular-sort-control">
+          <button
+            ref="popularSortButton"
+            type="button"
+            class="panel-action panel-action--popular-sort"
+            :class="{ 'panel-action--open': popularSortMenuOpen }"
+            aria-haspopup="menu"
+            :aria-expanded="popularSortMenuOpen"
+            aria-controls="popular-game-sort-menu"
+            @click.stop="togglePopularSortMenu"
+          >
+            <span>{{ selectedPopularSortLabel }}</span>
+            <MoreHorizontal :size="15" aria-hidden="true" />
+          </button>
+
+          <Transition name="sort-menu">
+            <div
+              v-if="popularSortMenuOpen"
+              id="popular-game-sort-menu"
+              class="popular-sort-menu"
+              role="menu"
+              aria-label="Sort popular games"
+            >
+              <span class="popular-sort-menu__label">Sort</span>
+              <div class="popular-sort-menu__options">
+                <button
+                  v-for="option in popularGameSortOptions"
+                  :key="option.value"
+                  type="button"
+                  class="popular-sort-menu__option"
+                  :class="{ 'popular-sort-menu__option--active': popularGameSort === option.value }"
+                  role="menuitemradio"
+                  :aria-checked="popularGameSort === option.value"
+                  @click="selectPopularGameSort(option.value)"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+          </Transition>
+        </div>
       </div>
 
-      <!-- Filter Chips -->
-      <div class="flex items-center gap-2 mb-3 overflow-x-auto no-scrollbar">
-        <button
-          type="button"
-          class="filter-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-          :class="popularSport === 'all' ? 'bg-[#036242] text-white shadow' : 'bg-transparent text-[#8e9491] hover:text-white'"
-          @click="popularSport = 'all'"
-        >
-          <span class="grid h-3.5 w-3.5 place-items-center rounded-full bg-[#32d49a] text-[#041a10]">
-            <Star class="h-2.5 w-2.5 fill-current" />
-          </span>
-          <span>All</span>
-        </button>
-        <button
-          type="button"
-          class="filter-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-          :class="popularSport === 'basketball' ? 'bg-[#036242] text-white shadow' : 'bg-transparent text-[#8e9491] hover:text-white'"
-          @click="popularSport = 'basketball'"
-        >
-          <span>🏀</span>
-          <span>Basketball</span>
-        </button>
-        <button
-          type="button"
-          class="filter-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-          :class="popularSport === 'soccer' ? 'bg-[#036242] text-white shadow' : 'bg-transparent text-[#8e9491] hover:text-white'"
-          @click="popularSport = 'soccer'"
-        >
-          <span>⚽</span>
-          <span>Soccer</span>
-        </button>
+      <div class="panel-filters">
+        <LivePlazaSportFilters v-model="popularSport" />
       </div>
 
-      <!-- Carousel Row -->
-      <div class="relative group">
-        <div
-          ref="carouselContainer"
-          class="popular-carousel flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1"
-        >
-          <div
+      <div class="popular-games-wrap">
+        <div ref="carouselContainer" class="popular-games-list">
+          <button
             v-for="game in filteredPopularGames"
             :key="game.id"
-            class="popular-game-card flex flex-col justify-between shrink-0 min-w-[205px] max-w-[215px] rounded-lg bg-[#141414] border border-[#232725] p-2.5 hover:border-white/20 transition-all cursor-pointer select-none"
+            type="button"
+            class="popular-game"
             @click="handleGameClick(game)"
           >
-            <!-- Card Header -->
-            <div class="flex items-center justify-between gap-1 mb-2">
-              <span class="text-[11px] text-[#7a807d] truncate font-normal">
-                {{ game.date }} {{ game.time }} {{ game.league }}
-              </span>
-              <span class="rounded bg-[#202522] border border-white/5 px-1.5 py-0.5 text-[10px] font-semibold text-white/90 shrink-0">
-                Predict {{ game.predictCount }}
-              </span>
-            </div>
+            <span class="popular-game__topline">
+              <span class="popular-game__meta">{{ game.date }} {{ game.time }}&nbsp; {{ game.league }}</span>
+              <span class="popular-game__predict">Predict {{ game.predictCount }}</span>
+            </span>
 
-            <!-- Teams -->
-            <div class="space-y-1.5">
-              <div class="flex items-center gap-2">
-                <img
-                  :src="game.homeTeam.logo"
-                  :alt="game.homeTeam.name"
-                  class="h-3.5 w-3.5 rounded-full object-contain shrink-0"
-                >
-                <span class="text-xs font-medium text-white truncate">{{ game.homeTeam.name }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <img
-                  :src="game.awayTeam.logo"
-                  :alt="game.awayTeam.name"
-                  class="h-3.5 w-3.5 rounded-full object-contain shrink-0"
-                >
-                <span class="text-xs font-medium text-white truncate">{{ game.awayTeam.name }}</span>
-              </div>
-            </div>
-          </div>
+            <span class="popular-game__teams">
+              <span class="popular-game__team">
+                <img :src="game.homeTeam.logo" :alt="game.homeTeam.name" width="18" height="18">
+                <span>{{ game.homeTeam.name }}</span>
+              </span>
+              <span class="popular-game__team">
+                <img :src="game.awayTeam.logo" :alt="game.awayTeam.name" width="18" height="18">
+                <span>{{ game.awayTeam.name }}</span>
+              </span>
+            </span>
+          </button>
         </div>
 
-        <!-- Carousel Right Arrow Button -->
         <button
           type="button"
-          class="carousel-nav-btn absolute right-0 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-[#1c2220]/90 border border-white/10 text-white shadow-lg hover:bg-[#252f2a] transition-all cursor-pointer"
-          aria-label="Scroll right"
-          @click="scrollCarousel('right')"
+          class="popular-games-next"
+          aria-label="Show more popular games"
+          @click="scrollCarousel"
         >
-          <ChevronRight class="h-4 w-4" />
+          <ChevronRight :size="16" :stroke-width="2.5" />
         </button>
       </div>
     </section>
 
-    <!-- Section 2: Expert Predictions -->
-    <section class="expert-predictions-section rounded-xl bg-[#141414] p-3.5 sm:p-4 mb-2 shadow-sm">
-      <!-- Section Header -->
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-[15px] font-bold text-white">
-          Expert Predictions
-        </h2>
-        <button
-          type="button"
-          class="hit-sort-btn flex items-center gap-1.5 rounded-full bg-[#1e2421] border border-white/10 px-3 py-1 text-xs font-semibold text-white/90 hover:bg-[#252f2a] transition-all cursor-pointer"
-          @click="toggleHitRateSort"
-        >
-          <span>Hit</span>
-          <MoreHorizontal class="h-3.5 w-3.5" />
-        </button>
+    <section class="predictions-block" aria-labelledby="expert-predictions-title">
+      <div class="predictions-toolbar">
+        <div class="panel-heading">
+          <h2 id="expert-predictions-title">Expert Predictions</h2>
+          <button type="button" class="panel-action" @click="togglePredictionSort">
+            <span>Win Streak</span>
+            <MoreHorizontal :size="15" aria-hidden="true" />
+          </button>
+        </div>
+
+        <div class="panel-filters">
+          <LivePlazaSportFilters v-model="predictionsSport" />
+        </div>
       </div>
 
-      <!-- Filter Chips -->
-      <div class="flex items-center gap-2 mb-3.5 overflow-x-auto no-scrollbar">
-        <button
-          type="button"
-          class="filter-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-          :class="predictionsSport === 'all' ? 'bg-[#036242] text-white shadow' : 'bg-transparent text-[#8e9491] hover:text-white'"
-          @click="predictionsSport = 'all'"
-        >
-          <span class="grid h-3.5 w-3.5 place-items-center rounded-full bg-[#32d49a] text-[#041a10]">
-            <Star class="h-2.5 w-2.5 fill-current" />
-          </span>
-          <span>All</span>
-        </button>
-        <button
-          type="button"
-          class="filter-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-          :class="predictionsSport === 'basketball' ? 'bg-[#036242] text-white shadow' : 'bg-transparent text-[#8e9491] hover:text-white'"
-          @click="predictionsSport = 'basketball'"
-        >
-          <span>🏀</span>
-          <span>Basketball</span>
-        </button>
-        <button
-          type="button"
-          class="filter-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-          :class="predictionsSport === 'soccer' ? 'bg-[#036242] text-white shadow' : 'bg-transparent text-[#8e9491] hover:text-white'"
-          @click="predictionsSport = 'soccer'"
-        >
-          <span>⚽</span>
-          <span>Soccer</span>
-        </button>
+      <div v-if="predictionStatus === 'pending'" class="predictions-empty">
+        Loading expert predictions…
       </div>
 
-      <!-- Predictions 2-Column Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2.5">
-        <article
-          v-for="item in filteredPredictions"
-          :key="item.id"
-          class="prediction-card rounded-xl bg-[#141414] border border-[#232725] p-3.5 flex flex-col justify-between hover:border-white/15 transition-all"
-        >
-          <!-- Author & Hit Rate Header -->
-          <div class="flex items-start justify-between mb-2.5">
-            <div class="flex items-center gap-2.5">
-              <img
-                :src="item.predictorAvatar"
-                :alt="item.predictorName"
-                class="h-8 w-8 rounded-full object-cover border border-white/10 shrink-0"
-              >
-              <div class="flex flex-col">
-                <span class="text-sm font-bold text-white leading-tight">{{ item.predictorName }}</span>
-                <span class="text-[11px] text-[#7a807d] mt-0.5">{{ item.publishedAgo }}</span>
-              </div>
-            </div>
+      <div v-else-if="predictionError" class="predictions-empty predictions-empty--error">
+        <span>Expert predictions are temporarily unavailable.</span>
+        <button type="button" @click="refreshPredictions()">Try again</button>
+      </div>
 
-            <div class="flex flex-col items-end gap-1.5">
-              <div class="flex items-baseline gap-1">
-                <span class="text-[11px] text-[#7a807d]">Hit Rate</span>
-                <span class="text-lg sm:text-xl font-extrabold text-[#32d49a] tracking-tight leading-none">
-                  {{ item.hitRate % 1 === 0 ? item.hitRate : item.hitRate.toFixed(2) }}<small class="text-xs font-bold ml-0.5">%</small>
-                </span>
-              </div>
+      <div v-else-if="filteredPredictions.length" class="predictions-grid">
+        <LivePlazaPredictionCard
+          v-for="prediction in filteredPredictions"
+          :key="prediction.id"
+          :prediction="prediction"
+          :unlocked="unlockedIds.has(prediction.id)"
+          @unlock="handleUnlock"
+          @select-odd="handleOddClick"
+        />
+      </div>
 
-              <button
-                type="button"
-                class="unlock-btn flex items-center gap-1 rounded-full border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white/90 hover:border-[#32d49a] hover:text-[#32d49a] transition-all cursor-pointer"
-                :class="{ 'border-[#32d49a] text-[#32d49a]': unlockedIds.has(item.id) }"
-                @click="handleUnlock(item)"
-              >
-                <Unlock v-if="unlockedIds.has(item.id)" class="h-3 w-3 text-[#32d49a]" />
-                <Lock v-else class="h-3 w-3 text-white" />
-                <span>{{ unlockedIds.has(item.id) ? 'Unlocked' : 'Unlock' }}</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Inner Match Box -->
-          <div class="match-box rounded-lg bg-[#0e1210] p-2.5 sm:p-3 flex flex-col gap-2">
-            <!-- Match Header -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-xs text-[#9eaea5]">
-                <span class="rounded bg-[#32d49a]/10 border border-[#32d49a]/40 px-1.5 py-0.5 text-[10px] font-bold text-[#32d49a]">
-                  {{ item.marketType }}
-                </span>
-                <span>{{ item.sport === 'basketball' ? '🏀' : '⚽' }}</span>
-                <span class="font-medium text-white/80">{{ item.league }}</span>
-                <span class="text-[#7a807d]">{{ item.matchTime }}</span>
-              </div>
-              <ChevronRight class="h-3.5 w-3.5 text-[#555a57]" />
-            </div>
-
-            <!-- Teams -->
-            <div class="flex items-center justify-between text-xs sm:text-[13px] font-semibold text-white py-0.5">
-              <span class="text-right flex-1 truncate pr-2">{{ item.homeTeam }}</span>
-              <span class="text-xs font-normal text-[#7a807d] px-1">vs</span>
-              <span class="text-left flex-1 truncate pl-2">{{ item.awayTeam }}</span>
-            </div>
-
-            <!-- Odds Row -->
-            <div class="grid grid-cols-2 gap-2 mt-0.5">
-              <button
-                v-for="(opt, idx) in item.options"
-                :key="idx"
-                type="button"
-                class="odd-btn flex items-center justify-between rounded-md bg-[#232323] hover:bg-[#2b2b2b] px-3 py-1.5 transition-all cursor-pointer border border-white/5 active:scale-[0.98]"
-                @click="handleOddClick(item, opt)"
-              >
-                <span class="text-xs text-[#9eaea5] font-medium">{{ opt.label }}</span>
-                <span class="text-xs font-bold text-white">{{ opt.odd }}</span>
-              </button>
-            </div>
-          </div>
-        </article>
+      <div v-else class="predictions-empty">
+        No predictions are available right now.
       </div>
     </section>
   </div>
 </template>
 
 <style scoped>
-.live-plaza-home-page {
-  max-width: 100%;
+.live-plaza-page {
+  width: 100%;
+  min-width: 0;
+  padding-top: 0;
+  padding-bottom: 2rem;
+  color: #ffffff;
 }
 
-.no-scrollbar::-webkit-scrollbar {
+.popular-panel,
+.predictions-toolbar {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.025);
+  border-radius: 12px;
+  background: #141414;
+}
+
+.popular-panel {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.panel-heading {
+  display: flex;
+  min-height: 47px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  border-bottom: 1px solid #2b2b2b;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  color: #f7f7f7;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.panel-action {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  color: #e8e8e8;
+  font-size: 11px;
+  font-weight: 500;
+  background: #242424;
+  cursor: pointer;
+  gap: 4px;
+  transition: background-color 150ms ease;
+}
+
+.panel-action:hover {
+  background: #303030;
+}
+
+.popular-sort-control {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panel-action--popular-sort:hover,
+.panel-action--popular-sort.panel-action--open {
+  border: 1px solid #087d5c;
+}
+
+.popular-sort-menu {
+  display: flex;
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 5px);
+  right: -12px;
+  width: 165px;
+  flex-direction: column;
+  padding: 8px 12px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.025);
+  border-radius: 14px;
+  color: #eeeeee;
+  background: #171717;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42);
+}
+
+.popular-sort-menu__label {
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.popular-sort-menu__options {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.popular-sort-menu__option {
+  width: 125px;
+  height: 33px;
+  padding: 0 12px;
+  border: 1px solid #565b58;
+  border-radius: 999px;
+  color: #eeeeee;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  background: #202322;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.popular-sort-menu__option:hover {
+  border-color: #008965;
+  background: #252a28;
+}
+
+.popular-sort-menu__option--active,
+.popular-sort-menu__option--active:hover {
+  border-color: #007653;
+  background: #007653;
+}
+
+.sort-menu-enter-active,
+.sort-menu-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+  transform-origin: top right;
+}
+
+.sort-menu-enter-from,
+.sort-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+}
+
+.panel-filters {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  padding: 0 11px;
+}
+
+.popular-games-wrap {
+  position: relative;
+  border-top: 1px solid #2b2b2b;
+}
+
+.popular-games-list {
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.popular-games-list::-webkit-scrollbar {
   display: none;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+.popular-game {
+  display: flex;
+  width: 265px;
+  min-width: 265px;
+  min-height: 111px;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 14px 12px 12px;
+  border: 0;
+  border-right: 1px solid #2b2b2b;
+  color: #ffffff;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+  gap: 13px;
+  transition: background-color 150ms ease;
+}
+
+.popular-game:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.popular-game__topline,
+.popular-game__team {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.popular-game__topline {
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.popular-game__meta {
+  overflow: hidden;
+  min-width: 0;
+  color: #7f827f;
+  font-size: 10px;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popular-game__predict {
+  flex: 0 0 auto;
+  padding: 3px 5px;
+  border-radius: 4px;
+  color: #eeeeee;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  background: #2a2a2a;
+}
+
+.popular-game__teams {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.popular-game__team {
+  color: #f3f3f3;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  gap: 6px;
+}
+
+.popular-game__team img {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.popular-game__team span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popular-games-next {
+  display: grid;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  color: #eeeeee;
+  background: #242424;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.42);
+  cursor: pointer;
+}
+
+.predictions-block {
+  min-width: 0;
+}
+
+.predictions-toolbar {
+  margin-bottom: 8px;
+}
+
+.predictions-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.predictions-empty {
+  display: grid;
+  min-height: 212px;
+  place-items: center;
+  border-radius: 12px;
+  color: #858985;
+  font-size: 12px;
+  background: #141414;
+}
+
+.predictions-empty--error {
+  align-content: center;
+  gap: 12px;
+}
+
+.predictions-empty--error button {
+  padding: 7px 14px;
+  border: 1px solid #087d5c;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #202322;
+  cursor: pointer;
+}
+
+@media (max-width: 74rem) {
+  .popular-game {
+    width: 240px;
+    min-width: 240px;
+  }
+}
+
+@media (max-width: 55rem) {
+  .predictions-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .live-plaza-page {
+    padding-top: 0;
+    padding-bottom: 5rem;
+  }
+
+  .panel-heading {
+    min-height: 44px;
+  }
+
+  .panel-heading h2 {
+    font-size: 14px;
+  }
+
+  .panel-filters {
+    min-height: 42px;
+  }
+
+  .popular-game {
+    width: 225px;
+    min-width: 225px;
+  }
 }
 </style>

@@ -32,7 +32,7 @@ const slides: HeroSlide[] = [
     secondaryTo: '/explore/egames/slots',
     primaryExternal: true,
     secondaryExternal: false,
-    image: '/hero/slots-games.png',
+    image: '/hero/slots-games.webp',
     imageAlt: 'Slot reels with a fantasy king, dragon, coins, and gems',
   },
   {
@@ -46,7 +46,7 @@ const slides: HeroSlide[] = [
     secondaryTo: '/explore/bonuses',
     primaryExternal: false,
     secondaryExternal: true,
-    image: '/hero/promotions.png',
+    image: '/hero/promotions.webp',
     imageAlt: 'Treasure chest filled with gold coins and colorful gemstones',
   },
   {
@@ -60,7 +60,7 @@ const slides: HeroSlide[] = [
     secondaryTo: '/explore/account/vip',
     primaryExternal: false,
     secondaryExternal: true,
-    image: '/hero/vip.png',
+    image: '/hero/vip.webp',
     imageAlt: 'Emerald and gold crown beside a premium membership card',
   },
 ]
@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
 .hero {
   position: relative;
   width: 100%;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   aspect-ratio: 4.58 / 1;
   min-height: 7.55rem;
   overflow: hidden;

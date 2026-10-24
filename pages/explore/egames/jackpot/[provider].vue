@@ -15,34 +15,35 @@ import {
   type JackpotWinner,
 } from '~/data/jackpot'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
 const JACKPOT_REFRESH_INTERVAL_MS = 60_000
 
 const JACKPOT_CHARACTER_IMAGES: Record<JackpotSection['jackpotCharacter'], string> = {
-  dragon: '/images/jackpot/jili-jackpot.png',
-  genie: '/images/jackpot/cq9-jackpot.png',
-  panda: '/images/jackpot/jdb-jackpot.png',
+  dragon: '/images/jackpot/jili-jackpot.webp',
+  genie: '/images/jackpot/cq9-jackpot.webp',
+  panda: '/images/jackpot/jdb-jackpot.webp',
 }
 
 const JACKPOT_DIGIT_IMAGES: Record<string, string> = Object.fromEntries(
   ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(digit => [
     digit,
-    `/images/jackpot/${digit}.png`,
+    `/images/jackpot/${digit}.webp`,
   ]),
 )
 
 const JACKPOT_SEPARATOR_IMAGES: Record<string, string> = {
-  ',': '/images/jackpot/comma.png',
-  '.': '/images/jackpot/dot.png',
+  ',': '/images/jackpot/comma.webp',
+  '.': '/images/jackpot/dot.webp',
 }
 
 const JACKPOT_INCREMENT_RANGES: Record<string, readonly [number, number]> = {
   jili: [680, 2_800],
-  cq9: [80, 560],
+  cq9: [0, 0],
   jdb: [12, 120],
 }
 
-const JACKPOT_SECTION_ORDER = ['jili', 'jdb', 'cq9']
+const JACKPOT_SECTION_ORDER = ['jili', 'cq9', 'jdb']
 
 const jackpotNumberFormatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
@@ -51,10 +52,37 @@ const jackpotNumberFormatter = new Intl.NumberFormat('en-US', {
 
 const route = useRoute()
 const router = useRouter()
+const { effectiveTheme } = useSiteTheme()
+
+const themedProviderLogo = (providerLogo: string): string => {
+  return getProviderLogoForTheme(providerLogo, effectiveTheme.value)
+}
 
 const activeProvider = computed(() => {
   const p = (route.params.provider as string || 'jdb').toLowerCase()
   return p
+})
+
+const providerName = computed(() => {
+  const p = activeProvider.value
+  if (p === 'all') return 'All Providers'
+  return p.toUpperCase()
+})
+
+useAppSeo({
+  title: computed(() => `${providerName.value} Progressive Jackpots — Casino Slots | ByBet`),
+  description: computed(() => `Spin high-paying progressive jackpot slots from ${providerName.value} on ByBet Philippines. Live prize counters, daily winners, and mega jackpot payouts.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Jackpots', path: '/explore/egames/jackpot/all' },
+    { name: providerName.value, path: `/explore/egames/jackpot/${activeProvider.value}` },
+  ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${providerName.value} Progressive Jackpots - ByBet`,
+    url: `https://bybet.com/explore/egames/jackpot/${activeProvider.value}`,
+  })),
 })
 
 const activeGameId = ref<string | null>(null)
@@ -66,14 +94,7 @@ const jackpotRevision = ref(0)
 let winnerTimer: ReturnType<typeof setTimeout> | null = null
 let jackpotClockTimer: ReturnType<typeof setInterval> | null = null
 
-const providerLogos = [
-  '/images/providers/jdb.png',
-  '/images/providers/jili.png',
-  '/images/providers/cq9.png',
-  '/images/providers/pg.png',
-  '/images/providers/pp.png',
-  '/images/providers/red-tiger.png',
-]
+const WINNER_PROVIDER_LOGO = '/images/providers/jdb.webp'
 
 const maskUsername = (name: string): string => {
   if (name.includes('*')) return name
@@ -102,10 +123,9 @@ const generateRandomAmount = (): string => {
 
 const addNewWinner = (): void => {
   const randomUsername = usernamesList[Math.floor(Math.random() * usernamesList.length)] || 'player_99'
-  const randomProvider = providerLogos[Math.floor(Math.random() * providerLogos.length)]
   const newWinner: JackpotWinner = {
     id: `winner-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    providerLogo: randomProvider,
+    providerLogo: WINNER_PROVIDER_LOGO,
     username: maskUsername(randomUsername),
     amount: generateRandomAmount(),
     date: formatDateTime(),
@@ -234,34 +254,33 @@ const filteredSections = computed<JackpotSection[]>(() => {
 </script>
 
 <template>
-  <div class="jackpot-page w-full min-w-0 pb-16 pt-1">
+  <div class="jackpot-page w-full min-w-0 pb-16">
     <!-- Sticky Header (Top Nav Tabs Bar) -->
-    <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 pt-1 pb-2">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1 pb-2">
       <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-2xl bg-[#171817] border border-white/5 p-1 overflow-x-auto no-scrollbar shadow-sm">
-        <div class="flex items-center gap-1.5 min-w-0">
+      <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm">
+        <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm">
           <button
             v-for="tab in JACKPOT_NAV_TABS"
             :key="tab.key"
             type="button"
-            class="nav-tab flex items-center justify-center min-w-[58px] py-1.5 px-3.5 rounded-xl transition-all cursor-pointer select-none"
-            :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md border border-[#047b53]' : 'hover:bg-white/5'"
+            class="nav-tab flex h-6 min-w-[48px] shrink-0 cursor-pointer select-none items-center justify-center rounded-md px-2 transition-all"
+            :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md' : 'hover:bg-white/5'"
             :aria-label="tab.label"
+            :aria-current="activeProvider === tab.key.toLowerCase() ? 'page' : undefined"
             @click="selectTab(tab.key)"
           >
-            <span
-              v-if="tab.isAll"
-              class="text-[13px] font-black tracking-wider"
-              :class="activeProvider === tab.key.toLowerCase() ? 'text-white' : 'text-white/80'"
-            >
-              {{ tab.label }}
-            </span>
             <img
-              v-else
-              :src="tab.logo"
+              :src="themedProviderLogo(tab.logo)"
               :alt="tab.label"
-              class="h-4 max-w-[42px] object-contain transition-opacity"
-              :class="activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125 opacity-80 '"
+              class="object-contain transition-opacity"
+              :class="[
+                tab.isAll ? 'h-5 w-5' : 'h-4 max-w-[42px]',
+                activeProvider === tab.key.toLowerCase() ? '' : 'opacity-80',
+                effectiveTheme === 'dark'
+                  ? activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125'
+                  : '',
+              ]"
             />
           </button>
         </div>
@@ -269,7 +288,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
         <!-- Right Chat Toggle -->
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none shrink-0  pl-2"
+          class="nav-tab nav-tab--chat flex min-w-[56px] shrink-0 cursor-pointer select-none flex-col items-center justify-center rounded-xl px-2.5 py-1 transition-all"
           :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
           aria-label="Toggle chat room"
           @click="toggleChat"
@@ -306,15 +325,16 @@ const filteredSections = computed<JackpotSection[]>(() => {
       >
         <div class="jackpot-provider-identity">
           <img
-            :src="section.providerLogo"
+            :src="themedProviderLogo(section.providerLogo)"
             :alt="section.provider"
-            class="jackpot-provider-logo object-contain brightness-125"
+            class="jackpot-provider-logo object-contain"
+            :class="{ 'brightness-125': effectiveTheme === 'dark' }"
           />
         </div>
 
         <div class="jackpot-brand-stage" aria-hidden="true">
           <img
-            src="/images/jackpot/jackpot.png"
+            src="/images/jackpot/jackpot.webp"
             alt=""
             class="jackpot-wordmark"
           />
@@ -388,33 +408,31 @@ const filteredSections = computed<JackpotSection[]>(() => {
     </section>
 
     <!-- Winners List Card -->
-    <div class="winners-card rounded-2xl bg-[#171817] border border-white/5 p-4 shadow-sm mb-8">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold text-white">Winners List</h3>
-        <span class="flex items-center gap-1.5 text-[11px] text-[#34d399] font-medium">
-          <span class="inline-block h-2 w-2 rounded-full bg-[#34d399] animate-pulse"></span>
-          Live Wins
-        </span>
+    <div class="winners-card rounded-md bg-[#171817] shadow-sm mb-8">
+      <div class="flex items-center justify-between pt-2 px-4">
+        <h3 class="font-bold text-white text-[16px]">Winners List</h3>
+        
       </div>
 
       <TransitionGroup name="winner-fade" tag="div" class="divide-y divide-white/5">
         <div
           v-for="winner in currentWinners"
           :key="winner.id"
-          class="winner-item flex items-center justify-between py-2.5 text-xs transition-colors hover:bg-white/[0.02] px-1 rounded-lg"
+          class="winner-item flex items-center justify-between py-1.5 text-[12px] transition-colors  px-2 "
         >
           <!-- Left: Provider Logo + Masked Username -->
           <div class="flex items-center gap-3">
             <img
-              :src="winner.providerLogo"
+              :src="themedProviderLogo(winner.providerLogo)"
               alt=""
-              class="h-3.5 max-w-[36px] object-contain brightness-125 opacity-80"
+              class="h-4 max-w-[36px] object-contain opacity-80"
+              :class="{ 'brightness-125': effectiveTheme === 'dark' }"
             />
-            <span class="text-[#8e9491] font-mono">{{ winner.username }}</span>
+            <span class="text-white font-mono">{{ winner.username }}</span>
           </div>
 
           <!-- Center: Won Amount -->
-          <span class="text-white font-semibold font-mono">{{ winner.amount }}</span>
+          <span class="text-white ">{{ winner.amount }}</span>
 
           <!-- Right: Date Time -->
           <span class="text-[#626664] text-[11px] font-mono">{{ winner.date }}</span>
@@ -422,35 +440,6 @@ const filteredSections = computed<JackpotSection[]>(() => {
       </TransitionGroup>
     </div>
 
-    <!-- Regulatory / PAGCOR Footer Block -->
-    <footer class="regulatory-footer flex flex-col items-center justify-center text-center gap-3 pt-4 pb-8">
-      <!-- Certification Badges -->
-      <div class="flex items-center gap-4">
-        <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow p-1">
-          <span class="text-[10px] font-extrabold text-[#0038a8] leading-tight">PAGCOR</span>
-        </div>
-        <div class="h-10 w-28 rounded-lg bg-white flex items-center justify-center gap-1.5 px-2 shadow">
-          <span class="text-xs font-black text-red-600 border border-red-600 rounded-full h-5 w-5 flex items-center justify-center">21</span>
-          <span class="text-[7.5px] font-bold text-black leading-tight text-left">GAMBLING CAN BE ADDICTIVE<br><strong>KNOW WHEN TO STOP</strong></span>
-        </div>
-      </div>
-
-      <!-- Links & Warnings -->
-      <div class="text-[11px] font-semibold text-[#f04438] tracking-wide">
-        <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
-        <span class="mx-2">•</span>
-        <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
-      </div>
-
-      <p class="text-[10px] font-medium text-[#2e90fa] max-w-md uppercase leading-relaxed">
-        GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.
-      </p>
-
-      <div class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#1e201f] px-3 py-1 text-[11px] text-[#9ca3af]">
-        <span>📞</span>
-        <span class="font-mono font-bold text-white">(02) 8248-8686</span>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -494,7 +483,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 .jackpot-provider-logo {
   width: auto;
   max-width: 82px;
-  height: 28px;
+  height: 71px;
 }
 
 .jackpot-brand-stage {
@@ -509,7 +498,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
 .jackpot-wordmark {
   position: absolute;
-  z-index: 2;
+  z-index: 20;
   bottom: 6px;
   left: 50%;
   width: clamp(178px, 18vw, 216px);
@@ -559,7 +548,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
   height: 100%;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0.5px;
 }
 
 .jackpot-counter-character {
@@ -620,7 +609,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
 .jackpot-separator-image {
   display: block;
-  width: 9px;
+  width: 3px;
   height: auto;
   max-height: 15px;
   object-fit: contain;
@@ -642,6 +631,10 @@ const filteredSections = computed<JackpotSection[]>(() => {
 .jackpot-game-rail > * {
   min-width: 0;
   scroll-snap-align: start;
+}
+
+.winner-item:nth-child(even) {
+  background-color: #000;
 }
 
 @keyframes jackpot-digit-pop {

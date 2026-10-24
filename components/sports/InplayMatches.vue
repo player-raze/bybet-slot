@@ -3,7 +3,35 @@ import { ChevronDown } from 'lucide-vue-next'
 import InplayMatch from './InplayMatch.vue'
 import type { SportsEvent } from '~/types/sports'
 
-const props = defineProps<{ events: SportsEvent[] }>()
+const props = withDefaults(defineProps<{
+  events: SportsEvent[]
+  groupBySport?: boolean
+}>(), {
+  groupBySport: false,
+})
+
+interface SportCategory {
+  key: string
+  name: string
+  icon: string
+  events: SportsEvent[]
+}
+
+const SPORT_CATEGORIES: Record<string, Omit<SportCategory, 'events'>> = {
+  basketball: { key: 'basketball', name: 'Basketball', icon: '/icons/sports/basketball.webp' },
+  nba: { key: 'basketball', name: 'Basketball', icon: '/icons/sports/basketball.webp' },
+  pba: { key: 'basketball', name: 'Basketball', icon: '/icons/sports/basketball.webp' },
+  soccer: { key: 'soccer', name: 'Soccer', icon: '/icons/sports/soccer.webp' },
+  football: { key: 'soccer', name: 'Soccer', icon: '/icons/sports/soccer.webp' },
+  tennis: { key: 'tennis', name: 'Tennis', icon: '/icons/sports/tennis.webp' },
+  atp: { key: 'tennis', name: 'Tennis', icon: '/icons/sports/tennis.webp' },
+  wta: { key: 'tennis', name: 'Tennis', icon: '/icons/sports/tennis.webp' },
+  baseball: { key: 'baseball', name: 'Baseball', icon: '/icons/sports/baseball.webp' },
+  mlb: { key: 'baseball', name: 'Baseball', icon: '/icons/sports/baseball.webp' },
+}
+
+const SPORT_ORDER = ['basketball', 'soccer', 'tennis', 'baseball']
+
 const collapsed = ref<string[]>([])
 const selectedOutcomes = ref<Record<string, string>>({})
 const sportType = (event: SportsEvent) => (event.sport || event.sport_key.split('_')[0] || '').toLowerCase()
@@ -29,13 +57,70 @@ function tournaments(events: SportsEvent[]) {
 }
 defineExpose({ toggleAll, allCollapsed })
 
-const leagues = computed(() => tournaments(props.events))
+const sportCategories = computed(() => {
+  if (!props.groupBySport) {
+    return [{
+      key: 'all',
+      name: '',
+      icon: '',
+      events: props.events,
+    }]
+  }
+
+  const categories = new Map<string, SportCategory>()
+
+  for (const event of props.events) {
+    const sport = sportType(event)
+    const details = SPORT_CATEGORIES[sport] ?? {
+      key: sport || 'other',
+      name: sport
+        ? sport.charAt(0).toUpperCase() + sport.slice(1).replaceAll('-', ' ')
+        : 'Other sports',
+      icon: '',
+    }
+    const category = categories.get(details.key) ?? { ...details, events: [] }
+    category.events.push(event)
+    categories.set(details.key, category)
+  }
+
+  return [...categories.values()].sort((a, b) => {
+    const rank = (key: string) => {
+      const index = SPORT_ORDER.indexOf(key)
+      return index === -1 ? SPORT_ORDER.length : index
+    }
+
+    return rank(a.key) - rank(b.key)
+  })
+})
 </script>
 
 <template>
-  <div class="min-w-0">
+  <div class="sport-category-list min-w-0">
+    <section
+      v-for="category in sportCategories"
+      :key="category.key"
+      class="sport-category"
+      :aria-label="groupBySport ? category.name : undefined"
+    >
+      <header v-if="groupBySport" class="sport-category__heading">
+        <img
+          v-if="category.icon"
+          :src="category.icon"
+          alt=""
+          class="sport-category__icon"
+          width="22"
+          height="22"
+          aria-hidden="true"
+        >
+        <h2>{{ category.name }}</h2>
+      </header>
+
       <div class="league-matches-list">
-        <article v-for="tournament in leagues" :key="tournament.key" class="league-preview">
+        <article
+          v-for="tournament in tournaments(category.events)"
+          :key="tournament.key"
+          class="league-preview"
+        >
           <button
             :id="`inplay-trigger-${tournament.key}`"
             class="league-card league-preview-heading"
@@ -65,10 +150,44 @@ const leagues = computed(() => tournaments(props.events))
           </div>
         </article>
       </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
+.sport-category-list {
+  display: grid;
+  gap: 22px;
+}
+
+.sport-category {
+  min-width: 0;
+}
+
+.sport-category__heading {
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  margin-bottom: 8px;
+  padding: 0 4px;
+  color: var(--text);
+  gap: 8px;
+}
+
+.sport-category__heading h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sport-category__icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
 .league-matches-list {
   display: grid;
   gap: 16px;

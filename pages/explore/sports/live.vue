@@ -4,17 +4,28 @@ import '~/assets/css/sports.css'
 
 const route = useRoute()
 
-useSeoMeta({
-  title: 'Live Inplay Matches | ByBet',
-  description: 'Explore live inplay matches, real-time odds, and sports scores on ByBet.',
+useAppSeo({
+  title: 'Live In-Play Sports Betting — Real-Time Odds | ByBet',
+  description: 'Bet live in-play on ongoing football, basketball, tennis, and esports matches at ByBet Philippines. Instant odds updates, live scores, and fast cash out.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Sports', path: '/explore/sports/popular' },
+    { name: 'Live In-Play', path: '/explore/sports/live' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Live Sports Betting - ByBet',
+    url: 'https://bybet.com/explore/sports/live',
+  },
 })
 
 const liveTabs = [
   { key: 'all', label: 'All', icon: '', to: '/explore/sports/live' },
-  { key: 'basketball', label: '', icon: '/icons/sports/basketball.png', to: '/explore/sports/live/basketball' },
-  { key: 'soccer', label: '', icon: '/icons/sports/soccer.png', to: '/explore/sports/live/soccer' },
-  { key: 'tennis', label: '', icon: '/icons/sports/tennis.png', to: '/explore/sports/live/tennis' },
-  { key: 'baseball', label: '', icon: '/icons/sports/baseball.png', to: '/explore/sports/live/baseball' },
+  { key: 'basketball', label: '', icon: '/icons/sports/basketball.webp', to: '/explore/sports/live/basketball' },
+  { key: 'soccer', label: '', icon: '/icons/sports/soccer.webp', to: '/explore/sports/live/soccer' },
+  { key: 'tennis', label: '', icon: '/icons/sports/tennis.webp', to: '/explore/sports/live/tennis' },
+  { key: 'baseball', label: '', icon: '/icons/sports/baseball.webp', to: '/explore/sports/live/baseball' },
 ]
 
 const currentSport = computed(() => {
@@ -29,9 +40,9 @@ const currentSport = computed(() => {
 <template>
   <section class="sports-page live-page">
     <!-- Sports Tabs Navigation: Sport Ball Icons -->
-    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-1 pt-1">
+    <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-1">
       <nav
-        class="sports-tabs"
+        class="sports-tabs bg-[#141414]"
         aria-label="Live sports categories"
       >
         <NuxtLink

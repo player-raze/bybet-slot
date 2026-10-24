@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ChevronLeft, Search } from 'lucide-vue-next'
+import SubpageHeader from '~/components/SubpageHeader.vue'
+import { Search } from 'lucide-vue-next'
 
 const searchQuery = ref('')
 const currentDate = new Date()
@@ -8,6 +9,16 @@ const {
   setTimeZone,
   timeZone,
 } = useTimeZonePreference()
+
+useAppSeo({
+  title: 'Time Zone Settings — Match Schedule Preference | ByBet',
+  description: 'Adjust your display time zone on ByBet to ensure sports match schedules, live in-play start times, and event countdowns match your local clock.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Account', path: '/explore/account/me' },
+    { name: 'Time Zone', path: '/explore/account/timezone' },
+  ],
+})
 
 const filteredTimeZones = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase()
@@ -24,64 +35,64 @@ const filteredTimeZones = computed(() => {
 </script>
 
 <template>
-  <section class="preference-page timezone-page w-full min-w-0 pb-16 pt-1 text-white">
-    <SeoHeader
-      sticky
+  <section class="preference-page timezone-page w-full min-w-0 pb-16 text-white">
+    <SubpageHeader
       title="Time Zone"
-      description="Select your preferred time zone for betting markets and event schedules on ByBet."
       back-to="/explore/account/me"
-      custom-class="mb-2"
+      class="mb-2 sm:mb-3"
     />
 
-    <label class="search-box mb-2 flex min-h-[40px] items-center gap-2 rounded-xl px-3">
-      <Search class="h-[18px] w-[18px] shrink-0 text-[#919694]" aria-hidden="true" />
-      <span class="sr-only">Search country or city</span>
-      <input
-        v-model="searchQuery"
-        type="search"
-        class="w-full bg-transparent text-[14px] text-white outline-none placeholder:text-[#919694]"
-        placeholder="Search country or city"
-        autocomplete="off"
-      >
-    </label>
+    <div class="px-2.5 sm:px-0">
+      <label class="search-box mb-2 flex min-h-[40px] items-center gap-2 rounded-xl px-3">
+        <Search class="h-[18px] w-[18px] shrink-0 text-[#919694]" aria-hidden="true" />
+        <span class="sr-only">Search country or city</span>
+        <input
+          v-model="searchQuery"
+          type="search"
+          class="w-full bg-transparent text-[14px] text-white outline-none placeholder:text-[#919694]"
+          placeholder="Search country or city"
+          autocomplete="off"
+        >
+      </label>
 
-    <div class="preference-list overflow-hidden rounded-xl">
-      <button
-        v-for="option in filteredTimeZones"
-        :key="option.timeZone"
-        type="button"
-        class="preference-row flex w-full items-center justify-between gap-4 px-3 text-left"
-        :class="{ 'preference-row--selected': timeZone === option.timeZone }"
-        :aria-current="timeZone === option.timeZone ? 'true' : undefined"
-        @click="setTimeZone(option.timeZone)"
-      >
-        <span class="min-w-0">
-          <span
-            class="block truncate text-[14px] leading-[18px]"
-            :class="timeZone === option.timeZone ? 'font-bold text-[#20c997]' : 'text-[#f0f1f1]'"
-          >
-            {{ option.city }}
+      <div class="preference-list overflow-hidden rounded-xl">
+        <button
+          v-for="option in filteredTimeZones"
+          :key="option.timeZone"
+          type="button"
+          class="preference-row flex w-full items-center justify-between gap-4 px-3 text-left"
+          :class="{ 'preference-row--selected': timeZone === option.timeZone }"
+          :aria-current="timeZone === option.timeZone ? 'true' : undefined"
+          @click="setTimeZone(option.timeZone)"
+        >
+          <span class="min-w-0">
+            <span
+              class="block truncate text-[14px] leading-[18px]"
+              :class="timeZone === option.timeZone ? 'font-bold text-[#20c997]' : 'text-[#f0f1f1]'"
+            >
+              {{ option.city }}
+            </span>
+            <span class="block truncate text-[12px] leading-[16px] text-[#8c918f]">
+              {{ option.country }}
+            </span>
           </span>
-          <span class="block truncate text-[12px] leading-[16px] text-[#8c918f]">
-            {{ option.country }}
+          <span class="shrink-0 text-right">
+            <span
+              class="block text-[14px] leading-[18px]"
+              :class="timeZone === option.timeZone ? 'font-bold text-[#20c997]' : 'text-[#eceeed]'"
+            >
+              {{ option.offset }}
+            </span>
+            <span class="block text-[12px] leading-[16px] text-[#8c918f]">
+              {{ formatTimeZoneDate(option.timeZone, currentDate) }}
+            </span>
           </span>
-        </span>
-        <span class="shrink-0 text-right">
-          <span
-            class="block text-[14px] leading-[18px]"
-            :class="timeZone === option.timeZone ? 'font-bold text-[#20c997]' : 'text-[#eceeed]'"
-          >
-            {{ option.offset }}
-          </span>
-          <span class="block text-[12px] leading-[16px] text-[#8c918f]">
-            {{ formatTimeZoneDate(option.timeZone, currentDate) }}
-          </span>
-        </span>
-      </button>
+        </button>
 
-      <p v-if="filteredTimeZones.length === 0" class="px-4 py-8 text-center text-[14px] text-[#8c918f]">
-        No time zones found.
-      </p>
+        <p v-if="filteredTimeZones.length === 0" class="px-4 py-8 text-center text-[14px] text-[#8c918f]">
+          No time zones found.
+        </p>
+      </div>
     </div>
 
     <p class="sr-only" aria-live="polite">

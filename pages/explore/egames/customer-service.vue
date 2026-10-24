@@ -6,11 +6,20 @@ const { closeComments } = useCommentPanel()
 const { showDemoMessage } = useDemoInteraction()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
-useSeoMeta({
-  title: '24/7 Services — Customer Service Center | ByBet',
-  description: 'Welcome to ByBet 24/7 Customer Service Center. Get immediate online customer support and assistance 24/7.',
-  ogTitle: '24/7 Services — Customer Service Center | ByBet',
-  ogDescription: 'Welcome to ByBet 24/7 Customer Service Center. Get immediate online customer support and assistance 24/7.',
+useAppSeo({
+  title: '24/7 Customer Support & Help Center | ByBet Philippines',
+  description: 'Contact ByBet 24/7 Customer Support for fast assistance with deposits, withdrawals, promotions, and account verification. Chat live with us anytime.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Help', path: '/explore/help/contact-us' },
+    { name: 'Customer Service', path: '/explore/egames/customer-service' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'ByBet Customer Support',
+    url: 'https://bybet.com/explore/egames/customer-service',
+  },
 })
 
 const handleBack = (): void => {
@@ -34,12 +43,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="customer-service-page w-full min-w-0 pb-16 pt-1 text-white">
+  <div class="customer-service-page w-full min-w-0 pb-16 text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
       sticky
       title="24/7 Services"
-      description="Connect with ByBet Philippines 24/7 Customer Support. Instant live chat, Telegram assistance, VIP manager support, and email inquiries."
+      meta-title="24/7 Customer Support & Help Center | ByBet Philippines"
+      description="Contact ByBet 24/7 Customer Support for fast assistance with deposits, withdrawals, promotions, and account verification. Chat live with us anytime."
       back-to="/explore/entertainment/live-casino/all"
     />
 
@@ -47,7 +57,7 @@ onMounted(() => {
     <div class="welcome-card flex items-center gap-1 rounded-lg bg-[#141414] p-1 sm:p-2 mb-2 shadow-sm">
       <div class="logo-box h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-[#036242] p-1 flex items-center justify-center shadow-sm">
         <img
-          src="/icons/bybet-square.png"
+          src="/icons/bybet-square.webp"
           alt="ByBet"
           class="h-full w-full object-contain"
         >

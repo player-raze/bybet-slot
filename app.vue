@@ -6,6 +6,7 @@ const {
   effectiveTheme,
   themePreference,
 } = useSiteTheme()
+const { isLoading, loadingLabel, checkAssetsAndDismiss } = useByBetLoader()
 
 useHead(() => ({
   htmlAttrs: {
@@ -13,12 +14,26 @@ useHead(() => ({
     'data-theme': effectiveTheme.value,
     'data-theme-preference': themePreference.value,
   },
+  meta: [
+    {
+      name: 'theme-color',
+      content: effectiveTheme.value === 'light' ? '#eef5f1' : '#080D0B',
+    },
+  ],
 }))
 
 onMounted(() => {
   restoreLocale()
   restoreTimeZone()
   applyTheme()
+  checkAssetsAndDismiss()
+})
+
+const nuxtApp = useNuxtApp()
+nuxtApp.hook('page:finish', () => {
+  nextTick(() => {
+    checkAssetsAndDismiss(100, 1500)
+  })
 })
 </script>
 
@@ -26,4 +41,25 @@ onMounted(() => {
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+
+  <Transition name="fade">
+    <ByBetSpinner
+      v-if="isLoading"
+      fullscreen
+      size="lg"
+      :label="loadingLabel"
+    />
+  </Transition>
 </template>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 250ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

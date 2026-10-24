@@ -12,6 +12,24 @@ const popularLeagues: Record<string, string[]> = {
 }
 const selectedPopularLeagues = computed(() => popularLeagues[String(route.params.sport)] ?? [])
 const selectedSports = computed(() => [sportNames[String(route.params.sport)] ?? ''])
+const sportDisplayName = computed(() => sportNames[String(route.params.sport)] ?? 'Sports')
+
+useAppSeo({
+  title: computed(() => `${sportDisplayName.value} Betting Odds, Lines & Live Matches | ByBet`),
+  description: computed(() => `Bet on ${sportDisplayName.value} at ByBet Philippines. Competitive point spreads, moneylines, over/under totals, and futures across premier global leagues.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Sports', path: '/explore/sports/popular' },
+    { name: sportDisplayName.value, path: `/explore/sports/${route.params.sport}` },
+  ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${sportDisplayName.value} Sports Betting - ByBet`,
+    url: `https://bybet.com/explore/sports/${route.params.sport}`,
+    description: `Bet on ${sportDisplayName.value} at ByBet Philippines with competitive point spreads, moneylines, over/under totals, and futures.`,
+  })),
+})
 
 definePageMeta({
   validate: route => ['basketball', 'baseball', 'soccer', 'tennis'].includes(String(route.params.sport)),
@@ -19,7 +37,9 @@ definePageMeta({
     const base = `/explore/sports/${to.params.sport}`
     if (to.path.replace(/\/$/, '') !== base) return
     const requestedTab = to.query.tab === 'prematch' ? 'pre-match' : String(to.query.tab ?? 'league')
-    const tab = ['league', 'inplay', 'upcoming', 'pre-match', 'smart-pick', 'outright'].includes(requestedTab) ? requestedTab : 'league'
+    const availableTabs = ['league', 'inplay', 'upcoming', 'pre-match', 'smart-pick', 'outright']
+    if (String(to.params.sport).toLowerCase() === 'soccer') availableTabs.push('replay')
+    const tab = availableTabs.includes(requestedTab) ? requestedTab : 'league'
     const { tab: legacyTab, ...query } = to.query
     return navigateTo({ path: `${base}/${tab}`, query }, { replace: true })
   },

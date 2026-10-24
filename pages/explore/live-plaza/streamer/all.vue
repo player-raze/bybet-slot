@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ChevronLeft, Search, X } from 'lucide-vue-next'
 
-useSeoMeta({
-  title: 'All Streamers | Live Plaza | ByBet',
-  description: 'Search and browse all live sports and casino streamers on ByBet Live Plaza.',
-  ogTitle: 'All Streamers | Live Plaza | ByBet',
-  ogDescription: 'Search and browse all live sports and casino streamers on ByBet Live Plaza.',
+useAppSeo({
+  title: 'Browse All Live Plaza Streamers & Channels | ByBet',
+  description: 'Discover every live streaming channel on ByBet Live Plaza. Watch real-time match reactions, casino gameplay, and connect with top sports creators.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/explore/live-plaza/home' },
+    { name: 'Streamers', path: '/explore/live-plaza/streamer' },
+    { name: 'All Streamers', path: '/explore/live-plaza/streamer/all' },
+  ],
 })
 
 const router = useRouter()
@@ -23,7 +27,7 @@ const handleBack = (): void => {
 </script>
 
 <template>
-  <div class="live-plaza-all-streamers-page w-full min-w-0 pb-16 pt-1 text-white">
+  <div class="live-plaza-all-streamers-page w-full min-w-0 pb-16  text-white">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
       sticky
@@ -34,13 +38,13 @@ const handleBack = (): void => {
 
     <!-- Search Section -->
     <section class="search-card rounded-xl bg-[#141414] p-2.5 sm:p-3 mb-2 shadow-sm flex justify-center">
-      <div class="relative w-full max-w-[340px] flex items-center">
-        <Search class="pointer-events-none absolute left-3 w-3.5 h-3.5 text-[#666666]" />
+      <div class="relative w-full max-w-[540px] flex items-center">
+        <Search class="pointer-events-none absolute left-3 w-3 h-3 text-white" />
         <input
           v-model="searchQuery"
           type="text"
           :placeholder="translate('Search: Streamer, League, Team, Event...')"
-          class="w-full h-8 pl-8 pr-7 rounded-full bg-black border border-white/5 text-xs text-white placeholder-[#555555] focus:outline-none focus:border-[#32d49a]/40 transition-colors"
+          class="w-full h-6 pl-8 pr-7 rounded-full bg-black  text-[14px] text-white placeholder-white focus:outline-none  "
         />
         <button
           v-if="searchQuery"
@@ -56,7 +60,7 @@ const handleBack = (): void => {
 
     <!-- Main Empty State Card -->
     <section class="streamers-content-card rounded-xl bg-[#141414] p-4 min-h-[320px] sm:min-h-[420px] flex items-center justify-center shadow-sm">
-      <div class="text-xs sm:text-sm text-[#737373] select-none">
+      <div class="text-xs sm:text-[18px] text-[#737373] select-none">
         {{ translate('No related streamer') }}
       </div>
     </section>

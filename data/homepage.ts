@@ -68,11 +68,11 @@ export interface HomepageChannel {
 }
 
 export const homepageChannels: HomepageChannel[] = [
-  { label: 'Slots', iconImage: '/icons/egames/slots.png', to: '/explore/egames/slots' },
-  { label: 'Live Casino', iconImage: '/icons/entertainment/live-casino.png', to: '/explore/entertainment/live-casino' },
-  { label: 'Sports', iconImage: '/icons/sports/basketball.png', to: '/explore/sports/popular' },
-  { label: 'eSports', iconImage: '/icons/entertainment/gaming.png', to: '/explore/entertainment/gaming' },
-  { label: 'Lottery', iconImage: '/icons/sports/soccer.png', to: '/explore/sports/soccer' },
+  { label: 'Slots', iconImage: '/icons/egames/slots.webp', to: '/explore/egames/slots' },
+  { label: 'Live Casino', iconImage: '/icons/entertainment/live-casino.webp', to: '/explore/entertainment/live-casino' },
+  { label: 'Sports', iconImage: '/icons/sports/basketball.webp', to: '/explore/sports/popular' },
+  { label: 'eSports', iconImage: '/icons/entertainment/gaming.webp', to: '/explore/entertainment/gaming' },
+  { label: 'Lottery', iconImage: '/icons/sports/soccer.webp', to: '/explore/sports/soccer' },
 ]
 
 export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
@@ -82,12 +82,12 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
     icon: Volleyball,
     sectionId: null,
     children: [
-      { label: 'Popular', iconImage: '/icons/sports/popular.png', to: '/explore/sports/popular', accentColor: '#ff6948' },
-      { label: 'Basketball', iconImage: '/icons/sports/basketball.png', to: '/explore/sports/basketball', accentColor: '#ff8a3d' },
-      { label: 'Soccer', iconImage: '/icons/sports/soccer.png', to: '/explore/sports/soccer', accentColor: '#f4f7f5' },
-      { label: 'Tennis', iconImage: '/icons/sports/tennis.png', to: '/explore/sports/tennis', accentColor: '#9cda35' },
-      { label: 'Baseball', iconImage: '/icons/sports/baseball.png', to: '/explore/sports/baseball', accentColor: '#ff6262' },
-      { label: 'Live', iconImage: '/icons/sports/live.png', to: '/explore/sports/live', accentColor: '#48d5a5' },
+      { label: 'Popular', iconImage: '/icons/sports/popular.webp', to: '/explore/sports/popular', accentColor: '#ff6948' },
+      { label: 'Basketball', iconImage: '/icons/sports/basketball.webp', to: '/explore/sports/basketball', accentColor: '#ff8a3d' },
+      { label: 'Soccer', iconImage: '/icons/sports/soccer.webp', to: '/explore/sports/soccer', accentColor: '#f4f7f5' },
+      { label: 'Tennis', iconImage: '/icons/sports/tennis.webp', to: '/explore/sports/tennis', accentColor: '#9cda35' },
+      { label: 'Baseball', iconImage: '/icons/sports/baseball.webp', to: '/explore/sports/baseball', accentColor: '#ff6262' },
+      { label: 'Live', iconImage: '/icons/sports/live.webp', to: '/explore/sports/live', accentColor: '#48d5a5' },
     ],
   },
   {
@@ -95,8 +95,8 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
     icon: Spade,
     sectionId: null,
     children: [
-      { label: 'Live Casino', iconImage: '/icons/entertainment/live-casino.png', to: '/explore/entertainment/live-casino', accentColor: '#e2c37b' },
-      { label: 'Gaming', iconImage: '/icons/entertainment/gaming.png', to: '/explore/entertainment/gaming', accentColor: '#777cff', underMaintenance: true },
+      { label: 'Live Casino', iconImage: '/icons/entertainment/live-casino.webp', to: '/explore/entertainment/live-casino', accentColor: '#e2c37b' },
+      { label: 'Gaming', iconImage: '/icons/entertainment/gaming.webp', to: '/explore/entertainment/gaming', accentColor: '#777cff', underMaintenance: true },
     ],
   },
   {
@@ -105,11 +105,11 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
     sectionId: null,
     defaultExpanded: true,
     children: [
-      { label: 'Slots', iconImage: '/icons/egames/slots.png', to: '/explore/egames/slots', accentColor: '#f1b33c' },
-      { label: 'Bingo', iconImage: '/icons/egames/bingo.png', to: '/explore/egames/bingo', accentColor: '#4d9cff' },
-      { label: 'Jackpot', iconImage: '/icons/egames/jackpot.png', to: '/explore/egames/jackpot', accentColor: '#f4bd3e' },
-      { label: 'History', iconImage: '/icons/egames/history.png', to: '/explore/egames/history', accentColor: '#45cdb0' },
-      { label: 'Customer Service', iconImage: '/icons/egames/customer-service.png', to: '/explore/egames/customer-service', accentColor: '#8bd537' },
+      { label: 'Slots', iconImage: '/icons/egames/slots.webp', to: '/explore/egames/slots', accentColor: '#f1b33c' },
+      { label: 'Bingo', iconImage: '/icons/egames/bingo.webp', to: '/explore/egames/bingo', accentColor: '#4d9cff' },
+      { label: 'Jackpot', iconImage: '/icons/egames/jackpot.webp', to: '/explore/egames/jackpot', accentColor: '#f4bd3e' },
+      { label: 'History', iconImage: '/icons/egames/history.webp', to: bybetRedirectUrl, accentColor: '#45cdb0' },
+      { label: 'Customer Service', iconImage: '/icons/egames/customer-service.webp', to: '/explore/egames/customer-service', accentColor: '#8bd537' },
     ],
   },
   { label: 'Bonuses', icon: Gift, sectionId: null, to: '/explore/bonuses' },
@@ -118,10 +118,10 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
     icon: Mic2,
     sectionId: null,
     children: [
-      { label: 'Home', iconImage: '/icons/live-plaza/home.png', to: '/explore/live-plaza/home', accentColor: '#ff9f2f' },
-      { label: 'Streamer', iconImage: '/icons/live-plaza/streamer.png', to: '/explore/live-plaza/streamer', accentColor: '#ff9f2f' },
-      { label: 'Expert Predictions', iconImage: '/icons/live-plaza/expert-predictions.png', to: '/explore/live-plaza/expert-predictions', accentColor: '#55aef7' },
-      { label: 'Funds', iconImage: '/icons/live-plaza/funds.png', to: '/explore/live-plaza/funds', accentColor: '#f1644d', showFundsModal: true },
+      { label: 'Home', iconImage: '/icons/live-plaza/home.webp', to: '/explore/live-plaza/home', accentColor: '#ff9f2f' },
+      { label: 'Streamer', iconImage: '/icons/live-plaza/streamer.webp', to: '/explore/live-plaza/streamer', accentColor: '#ff9f2f' },
+      { label: 'Expert Predictions', iconImage: '/icons/live-plaza/expert-predictions.webp', to: '/explore/live-plaza/expert-predictions', accentColor: '#55aef7' },
+      { label: 'Funds', iconImage: '/icons/live-plaza/funds.webp', to: '/explore/live-plaza/funds', accentColor: '#f1644d', showFundsModal: true },
     ],
   },
   { label: 'Me', icon: UserRound, sectionId: null, to: '/explore/account/me' },
@@ -133,7 +133,7 @@ export const createRailItems = (bybetRedirectUrl: string): RailItem[] => [
   { label: 'Auto', icon: Moon, sectionId: null, control: 'theme', surface: true },
 ]
 
-const gamePlaceholderImage = '/brand/bybet-logo.png'
+const gamePlaceholderImage = '/brand/bybet-logo.webp'
 
 const createGames = (
   titles: string[],
@@ -201,12 +201,12 @@ export const providers = [
 ]
 
 export const providerLogoByName: Record<string, string> = {
-  PG: '/images/providers/pg.png',
-  JILI: '/images/providers/jili.png',
-  PP: '/images/providers/pp.png',
-  CQ9: '/images/providers/cq9.png',
-  JDB: '/images/providers/jdb.png',
-  'RED TIGER': '/images/providers/red-tiger.png',
+  PG: '/images/providers/pg.webp',
+  JILI: '/images/providers/jili.webp',
+  PP: '/images/providers/pp.webp',
+  CQ9: '/images/providers/cq9.webp',
+  JDB: '/images/providers/jdb.webp',
+  'RED TIGER': '/images/providers/red-tiger.webp',
 }
 
 export const faqItems: FaqItem[] = [

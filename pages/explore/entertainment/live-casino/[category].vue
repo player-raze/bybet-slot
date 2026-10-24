@@ -13,9 +13,30 @@ import { liveCasinoGames } from '~/data/casino'
 const route = useRoute()
 const router = useRouter()
 
-const pragmaticPlayLogo = '/images/casino/pragmatic-play.png'
+const pragmaticPlayLogo = '/images/casino/pragmatic-play.webp'
 
 const activeCategory = computed(() => (route.params.category as string) || 'baccarat')
+
+const categoryLabel = computed(() => {
+  const match = LIVE_CASINO_CATEGORIES.find(c => c.key === activeCategory.value)
+  return match?.label || 'Live Tables'
+})
+
+useAppSeo({
+  title: computed(() => `${categoryLabel.value} Live Casino — Real Dealer Tables | ByBet`),
+  description: computed(() => `Join live ${categoryLabel.value} tables on ByBet Philippines. HD streaming, professional dealers, dynamic side bets, and seamless mobile wagering 24/7.`),
+  breadcrumbs: computed(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Live Casino', path: '/explore/entertainment/live-casino/all' },
+    { name: categoryLabel.value, path: `/explore/entertainment/live-casino/${activeCategory.value}` },
+  ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${categoryLabel.value} Live Casino - ByBet`,
+    url: `https://bybet.com/explore/entertainment/live-casino/${activeCategory.value}`,
+  })),
+})
 
 const { context: commentContext, openGameComments, closeComments } = useCommentPanel()
 const { showDemoMessage } = useDemoInteraction()
@@ -139,8 +160,8 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 </script>
 
 <template>
-  <div class="live-casino-page w-full min-w-0 pb-16 pt-1 text-white">
-    <div class="sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-0.5">
+  <div class="live-casino-page w-full min-w-0 pb-16 text-white">
+    <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] bg-black rounded-t-2xl z-30 -mx-1 px-1 pb-0.5">
       <!-- Top Bar -->
       <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
         <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
@@ -158,7 +179,19 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
           :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
           @click="toggleChat"
         >
-          <MessageCircle class="h-4 w-4 mb-0.5 shrink-0" />
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mb-0.5 shrink-0"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M5.17487 19.8675L7.9565 18.1075C8.63891 18.2396 9.31883 18.308 10 18.308C15.4956 18.308 20 14.2442 20 9.15401C20 4.06434 15.4954 0 10 0C4.50461 0 0 4.06434 0 9.15401C0 12.0413 1.46921 14.6858 3.88947 16.3963L3.85501 19.0683C3.84572 19.7874 4.5896 20.2378 5.17487 19.8675ZM5.50007 10.9998C6.32849 10.9998 7.00007 10.3282 7.00007 9.49982C7.00007 8.67139 6.32849 7.99982 5.50007 7.99982C4.67164 7.99982 4.00007 8.67139 4.00007 9.49982C4.00007 10.3282 4.67164 10.9998 5.50007 10.9998ZM12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998C9.67164 10.9998 9.00007 10.3282 9.00007 9.49982C9.00007 8.67139 9.67164 7.99982 10.5001 7.99982C11.3285 7.99982 12.0001 8.67139 12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998ZM15.5001 10.9998C16.3285 10.9998 17.0001 10.3282 17.0001 9.49982C17.0001 8.67139 16.3285 7.99982 15.5001 7.99982C14.6716 7.99982 14.0001 8.67139 14.0001 9.49982C14.0001 10.3282 14.6716 10.9998 15.5001 10.9998Z"
+            />
+          </svg>
           <span class="text-[11px] leading-tight">Chat</span>
         </button>
       </header>
@@ -193,10 +226,10 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
           <!-- Top Part: Image -->
           <div class="relative w-full aspect-[4/3] overflow-hidden">
             <img
-              :src="table.image || '/images/casino/card1.jpg'"
+              :src="table.image || '/images/casino/card1.webp'"
               class="w-full h-full object-cover"
               :alt="table.title"
-              @error="($event.target as HTMLImageElement).src = '/images/casino/card1.jpg'"
+              @error="($event.target as HTMLImageElement).src = '/images/casino/card1.webp'"
             />
             <div class="absolute top-0.5 inset-x-0.5 flex items-start justify-between gap-0.5 pointer-events-none">
               <div class="p-0.5 rounded backdrop-blur-lg text-[11px] font-medium bg-black/10 leading-tight break-words min-w-0">
@@ -214,7 +247,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
             
             <!-- BACCARAT / DRAGON TIGER LAYOUT -->
             <div v-if="table.category === 'baccarat' || table.category === 'dragon-tiger'">
-              <div class="grid grid-cols-12 gap-[1px] bg-neutral-500 border-2 border-neutral-500 rounded-sm overflow-hidden mb-2">
+              <div class="grid grid-cols-12 gap-[1px] bg-neutral-500 border-2 border-neutral-500 rounded-sm overflow-hidden ">
                 <div
                   v-for="(col, colIdx) in getRoadmapColumns(table.wins)"
                   :key="colIdx"
@@ -241,7 +274,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
               </div>
               <div class="flex items-center justify-between px-1 py-1 text-[10px] font-medium">
                 <div class="flex items-center gap-1">
-                  <img src="/images/casino/shoe-stats.png" alt="Shoe stats" class="w-2.5 h-2.5 object-contain shrink-0" />
+                  <img src="/images/casino/shoe-stats.webp" alt="Shoe stats" class="w-2.5 h-2.5 object-contain shrink-0" />
                   <span v-if="table.stats">{{ table.stats.shoe }}</span>
                 </div>
                 <div class="flex items-center gap-1 text-red-500"><span class="font-bold">B</span><span v-if="table.stats">{{ table.stats.banker }}</span></div>

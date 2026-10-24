@@ -34,6 +34,23 @@ import {
 import GameCard from '~/components/game-cards/GameCard.vue'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 
+useAppSeo({
+  title: 'Online Slots — Real Money Slots & Jackpots | ByBet',
+  description: 'Play top online slot games at ByBet Philippines. Spin popular titles, megaways, and progressive jackpots from JILI, PG Soft, Pragmatic Play, and FC.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'E-Games', path: '/explore/egames/slots' },
+    { name: 'Slots', path: '/explore/egames/slots' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Online Slots',
+    url: 'https://bybet.com/explore/egames/slots',
+    description: 'Play top online slot games at ByBet Philippines. Spin popular titles, megaways, and progressive jackpots.',
+  },
+})
+
 const categoryIcons: Record<string, Component> = {
   House,
   Percent,
@@ -273,16 +290,16 @@ const resetFilters = (): void => {
 </script>
 
 <template>
-  <div class="slots-page w-full min-w-0 pb-16 pt-1">
+  <div class="slots-page w-full min-w-0 pb-16">
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky top-[var(--header-height)] z-30 bg-[#000000] -mx-1 px-1 -mt-1 pb-0.5">
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-x-auto no-scrollbar shadow-sm">
-        <div class="flex items-center gap-1.5 min-w-0">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-0.5 bg-black rounded-t-3xl">
+      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
+        <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
             v-for="cat in SLOT_CATEGORIES"
             :key="cat.key"
             type="button"
-            class="nav-tab flex flex-col items-center justify-center min-w-[48px] py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
+            class="nav-tab flex flex-col items-center justify-center min-w-[48px] shrink-0 py-1 px-2.5 rounded-md transition-all cursor-pointer select-none"
             :class="activeCategory === cat.key ? 'bg-[#036242] text-white shadow font-semibold' : 'text-[#959799] '"
             :aria-label="cat.label"
             @click="selectCategory(cat.key)"
@@ -326,13 +343,13 @@ const resetFilters = (): void => {
       </header>
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
-      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm">
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm bg-black">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in SLOT_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-4 py-1.5 rounded-full text-[16px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5"
+            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0"
             :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
             @click="toggleProvider(prov.key)"
           >

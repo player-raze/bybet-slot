@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     kadarioSite: 'YBa-BnymZ6iN8pkfAUFTWIKn',
   },
   modules: ['@nuxtjs/tailwindcss'],
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/light-mode.css'],
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
@@ -39,11 +39,23 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#080D0B' },
       ],
       link: [
-        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon.webp' },
         {
           rel: 'preload',
           as: 'image',
-          href: '/hero/slots-games.png',
+          href: '/brand/bybet-loader-logo-dark.png',
+          fetchpriority: 'high',
+        },
+        {
+          rel: 'preload',
+          as: 'image',
+          href: '/brand/bybet-loader-logo.png',
+          fetchpriority: 'high',
+        },
+        {
+          rel: 'preload',
+          as: 'image',
+          href: '/hero/slots-games.webp',
           fetchpriority: 'high',
         },
       ],

@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import { ChevronLeft, CircleDot, Flag } from 'lucide-vue-next'
+import SubpageHeader from '~/components/SubpageHeader.vue'
+import { CircleDot, Flag } from 'lucide-vue-next'
 
 type TutorialMode = 'mock-betting' | 'tutorial'
 type MarketKey = 'hdp' | 'o-u' | '1x2' | 'corners' | 'odd-even' | 'correct-score' | 'outright'
-type BetOutcome = 'WIN' | 'LOSE' | 'PUSH'
+type BetOutcome = 'WIN' | 'LOSE' | 'WIN_HALF' | 'LOSE_HALF' | 'REFUND'
+type CorrectScoreFilter = 'popular' | 'all'
+
+const outcomeStampMap: Record<BetOutcome, { src: string; alt: string }> = {
+  WIN: { src: '/tutorial-assets/result-stamp-win.webp', alt: 'WIN' },
+  LOSE: { src: '/tutorial-assets/result-stamp-lose.webp', alt: 'LOSE' },
+  WIN_HALF: { src: '/tutorial-assets/result-stamp-win-half.webp', alt: 'WIN HALF' },
+  LOSE_HALF: { src: '/tutorial-assets/result-stamp-lose-half.webp', alt: 'LOSE HALF' },
+  REFUND: { src: '/tutorial-assets/result-stamp-refund.webp', alt: 'Refund' },
+}
 
 const props = withDefaults(defineProps<{
   mode?: TutorialMode
@@ -90,14 +100,14 @@ const markets: MarketDefinition[] = [
     label: 'HDP',
     panelTitle: 'HDP',
     choices: [
-      choice('barcelona-0', '0', 'Barcelona 0', '1.98', 'WIN', 'When the handicap is 0, betting on the winning team will result in a win. For example, bets on Barcelona (0) win when Barcelona wins.'),
-      choice('madrid-0', '0', 'Real Madrid 0', '1.98', 'LOSE', 'The handicap is 0, so the selection follows the match result. Real Madrid lost 0–2, so this selection loses.'),
-      choice('barcelona-025', '−0/0.5', 'Barcelona −0/0.5', '1.98', 'WIN', 'Barcelona won the match, so the split handicap of 0 and −0.5 is settled as a full win.'),
-      choice('madrid-025', '+0/0.5', 'Real Madrid +0/0.5', '1.98', 'LOSE', 'Real Madrid lost by two goals, so the quarter-goal head start does not cover the final margin.'),
-      choice('barcelona-1', '−1', 'Barcelona −1', '1.98', 'WIN', 'Barcelona won by two goals. After applying the −1 handicap, Barcelona still leads by one goal.'),
-      choice('madrid-1', '+1', 'Real Madrid +1', '1.98', 'LOSE', 'Adding one goal to Real Madrid changes the handicap score to 2–1, which is still a Barcelona win.'),
-      choice('barcelona-175', '−1.5/2', 'Barcelona −1.5/2', '1.98', 'WIN', 'A two-goal Barcelona victory fully wins the −1.5 half and pushes the −2 half.'),
-      choice('madrid-175', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE', 'The two-goal defeat does not fully cover this split positive handicap.'),
+      choice('barcelona-0', '0', 'Barcelona 0', '1.98', 'WIN', 'When the handicap is 0, betting on the winning team will result in a win. For example, bets on Barcelona (0) to win when they win.'),
+      choice('madrid-0', '0', 'Real Madrid 0', '1.98', 'LOSE', 'When the handicap is 0, betting on the winning team to win, Real Madrid loses, so betting on Real Madrid (0) lose.'),
+      choice('barcelona-025', '−0/0.5', 'Barcelona −0/0.5', '1.98', 'WIN', 'After Real Madrid receives the handicap, and if the final score is 2-0 or 2-0.5, Barcelona wins, so bets on Barcelona (-0/0.5) will result in a win.'),
+      choice('madrid-025', '+0/0.5', 'Real Madrid +0/0.5', '1.98', 'LOSE', 'After Real Madrid receives the handicap, if the final score is 2-0 or 2-0.5, both are Real Madrid losses, so bets on Real Madrid (+0/0.5) loses.'),
+      choice('barcelona-1', '−1', 'Barcelona −1', '1.98', 'WIN', 'After Real Madrid receives the handicap, and if the final score is 2-1, Barcelona wins, so bets on Barcelona (-1) will result in a win.'),
+      choice('madrid-1', '+1', 'Real Madrid +1', '1.98', 'LOSE', 'After Real Madrid receives the handicap, if the final score is 2-1, Real Madrid loses, so bets on Real Madrid (+1) lose.'),
+      choice('barcelona-175', '−1.5/2', 'Barcelona −1.5/2', '1.98', 'WIN_HALF', 'After Real Madrid receives the handicap, if the final score is 2-1.5 or 2-2; 2-1.5 results in a win for Barcelona, and half the result is also a win for Barcelona, so bets on Barcelona (-1.5/2) will result in a half-win.'),
+      choice('madrid-175', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE_HALF', 'After Real Madrid receives the handicap, if the final score is 2-1.5 or 2-2; 2-1.5 results in a lose for Real Madrid, and half the result is also a lose for Real Madrid, so bets on Real Madrid (-1.5/2) will result in a half-lose.'),
     ],
     lesson: {
       title: 'Asian Handicap (HDP)',
@@ -115,14 +125,14 @@ const markets: MarketDefinition[] = [
     label: 'O/U',
     panelTitle: 'O/U',
     choices: [
-      choice('over-15', 'Over 1.5', 'Over 1.5', '1.98', 'WIN', 'Two goals were scored. Because 2 is greater than 1.5, the Over selection wins.'),
-      choice('under-15', 'Under 1.5', 'Under 1.5', '1.98', 'LOSE', 'The match produced two goals, which is above the 1.5 line.'),
-      choice('over-175', 'Over 1.5/2', 'Over 1.5/2', '1.98', 'WIN', 'The stake is split between Over 1.5 and Over 2. The first half wins and the second half pushes.'),
-      choice('under-175', 'Under 1.5/2', 'Under 1.5/2', '1.98', 'LOSE', 'At exactly two goals, half the selection loses and half is refunded.'),
-      choice('over-2', 'Over 2', 'Over 2', '1.98', 'PUSH', 'The total finished exactly on the line at two goals, so the stake is refunded.'),
-      choice('under-2', 'Under 2', 'Under 2', '1.98', 'PUSH', 'The total finished exactly on the line at two goals, so the stake is refunded.'),
-      choice('over-225', 'Over 2/2.5', 'Over 2/2.5', '1.98', 'LOSE', 'Two goals do not clear either part of the 2/2.5 split line.'),
-      choice('under-225', 'Under 2/2.5', 'Under 2/2.5', '1.98', 'WIN', 'Two goals push the Under 2 half and win the Under 2.5 half.'),
+      choice('over-15', 'Over 1.5', 'Over 1.5', '1.98', 'WIN', 'The number of goals is 2, which is greater than 1.5, so bets on (over 1.5) win.'),
+      choice('under-15', 'Under 1.5', 'Under 1.5', '1.98', 'LOSE', 'The number of goals is 2, which is greater than 1.5, so bets on (under 1.5) lose.'),
+      choice('over-175', 'Over 1.5/2', 'Over 1.5/2', '1.98', 'WIN_HALF', 'The number of goals is 2, greater than the bet of 1.5 is a win, equal to the bet of 2 is a draw, and half the result is a win, so bets on (over 1.5/2) is a half-win.'),
+      choice('under-175', 'Under 1.5/2', 'Under 1.5/2', '1.98', 'LOSE_HALF', 'If the number of goals is 2, greater than the bet of 1.5 is a loss, equal to the bet item of 2 is a draw, and half the result is a loss, so bets on (Under 1.5/2) is a half-lose.'),
+      choice('over-2', 'Over 2', 'Over 2', '1.98', 'REFUND', 'The number of goals is 2, equal to the bet of 2 is a draw, so bets on (Over 2) will be refunded.'),
+      choice('under-2', 'Under 2', 'Under 2', '1.98', 'REFUND', 'The number of goals is 2, equal to the bet of 2 is a draw, so bets on (Under 2) will be refunded.'),
+      choice('over-225', 'Over 2/2.5', 'Over 2/2.5', '1.98', 'LOSE_HALF', 'The number of goals is 2, equal to the bet of 2 is a draw, less than the bet of 2.5 is a loss, and half the result is a win, so bets on (Over1.5/2) is a half-win.'),
+      choice('under-225', 'Under 2/2.5', 'Under 2/2.5', '1.98', 'WIN_HALF', 'If the number of goals is 2, equal to the bet of 2 is a draw, and less than the bet of 2.5 is a win. Half the result is a win, so bets on (Under 2/2.5) is a half-win.'),
     ],
     lesson: {
       title: 'Over / Under (O/U)',
@@ -140,9 +150,9 @@ const markets: MarketDefinition[] = [
     label: '1X2',
     panelTitle: '1X2',
     choices: [
-      choice('home-win', '1  Barcelona', 'Barcelona (1)', '1.98', 'WIN', 'Barcelona is the home team and won 2–0, so the Home Win (1) selection wins.'),
-      choice('draw', 'X  Draw', 'Draw (X)', '3.20', 'LOSE', 'The match did not finish level, so the Draw selection loses.'),
-      choice('away-win', '2  Real Madrid', 'Real Madrid (2)', '3.80', 'LOSE', 'Real Madrid is the away team and lost the match, so Away Win (2) loses.'),
+      choice('home-win', '1  Barcelona', 'Barcelona (1)', '1.98', 'WIN', 'Barcelona wins by 2 goals, so bets on (Home Win) win.'),
+      choice('draw', 'X  Draw', 'Draw (X)', '3.20', 'LOSE', 'Barcelona wins by 2 goals, not a draw, so bets on (Draw) lose'),
+      choice('away-win', '2  Real Madrid', 'Real Madrid (2)', '3.80', 'LOSE', 'Real Madrid loses by 2 goals, so bets on (Away Win) lose.'),
     ],
     lesson: {
       title: '1X2 Match Result',
@@ -160,14 +170,10 @@ const markets: MarketDefinition[] = [
     label: 'Corners',
     panelTitle: 'Corners',
     choices: [
-      choice('corners-over-75', 'Over 7.5', 'Corners Over 7.5', '1.98', 'WIN', 'The example match finishes with nine corners, so Over 7.5 wins.'),
-      choice('corners-under-75', 'Under 7.5', 'Corners Under 7.5', '1.98', 'LOSE', 'Nine corners were taken, exceeding the 7.5 line.'),
-      choice('corners-over-85', 'Over 8.5', 'Corners Over 8.5', '1.98', 'WIN', 'Nine total corners are enough for Over 8.5 to win.'),
-      choice('corners-under-85', 'Under 8.5', 'Corners Under 8.5', '1.98', 'LOSE', 'Nine total corners are above the 8.5 line.'),
-      choice('corners-over-9', 'Over 9', 'Corners Over 9', '1.98', 'PUSH', 'The example total lands exactly on nine, so the stake is refunded.'),
-      choice('corners-under-9', 'Under 9', 'Corners Under 9', '1.98', 'PUSH', 'The example total lands exactly on nine, so the stake is refunded.'),
-      choice('barca-corners', 'Barcelona −1', 'Barcelona Corners −1', '1.98', 'WIN', 'Barcelona takes two more corners, covering the −1 corner handicap.'),
-      choice('madrid-corners', 'Real Madrid +1', 'Real Madrid Corners +1', '1.98', 'LOSE', 'The one-corner allowance is not enough to cover a two-corner deficit.'),
+      choice('corners-barcelona-15', '-1.5', 'Barcelona -1.5', '1.98', 'WIN', 'After receiving handicap points, Real Madrid vs. Barcelona corner handicap result is: 7-6.5, Barcelona wins, so bets on Barcelona (-1.5) win.'),
+      choice('corners-real-madrid-15', '+1.5', 'Real Madrid +1.5', '1.98', 'LOSE', 'After receiving handicap points, Real Madrid vs. Barcelona corner handicap result is: 7-6.5, Real Madrid loses, so bets on Real Madrid (+1.5) lose.'),
+      choice('corners-barcelona-152', '-1.5/2', 'Barcelona -1.5/2', '1.98', 'WIN_HALF', 'After receiving the handicap, if the final score of corner handicap is 7-6.5 or 7-7; 7-6.5 results in a win for Real Madrid, and half the result is also a win for Real Madrid, so bets on Real Madrid (+1.5/2) will result in a half-loss'),
+      choice('corners-real-madrid-152', '+1.5/2', 'Real Madrid +1.5/2', '1.98', 'LOSE', 'After receiving the handicap, if the final score of corner handicap is 7-6.5 or 7-7; 7-6.5 results in a loss for Real Madrid, and half the result is also a loss for Real Madrid, so bets on Real Madrid (+1.5/2) will result in a half-loss.'),
     ],
     lesson: {
       title: 'Corner Betting',
@@ -185,8 +191,8 @@ const markets: MarketDefinition[] = [
     label: 'Odd / Even',
     panelTitle: 'Odd / Even',
     choices: [
-      choice('odd', 'Odd', 'Total Goals — Odd', '1.98', 'LOSE', 'The final total is two goals. Two is an even number, so Odd loses.'),
-      choice('even', 'Even', 'Total Goals — Even', '1.98', 'WIN', 'The final total is two goals. Two is even, so this selection wins.'),
+      choice('odd', 'Odd', 'Odd', '1.98', 'LOSE', 'The number of goals is 2, which is an even number, so bets on (odd) lose.'),
+      choice('even', 'Even', 'Even', '1.98', 'WIN', 'The number of goals is 2, which is an even number, so bets on (even) win.'),
     ],
     lesson: {
       title: 'Odd / Even',
@@ -204,14 +210,9 @@ const markets: MarketDefinition[] = [
     label: 'Correct Score',
     panelTitle: 'Correct Score',
     choices: [
-      choice('score-20', '2–0', 'Barcelona 2–0', '8.50', 'WIN', 'The predicted score exactly matches the 2–0 result, so the selection wins.'),
-      choice('score-21', '2–1', 'Barcelona 2–1', '7.50', 'LOSE', 'Real Madrid did not score, so the 2–1 prediction loses.'),
-      choice('score-10', '1–0', 'Barcelona 1–0', '6.80', 'LOSE', 'Barcelona scored twice rather than once, so the exact-score selection loses.'),
-      choice('score-11', '1–1', 'Draw 1–1', '7.20', 'LOSE', 'The match did not finish level, so the 1–1 selection loses.'),
-      choice('score-30', '3–0', 'Barcelona 3–0', '11.0', 'LOSE', 'Barcelona scored two goals, not three, so the selection loses.'),
-      choice('score-12', '1–2', 'Real Madrid 2–1', '12.0', 'LOSE', 'Real Madrid did not win 2–1, so the prediction loses.'),
-      choice('score-00', '0–0', 'Draw 0–0', '10.0', 'LOSE', 'Two goals were scored, so the goalless draw selection loses.'),
-      choice('score-other', 'Any Other Score', 'Any Other Score', '13.0', 'LOSE', 'The 2–0 score is listed separately, so it is not settled under Any Other Score.'),
+      choice('score-20', '2–0', '2–0', '1.98', 'WIN', 'The result is exactly the same as the bet item, so bets on (2-0) win.'),
+      choice('score-other', 'Others', 'Others', '1.98', 'LOSE', 'Only when the match result is inconsistent with all score options, the bet on "other score" wins; as there is a bet item that matches the result score, the bet (other score) lose.'),
+      choice('score-02', '0–2', '0-2', '1.98', 'LOSE', 'Betting score is inconsistent with result score, so bets (0-2) lose.'),
     ],
     lesson: {
       title: 'Correct Score',
@@ -230,9 +231,9 @@ const markets: MarketDefinition[] = [
     panelTitle: 'Outright',
     choices: [
       choice('real-madrid-outright', 'Real Madrid', 'Real Madrid', '13.0', 'WIN', 'Real Madrid wins the championship, so bets on Real Madrid win.'),
-      choice('barcelona-outright', 'Barcelona', 'Barcelona', '13.0', 'LOSE', 'Barcelona finishes as runner-up, so the outright selection loses.'),
-      choice('atletico-outright', 'Atletico Madrid', 'Atletico Madrid', '13.0', 'LOSE', 'Atletico Madrid finishes third and does not win the championship.'),
-      choice('villarreal-outright', 'Villarreal', 'Villarreal', '13.0', 'LOSE', 'Villarreal does not win the championship, so the outright selection loses.'),
+      choice('barcelona-outright', 'Barcelona', 'Barcelona', '13.0', 'LOSE', 'Barcelona is the runner-up without winning, so bets on (Barcelona) lose.'),
+      choice('atletico-outright', 'Atletico Madrid', 'Atletico Madrid', '13.0', 'LOSE', 'Atletico Madrid is third place without winning, so bets on (Atletico Madrid) lose.'),
+      choice('villarreal-outright', 'Villarreal', 'Villarreal', '13.0', 'LOSE', 'Villarreal is not listed as winner, so bets on (Villarreal) lose.'),
     ],
     lesson: {
       title: 'Outright Betting',
@@ -257,6 +258,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           {
             score: '1-0',
             description: 'Home and away are well matched in strength. There is no handicap, and bets on the winning team win.',
+            image: 'Handicap-0_1-0',
             options: [
               tutorialOption('Home', '0', 'win', 'home'),
               tutorialOption('Away', '0', 'lose', 'away'),
@@ -265,6 +267,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           {
             score: '1-1',
             description: 'If the result is a draw, the bet amount will be refunded.',
+            image: 'Handicap-0_1-1',
             options: [
               tutorialOption('Home', '0', 'refund', 'home'),
               tutorialOption('Away', '0', 'refund', 'away'),
@@ -277,7 +280,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '1-0',
-            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap wins half, bets on the recipient of the handicap loses half',
+            image: 'Handicap-0-0.5_1-0',
             options: [
               tutorialOption('Home', '−0/−0.5', 'win', 'home'),
               tutorialOption('Away', '+0/+0.5', 'lose', 'away'),
@@ -285,7 +289,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'Draw. Bets on the giver of the handicap lose half; bets on the recipient win half.',
+            description: 'Draw. The bets on the giver of the handicap loses half, the bets on the recipient of the handicap wins half.',
+            image: 'Handicap-0-0.5_0-0',
             options: [
               tutorialOption('Home', '−0/−0.5', 'lose-half', 'home'),
               tutorialOption('Away', '+0/+0.5', 'win-half', 'away'),
@@ -293,7 +298,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-1',
-            description: 'The giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'The giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-0-0.5_0-1',
             options: [
               tutorialOption('Home', '−0/−0.5', 'lose', 'home'),
               tutorialOption('Away', '+0/+0.5', 'win', 'away'),
@@ -306,7 +312,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '1-0',
-            description: 'The giver of the handicap wins by 1 goal. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap wins half, bets on the recipient of the handicap loses half',
+            image: 'Handicap-0.5_1-0',
             options: [
               tutorialOption('Home', '+0.5', 'win', 'home'),
               tutorialOption('Away', '−0.5', 'lose', 'away'),
@@ -314,7 +321,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-0.5_0-0',
             options: [
               tutorialOption('Home', '+0.5', 'lose', 'home'),
               tutorialOption('Away', '−0.5', 'win', 'away'),
@@ -327,7 +335,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-0.5-1_2-0',
             options: [
               tutorialOption('Home', '+0.5/1', 'win', 'home'),
               tutorialOption('Away', '−0.5/1', 'lose', 'away'),
@@ -335,7 +344,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by 1 goal. Bets on the giver win half; bets on the recipient lose half.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap loses half, bets on the recipient of the handicap wins half.',
+            image: 'Handicap-0.5-1_1-0',
             options: [
               tutorialOption('Home', '+0.5/1', 'win-half', 'home'),
               tutorialOption('Away', '−0.5/1', 'lose-half', 'away'),
@@ -343,7 +353,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-0.5-1_0-0',
             options: [
               tutorialOption('Home', '+0.5/1', 'lose', 'home'),
               tutorialOption('Away', '−0.5/1', 'win', 'away'),
@@ -356,7 +367,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1_2-0',
             options: [
               tutorialOption('Home', '+1', 'win', 'home'),
               tutorialOption('Away', '−1', 'lose', 'away'),
@@ -364,7 +376,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver of the handicap wins by 1 goal. Bets on home and away will be refunded.',
+            description: 'The giver of the handicap wins by 1 goal. The bets on home or away will be refunded',
+            image: 'Handicap-1_1-0',
             options: [
               tutorialOption('Home', '+1', 'refund', 'home'),
               tutorialOption('Away', '−1', 'refund', 'away'),
@@ -372,7 +385,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1_0-0',
             options: [
               tutorialOption('Home', '+1', 'lose', 'home'),
               tutorialOption('Away', '−1', 'win', 'away'),
@@ -385,7 +399,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1-1.5_2-0',
             options: [
               tutorialOption('Home', '+1/1.5', 'win', 'home'),
               tutorialOption('Away', '−1/1.5', 'lose', 'away'),
@@ -393,7 +408,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by 1 goal. Bets on the giver lose half; bets on the recipient win half.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap loses half, bets on the recipient of the handicap wins half.',
+            image: 'Handicap-1-1.5_1-0',
             options: [
               tutorialOption('Home', '+1/1.5', 'lose-half', 'home'),
               tutorialOption('Away', '−1/1.5', 'win-half', 'away'),
@@ -401,7 +417,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1-1.5_0-0',
             options: [
               tutorialOption('Home', '+1/1.5', 'lose', 'home'),
               tutorialOption('Away', '−1/1.5', 'win', 'away'),
@@ -414,7 +431,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1.5_2-0',
             options: [
               tutorialOption('Home', '+1.5', 'win', 'home'),
               tutorialOption('Away', '−1.5', 'lose', 'away'),
@@ -422,7 +440,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by only 1 goal. Bets on the giver lose; bets on the recipient win.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1.5_1-0',
             options: [
               tutorialOption('Home', '+1.5', 'lose', 'home'),
               tutorialOption('Away', '−1.5', 'win', 'away'),
@@ -430,7 +449,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1.5_0-0',
             options: [
               tutorialOption('Home', '+1.5', 'lose', 'home'),
               tutorialOption('Away', '−1.5', 'win', 'away'),
@@ -443,7 +463,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '3-0',
-            description: 'The giver of the handicap wins by 3 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 3 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1.5-2_3-0',
             options: [
               tutorialOption('Home', '+1.5/2', 'win', 'home'),
               tutorialOption('Away', '−1.5/2', 'lose', 'away'),
@@ -451,7 +472,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '2-0',
-            description: 'The handicap team wins by 2 goals. Half wins on the giver; half loses on the recipient.',
+            description: 'Handicap team wins by 2 goals. Half win on handicap team, half lose on opponent team.',
+            image: 'Handicap-1.5-2_2-0',
             options: [
               tutorialOption('Home', '+1.5/2', 'win-half', 'home'),
               tutorialOption('Away', '−1.5/2', 'lose-half', 'away'),
@@ -459,7 +481,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by only 1 goal. Bets on the giver lose; bets on the recipient win.',
+            description: 'Handicap giver wins 1 goal/draw/handicap giver loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1.5-2_1-0',
             options: [
               tutorialOption('Home', '+1.5/2', 'lose', 'home'),
               tutorialOption('Away', '−1.5/2', 'win', 'away'),
@@ -475,6 +498,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If total number of goals is greater than the selected item, all bets on Over win, all bets on Under lose.',
+        image: 'Over-Under_1-1',
         options: [
           tutorialOption('Over', 'O 1.5', 'win', 'home'),
           tutorialOption('Under', 'U 1.5', 'lose', 'away'),
@@ -483,6 +507,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If total number of goals exceed half of the selected item, then half-win for Over, half loss for Under.',
+        image: 'Over-Under_1-1-2',
         options: [
           tutorialOption('Over', 'O 1.5/2', 'win-half', 'home'),
           tutorialOption('Under', 'U 1.5/2', 'lose-half', 'away'),
@@ -491,6 +516,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If total number of goals are equal to the selected item, the bet will be refunded (draw).',
+        image: 'Over-Under_1-1-3',
         options: [
           tutorialOption('Over', 'O 2', 'refund', 'home'),
           tutorialOption('Under', 'U 2', 'refund', 'away'),
@@ -504,6 +530,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        image: 'Win-Draw-Lose_1-0',
         options: [
           tutorialOption('Home', undefined, 'win', 'home'),
           tutorialOption('Draw', undefined, 'lose', 'draw'),
@@ -513,6 +540,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        image: 'Win-Draw-Lose_1-1',
         options: [
           tutorialOption('Home', undefined, 'lose', 'home'),
           tutorialOption('Draw', undefined, 'win', 'draw'),
@@ -522,6 +550,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '0-1',
         description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        image: 'Win-Draw-Lose_0-1',
         options: [
           tutorialOption('Home', undefined, 'lose', 'home'),
           tutorialOption('Draw', undefined, 'lose', 'draw'),
@@ -540,6 +569,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-Handicap_7-5',
             options: [
               tutorialOption('Home', '−1.5', 'win', 'home'),
               tutorialOption('Away', '+1.5', 'lose', 'away'),
@@ -554,6 +584,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-Over-Under_7-5',
             options: [
               tutorialOption('Over', 'O11.5', 'win', 'home'),
               tutorialOption('Under', 'U11.5', 'lose', 'away'),
@@ -568,6 +599,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-1X2_7-5',
             options: [
               tutorialOption('Home', undefined, 'win', 'home'),
               tutorialOption('Draw', undefined, 'lose', 'draw'),
@@ -583,6 +615,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-Odd-Even_7-5',
             options: [
               tutorialOption('Odd', 'O', 'lose', 'home'),
               tutorialOption('Even', 'U', 'win', 'away'),
@@ -598,6 +631,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If total number of goals are odd, bets on Odd wins, bets on Even loses.',
+        image: 'Odd-Even_1-0',
         options: [
           tutorialOption('Odd', 'O', 'win', 'home'),
           tutorialOption('Even', 'U', 'lose', 'away'),
@@ -606,6 +640,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '0-0',
         description: 'If total number of goals are even, bets on Odd loses, bets on Even wins (0–0 is even).',
+        image: 'Odd-Even_0-0',
         options: [
           tutorialOption('Odd', 'O', 'lose', 'home'),
           tutorialOption('Even', 'U', 'win', 'away'),
@@ -619,6 +654,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        image: 'Match-Result_1-0',
         options: [
           tutorialOption('1-0', undefined, 'win', 'home'),
           tutorialOption('0-0', undefined, 'lose', 'draw'),
@@ -628,6 +664,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        image: 'Match-Result_1-0-2',
         options: [
           tutorialOption('2-0', undefined, 'lose', 'home'),
           tutorialOption('1-1', undefined, 'lose', 'draw'),
@@ -637,6 +674,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        image: 'Match-Result_1-0-3',
         options: [
           tutorialOption('2-1', undefined, 'lose', 'home'),
           tutorialOption('Others', undefined, 'lose', 'draw'),
@@ -651,6 +689,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: 'Real Madrid wins',
         description: 'Spanish La Liga If the bet is on the team that wins the championship, it will be a win, and the rest will be deemed as loss.',
+        image: 'Tournament-Winner_Real-Madrid-wins',
         options: [
           tutorialOption('Real Madrid', undefined, 'win', 'home'),
           tutorialOption('Others', undefined, 'lose', 'away'),
@@ -663,11 +702,13 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
 const activeMode = computed(() => props.mode)
 const activeMarketKey = ref<MarketKey>('hdp')
 const selectedChoiceId = ref<string | null>(null)
+const correctScoreFilter = ref<CorrectScoreFilter>('all')
 
 const activeMarket = computed(() => markets.find(market => market.key === activeMarketKey.value) ?? markets[0]!)
 const activeTutorial = computed(() => tutorialDefinitions[activeMarketKey.value])
 const selectedChoice = computed(() => activeMarket.value.choices.find(item => item.id === selectedChoiceId.value) ?? null)
 const isOutright = computed(() => activeMarketKey.value === 'outright')
+const isThreeChoiceMarket = computed(() => activeMarketKey.value === '1x2' || activeMarketKey.value === 'correct-score')
 
 const selectMarket = (market: MarketKey): void => {
   activeMarketKey.value = market
@@ -684,30 +725,33 @@ const selectChoice = (id: string): void => {
     class="game-tutorial-page"
     :class="{ 'game-tutorial-page--lesson': activeMode === 'tutorial' }"
   >
-    <nav class="game-mode-toolbar" aria-label="Game tutorial mode">
-      <NuxtLink class="game-back" to="/explore/account/me" aria-label="Back to account settings">
-        <ChevronLeft :size="18" :stroke-width="2.5" />
-      </NuxtLink>
+    <SubpageHeader back-to="/explore/account/me" class="mb-2">
+      <template #center>
+        <div class="tutorial-pill-group" role="tablist">
+          <NuxtLink
+            to="/tutorial/mock-betting"
+            class="tutorial-pill"
+            :class="{ 'tutorial-pill--active': activeMode === 'mock-betting' }"
+            role="tab"
+            :aria-selected="activeMode === 'mock-betting'"
+          >
+            Mock Betting
+          </NuxtLink>
+          <NuxtLink
+            to="/tutorial"
+            class="tutorial-pill"
+            :class="{ 'tutorial-pill--active': activeMode === 'tutorial' }"
+            role="tab"
+            :aria-selected="activeMode === 'tutorial'"
+          >
+            Tutorial
+          </NuxtLink>
+        </div>
+      </template>
+    </SubpageHeader>
 
-      <NuxtLink
-        to="/tutorial/mock-betting"
-        class="game-mode-tab"
-        :class="{ 'game-mode-tab--active': activeMode === 'mock-betting' }"
-        :aria-current="activeMode === 'mock-betting' ? 'page' : undefined"
-      >
-        Mock Betting
-      </NuxtLink>
-      <NuxtLink
-        to="/tutorial"
-        class="game-mode-tab"
-        :class="{ 'game-mode-tab--active': activeMode === 'tutorial' }"
-        :aria-current="activeMode === 'tutorial' ? 'page' : undefined"
-      >
-        Tutorial
-      </NuxtLink>
-    </nav>
-
-    <nav class="market-tabs" aria-label="Betting markets">
+    <div class="tutorial-content-container px-2 sm:px-0">
+      <nav class="market-tabs sticky-header-seal" aria-label="Betting markets">
       <button
         v-for="market in markets"
         :key="market.key"
@@ -721,21 +765,21 @@ const selectChoice = (id: string): void => {
       </button>
     </nav>
 
-    <div v-if="activeMode === 'mock-betting'" class="mock-betting-content">
-      <div v-if="!isOutright" class="match-banner">
+    <div v-if="activeMode === 'mock-betting'" class="mock-betting-content ">
+      <div v-if="!isOutright" class="match-banner ">
         <div class="match-team match-team--home">
           <div class="match-name">
             <strong>Barcelona</strong>
             <span>2</span>
           </div>
-          <img src="/tutorial-assets/barcelona-crest.svg" alt="Barcelona crest">
+          <img src="/tutorial-assets/barcelona-crest.webp" alt="Barcelona crest">
         </div>
 
         <div class="match-score">
           <strong>2 - 0</strong>
           <div>
-            <span><CircleDot :size="11" /> 0–0</span>
-            <span><Flag :size="11" /> 0–0</span>
+            <span><svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 p-[1px]"><title>ht@0.5x</title><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="ht" fill="#999999" class="fill-icon-8"><path d="M10,0 C15.5166667,0 20,4.48333333 20,10 C20,15.5166667 15.5166667,20 10,20 C4.48333333,20 0,15.5166667 0,10 C0,4.48333333 4.48333333,0 10,0 Z M10,1.25 C5.16666667,1.25 1.25,5.16666667 1.25,10 C1.25,14.8333333 5.16666667,18.75 10,18.75 C14.8333333,18.75 18.75,14.8333333 18.75,10 C18.75,5.16666667 14.8333333,1.25 10,1.25 Z M4.90096842,6.21826172 L4.90096842,9.26826172 L8.11763509,9.26826172 L8.11763509,6.21826172 L9.73430176,6.21826172 L9.73430176,13.7849284 L8.11763509,13.7849284 L8.11763509,10.6682617 L4.90096842,10.6682617 L4.90096842,13.7849284 L3.28430176,13.7849284 L3.28430176,6.21826172 L4.90096842,6.21826172 Z M16.7218058,6.21826172 L16.7218058,7.53492839 L14.5551392,7.53492839 L14.5551392,13.7849284 L12.9384725,13.7849284 L12.9384725,7.53492839 L10.7884725,7.53492839 L10.7884725,6.21826172 L16.7218058,6.21826172 Z" id="Combined-Shape"></path></g></g></svg>0–0</span>
+            <span><svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 p-[1px]"><title>corner kick@0.5x</title><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="corner-kick" fill="#999999" class="fill-icon-8"><path d="M9.4,0 L17.3166667,4.01666667 L10.9,7.28333333 C10.7166667,7.35 10.5666667,7.58333333 10.5833333,7.83333333 L10.5833333,11.9833333 C10.5833333,12.1166667 10.5666667,12.3 10.7,12.45 C10.8333333,12.6333333 11.0333333,12.6333333 11.1333333,12.65 C12.35,12.8666667 13.4666667,13.4166667 14.3666667,14.25 L14.75,14.55 L15.0166667,14.3666667 L19.0666667,10.9833333 C19.1666667,10.9333333 19.2833333,10.8833333 19.4,10.8833333 C19.7333333,10.8833333 20,11.15 20,11.4833333 C20,11.65 19.9166667,11.8 19.8,11.9166667 L10,20 L0.166666667,11.9666667 L0.183333333,11.95 C0.0666666667,11.8333333 0,11.6833333 0,11.5166667 C0,11.2 0.266666667,10.9166667 0.6,10.9166667 C0.716666667,10.9166667 0.816666667,10.9666667 0.9,11.0166667 L0.966666667,11.0666667 C0.983333333,11.0833333 1.01666667,11.1 1.03333333,11.1166667 L5.25,14.6 L5.5,14.35 C6,13.8833333 6.55,13.5 7.16666667,13.2 C7.76666667,12.9 8.4,12.7 9.06666667,12.6 L9.4,12.55 L9.4,0 Z M10.594991,13.7801107 L10.594991,17.963444 L13.8283244,15.3467773 L13.4616577,15.0301107 C12.7783244,14.4467773 11.944991,14.0467773 11.0616577,13.8801107 L10.594991,13.7801107 Z M9.40248617,13.7874349 L8.91915283,13.8707682 C8.05248617,14.0541016 7.21915283,14.4374349 6.5358195,15.0207682 L6.40248617,15.1374349 L6.40248617,15.5207682 L6.55248617,15.6541016 L9.40248617,17.9541016 L9.40248617,13.7874349 Z M10.5937703,1.96858724 L10.5937703,6.08525391 L14.6437703,4.01858724 L10.5937703,1.96858724 Z" id="路径-16856"></path></g></g></svg>0–0</span>
           </div>
         </div>
 
@@ -744,7 +788,7 @@ const selectChoice = (id: string): void => {
             <span>2</span>
             <strong>Real Madrid</strong>
           </div>
-          <img src="/tutorial-assets/real-madrid-crest.svg" alt="Real Madrid crest">
+          <img src="/tutorial-assets/real-madrid-crest.webp" alt="Real Madrid crest">
         </div>
       </div>
 
@@ -754,10 +798,31 @@ const selectChoice = (id: string): void => {
           <p>Real Madrid wins the championship, Barcelona is the runner-up, and Atletico Madrid is third place</p>
         </div>
 
-        <h1 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h1>
-        <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
+        <div class="market-panel-heading">
+          <h2 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
+          <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
 
-        <div class="choice-grid" :class="{ 'choice-grid--short': activeMarket.choices.length < 4 }">
+          <div v-if="activeMarketKey === 'correct-score'" class="correct-score-filters" aria-label="Correct score selections">
+            <button
+              type="button"
+              :class="{ 'correct-score-filter--active': correctScoreFilter === 'popular' }"
+              :aria-pressed="correctScoreFilter === 'popular'"
+              @click="correctScoreFilter = 'popular'"
+            >
+              Popular
+            </button>
+            <button
+              type="button"
+              :class="{ 'correct-score-filter--active': correctScoreFilter === 'all' }"
+              :aria-pressed="correctScoreFilter === 'all'"
+              @click="correctScoreFilter = 'all'"
+            >
+              All
+            </button>
+          </div>
+        </div>
+
+        <div class="choice-grid" :class="{ 'choice-grid--three': isThreeChoiceMarket }">
           <button
             v-for="item in activeMarket.choices"
             :key="item.id"
@@ -779,24 +844,14 @@ const selectChoice = (id: string): void => {
             <h2>Betting Result</h2>
             <p>{{ selectedChoice.selection }} @{{ selectedChoice.odds }}</p>
           </div>
-          <div class="result-stamp" :class="`result-stamp--${selectedChoice.outcome.toLowerCase()}`">
+          <div class="result-stamp" :class="`result-stamp--${selectedChoice.outcome.toLowerCase().replace('_', '-')}`">
             <img
-              v-if="selectedChoice.outcome === 'WIN'"
-              src="/tutorial-assets/result-stamp-win.webp"
-              alt="WIN"
+              :src="outcomeStampMap[selectedChoice.outcome].src"
+              :alt="outcomeStampMap[selectedChoice.outcome].alt"
               class="result-stamp-img"
               width="44"
               height="44"
             />
-            <img
-              v-else-if="selectedChoice.outcome === 'LOSE'"
-              src="/tutorial-assets/result-stamp-lose.webp"
-              alt="LOSE"
-              class="result-stamp-img"
-              width="44"
-              height="44"
-            />
-            <span v-else>{{ selectedChoice.outcome }}</span>
           </div>
           <p class="result-explanation">{{ selectedChoice.explanation }}</p>
         </article>
@@ -808,9 +863,9 @@ const selectChoice = (id: string): void => {
         {{ activeTutorial.intro }}
       </p>
 
-      <h1 v-if="activeTutorial.title" class="tutorial-section-title">
+      <span v-if="activeTutorial.title" class="tutorial-section-title">
         {{ activeTutorial.title }}
-      </h1>
+      </span>
 
       <div v-if="activeTutorial.scenarios" class="tutorial-card-grid">
         <TutorialScenarioCard
@@ -837,40 +892,91 @@ const selectChoice = (id: string): void => {
         </section>
       </div>
     </div>
-
-    <footer class="tutorial-responsible">
-      <div class="tutorial-responsible-logos" aria-label="Responsible gaming partners">
-        <img src="/responsible-gaming/pagcor.png" alt="PAGCOR">
-        <img src="/responsible-gaming/age-restriction.png" alt="Gambling can be addictive. Know when to stop. 21 and above.">
-      </div>
-
-      <div v-if="activeMode === 'tutorial'" class="tutorial-compliance-copy">
-        <p>
-          <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer">WWW.PAGCOR.PH/REGULATORY</a>
-          <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
-        </p>
-        <strong>GAMBLING DOESN'T GUARANTEE EARNINGS OR FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.</strong>
-        <img src="/responsible-gaming/support-hotline.png" alt="Responsible gaming support hotline">
-      </div>
-    </footer>
+    </div>
   </section>
 </template>
 
 <style scoped>
 .game-tutorial-page {
   display: flex;
-  width: min(100%, 1170px);
-  min-height: calc(100vh - var(--header-height) + 12px);
+  width: min(100%, 1285px);
+  min-height: calc(100vh - var(--header-height));
   flex-direction: column;
-  margin: -12px auto 0;
+  margin: 0 auto;
   color: #f4f4f4;
 }
 
 .game-tutorial-page--lesson {
-  min-height: calc(100vh - var(--header-height) + 172px);
+  min-height: calc(100vh - var(--header-height) + 160px);
 }
 
-.game-mode-toolbar,
+.tutorial-pill-group {
+  display: inline-flex;
+  align-items: center;
+  background-color: #0a402d;
+  border-radius: 9999px;
+  padding: 2.5px;
+  gap: 2px;
+}
+
+.tutorial-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  transition: all 150ms ease;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.tutorial-pill:hover {
+  color: #ffffff;
+}
+
+.tutorial-pill--active {
+  background-color: #ffffff;
+  color: #036242;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 64rem) {
+  .tutorial-pill-group {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    gap: 8px;
+  }
+
+  .tutorial-pill {
+    min-width: 128px;
+    height: 32px;
+    padding: 0 22px;
+    border-radius: 8px;
+    color: #f3f3f3;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    background: #6c6d6c;
+    box-shadow: none;
+  }
+
+  .tutorial-pill:hover {
+    color: #ffffff;
+    background: #7b7c7b;
+  }
+
+  .tutorial-pill--active,
+  .tutorial-pill--active:hover {
+    color: #ffffff;
+    background: #007653;
+  }
+}
+
 .market-tabs {
   display: flex;
   align-items: center;
@@ -878,34 +984,7 @@ const selectChoice = (id: string): void => {
   background: #1c1d1c;
 }
 
-.game-mode-toolbar {
-  position: sticky;
-  z-index: 60;
-  top: calc(var(--header-height) - 12px);
-  min-height: 44px;
-  padding: 6px 14px;
-  background: linear-gradient(180deg, rgba(37, 43, 41, 0.98), rgba(22, 24, 23, 0.99));
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
-  gap: 8px;
-}
-
-.game-back {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 auto;
-  place-items: center;
-  margin-right: 4px;
-  border-radius: 50%;
-  color: #00a474;
-  background: #111514;
-  transition: color 160ms ease, background-color 160ms ease;
-}
-
-.game-back:hover {
-  color: #35d5a0;
-  background: #0a0e0d;
-}
+/* market-tabs sticky position */
 
 .game-mode-tab {
   display: inline-flex;
@@ -938,7 +1017,7 @@ const selectChoice = (id: string): void => {
 .market-tabs {
   position: sticky;
   z-index: 59;
-  top: calc(var(--header-height) + 40px);
+  top: calc(var(--content-sticky-top) + 52px);
   min-height: 44px;
   margin-top: 8px;
   padding: 6px 9px;
@@ -1033,10 +1112,10 @@ const selectChoice = (id: string): void => {
   height: 13px;
   place-items: center;
   border-radius: 1px;
-  color: #312900;
+  color: #fff;
   font-size: 9px;
   font-weight: 800;
-  background: #ffd300;
+  background: #FEBA00;
 }
 
 .match-team img {
@@ -1067,6 +1146,10 @@ const selectChoice = (id: string): void => {
   gap: 8px;
 }
 
+html[data-theme='light']:not(#_) .game-tutorial-page .match-score{
+  color: #fff;
+}
+
 .match-score span {
   display: inline-flex;
   align-items: center;
@@ -1088,7 +1171,7 @@ const selectChoice = (id: string): void => {
 }
 
 .market-panel-title {
-  margin: 0 0 9px;
+  margin: 0;
   color: #969696;
   font-size: 14px;
   font-weight: 500;
@@ -1096,10 +1179,59 @@ const selectChoice = (id: string): void => {
 }
 
 .market-panel--outright .market-panel-title {
-  margin-top: 9px;
   color: #f2f2f2;
   font-size: 16px;
   font-weight: 700;
+}
+
+.market-panel-heading {
+  display: flex;
+  min-height: 25px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.market-panel--outright .market-panel-heading {
+  min-height: 0;
+  margin-top: 9px;
+}
+
+.correct-score-filters {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.correct-score-filters button {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid #858585;
+  border-radius: 999px;
+  color: #979797;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.correct-score-filters button:hover {
+  border-color: #b4b4b4;
+  color: #e5e5e5;
+}
+
+.correct-score-filters .correct-score-filter--active,
+.correct-score-filters .correct-score-filter--active:hover {
+  border-color: #007653;
+  color: #fff;
+  background: #007653;
 }
 
 .outright-heading h1 {
@@ -1121,6 +1253,10 @@ const selectChoice = (id: string): void => {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px 8px;
+}
+
+.choice-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .bet-choice {
@@ -1377,27 +1513,12 @@ const selectChoice = (id: string): void => {
     min-height: calc(100vh - var(--header-height) + 152px);
   }
 
-  .game-mode-toolbar {
-    top: calc(var(--header-height) + 6px);
-  }
-
   .market-tabs {
-    top: calc(var(--header-height) + 58px);
+    top: 48px;
   }
 }
 
 @media (max-width: 46rem) {
-  .game-mode-toolbar {
-    padding-inline: 9px;
-  }
-
-  .game-mode-tab {
-    min-width: 0;
-    flex: 1;
-    padding-inline: 10px;
-    font-size: 13px;
-  }
-
   .market-tabs {
     justify-content: flex-start;
   }

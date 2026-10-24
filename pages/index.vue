@@ -6,13 +6,35 @@ import {
   recommendedGames,
 } from '~/data/homepage'
 
-useSeoMeta({
-  title: 'ByBet Slots — Spin Big Wins',
-  description: 'Explore ByBet’s demo slots homepage with popular games, jackpots, promotions, providers, and new releases.',
-  ogTitle: 'ByBet Slots — Spin Big Wins',
-  ogDescription: 'A polished responsive slots homepage interface built with Nuxt.',
-  ogType: 'website',
-  twitterCard: 'summary_large_image',
+useAppSeo({
+  title: 'ByBet Casino Ph | The Premium Online Sports Betting Site',
+  description: 'Experience top-tier gaming on the ByBet Casino Ph. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
+  image: '/brand/bybet-logo.webp',
+  schema: [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'ByBet Philippines',
+      url: 'https://bybet.com/',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://bybet.com/explore/egames/slots?q={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'ByBet',
+      url: 'https://bybet.com/',
+      logo: 'https://bybet.com/brand/bybet-logo.webp',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        availableLanguage: ['English', 'Filipino'],
+      },
+    },
+  ],
 })
 
 </script>

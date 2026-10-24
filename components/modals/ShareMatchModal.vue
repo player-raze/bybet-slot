@@ -48,7 +48,7 @@ const handleImgError = (event: Event): void => {
             <span class="brand-name">ByBet</span>
           </div>
           <div class="deco-people">
-            <img :src="'/images/share-people.png'" alt="People" @error="handleImgError" />
+            <img :src="'/images/share-people.webp'" alt="People" @error="handleImgError" />
           </div>
         </div>
 
@@ -62,11 +62,11 @@ const handleImgError = (event: Event): void => {
 
           <div class="teams-section">
             <div class="team-row">
-              <img v-if="match.home_team" :src="`/images/teams/${match.home_team.toLowerCase().replace(/ /g, '-')}.png`" class="team-logo" alt="" @error="handleImgError" />
+              <img v-if="match.home_team" :src="`/images/teams/${match.home_team.toLowerCase().replace(/ /g, '-')}.webp`" class="team-logo" alt="" @error="handleImgError" />
               <span class="team-name">{{ match.home_team }}</span>
             </div>
             <div class="team-row">
-              <img v-if="match.away_team" :src="`/images/teams/${match.away_team.toLowerCase().replace(/ /g, '-')}.png`" class="team-logo" alt="" @error="handleImgError" />
+              <img v-if="match.away_team" :src="`/images/teams/${match.away_team.toLowerCase().replace(/ /g, '-')}.webp`" class="team-logo" alt="" @error="handleImgError" />
               <span class="team-name">{{ match.away_team }}</span>
             </div>
           </div>
@@ -74,7 +74,7 @@ const handleImgError = (event: Event): void => {
           <div class="qr-section">
             <div class="qr-code">
               <!-- Placeholder for QR Code -->
-              <img :src="'/images/qr-placeholder.png'" alt="QR Code" @error="handleImgError" />
+              <img :src="'/images/qr-placeholder.webp'" alt="QR Code" @error="handleImgError" />
             </div>
             <span class="qr-label">Enter APP</span>
           </div>

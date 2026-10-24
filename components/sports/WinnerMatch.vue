@@ -211,7 +211,7 @@ const copyMatchLink = async (): Promise<void> => {
             <br>
             <strong>{{ market.outcome!.price.toFixed(2) }}</strong>
           </template>
-          <span v-else class="flex items-center justify-center w-full h-full py-1">
+          <span v-else class="flex items-center justify-center w-full h-full py-2">
             <Lock :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
           </span>
         </button>
@@ -240,7 +240,7 @@ const copyMatchLink = async (): Promise<void> => {
           <span>{{ outcome.label }}</span>
           <strong>{{ outcome.price!.toFixed(2) }}</strong>
         </template>
-        <span v-else class="flex items-center justify-center w-full h-full py-1">
+        <span v-else class="flex items-center justify-center w-full h-full py-2">
           <Lock :size="14" class="text-neutral-400 opacity-70" aria-hidden="true" />
         </span>
       </button>
@@ -252,7 +252,7 @@ const copyMatchLink = async (): Promise<void> => {
 <style scoped>
 .winner-match {
   padding: 0.5rem 16px 16px;
-  scroll-margin-top: calc(var(--header-height) + 16px);
+  scroll-margin-top: calc(var(--content-sticky-top) + 16px);
 }
 .winner-match:hover {
   background: rgb(var(--color-primary) / 0.1);

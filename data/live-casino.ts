@@ -191,7 +191,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "thai-speed-baccarat-c",
     "title": "Thai Speed Baccarat C",
-    "image": "/images/casino/baccarat/thaim3_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/thaim3_bs_med_M.webp",
     "players": 27,
     "category": "baccarat",
     "wins": [
@@ -337,7 +337,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "pd-speed-baccarat-6",
     "title": "PD Speed Baccarat 6",
-    "image": "/images/casino/baccarat/perceb6_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb6_bs_med_M.webp",
     "players": 29,
     "category": "baccarat",
     "wins": [
@@ -474,7 +474,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "bonsai-speed-baccarat-b",
     "title": "Bonsai Speed Baccarat B",
-    "image": "/images/casino/baccarat/bonca2_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bonca2_bs_med_M.webp",
     "players": 39,
     "category": "baccarat",
     "wins": [
@@ -590,7 +590,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-e",
     "title": "Salon Privé Baccarat E",
-    "image": "/images/casino/baccarat/spr4_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr4_bs_med_M.webp",
     "players": 0,
     "category": "baccarat",
     "wins": [
@@ -692,7 +692,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-2",
     "title": "Speed Baccarat 2",
-    "image": "/images/casino/baccarat/genmad2_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/genmad2_bs_med_M.webp",
     "players": 15,
     "category": "baccarat",
     "wins": [
@@ -798,7 +798,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-g",
     "title": "Salon Privé Baccarat G",
-    "image": "/images/casino/baccarat/spr9_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr9_bs_med_M.webp",
     "players": 1,
     "category": "baccarat",
     "wins": [
@@ -918,7 +918,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-b",
     "title": "Speed Baccarat B",
-    "image": "/images/casino/baccarat/bac6_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bac6_bs_med_M.webp",
     "players": 642,
     "category": "baccarat",
     "wins": [
@@ -1055,7 +1055,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "pd-speed-baccarat-1",
     "title": "PD Speed Baccarat 1",
-    "image": "/images/casino/baccarat/perceb1_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb1_bs_med_M.webp",
     "players": 232,
     "category": "baccarat",
     "wins": [
@@ -1170,7 +1170,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-f",
     "title": "Salon Privé Baccarat F",
-    "image": "/images/casino/baccarat/spr8_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr8_bs_med_M.webp",
     "players": 0,
     "category": "baccarat",
     "wins": [
@@ -1324,7 +1324,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "pd-speed-baccarat-3",
     "title": "PD Speed Baccarat 3",
-    "image": "/images/casino/baccarat/perceb3_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb3_bs_med_M.webp",
     "players": 82,
     "category": "baccarat",
     "wins": [
@@ -1450,7 +1450,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-c",
     "title": "Salon Privé Baccarat C",
-    "image": "/images/casino/baccarat/spr7_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr7_bs_med_M.webp",
     "players": 0,
     "category": "baccarat",
     "wins": [
@@ -1598,7 +1598,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "perya-speed-baccarat-12",
     "title": "Perya Speed Baccarat 12",
-    "image": "/images/casino/baccarat/perceb12_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb12_bs_med_M.webp",
     "players": 39,
     "category": "baccarat",
     "wins": [
@@ -1715,7 +1715,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-r",
     "title": "Speed Baccarat R",
-    "image": "/images/casino/baccarat/genbaca2_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/genbaca2_bs_med_M.webp",
     "players": 60,
     "category": "baccarat",
     "wins": [
@@ -1854,7 +1854,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "perya-speed-baccarat-13",
     "title": "Perya Speed Baccarat 13",
-    "image": "/images/casino/baccarat/perceb13_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb13_bs_med_M.webp",
     "players": 30,
     "category": "baccarat",
     "wins": [
@@ -1951,7 +1951,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "no-commission-baccarat",
     "title": "No Commission Baccarat",
-    "image": "/images/casino/baccarat/ncr1_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/ncr1_bs_med_M.webp",
     "players": 930,
     "category": "baccarat",
     "wins": [
@@ -2082,7 +2082,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "pd-speed-baccarat-7",
     "title": "PD Speed Baccarat 7",
-    "image": "/images/casino/baccarat/perceb7_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb7_bs_med_M.webp",
     "players": 28,
     "category": "baccarat",
     "wins": [
@@ -2226,7 +2226,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-q",
     "title": "Speed Baccarat Q",
-    "image": "/images/casino/baccarat/bact22_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bact22_bs_med_M.webp",
     "players": 42,
     "category": "baccarat",
     "wins": [
@@ -2358,7 +2358,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "perya-speed-baccarat-16",
     "title": "Perya Speed Baccarat 16",
-    "image": "/images/casino/baccarat/perceb16_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb16_bs_med_M.webp",
     "players": 29,
     "category": "baccarat",
     "wins": [
@@ -2478,7 +2478,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-z",
     "title": "Speed Baccarat Z",
-    "image": "/images/casino/baccarat/genmad4_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/genmad4_bs_med_M.webp",
     "players": 11,
     "category": "baccarat",
     "wins": [
@@ -2597,7 +2597,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-m",
     "title": "Salon Privé Baccarat M",
-    "image": "/images/casino/baccarat/spr15_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr15_bs_med_M.webp",
     "players": 3,
     "category": "baccarat",
     "wins": [
@@ -2706,7 +2706,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "super-speed-baccarat",
     "title": "Super Speed Baccarat",
-    "image": "/images/casino/baccarat/supr1_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/supr1_bs_med_M.webp",
     "players": 300,
     "category": "baccarat",
     "wins": [
@@ -2821,7 +2821,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "control-squeeze-baccarat",
     "title": "Control Squeeze Baccarat",
-    "image": "/images/casino/baccarat/bac4_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bac4_bs_med_M.webp",
     "players": 148,
     "category": "baccarat",
     "wins": [
@@ -2951,7 +2951,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-h",
     "title": "Salon Privé Baccarat H",
-    "image": "/images/casino/baccarat/spr10_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr10_bs_med_M.webp",
     "players": 0,
     "category": "baccarat",
     "wins": [
@@ -3067,7 +3067,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "xxxtreme-lightning-baccarat",
     "title": "XXXtreme Lightning Baccarat",
-    "image": "/images/casino/baccarat/xlb1_bi_med_M.jpg",
+    "image": "/images/casino/baccarat/xlb1_bi_med_M.webp",
     "players": 341,
     "category": "baccarat",
     "wins": [
@@ -3194,7 +3194,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "baccarat-b",
     "title": "Baccarat B",
-    "image": "/images/casino/baccarat/bac3_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bac3_bs_med_M.webp",
     "players": 50,
     "category": "baccarat",
     "wins": [
@@ -3333,7 +3333,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "lotus-speed-baccarat-c",
     "title": "Lotus Speed Baccarat C",
-    "image": "/images/casino/baccarat/lotca3_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/lotca3_bs_med_M.webp",
     "players": 18,
     "category": "baccarat",
     "wins": [
@@ -3474,7 +3474,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "salon-prive-baccarat-l",
     "title": "Salon Privé Baccarat L",
-    "image": "/images/casino/baccarat/spr14_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/spr14_bs_med_M.webp",
     "players": 1,
     "category": "baccarat",
     "wins": [
@@ -3615,7 +3615,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "perya-speed-baccarat-9",
     "title": "Perya Speed Baccarat 9",
-    "image": "/images/casino/baccarat/perceb9_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb9_bs_med_M.webp",
     "players": 123,
     "category": "baccarat",
     "wins": [
@@ -3727,7 +3727,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "peek-baccarat",
     "title": "Peek Baccarat",
-    "image": "/images/casino/baccarat/pkbacr1_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/pkbacr1_bs_med_M.webp",
     "players": 18,
     "category": "baccarat",
     "wins": [
@@ -3862,7 +3862,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-x",
     "title": "Speed Baccarat X",
-    "image": "/images/casino/baccarat/bac14_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bac14_bs_med_M.webp",
     "players": 116,
     "category": "baccarat",
     "wins": [
@@ -3992,7 +3992,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "always-8-baccarat",
     "title": "Always 8 Baccarat",
-    "image": "/images/casino/baccarat/abck1_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/abck1_bs_med_M.webp",
     "players": 80,
     "category": "baccarat",
     "wins": [
@@ -4103,7 +4103,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "perya-speed-baccarat-17",
     "title": "Perya Speed Baccarat 17",
-    "image": "/images/casino/baccarat/perceb17_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb17_bs_med_M.webp",
     "players": 51,
     "category": "baccarat",
     "wins": [
@@ -4220,7 +4220,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "speed-baccarat-a",
     "title": "Speed Baccarat A",
-    "image": "/images/casino/baccarat/bac5_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/bac5_bs_med_M.webp",
     "players": 2667,
     "category": "baccarat",
     "wins": [
@@ -4331,7 +4331,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "super-speed-baccarat-a",
     "title": "Super Speed Baccarat A",
-    "image": "/images/casino/baccarat/supgent1_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/supgent1_bs_med_M.webp",
     "players": 29,
     "category": "baccarat",
     "wins": [
@@ -4479,7 +4479,7 @@ export const BACCARAT: LiveCasinoTable[] = [
   {
     "id": "pd-speed-baccarat-4",
     "title": "PD Speed Baccarat 4",
-    "image": "/images/casino/baccarat/perceb4_bs_med_M.jpg",
+    "image": "/images/casino/baccarat/perceb4_bs_med_M.webp",
     "players": 22,
     "category": "baccarat",
     "wins": [
@@ -4635,154 +4635,819 @@ export const BACCARAT: LiveCasinoTable[] = [
 
 export const DRAGON_TIGER: LiveCasinoTable[] = [
   {
-    id: 'dragon-tiger-1',
-    title: 'Dragon Tiger 1',
-    image: '/images/casino/card1.jpg',
-    players: 15,
-    category: 'dragon-tiger',
-    wins: BACCARAT[0].wins,
-    stats: { shoe: 30, banker: 10, player: 10, tie: 5 },
+    "id": "super-speed-dragon-tiger",
+    "title": "Super Speed Dragon Tiger",
+    "image": "/images/casino/dragon-tiger/ssdtkau1_bs_med_M.webp",
+    "players": 52,
+    "category": "dragon-tiger",
+    "wins": [
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "blue",
+          "tie": true
+        },
+        {
+          "result": "B",
+          "yellowCenter": true
+        },
+        {
+          "result": "B",
+          "yellowCenter": true,
+          "tie": true
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "blue",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "cornerMark": "red"
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "red",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "yellowCenter": true
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        }
+      ]
+    ],
+    "stats": {
+      "shoe": 19,
+      "banker": 8,
+      "player": 9,
+      "tie": 2
+    }
   },
   {
-    id: 'dragon-tiger-2',
-    title: 'Dragon Tiger 2',
-    image: '/images/casino/card1.jpg',
-    players: 12,
-    category: 'dragon-tiger',
-    wins: BACCARAT[1].wins,
-    stats: { shoe: 20, banker: 5, player: 10, tie: 2 },
+    "id": "dragon-tiger",
+    "title": "Dragon Tiger",
+    "image": "/images/casino/dragon-tiger/dtr1_bs_med_M.webp",
+    "players": 563,
+    "category": "dragon-tiger",
+    "wins": [
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "cornerMark": "red",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        },
+        {
+          "result": "B",
+          "cornerMark": "blue"
+        },
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "tie": true
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "cornerMark": "red",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B"
+        },
+        {
+          "result": "B",
+          "yellowCenter": true,
+          "tie": true
+        }
+      ],
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "cornerMark": "blue",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ]
+    ],
+    "stats": {
+      "shoe": 29,
+      "banker": 10,
+      "player": 17,
+      "tie": 2
+    }
+  },
+  {
+    "id": "emperor-dragon-tiger",
+    "title": "Emperor Dragon Tiger",
+    "image": "/images/casino/dragon-tiger/edrca1_bs_med_M.webp",
+    "players": 24,
+    "category": "dragon-tiger",
+    "wins": [
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "tie": true
+        },
+        {
+          "result": "P",
+          "cornerMark": "red",
+          "yellowCenter": true
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "cornerMark": "red",
+          "tie": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "blue",
+          "yellowCenter": true
+        },
+        {
+          "result": "B",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "cornerMark": "red",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "tie": true
+        },
+        {
+          "result": "B",
+          "cornerMark": "red"
+        },
+        {
+          "result": "B",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P"
+        },
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "blue"
+        },
+        {
+          "result": "B"
+        },
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "tie": true
+        },
+        {
+          "result": "P"
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        },
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        },
+        {
+          "result": "B",
+          "cornerMark": "blue",
+          "yellowCenter": true
+        }
+      ]
+    ],
+    "stats": {
+      "shoe": 38,
+      "banker": 12,
+      "player": 21,
+      "tie": 5
+    }
+  },
+  {
+    "id": "lightning-dragon-tiger",
+    "title": "Lightning Dragon Tiger",
+    "image": "/images/casino/dragon-tiger/ldtk1_bi_med_M.webp",
+    "players": 222,
+    "category": "dragon-tiger",
+    "wins": [
+      [
+        {
+          "result": "B",
+          "yellowCenter": true
+        },
+        {
+          "result": "B"
+        },
+        {
+          "result": "B"
+        },
+        {
+          "result": "B",
+          "yellowCenter": true,
+          "tie": true
+        },
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        },
+        {
+          "result": "B",
+          "cornerMark": "blue",
+          "yellowCenter": true
+        },
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B"
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "blue"
+        },
+        {
+          "result": "B",
+          "cornerMark": "red",
+          "yellowCenter": true
+        }
+      ],
+      [
+        {
+          "result": "P"
+        }
+      ],
+      [
+        {
+          "result": "B",
+          "cornerMark": "blue"
+        }
+      ]
+    ],
+    "stats": {
+      "shoe": 21,
+      "banker": 14,
+      "player": 6,
+      "tie": 1
+    }
   }
 ]
 
 export const ROULETTE: LiveCasinoTable[] = [
   {
-    id: 'speed-roulette',
-    title: 'Speed Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 93,
-    category: 'roulette',
-    wins: [
-      ['R', 7], ['R', 19], ['B', 20], ['B', 31], ['G', 0], ['R', 19], ['B', 20], ['B', 20],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "speed-roulette",
+    "title": "Speed Roulette",
+    "image": "/images/casino/roulette/spdk1_imr_med_M.webp",
+    "players": 91,
+    "category": "roulette",
+    "wins": [["B", 31], ["B", 6], ["R", 12], ["B", 10], ["R", 3], ["R", 12], ["B", 2], ["R", 5]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "football-studio-roulette",
+    "title": "Football Studio Roulette",
+    "image": "/images/casino/roulette/lrm1_imr_med_M.webp",
+    "players": 46,
+    "category": "roulette",
+    "wins": [["B", 24], ["R", 25], ["B", 35], ["R", 27], ["B", 10], ["B", 10], ["R", 12], ["B", 6]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "speed-auto-roulette",
+    "title": "Speed Auto Roulette",
+    "image": "/images/casino/roulette/genr1_ss_thumb_med_M.webp",
+    "players": 282,
+    "category": "roulette",
+    "wins": [["R", 1], ["R", 27], ["B", 8], ["B", 13], ["B", 4], ["B", 26], ["B", 35], ["B", 20]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "roulette",
+    "title": "Roulette",
+    "image": "/images/casino/roulette/green_imr_med_M.webp",
+    "players": 179,
+    "category": "roulette",
+    "wins": [["R", 16], ["G", 0], ["B", 10], ["R", 3], ["B", 28], ["R", 32], ["R", 25], ["B", 31]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "salon-prive-auto-roulette-a",
+    "title": "Salon Privé Auto-Roulette A",
+    "image": "/images/casino/roulette/rng_salonpriveautoroulette_med_M.webp",
+    "players": 0,
+    "category": "roulette",
+    "wins": [["R", 9], ["B", 35], ["G", 0], ["B", 4], ["R", 34], ["B", 33], ["B", 8], ["R", 1]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "immersive-roulette",
+    "title": "Immersive Roulette",
+    "image": "/images/casino/roulette/immersive_med_M.webp",
+    "players": 465,
+    "category": "roulette",
+    "wins": [["R", 32], ["R", 34], ["R", 21], ["B", 8], ["G", 0], ["B", 6], ["B", 8], ["B", 4]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "pd-roulette",
+    "title": "PD Roulette",
+    "image": "/images/casino/roulette/perceb1_imr_med_M.webp",
+    "players": 14,
+    "category": "roulette",
+    "wins": [["B", 8], ["R", 30], ["G", 0], ["R", 14], ["R", 5], ["R", 18], ["B", 8], ["B", 8]]
   },
   {
-    id: 'lightning-roulette',
-    title: 'Lightning Roulette',
-    image: '/images/casino/card1.jpg',
-    players: 150,
-    category: 'roulette',
-    wins: [
-      ['B', 12], ['R', 23], ['B', 14], ['G', 0], ['R', 1], ['B', 32], ['B', 18], ['R', 27],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "lightning-roulette",
+    "title": "Lightning Roulette",
+    "image": "/images/casino/roulette/lightr1_imr_med_M.webp",
+    "players": 751,
+    "category": "roulette",
+    "wins": [["R", 1], ["B", 33], ["R", 34], ["R", 7], ["R", 34], ["R", 9], ["R", 3], ["R", 19]]
+  },
+  {
+    "id": "auto-roulette-vip",
+    "title": "Auto-Roulette VIP",
+    "image": "/images/casino/roulette/vip1_ss_thumb_med_M.webp",
+    "players": 287,
+    "category": "roulette",
+    "wins": [["B", 2], ["B", 11], ["B", 28], ["R", 3], ["B", 8], ["R", 30], ["G", 0], ["B", 29]]
+  },
+  {
+    "id": "emperor-roulette",
+    "title": "Emperor Roulette",
+    "image": "/images/casino/roulette/eprca1_imr_med_M.webp",
+    "players": 25,
+    "category": "roulette",
+    "wins": [["B", 10], ["B", 10], ["B", 6], ["R", 18], ["B", 33], ["R", 3], ["R", 1], ["R", 9]]
+  },
+  {
+    "id": "double-ball-roulette",
+    "title": "Double Ball Roulette",
+    "image": "/images/casino/roulette/dbrk1_imr_med_M.webp",
+    "players": 26,
+    "category": "roulette",
+    "wins": [["B", 15], ["B", 13], ["R", 34], ["B", 17], ["B", 2], ["R", 23], ["R", 23], ["B", 35]]
+  },
+  {
+    "id": "auto-roulette",
+    "title": "Auto-Roulette",
+    "image": "/images/casino/roulette/gen1_ss_thumb_med_M.webp",
+    "players": 1291,
+    "category": "roulette",
+    "wins": [["R", 23], ["R", 12], ["B", 17], ["B", 8], ["B", 35], ["R", 16], ["B", 2], ["R", 16]]
+  },
+  {
+    "id": "lotus-roulette",
+    "title": "Lotus Roulette",
+    "image": "/images/casino/roulette/lotca1_imr_med_M.webp",
+    "players": 11,
+    "category": "roulette",
+    "wins": [["B", 13], ["R", 32], ["R", 3], ["R", 9], ["R", 30], ["B", 33], ["R", 14], ["R", 18]]
+  },
+  {
+    "id": "salon-prive-auto-roulette-b",
+    "title": "Salon Privé Auto-Roulette B",
+    "image": "/images/casino/roulette/rng_salonpriveautoroulette_med_M.webp",
+    "players": 0,
+    "category": "roulette",
+    "wins": [["R", 5], ["R", 5], ["B", 15], ["R", 14], ["R", 32], ["B", 28], ["R", 9], ["R", 14]]
+  },
+  {
+    "id": "xxxtreme-lightning-roulette",
+    "title": "XXXtreme Lightning Roulette",
+    "image": "/images/casino/roulette/xfrt1_imr_med_M.webp",
+    "players": 648,
+    "category": "roulette",
+    "wins": [["B", 17], ["B", 29], ["B", 35], ["B", 15], ["B", 22], ["B", 28], ["B", 17], ["R", 9]]
+  },
+  {
+    "id": "gold-vault-roulette",
+    "title": "Gold Vault Roulette",
+    "image": "/images/casino/roulette/goldvk1_imr_med_M.webp",
+    "players": 265,
+    "category": "roulette",
+    "wins": [["R", 16], ["R", 14], ["R", 30], ["R", 1], ["B", 2], ["R", 3], ["R", 36], ["R", 27]]
+  },
+  {
+    "id": "bucharest-auto-roulette",
+    "title": "Bucharest Auto-Roulette",
+    "image": "/images/casino/roulette/buc1_ss_thumb_med_M.webp",
+    "players": 181,
+    "category": "roulette",
+    "wins": [["B", 26], ["R", 1], ["B", 8], ["B", 2], ["R", 16], ["R", 34], ["R", 1], ["B", 35]]
+  },
+  {
+    "id": "instant-roulette",
+    "title": "Instant Roulette",
+    "image": "/images/casino/roulette/s_inrok0_med_M.webp",
+    "players": 111,
+    "category": "roulette",
+    "wins": [["R", 1], ["B", 28], ["B", 22], ["R", 12], ["R", 9], ["B", 22], ["B", 4], ["R", 18]]
+  },
+  {
+    "id": "salon-prive-roulette",
+    "title": "Salon Privé Roulette",
+    "image": "/images/casino/roulette/spr2_imr_med_M.webp",
+    "players": 0,
+    "category": "roulette",
+    "wins": [["R", 3], ["R", 7], ["B", 17], ["B", 17], ["R", 27], ["R", 27], ["R", 3], ["B", 33]]
+  },
+  {
+    "id": "pd-lightning-roulette",
+    "title": "PD Lightning Roulette",
+    "image": "/images/casino/roulette/lightceb1_imr_med_M.webp",
+    "players": 43,
+    "category": "roulette",
+    "wins": [["R", 16], ["B", 17], ["B", 29], ["R", 34], ["B", 29], ["R", 27], ["R", 34], ["R", 5]]
+  },
+  {
+    "id": "american-roulette",
+    "title": "American Roulette",
+    "image": "/images/casino/roulette/dzerot1_imrs_med_M.webp",
+    "players": 56,
+    "category": "roulette",
+    "wins": [["R", 1], ["B", 8], ["B", 4], ["R", 25], ["B", 2], ["B", 35], ["R", 3], ["B", 8]]
+  },
+  {
+    "id": "vip-roulette",
+    "title": "VIP Roulette",
+    "image": "/images/casino/roulette/vipbuc1_imr_med_M.webp",
+    "players": 52,
+    "category": "roulette",
+    "wins": [["B", 13], ["R", 7], ["B", 28], ["B", 2], ["R", 14], ["R", 27], ["R", 34], ["R", 12]]
+  },
+  {
+    "id": "red-door-roulette",
+    "title": "Red Door Roulette",
+    "image": "/images/casino/roulette/rdr_imr_med_M.webp",
+    "players": 1020,
+    "category": "roulette",
+    "wins": [["R", 7], ["R", 5], ["B", 8], ["R", 23], ["B", 20], ["B", 26], ["B", 8], ["R", 7]]
   }
 ]
 
 export const SICBO: LiveCasinoTable[] = [
   {
-    id: 'emperor-sic-bo',
-    title: 'Emperor Sic Bo A',
-    image: '/images/casino/card1.jpg',
-    players: 52,
-    category: 'sicbo',
-    wins: [
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-      [[2,3,6], 11, ['G', 'T'], ['B', 'O']],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "emperor-sic-bo-a",
+    "title": "Emperor Sic Bo A",
+    "image": "/images/casino/sicbo/sicboca2_dice_med_M.webp",
+    "players": 37,
+    "category": "sicbo",
+    "wins": [
+      [[3, 5, 5], 13, ["R", "S"], ["B", "O"]],
+      [[3, 5, 1], 9, ["R", "S"], ["S", "O"]],
+      [[5, 4, 1], 10, ["R", "S"], ["S", "E"]],
+      [[2, 2, 6], 10, ["G", "T"], ["S", "E"]],
+      [[1, 2, 4], 7, ["G", "T"], ["S", "O"]],
+      [[2, 5, 5], 12, ["R", "S"], ["B", "E"]],
+      [[3, 2, 4], 9, ["G", "T"], ["S", "O"]],
+      [[4, 1, 3], 8, ["R", "S"], ["S", "E"]],
+      [[2, 1, 5], 8, ["G", "T"], ["S", "E"]]
+    ]
   },
   {
-    id: 'lightning-sic-bo',
-    title: 'Lightning Sic Bo',
-    image: '/images/casino/card1.jpg',
-    players: 110,
-    category: 'sicbo',
-    wins: [
-      [[4,4,4], 12, ['G', 'T'], ['B', 'E']],
-      [[1,2,3], 6, ['R', 'S'], ['S', 'E']],
-      [[3,3,5], 11, ['G', 'T'], ['B', 'O']],
-      [[2,5,6], 13, ['R', 'S'], ['B', 'O']],
-      [[1,1,4], 6, ['G', 'T'], ['S', 'E']],
-      [[6,3,2], 11, ['R', 'S'], ['B', 'O']],
-      [[5,4,1], 10, ['G', 'T'], ['S', 'E']],
-      [[2,2,5], 9, ['R', 'S'], ['S', 'O']],
-      [[6,5,4], 15, ['G', 'T'], ['B', 'O']],
-    ],
-    stats: { shoe: 0, banker: 0, player: 0, tie: 0 },
+    "id": "lotus-sic-bo",
+    "title": "Lotus Sic Bo",
+    "image": "/images/casino/sicbo/sicboca3_dice_med_M.webp",
+    "players": 23,
+    "category": "sicbo",
+    "wins": [
+      [[1, 1, 4], 6, ["R", "S"], ["S", "E"]],
+      [[4, 2, 1], 7, ["R", "S"], ["S", "O"]],
+      [[5, 4, 5], 14, ["R", "S"], ["B", "E"]],
+      [[1, 3, 3], 7, ["G", "T"], ["S", "O"]],
+      [[2, 6, 4], 12, ["R", "S"], ["B", "E"]],
+      [[1, 1, 6], 8, ["R", "S"], ["S", "E"]],
+      [[5, 3, 5], 13, ["G", "T"], ["B", "O"]],
+      [[3, 2, 6], 11, ["G", "T"], ["B", "O"]],
+      [[2, 3, 3], 8, ["G", "T"], ["S", "E"]]
+    ]
+  },
+  {
+    "id": "lightning-sic-bo",
+    "title": "Lightning Sic Bo",
+    "image": "/images/casino/sicbo/lsicbor1_dice_med_M.webp",
+    "players": 231,
+    "category": "sicbo",
+    "wins": [
+      [[5, 6, 6], 17, ["G", "T"], ["B", "O"]],
+      [[4, 5, 5], 14, ["R", "S"], ["B", "E"]],
+      [[5, 3, 4], 12, ["G", "T"], ["B", "E"]],
+      [[4, 4, 2], 10, ["R", "S"], ["S", "E"]],
+      [[6, 6, 2], 14, ["G", "T"], ["B", "E"]],
+      [[4, 2, 4], 10, ["G", "T"], ["S", "E"]],
+      [[1, 1, 5], 7, ["G", "T"], ["S", "O"]],
+      [[3, 3, 6], 12, ["R", "S"], ["B", "E"]],
+      [[4, 3, 6], 13, ["G", "T"], ["B", "O"]]
+    ]
+  },
+  {
+    "id": "super-sic-bo",
+    "title": "Super Sic Bo",
+    "image": "/images/casino/sicbo/sicbo_dice_med_M.webp",
+    "players": 688,
+    "category": "sicbo",
+    "wins": [
+      [[4, 2, 6], 12, ["G", "T"], ["B", "E"]],
+      [[4, 5, 2], 11, ["G", "T"], ["B", "O"]],
+      [[4, 1, 5], 10, ["R", "S"], ["S", "E"]],
+      [[2, 2, 2], 6, ["R", "S"], ["S", "E"]],
+      [[4, 2, 5], 11, ["R", "S"], ["B", "O"]],
+      [[2, 6, 2], 10, ["R", "S"], ["S", "E"]],
+      [[4, 6, 5], 15, ["R", "S"], ["B", "O"]],
+      [[4, 5, 2], 11, ["R", "S"], ["B", "O"]],
+      [[2, 4, 6], 12, ["R", "S"], ["B", "E"]]
+    ]
+  },
+  {
+    "id": "speed-super-sic-bo",
+    "title": "Speed Super Sic Bo",
+    "image": "/images/casino/sicbo/isicbor1_dice_med_M.webp",
+    "players": 160,
+    "category": "sicbo",
+    "wins": [
+      [[4, 5, 2], 11, ["R", "S"], ["B", "O"]],
+      [[2, 4, 3], 9, ["G", "T"], ["S", "O"]],
+      [[2, 3, 2], 7, ["R", "S"], ["S", "O"]],
+      [[2, 4, 6], 12, ["R", "S"], ["B", "E"]],
+      [[3, 3, 3], 9, ["R", "S"], ["S", "O"]],
+      [[3, 6, 5], 14, ["R", "S"], ["B", "E"]],
+      [[2, 3, 1], 6, ["G", "T"], ["S", "E"]],
+      [[6, 5, 3], 14, ["G", "T"], ["B", "E"]],
+      [[2, 5, 6], 13, ["G", "T"], ["B", "O"]]
+    ]
+  },
+  {
+    "id": "emperor-sic-bo",
+    "title": "Emperor Sic Bo",
+    "image": "/images/casino/sicbo/sicboca1_dice_med_M.webp",
+    "players": 49,
+    "category": "sicbo",
+    "wins": [
+      [[1, 2, 5], 8, ["R", "S"], ["S", "E"]],
+      [[6, 2, 3], 11, ["R", "S"], ["B", "O"]],
+      [[3, 2, 2], 7, ["R", "S"], ["S", "O"]],
+      [[5, 6, 5], 16, ["G", "T"], ["B", "E"]],
+      [[4, 3, 1], 8, ["G", "T"], ["S", "E"]],
+      [[6, 3, 5], 14, ["G", "T"], ["B", "E"]],
+      [[4, 3, 3], 10, ["G", "T"], ["S", "E"]],
+      [[3, 2, 6], 11, ["G", "T"], ["B", "O"]],
+      [[5, 6, 5], 16, ["R", "S"], ["B", "E"]]
+    ]
   }
 ]
 

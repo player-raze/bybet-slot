@@ -39,6 +39,7 @@ const KNOWN_COUNTRY_KEYS: Record<string, string> = {
   china: 'China',
   philippines: 'Philippines',
   pba: 'Philippines',
+  efl: 'England'
 }
 
 export function getCountryForSport(sport: Pick<Sport, 'key'> & Partial<Pick<Sport, 'title' | 'description'>>): string {

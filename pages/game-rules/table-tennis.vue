@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { tableTennisRulesHtml } from '~/data/table-tennis-rules'
 
-useSeoMeta({
-  title: 'Table Tennis Betting Rules & Settlement | ByBet',
-  description: 'Official ByBet table tennis rules: ITTF official scoring standards, retirement settlement rules, set & point handicaps, Over/Under lines, and in-play point markets.',
-  ogTitle: 'Table Tennis Betting Rules & Settlement | ByBet',
-  ogDescription: 'Master table tennis betting rules on ByBet: ITTF regulations, retirement and walkover settlements, handicaps, and point milestones.',
+useAppSeo({
+  title: 'Table Tennis Betting Rules & Match Settlement | ByBet',
+  description: 'Official ByBet table tennis rules: ITTF scoring standards, retirement settlement rules, set and point handicaps, Over/Under lines, and in-play markets.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Table Tennis Rules', path: '/game-rules/table-tennis' },
+  ],
 })
 </script>
 

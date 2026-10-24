@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import LegalPageShell from '~/components/legal/LegalPageShell.vue'
 
-useSeoMeta({
+useAppSeo({
   title: 'Responsible Gaming & Player Protection | ByBet Philippines',
   description: 'ByBet is committed to safe, responsible entertainment. Learn about PAGCOR self-exclusion, deposit limits, support hotlines, and underage gambling prevention.',
-  ogTitle: 'Responsible Gaming & Player Protection | ByBet Philippines',
-  ogDescription: 'Play responsibly with ByBet. Access self-exclusion tools, player limits, and 24/7 problem gambling support resources.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Responsible Gaming', path: '/responsible-gaming' },
+  ],
 })
 </script>
 
 <template>
-  <LegalPageShell title="Responsible Gaming">
+  <LegalPageShell title="Responsible Gaming Program">
     <p>
-      ByBet and Global Play Hub Innovations Corp. are dedicated to fostering a safe, transparent, and enjoyable gaming environment. While the majority of players enjoy casino games and sports betting as safe recreation, gambling carries inherent risks. We empower our members with comprehensive controls, clear spending limits, and seamless access to professional counseling support.
+      WE, at <strong>GLOBAL PLAY HUB INNOVATIONS CORP.</strong> strives to provide our players with an enjoyable and safe experience. In today’s fast-paced online gaming entertainment world, understanding how to play responsibly is not just a personal preference, it’s a crucial strategy as online gaming on all platforms is not only a fun experience but poses risks as well. Whether the players are amateur or not, practicing responsible gaming can ensure that an online customer’s experience remains enjoyable and safe. This informative guide will provide you with helpful tips and strategies on playing responsibly online, including some key ways to set limits and choose reputable sites. Responsible gaming is about having fun without having to worry about the risks of losing your money, making smart choices and taking precautions in preparation for future situations.
     </p>
 
     <h3 class="text-white font-bold text-sm sm:text-[15px] pt-3 mb-1.5">

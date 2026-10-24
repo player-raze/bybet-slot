@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import SubpageHeader from '~/components/SubpageHeader.vue'
 import {
   Check,
   ChevronDown,
-  ChevronLeft,
   ChevronUp,
   Copy,
   Link as LinkIcon,
@@ -44,11 +44,13 @@ const expandedAdvantages = ref<Set<string>>(new Set([
 const copiedContact = ref<'phone' | 'email' | null>(null)
 let copyResetTimer: ReturnType<typeof setTimeout> | null = null
 
-useSeoMeta({
-  title: 'Affiliate Partnership Program | ByBet',
-  description: 'Join the ByBet affiliate program and earn up to 50% commission through the official ByBet partnership platform.',
-  ogTitle: 'Affiliate Partnership Program | ByBet',
-  ogDescription: 'Become a ByBet affiliate partner and earn commission from referred players.',
+useAppSeo({
+  title: 'Affiliate Partnership Program — Earn Up to 50% | ByBet',
+  description: 'Join the official ByBet Affiliate Program. Earn up to 50% revenue commission, access dedicated marketing support, and enjoy reliable weekly payouts.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Affiliate Program', path: '/affiliate' },
+  ],
 })
 
 const affiliateTabs: AffiliateTab[] = [
@@ -68,7 +70,7 @@ const cooperationSteps = [
 
 const products = [
   { label: 'SPORTS', image: '/images/sports/soccer.webp' },
-  { label: 'LIVE CASINO', image: '/images/casino/card1.jpg' },
+  { label: 'LIVE CASINO', image: '/images/casino/card1.webp' },
   { label: 'SLOTS', image: '/images/games/popular/gates-of-olympus.webp' },
   { label: 'LOTTERY', image: '/images/games/new-releases/777-strike.webp' },
 ]
@@ -250,28 +252,28 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="affiliate-page">
-    <header class="affiliate-titlebar">
-      <button type="button" class="affiliate-back" aria-label="Go back" @click="handleBack">
-        <ChevronLeft :size="19" />
-      </button>
-      <h1>Affiliate</h1>
-    </header>
+    <SubpageHeader
+      title="Affiliate"
+      back-to="/explore/account/me"
+      class="mb-1.5 sm:mb-2.5"
+    />
 
-    <nav class="affiliate-tabs" aria-label="Affiliate sections" role="tablist">
-      <button
-        v-for="tab in affiliateTabs"
-        :key="tab.id"
-        type="button"
-        role="tab"
-        :aria-selected="activeTab === tab.id"
-        :class="{ 'affiliate-tab--active': activeTab === tab.id }"
-        @click="activeTab = tab.id"
-      >
-        {{ tab.label }}
-      </button>
-    </nav>
+    <div class="affiliate-content-container px-2 sm:px-0">
+      <nav class="affiliate-tabs" aria-label="Affiliate sections" role="tablist">
+        <button
+          v-for="tab in affiliateTabs"
+          :key="tab.id"
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === tab.id"
+          :class="{ 'affiliate-tab--active': activeTab === tab.id }"
+          @click="activeTab = tab.id"
+        >
+          {{ tab.label }}
+        </button>
+      </nav>
 
-    <main class="affiliate-main">
+      <main class="affiliate-main">
       <section v-if="activeTab === 'cooperation'" class="affiliate-panel affiliate-cooperation">
         <div class="affiliate-hero">
           <div class="affiliate-hero-copy">
@@ -338,7 +340,12 @@ onBeforeUnmount(() => {
 
       <section v-else-if="activeTab === 'commission'" class="affiliate-panel">
         <div class="affiliate-surface commission-panel">
-          <span class="commission-flag" aria-label="Philippines">🇵🇭</span>
+          <span class="commission-flag" aria-label="Philippines"><img
+                src="/icons/PHP.webp"
+                alt="ByBet"
+                class="h-7 sm:h-5 w-auto object-contain"
+                loading="lazy"
+              /></span>
           <h2>Earn up to 50% commission every month<br>Affiliate Partnership Program</h2>
           <p>Affiliates receive commissions based on a percentage of the monthly net revenue generated from sports betting, online casino, slot games, and other gaming products.</p>
 
@@ -414,19 +421,7 @@ onBeforeUnmount(() => {
         </div>
       </section>
     </main>
-
-    <footer class="affiliate-regulatory">
-      <div class="regulatory-logos">
-        <img src="/responsible-gaming/pagcor.png" alt="PAGCOR">
-        <img src="/responsible-gaming/age-restriction.png" alt="21 and above. Gambling can be addictive. Know when to stop.">
-      </div>
-      <div class="regulatory-links">
-        <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer">WWW.PAGCOR.PH/REGULATORY</a>
-        <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
-      </div>
-      <strong>GAMBLING DOESN'T GUARANTEE EARNINGS OR<br>FINANCIAL IMPROVEMENT. STAY WITHIN YOUR LIMITS.</strong>
-      <img class="regulatory-hotline" src="/responsible-gaming/support-hotline.png" alt="Responsible gaming support hotline">
-    </footer>
+    </div>
   </div>
 </template>
 
@@ -436,12 +431,17 @@ onBeforeUnmount(() => {
   min-width: 0;
   min-height: calc(100vh - var(--header-height));
   flex-direction: column;
-  padding: 8px 4px 0;
+  padding: 0;
   color: #f5f5f5;
   background: #000;
 }
 
-.affiliate-titlebar,
+@media (min-width: 64rem) {
+  .affiliate-page {
+    padding: 0 4px;
+  }
+}
+
 .affiliate-tabs,
 .affiliate-surface,
 .cooperation-card,
@@ -536,7 +536,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   border-radius: 12px;
   padding: 24px 32px;
-  background: linear-gradient(90deg, rgba(12, 24, 31, 0.52), rgba(79, 52, 7, 0.22)), url('/hero/promotions.png') center 58% / cover no-repeat;
+  background: linear-gradient(90deg, rgba(12, 24, 31, 0.52), rgba(79, 52, 7, 0.22)), url('/hero/promotions.webp') center 58% / cover no-repeat;
 }
 
 .affiliate-hero::after {

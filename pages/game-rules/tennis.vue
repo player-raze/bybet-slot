@@ -2,11 +2,14 @@
 import GameRulesNav from '~/components/game-rules/GameRulesNav.vue'
 import { tennisRulesHtml } from '~/data/tennis-rules'
 
-useSeoMeta({
+useAppSeo({
   title: 'Tennis Betting Rules & Retirement Settlement | ByBet',
-  description: 'Official tennis betting rules. Player retirements, walkovers, game handicap, set betting, rain interruptions, and super tiebreak conditions.',
-  ogTitle: 'Tennis Betting Rules & Retirement Settlement | ByBet',
-  ogDescription: 'Learn tennis betting rules on ByBet: One-Set Completed retirement standard, walkover refunds, and game handicap settlements.',
+  description: 'Official tennis betting rules. Player retirements, walkovers, game handicap, set betting, rain interruptions, and super tiebreak conditions on ByBet.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Game Rules', path: '/game-rules' },
+    { name: 'Tennis Rules', path: '/game-rules/tennis' },
+  ],
 })
 </script>
 

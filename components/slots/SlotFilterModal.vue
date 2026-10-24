@@ -112,6 +112,11 @@ onBeforeUnmount(unlockPage)
           aria-modal="true"
           aria-labelledby="slot-filter-title"
         >
+          <!-- Pull bar / Handle at the very top -->
+          <div class="slot-filter-drag-handle" aria-hidden="true">
+            <span class="slot-filter-pill-handle" />
+          </div>
+
           <header class="slot-filter-header">
             <button
               ref="cancelButton"
@@ -122,10 +127,10 @@ onBeforeUnmount(unlockPage)
               Cancel
             </button>
             <h2 id="slot-filter-title">Filter</h2>
-            <span aria-hidden="true" />
+            <span class="slot-filter-header-spacer" aria-hidden="true" />
           </header>
 
-          <div class="slot-filter-content">
+          <div class="slot-filter-content no-scrollbar">
             <fieldset class="slot-filter-group">
               <legend>Theme</legend>
               <div class="slot-filter-grid">
@@ -176,16 +181,16 @@ onBeforeUnmount(unlockPage)
                 </button>
               </div>
             </fieldset>
-
-            <footer class="slot-filter-actions">
-              <button type="button" class="slot-filter-action slot-filter-reset" @click="reset">
-                Reset
-              </button>
-              <button type="button" class="slot-filter-action slot-filter-ok" @click="apply">
-                OK
-              </button>
-            </footer>
           </div>
+
+          <footer class="slot-filter-actions">
+            <button type="button" class="slot-filter-action slot-filter-reset" @click="reset">
+              Reset
+            </button>
+            <button type="button" class="slot-filter-action slot-filter-ok" @click="apply">
+              OK
+            </button>
+          </footer>
         </section>
       </div>
     </Transition>
@@ -198,32 +203,40 @@ onBeforeUnmount(unlockPage)
   inset: 0;
   z-index: 1000;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 4px;
-  background: rgba(0, 0, 0, 0.52);
+  background: rgba(0, 0, 0, 0.68);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 
 .slot-filter-modal {
   box-sizing: border-box;
-  width: min(376px, calc(100vw - 8px));
-  max-height: calc(100dvh - 8px);
-  overflow-x: hidden;
-  overflow-y: auto;
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100dvh - 56px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   color: #f5f5f5;
-  background:
-    radial-gradient(circle at 82% 18%, rgba(77, 58, 35, 0.16), transparent 34%),
-    linear-gradient(180deg, rgba(31, 31, 31, 0.97), rgba(25, 26, 25, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.035);
-  border-radius: 24px;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.62);
-  scrollbar-width: none;
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  background: #181919;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 36px rgba(0, 0, 0, 0.7);
 }
 
-.slot-filter-modal::-webkit-scrollbar {
-  display: none;
+.slot-filter-drag-handle {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 2px;
+}
+
+.slot-filter-pill-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .slot-filter-header {
@@ -231,38 +244,59 @@ onBeforeUnmount(unlockPage)
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  min-height: 60px;
-  padding: 0 16px;
+  min-height: 44px;
+  padding: 4px 16px 8px;
 }
 
 .slot-filter-header h2 {
   grid-column: 2;
   margin: 0;
+  color: #ffffff;
   font-size: 16px;
   font-weight: 700;
   line-height: 20px;
   letter-spacing: -0.01em;
+  text-align: center;
 }
 
 .slot-filter-cancel {
   justify-self: start;
   min-width: 52px;
   margin: 0;
-  padding: 8px 0;
-  color: #f5f5f5;
+  padding: 6px 0;
+  color: #c5cac7;
   background: transparent;
   border: 0;
   border-radius: 6px;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 20px;
   text-align: left;
   cursor: pointer;
+  transition: color 140ms ease;
+}
+
+.slot-filter-cancel:hover {
+  color: #ffffff;
+}
+
+.slot-filter-header-spacer {
+  grid-column: 3;
+  justify-self: end;
+  width: 52px;
 }
 
 .slot-filter-content {
-  padding: 4px 16px 20px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 16px 16px;
+  scrollbar-width: none;
+}
+
+.slot-filter-content::-webkit-scrollbar {
+  display: none;
 }
 
 .slot-filter-group {
@@ -273,16 +307,16 @@ onBeforeUnmount(unlockPage)
 }
 
 .slot-filter-group + .slot-filter-group {
-  margin-top: 12px;
+  margin-top: 20px;
 }
 
 .slot-filter-group legend {
   display: block;
   width: 100%;
-  margin: 0 0 11px;
+  margin: 0 0 10px;
   padding: 0;
-  color: #f0f0f0;
-  font-size: 16px;
+  color: #ffffff;
+  font-size: 15px;
   font-weight: 700;
   line-height: 20px;
 }
@@ -290,7 +324,7 @@ onBeforeUnmount(unlockPage)
 .slot-filter-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px 12px;
+  gap: 10px;
 }
 
 .slot-filter-option {
@@ -301,70 +335,89 @@ onBeforeUnmount(unlockPage)
   height: 42px;
   margin: 0;
   padding: 4px 6px;
-  color: #eeeeee;
-  background: rgba(13, 14, 13, 0.82);
+  color: #e2e8e5;
+  background: #1e201f;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 10px;
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 1.25;
   text-align: center;
   cursor: pointer;
-  transition: border-color 120ms ease, background-color 120ms ease;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.slot-filter-option:hover {
+  background: #252726;
+  color: #ffffff;
 }
 
 .slot-filter-option--active {
-  background: rgba(13, 17, 15, 0.88);
+  background: #161817;
   border-color: #008d62;
+  color: #ffffff;
+  font-weight: 500;
 }
 
 .slot-filter-actions {
+  flex-shrink: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 24px;
-  padding: 0 4px;
+  gap: 12px;
+  padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+  background: #181919;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .slot-filter-action {
-  height: 55px;
+  height: 46px;
   margin: 0;
   padding: 0 12px;
-  color: #f5f5f5;
+  color: #ffffff;
   border: 0;
   border-radius: 12px;
   font: inherit;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   line-height: 20px;
   cursor: pointer;
+  transition: background-color 140ms ease;
 }
 
 .slot-filter-reset {
-  background: #2b2b2b;
+  background: #2a2c2b;
+}
+
+.slot-filter-reset:hover {
+  background: #343735;
 }
 
 .slot-filter-ok {
-  background: #007c55;
+  background: #036242;
   font-weight: 700;
+}
+
+.slot-filter-ok:hover {
+  background: #047a52;
 }
 
 .slot-filter-cancel:focus-visible,
 .slot-filter-option:focus-visible,
 .slot-filter-action:focus-visible {
-  outline: 2px solid #19c28b;
+  outline: 2px solid #008d62;
   outline-offset: 2px;
 }
 
+/* Animations */
 .slot-filter-fade-enter-active,
 .slot-filter-fade-leave-active {
-  transition: opacity 150ms ease;
+  transition: opacity 220ms ease;
 }
 
 .slot-filter-fade-enter-active .slot-filter-modal,
 .slot-filter-fade-leave-active .slot-filter-modal {
-  transition: opacity 150ms ease, transform 150ms ease;
+  transition: transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1), opacity 220ms ease;
 }
 
 .slot-filter-fade-enter-from,
@@ -374,13 +427,27 @@ onBeforeUnmount(unlockPage)
 
 .slot-filter-fade-enter-from .slot-filter-modal,
 .slot-filter-fade-leave-to .slot-filter-modal {
+  transform: translateY(100%);
   opacity: 0;
-  transform: translateY(8px) scale(0.985);
 }
 
-@media (max-height: 660px) {
+@media (min-width: 640px) {
   .slot-filter-backdrop {
-    align-items: flex-start;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .slot-filter-modal {
+    border-radius: 20px;
+    max-height: min(720px, calc(100dvh - 64px));
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .slot-filter-fade-enter-from .slot-filter-modal,
+  .slot-filter-fade-leave-to .slot-filter-modal {
+    transform: translateY(16px) scale(0.97);
+    opacity: 0;
   }
 }
 
@@ -390,12 +457,12 @@ onBeforeUnmount(unlockPage)
   }
 
   .slot-filter-grid {
-    gap-inline: 7px;
+    gap: 8px;
   }
 
   .slot-filter-option {
-    padding-inline: 3px;
-    font-size: 13px;
+    padding-inline: 2px;
+    font-size: 12px;
   }
 }
 </style>

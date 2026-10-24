@@ -75,7 +75,9 @@ const getItemAttributes = (item: RailItem): Record<string, string> => {
 }
 
 const isItemActive = (item: RailItem): boolean => {
-  return item.to ? route.path === item.to : item.label === activeItemLabel.value
+  return item.to
+    ? route.path === item.to || route.path.startsWith(`${item.to}/`)
+    : item.label === activeItemLabel.value
 }
 
 const toggleMenu = (item: RailItem): void => {
@@ -322,18 +324,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   border: 1px solid rgba(232, 245, 239, 0.16);
   border-radius: 0.5rem;
-  background:
-    radial-gradient(
-      120% 16% at 8% 0%,
-      rgba(255, 255, 255, 0.14),
-      transparent 60%
-    ),
-    linear-gradient(
-      165deg,
-      rgba(37, 44, 41, 0.52),
-      rgba(16, 21, 19, 0.42) 45%,
-      rgba(8, 11, 10, 0.5)
-    );
+  background:rgba(255, 255, 255, 0.10);
   box-shadow:
     inset 1px 0 rgba(255, 255, 255, 0.1),
     inset -1px 0 rgba(255, 255, 255, 0.035),
@@ -361,18 +352,7 @@ onBeforeUnmount(() => {
   padding: 7px 7px;
   border-color: rgba(232, 245, 239, 0.055);
   border-radius: 14px;
-  background:
-    radial-gradient(
-      130% 20% at 8% 0%,
-      rgba(255, 255, 255, 0.16),
-      transparent 58%
-    ),
-    linear-gradient(
-      165deg,
-      rgba(38, 45, 42, 0.128),
-      rgba(17, 22, 20, 0.4) 42%,
-      rgba(8, 11, 10, 0.48)
-    );
+  background:rgba(255, 255, 255, 0.10);
   box-shadow:
     inset 1px 0 rgba(255, 255, 255, 0),
     inset -1px 0 rgba(255, 255, 255, 0.04),
@@ -386,8 +366,7 @@ onBeforeUnmount(() => {
 
 @media (min-width: 64rem) {
   .sidebar {
-    z-index: 55;
-    top: calc(var(--header-height) - 12px);
+    top: var(--content-sticky-top);
     bottom: 8px;
   }
 
@@ -517,8 +496,7 @@ onBeforeUnmount(() => {
 
 .rail-submenu-link:hover {
   color: white;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045));
-  box-shadow: inset 1px 0 rgba(50, 212, 154, 0.42);
+  background: #5B5B5B;
 }
 
 .rail-submenu-link--active,
@@ -665,6 +643,10 @@ onBeforeUnmount(() => {
   height: 18px;
 }
 
+.sidebar--collapsed .maintenance-indicator {
+  display: none !important;
+}
+
 .rail-toggle {
   display: grid;
   position: absolute;
@@ -774,6 +756,10 @@ onBeforeUnmount(() => {
     margin: 0;
     overflow: visible;
     clip: auto;
+  }
+
+  .sidebar--collapsed .maintenance-indicator {
+    display: inline-block !important;
   }
 
   .rail-toggle {
