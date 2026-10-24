@@ -90,7 +90,7 @@ watch(() => route.path, () => {
         <template #right>
           <button
             type="button"
-            class="flex items-center justify-center px-2 py-0.5 text-white/90 hover:text-white bg-white/10 hover:bg-white/20 rounded font-bold text-xs sm:text-sm tracking-tight transition-colors cursor-pointer select-none"
+            class="game-rules-aa flex items-center justify-center px-2 py-0.5 text-white/90 hover:text-white bg-white/10 hover:bg-white/20 rounded font-bold text-xs sm:text-sm tracking-tight transition-colors cursor-pointer select-none"
             :title="`Text size: ${textSizeLevel} (click to cycle)`"
             aria-label="Adjust font size"
             @click="cycleTextSize"
@@ -103,14 +103,14 @@ watch(() => route.path, () => {
       <!-- Category Navigation Tabs (cornered layout matching screenshot) -->
       <nav
         ref="navContainerRef"
-        class="flex items-center gap-2 overflow-x-auto py-1 px-2 sm:px-4 scrollbar-none"
+        class="game-rules-category-nav flex items-center gap-2 overflow-x-auto py-1 px-2 sm:px-4 scrollbar-none"
         aria-label="Game Rules Categories"
       >
         <NuxtLink
           v-for="tab in ruleTabs"
           :key="tab.to"
           :to="tab.to"
-          class="shrink-0 text-xs sm:text-sm font-semibold uppercase transition-all whitespace-nowrap select-none px-4 py-1.5 rounded-full border border-white/5"
+          class="game-rules-tab shrink-0 text-xs sm:text-sm font-semibold uppercase transition-all whitespace-nowrap select-none px-4 py-1.5 rounded-full border border-white/5"
           :class="isActive(tab.to)
             ? 'tab-pill--active bg-[#036242] text-white shadow font-bold'
             : 'bg-[#242625] text-[#8e9491] hover:text-white'"
@@ -129,6 +129,59 @@ watch(() => route.path, () => {
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@media (min-width: 64rem) {
+  .game-rules-sticky-wrapper {
+    margin-right: 0;
+    margin-bottom: 8px;
+    margin-left: 0;
+    padding-bottom: 0;
+  }
+
+  .game-rules-aa {
+    padding: 2px 8px;
+    color: #1fa779;
+    font-size: 16px;
+    background: transparent;
+  }
+
+  .game-rules-aa:hover {
+    color: #32d49a;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .game-rules-category-nav {
+    min-height: 46px;
+    padding: 5px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.035);
+    border-radius: 11px;
+    color: #ececec;
+    background: #1c1d1c;
+    gap: 7px;
+  }
+
+  .game-rules-tab {
+    min-height: 30px;
+    padding: 5px 13px;
+    border-color: transparent;
+    border-radius: 16px;
+    color: #ececec;
+    font-size: 14px;
+    line-height: 20px;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .game-rules-tab:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .game-rules-tab.tab-pill--active {
+    color: #ffffff;
+    background: #036242;
+  }
 }
 
 :global(.rules-text-large .editor-container),

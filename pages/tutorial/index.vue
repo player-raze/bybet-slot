@@ -18,6 +18,7 @@ useAppSeo({
 </script>
 
 <template>
+  <h1 class="hidden">How to Play Sports Betting in Bybet - A Step-by-Step Tutorial</h1>
   <GameTutorialPage mode="tutorial" />
 </template>
 

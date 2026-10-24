@@ -12,8 +12,8 @@ const sportName = computed(() => {
 })
 
 useAppSeo({
-  title: computed(() => `${sportName.value} Pre-Match Odds (${route.params.date}) | ByBet`),
-  description: computed(() => `Browse pre-match ${sportName.value} odds for games scheduled on ${route.params.date} at ByBet. Analyze matchup stats and lock in competitive betting lines early.`),
+  title: computed(() => `${sportName.value} Pre-Match Betting Odds for ${route.params.date} | ByBet`),
+  description: computed(() => `Browse pre-match ${sportName.value} betting odds for fixtures scheduled on ${route.params.date} at ByBet Philippines. Analyze matchup stats and lock in lines early.`),
   breadcrumbs: computed(() => [
     { name: 'Home', path: '/' },
     { name: 'Sports', path: '/explore/sports/popular' },
@@ -21,6 +21,13 @@ useAppSeo({
     { name: 'Pre-Match', path: `/explore/sports/${route.params.sport}/pre-match` },
     { name: String(route.params.date), path: route.path },
   ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${sportName.value} Pre-Match Odds for ${route.params.date} - ByBet`,
+    url: `https://bybet.com${route.path}`,
+    description: `Pre-match ${sportName.value} odds and betting lines for fixtures on ${route.params.date} at ByBet.`,
+  })),
 })
 
 definePageMeta({

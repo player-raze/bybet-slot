@@ -34,18 +34,22 @@ const outcomeImageMap: Record<string, string> = {
   'lose-lose-lose': '/tutorial-assets/outcomes/lose-lose-lose.png',
 }
 
-const resolvedSrc = computed(() => {
-  if (props.src) return props.src
+const baseImageName = computed(() => {
+  if (!props.src) return ''
+  const trimmed = props.src.trim()
+  return trimmed
+    .replace(/^.*\/outcomes\//, '')
+    .replace(/\.(webp|png|jpg|jpeg)$/, '')
+    .replace(/_(dark|light)$/, '')
+})
 
+const fallbackSrc = computed(() => {
   const statuses = props.options?.map(o => o.status) || []
-
-  // Direct map check
   const key = statuses.join('-')
   if (outcomeImageMap[key]) {
     return outcomeImageMap[key]
   }
 
-  // Two-outcome fallback checks
   if (statuses.length === 2) {
     if (statuses.includes('refund')) {
       return '/tutorial-assets/outcomes/refund.png'
@@ -62,7 +66,6 @@ const resolvedSrc = computed(() => {
     }
   }
 
-  // Three-outcome fallback checks
   if (statuses.length === 3) {
     if (statuses[0] === 'win') return '/tutorial-assets/outcomes/win-lose-lose.png'
     if (statuses[1] === 'win') return '/tutorial-assets/outcomes/lose-win-lose.png'
@@ -73,29 +76,75 @@ const resolvedSrc = computed(() => {
   return '/tutorial-assets/outcomes/win-lose.webp'
 })
 
+const darkSrc = computed(() => {
+  if (baseImageName.value) {
+    return `/tutorial-assets/outcomes/${baseImageName.value}_dark.webp`
+  }
+  return fallbackSrc.value
+})
+
+const lightSrc = computed(() => {
+  if (baseImageName.value) {
+    return `/tutorial-assets/outcomes/${baseImageName.value}_light.webp`
+  }
+  return fallbackSrc.value
+})
+
 const altText = computed(() => props.options
   ?.map(option => `${option.label}${option.value ? ` ${option.value}` : ''}: ${statusLabels[option.status] || option.status}`)
   .join(', ') || 'Tutorial outcome')
 </script>
 
 <template>
-  <img
-    class="outcome-graphic"
-    :src="resolvedSrc"
-    :alt="altText"
-    loading="lazy"
-    decoding="async"
-  >
+  <div class="outcome-graphic-wrapper">
+    <img
+      class="outcome-graphic outcome-graphic--dark"
+      :src="darkSrc"
+      :alt="altText"
+      loading="lazy"
+      decoding="async"
+    >
+    <img
+      class="outcome-graphic outcome-graphic--light"
+      :src="lightSrc"
+      :alt="altText"
+      loading="lazy"
+      decoding="async"
+    >
+  </div>
 </template>
 
 <style scoped>
+.outcome-graphic-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  margin-top: auto;
+}
+
 .outcome-graphic {
   display: block;
   width: min(100%, 370px);
   height: 130px;
-  margin: auto auto 0;
   object-fit: contain;
   object-position: center bottom;
+}
+
+.outcome-graphic--light {
+  display: none;
+}
+
+.outcome-graphic--dark {
+  display: block;
+}
+
+:global(html[data-theme='light']) .outcome-graphic--dark {
+  display: none;
+}
+
+:global(html[data-theme='light']) .outcome-graphic--light {
+  display: block;
 }
 
 @media (max-width: 34rem) {

@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
 .hero {
   position: relative;
   width: 100%;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   aspect-ratio: 4.58 / 1;
   min-height: 7.55rem;
   overflow: hidden;

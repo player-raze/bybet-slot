@@ -117,6 +117,8 @@ const gradientId = useId ? useId() : `bybet-spin-${Math.random().toString(36).sl
           :style="{
             width: `${logoWidth}px`,
           }"
+          loading="eager"
+          fetchpriority="high"
           draggable="false"
         />
       </div>
@@ -145,9 +147,12 @@ const gradientId = useId ? useId() : `bybet-spin-${Math.random().toString(36).sl
 .bybet-spinner-root--fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  background-color: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
+  z-index: 99999;
+  background-color: var(--page, #000000);
+}
+
+:global(html[data-theme='light']) .bybet-spinner-root--fullscreen {
+  background-color: var(--page, #eef5f1);
 }
 
 .bybet-spinner-root--overlay {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, Search, Trophy } from 'lucide-vue-next'
+import { ChevronDown, ChevronLeft, Search, Trophy } from 'lucide-vue-next'
 import Ai from '~/components/buttons/Ai.vue'
 import Collapse from '~/components/buttons/Collapse.vue'
 import type { Sport } from '~/types/sports'
@@ -418,11 +418,14 @@ const COUNTRY_FLAGS: Record<string, string> = {
   <div class="league-directory">
     <!-- Single Tournament Detail View -->
     <template v-if="tournamentKey">
-      <div class="mb-4">
-        <NuxtLink :to="`${base}/league`" class="inline-flex items-center gap-1.5 text-sm font-medium text-[#48daa6]">
-          <span>←</span>
+         <NuxtLink
+          :to="base || '/explore/sports/popular'"
+          class="toolbar-circle-btn"
+          aria-label="Back"
+          title="Back"
+        >
+          <ChevronLeft :size="18"  />
         </NuxtLink>
-      </div>
       <League
         v-if="tournament"
         :key="tournament.key"
@@ -455,7 +458,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
           <input
             v-model="search"
             type="search"
-            placeholder="Search league"
+            placeholder="Search league sample"
             aria-label="Search league"
           >
         </label>

@@ -2,7 +2,7 @@
 import TransactionTutorialPage from '~/components/tutorial/TransactionTutorialPage.vue'
 
 useAppSeo({
-  title: 'How to Deposit Funds via GCash & Maya Guide | ByBet',
+  title: 'How to Deposit Funds via GCash and Maya Guide in ByBet Casino',
   description: 'Step-by-step deposit guide for ByBet Philippines. Follow 5 easy steps to fund your account securely using GCash, Maya, ShopeePay, or bank transfer.',
   breadcrumbs: [
     { name: 'Home', path: '/' },
@@ -19,5 +19,6 @@ useAppSeo({
 </script>
 
 <template>
+  <h1 class="hidden">How to Deposit in Bybet </h1>
   <TransactionTutorialPage mode="deposit" />
 </template>

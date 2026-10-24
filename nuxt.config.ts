@@ -43,6 +43,18 @@ export default defineNuxtConfig({
         {
           rel: 'preload',
           as: 'image',
+          href: '/brand/bybet-loader-logo-dark.png',
+          fetchpriority: 'high',
+        },
+        {
+          rel: 'preload',
+          as: 'image',
+          href: '/brand/bybet-loader-logo.png',
+          fetchpriority: 'high',
+        },
+        {
+          rel: 'preload',
+          as: 'image',
           href: '/hero/slots-games.webp',
           fetchpriority: 'high',
         },

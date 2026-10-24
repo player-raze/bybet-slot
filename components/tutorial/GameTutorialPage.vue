@@ -258,6 +258,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           {
             score: '1-0',
             description: 'Home and away are well matched in strength. There is no handicap, and bets on the winning team win.',
+            image: 'Handicap-0_1-0',
             options: [
               tutorialOption('Home', '0', 'win', 'home'),
               tutorialOption('Away', '0', 'lose', 'away'),
@@ -266,6 +267,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           {
             score: '1-1',
             description: 'If the result is a draw, the bet amount will be refunded.',
+            image: 'Handicap-0_1-1',
             options: [
               tutorialOption('Home', '0', 'refund', 'home'),
               tutorialOption('Away', '0', 'refund', 'away'),
@@ -278,7 +280,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '1-0',
-            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap wins half, bets on the recipient of the handicap loses half',
+            image: 'Handicap-0-0.5_1-0',
             options: [
               tutorialOption('Home', '−0/−0.5', 'win', 'home'),
               tutorialOption('Away', '+0/+0.5', 'lose', 'away'),
@@ -286,7 +289,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'Draw. Bets on the giver of the handicap lose half; bets on the recipient win half.',
+            description: 'Draw. The bets on the giver of the handicap loses half, the bets on the recipient of the handicap wins half.',
+            image: 'Handicap-0-0.5_0-0',
             options: [
               tutorialOption('Home', '−0/−0.5', 'lose-half', 'home'),
               tutorialOption('Away', '+0/+0.5', 'win-half', 'away'),
@@ -294,7 +298,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-1',
-            description: 'The giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'The giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-0-0.5_0-1',
             options: [
               tutorialOption('Home', '−0/−0.5', 'lose', 'home'),
               tutorialOption('Away', '+0/+0.5', 'win', 'away'),
@@ -307,7 +312,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '1-0',
-            description: 'The giver of the handicap wins by 1 goal. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap wins half, bets on the recipient of the handicap loses half',
+            image: 'Handicap-0.5_1-0',
             options: [
               tutorialOption('Home', '+0.5', 'win', 'home'),
               tutorialOption('Away', '−0.5', 'lose', 'away'),
@@ -315,7 +321,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-0.5_0-0',
             options: [
               tutorialOption('Home', '+0.5', 'lose', 'home'),
               tutorialOption('Away', '−0.5', 'win', 'away'),
@@ -328,7 +335,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-0.5-1_2-0',
             options: [
               tutorialOption('Home', '+0.5/1', 'win', 'home'),
               tutorialOption('Away', '−0.5/1', 'lose', 'away'),
@@ -336,7 +344,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by 1 goal. Bets on the giver win half; bets on the recipient lose half.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap loses half, bets on the recipient of the handicap wins half.',
+            image: 'Handicap-0.5-1_1-0',
             options: [
               tutorialOption('Home', '+0.5/1', 'win-half', 'home'),
               tutorialOption('Away', '−0.5/1', 'lose-half', 'away'),
@@ -344,7 +353,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-0.5-1_0-0',
             options: [
               tutorialOption('Home', '+0.5/1', 'lose', 'home'),
               tutorialOption('Away', '−0.5/1', 'win', 'away'),
@@ -357,7 +367,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1_2-0',
             options: [
               tutorialOption('Home', '+1', 'win', 'home'),
               tutorialOption('Away', '−1', 'lose', 'away'),
@@ -365,7 +376,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver of the handicap wins by 1 goal. Bets on home and away will be refunded.',
+            description: 'The giver of the handicap wins by 1 goal. The bets on home or away will be refunded',
+            image: 'Handicap-1_1-0',
             options: [
               tutorialOption('Home', '+1', 'refund', 'home'),
               tutorialOption('Away', '−1', 'refund', 'away'),
@@ -373,7 +385,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1_0-0',
             options: [
               tutorialOption('Home', '+1', 'lose', 'home'),
               tutorialOption('Away', '−1', 'win', 'away'),
@@ -386,7 +399,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1-1.5_2-0',
             options: [
               tutorialOption('Home', '+1/1.5', 'win', 'home'),
               tutorialOption('Away', '−1/1.5', 'lose', 'away'),
@@ -394,7 +408,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by 1 goal. Bets on the giver lose half; bets on the recipient win half.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap loses half, bets on the recipient of the handicap wins half.',
+            image: 'Handicap-1-1.5_1-0',
             options: [
               tutorialOption('Home', '+1/1.5', 'lose-half', 'home'),
               tutorialOption('Away', '−1/1.5', 'win-half', 'away'),
@@ -402,7 +417,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1-1.5_0-0',
             options: [
               tutorialOption('Home', '+1/1.5', 'lose', 'home'),
               tutorialOption('Away', '−1/1.5', 'win', 'away'),
@@ -415,7 +431,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '2-0',
-            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 2 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1.5_2-0',
             options: [
               tutorialOption('Home', '+1.5', 'win', 'home'),
               tutorialOption('Away', '−1.5', 'lose', 'away'),
@@ -423,7 +440,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by only 1 goal. Bets on the giver lose; bets on the recipient win.',
+            description: 'The giver of the handicap wins by 1 goal. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1.5_1-0',
             options: [
               tutorialOption('Home', '+1.5', 'lose', 'home'),
               tutorialOption('Away', '−1.5', 'win', 'away'),
@@ -431,7 +449,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '0-0',
-            description: 'A draw means the giver of the handicap loses. Bets on the giver lose; bets on the recipient win.',
+            description: 'A draw or the giver of the handicap loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1.5_0-0',
             options: [
               tutorialOption('Home', '+1.5', 'lose', 'home'),
               tutorialOption('Away', '−1.5', 'win', 'away'),
@@ -444,7 +463,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
         scenarios: [
           {
             score: '3-0',
-            description: 'The giver of the handicap wins by 3 or more goals. Bets on the giver win; bets on the recipient lose.',
+            description: 'The giver of the handicap wins by 3 or more goals. Bets on the giver of the handicap lose, bets on the recipient of the handicap win.',
+            image: 'Handicap-1.5-2_3-0',
             options: [
               tutorialOption('Home', '+1.5/2', 'win', 'home'),
               tutorialOption('Away', '−1.5/2', 'lose', 'away'),
@@ -452,7 +472,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '2-0',
-            description: 'The handicap team wins by 2 goals. Half wins on the giver; half loses on the recipient.',
+            description: 'Handicap team wins by 2 goals. Half win on handicap team, half lose on opponent team.',
+            image: 'Handicap-1.5-2_2-0',
             options: [
               tutorialOption('Home', '+1.5/2', 'win-half', 'home'),
               tutorialOption('Away', '−1.5/2', 'lose-half', 'away'),
@@ -460,7 +481,8 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
           },
           {
             score: '1-0',
-            description: 'The giver wins by only 1 goal. Bets on the giver lose; bets on the recipient win.',
+            description: 'Handicap giver wins 1 goal/draw/handicap giver loses. Bets on the giver of the handicap lose, bets on the recipient of the handicap win',
+            image: 'Handicap-1.5-2_1-0',
             options: [
               tutorialOption('Home', '+1.5/2', 'lose', 'home'),
               tutorialOption('Away', '−1.5/2', 'win', 'away'),
@@ -476,6 +498,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If total number of goals is greater than the selected item, all bets on Over win, all bets on Under lose.',
+        image: 'Over-Under_1-1',
         options: [
           tutorialOption('Over', 'O 1.5', 'win', 'home'),
           tutorialOption('Under', 'U 1.5', 'lose', 'away'),
@@ -484,6 +507,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If total number of goals exceed half of the selected item, then half-win for Over, half loss for Under.',
+        image: 'Over-Under_1-1-2',
         options: [
           tutorialOption('Over', 'O 1.5/2', 'win-half', 'home'),
           tutorialOption('Under', 'U 1.5/2', 'lose-half', 'away'),
@@ -492,6 +516,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If total number of goals are equal to the selected item, the bet will be refunded (draw).',
+        image: 'Over-Under_1-1-3',
         options: [
           tutorialOption('Over', 'O 2', 'refund', 'home'),
           tutorialOption('Under', 'U 2', 'refund', 'away'),
@@ -505,6 +530,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        image: 'Win-Draw-Lose_1-0',
         options: [
           tutorialOption('Home', undefined, 'win', 'home'),
           tutorialOption('Draw', undefined, 'lose', 'draw'),
@@ -514,6 +540,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-1',
         description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        image: 'Win-Draw-Lose_1-1',
         options: [
           tutorialOption('Home', undefined, 'lose', 'home'),
           tutorialOption('Draw', undefined, 'win', 'draw'),
@@ -523,6 +550,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '0-1',
         description: 'If the selected item completely with the match for guessing the final result (win/draw/loss), it will be a full win, or vice versa.',
+        image: 'Win-Draw-Lose_0-1',
         options: [
           tutorialOption('Home', undefined, 'lose', 'home'),
           tutorialOption('Draw', undefined, 'lose', 'draw'),
@@ -541,6 +569,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-Handicap_7-5',
             options: [
               tutorialOption('Home', '−1.5', 'win', 'home'),
               tutorialOption('Away', '+1.5', 'lose', 'away'),
@@ -555,6 +584,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-Over-Under_7-5',
             options: [
               tutorialOption('Over', 'O11.5', 'win', 'home'),
               tutorialOption('Under', 'U11.5', 'lose', 'away'),
@@ -569,6 +599,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-1X2_7-5',
             options: [
               tutorialOption('Home', undefined, 'win', 'home'),
               tutorialOption('Draw', undefined, 'lose', 'draw'),
@@ -584,6 +615,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
             score: '7-5',
             subtitle: 'Corner Kick Results',
             description: '',
+            image: 'Corners-Odd-Even_7-5',
             options: [
               tutorialOption('Odd', 'O', 'lose', 'home'),
               tutorialOption('Even', 'U', 'win', 'away'),
@@ -599,6 +631,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If total number of goals are odd, bets on Odd wins, bets on Even loses.',
+        image: 'Odd-Even_1-0',
         options: [
           tutorialOption('Odd', 'O', 'win', 'home'),
           tutorialOption('Even', 'U', 'lose', 'away'),
@@ -607,6 +640,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '0-0',
         description: 'If total number of goals are even, bets on Odd loses, bets on Even wins (0–0 is even).',
+        image: 'Odd-Even_0-0',
         options: [
           tutorialOption('Odd', 'O', 'lose', 'home'),
           tutorialOption('Even', 'U', 'win', 'away'),
@@ -620,6 +654,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        image: 'Match-Result_1-0',
         options: [
           tutorialOption('1-0', undefined, 'win', 'home'),
           tutorialOption('0-0', undefined, 'lose', 'draw'),
@@ -629,6 +664,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        image: 'Match-Result_1-0-2',
         options: [
           tutorialOption('2-0', undefined, 'lose', 'home'),
           tutorialOption('1-1', undefined, 'lose', 'draw'),
@@ -638,6 +674,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: '1-0',
         description: 'If the selected item completely with the match for guessing the final result, it will be a full win, or vice versa.',
+        image: 'Match-Result_1-0-3',
         options: [
           tutorialOption('2-1', undefined, 'lose', 'home'),
           tutorialOption('Others', undefined, 'lose', 'draw'),
@@ -652,6 +689,7 @@ const tutorialDefinitions: Record<MarketKey, TutorialDefinition> = {
       {
         score: 'Real Madrid wins',
         description: 'Spanish La Liga If the bet is on the team that wins the championship, it will be a win, and the rest will be deemed as loss.',
+        image: 'Tournament-Winner_Real-Madrid-wins',
         options: [
           tutorialOption('Real Madrid', undefined, 'win', 'home'),
           tutorialOption('Others', undefined, 'lose', 'away'),
@@ -761,7 +799,7 @@ const selectChoice = (id: string): void => {
         </div>
 
         <div class="market-panel-heading">
-          <h1 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h1>
+          <h2 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
           <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
 
           <div v-if="activeMarketKey === 'correct-score'" class="correct-score-filters" aria-label="Correct score selections">
@@ -825,9 +863,9 @@ const selectChoice = (id: string): void => {
         {{ activeTutorial.intro }}
       </p>
 
-      <h1 v-if="activeTutorial.title" class="tutorial-section-title">
+      <span v-if="activeTutorial.title" class="tutorial-section-title">
         {{ activeTutorial.title }}
-      </h1>
+      </span>
 
       <div v-if="activeTutorial.scenarios" class="tutorial-card-grid">
         <TutorialScenarioCard
@@ -904,6 +942,39 @@ const selectChoice = (id: string): void => {
   color: #036242;
   font-weight: 700;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 64rem) {
+  .tutorial-pill-group {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    gap: 8px;
+  }
+
+  .tutorial-pill {
+    min-width: 128px;
+    height: 32px;
+    padding: 0 22px;
+    border-radius: 8px;
+    color: #f3f3f3;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    background: #6c6d6c;
+    box-shadow: none;
+  }
+
+  .tutorial-pill:hover {
+    color: #ffffff;
+    background: #7b7c7b;
+  }
+
+  .tutorial-pill--active,
+  .tutorial-pill--active:hover {
+    color: #ffffff;
+    background: #007653;
+  }
 }
 
 .market-tabs {

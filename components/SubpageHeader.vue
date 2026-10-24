@@ -178,9 +178,44 @@ const handleBack = (): void => {
 
 @media (min-width: 64rem) {
   .subpage-header {
-    border-radius: 12px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    min-height: 44px;
+    height: 44px;
+    justify-content: flex-start;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.035);
+    border-radius: 11px;
+    margin-bottom: 8px;
+    background: linear-gradient(180deg, #202221 0%, #1b1c1b 100%);
+    box-shadow: none;
+    gap: 8px;
+  }
+
+  .subpage-header__left,
+  .subpage-header__right {
+    min-width: 32px;
+  }
+
+  .subpage-header__center {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    padding: 0;
+    text-align: left;
+  }
+
+  .subpage-header__title {
+    max-width: none;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .subpage-header__back-btn {
+    border: 0;
+    color: #16a27b;
+    background: #111514;
+  }
+
+  .subpage-header__back-btn:hover {
+    background: #151b19;
   }
 
   .subpage-header--sticky {

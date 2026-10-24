@@ -103,10 +103,7 @@ const selectedSport = ref('')
 const now = ref(Date.now())
 let timer: ReturnType<typeof setInterval> | undefined
 
-useSeoMeta({
-  title: () => `${tabs.find(tab => tab.key === activeTab.value)?.label ?? 'Popular Sports'} | ByBet`,
-  description: 'Explore leagues, live scores, upcoming fixtures and sports odds.',
-})
+
 
 const {
   data: leagues,
@@ -148,11 +145,7 @@ const tournamentTitle = computed(() => {
   return tournament?.title ?? String(route.params.tournament ?? '').replaceAll('-', ' ').toUpperCase()
 })
 
-useSeoMeta({
-  title: () => isOutrightDetail.value
-    ? `${tournamentTitle.value} Outrights | ByBet`
-    : `${tabs.find(tab => tab.key === activeTab.value)?.label ?? 'Popular Sports'} | ByBet`,
-})
+
 
 watch(availableSports, (sports) => {
   const requestedSport = typeof route.query.sport === 'string' ? route.query.sport : ''

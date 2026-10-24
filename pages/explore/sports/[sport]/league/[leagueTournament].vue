@@ -17,14 +17,21 @@ const leagueName = computed(() => {
 })
 
 useAppSeo({
-  title: computed(() => `${leagueName.value} Betting Odds & Match Lines | ByBet`),
-  description: computed(() => `Get the best betting odds on ${leagueName.value} ${sportName.value}. Bet on match winners, Asian handicaps, over/under totals, and championship futures on ByBet.`),
+  title: computed(() => `${leagueName.value} Betting Odds & Live Match Lines | ByBet`),
+  description: computed(() => `Bet on ${leagueName.value} ${sportName.value} at ByBet Philippines. Competitive odds, Asian handicaps, moneylines, over/under totals, and tournament futures.`),
   breadcrumbs: computed(() => [
     { name: 'Home', path: '/' },
     { name: 'Sports', path: '/explore/sports/popular' },
     { name: sportName.value, path: `/explore/sports/${route.params.sport}` },
     { name: leagueName.value, path: route.path },
   ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${leagueName.value} ${sportName.value} Betting - ByBet`,
+    url: `https://bybet.com${route.path}`,
+    description: `Bet on ${leagueName.value} ${sportName.value} at ByBet Philippines with top odds and live markets.`,
+  })),
 })
 
 definePageMeta({

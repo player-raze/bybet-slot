@@ -8,7 +8,7 @@ const sportName = computed(() => sport.value.charAt(0).toUpperCase() + sport.val
 
 useAppSeo({
   title: computed(() => `Live ${sportName.value} Betting — Real-Time In-Play Odds | ByBet`),
-  description: computed(() => `Follow and bet live on ${sportName.value} matches with real-time in-play odds, game stats, and fast settlement at ByBet Philippines.`),
+  description: computed(() => `Follow and bet live on ${sportName.value} games with real-time in-play odds, live momentum trackers, point spreads, and instant settlement at ByBet Philippines.`),
   breadcrumbs: computed(() => [
     { name: 'Home', path: '/' },
     { name: 'Sports', path: '/explore/sports/popular' },
@@ -20,6 +20,7 @@ useAppSeo({
     '@type': 'CollectionPage',
     name: `Live ${sportName.value} Betting - ByBet`,
     url: `https://bybet.com/explore/sports/live/${sport.value}`,
+    description: `Follow and bet live on ${sportName.value} games with real-time in-play odds at ByBet Philippines.`,
   })),
 })
 

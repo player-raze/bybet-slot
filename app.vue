@@ -6,7 +6,7 @@ const {
   effectiveTheme,
   themePreference,
 } = useSiteTheme()
-const { isLoading, loadingLabel } = useByBetLoader()
+const { isLoading, loadingLabel, checkAssetsAndDismiss } = useByBetLoader()
 
 useHead(() => ({
   htmlAttrs: {
@@ -26,6 +26,14 @@ onMounted(() => {
   restoreLocale()
   restoreTimeZone()
   applyTheme()
+  checkAssetsAndDismiss()
+})
+
+const nuxtApp = useNuxtApp()
+nuxtApp.hook('page:finish', () => {
+  nextTick(() => {
+    checkAssetsAndDismiss(100, 1500)
+  })
 })
 </script>
 
@@ -38,6 +46,7 @@ onMounted(() => {
     <ByBetSpinner
       v-if="isLoading"
       fullscreen
+      size="lg"
       :label="loadingLabel"
     />
   </Transition>
@@ -46,7 +55,7 @@ onMounted(() => {
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 200ms ease;
+  transition: opacity 250ms ease;
 }
 
 .fade-enter-from,

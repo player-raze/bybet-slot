@@ -141,7 +141,7 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
           class="transaction-step"
         >
           <div class="transaction-copy">
-            <component :is="index === 0 ? 'h1' : 'h2'">{{ step.title }}</component>
+            <component :is="index === 0 ? 'h2' : 'h2'">{{ step.title }}</component>
             <p>{{ step.description }}</p>
           </div>
           <TransactionTutorialVisual
@@ -195,6 +195,39 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
   color: #036242;
   font-weight: 700;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 64rem) {
+  .transaction-pill-group {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    gap: 8px;
+  }
+
+  .transaction-pill {
+    min-width: 118px;
+    height: 32px;
+    padding: 0 22px;
+    border-radius: 7px;
+    color: #f4f4f4;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    background: #6b6c6b;
+    box-shadow: none;
+  }
+
+  .transaction-pill:hover {
+    color: #ffffff;
+    background: #7a7b7a;
+  }
+
+  .transaction-pill--active,
+  .transaction-pill--active:hover {
+    color: #ffffff;
+    background: #007653;
+  }
 }
 
 .transaction-board {

@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
               Join ByBet today and experience a trusted platform that elevates your sports betting journey to the next level.
             </p>
 
-            <h4 class="font-bold text-white pt-2 text-[14px]">Cookies & User Experience</h4>
+            <span class="font-bold text-white pt-2 text-[14px]">Cookies & User Experience</span>
             <p>
               To enhance your experience and improve platform performance, ByBet uses cookies and similar technologies to collect information from our servers when you access or use the website. By registering with ByBet or continuing to use the platform, you consent to our use of cookies in accordance with our Cookie Policy.
             </p>

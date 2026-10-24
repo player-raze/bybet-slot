@@ -19,5 +19,6 @@ useAppSeo({
 </script>
 
 <template>
+  <h1 class="hidden">Mock Betting Page - Practice Sports Betting in Bybet </h1>
   <GameTutorialPage mode="mock-betting" />
 </template>

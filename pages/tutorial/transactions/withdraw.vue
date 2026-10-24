@@ -2,7 +2,7 @@
 import TransactionTutorialPage from '~/components/tutorial/TransactionTutorialPage.vue'
 
 useAppSeo({
-  title: 'How to Withdraw Winnings Step-by-Step Guide | ByBet',
+  title: 'How to Withdraw Winnings Step-by-Step Guide by ByBet Casino',
   description: 'Step-by-step withdrawal tutorial for ByBet Philippines. Learn how to request fast payouts directly to your GCash or bank account with ease.',
   breadcrumbs: [
     { name: 'Home', path: '/' },
@@ -19,5 +19,6 @@ useAppSeo({
 </script>
 
 <template>
+  <h1 class="hidden">How to Withdraw in Bybet </h1>
   <TransactionTutorialPage mode="withdraw" />
 </template>

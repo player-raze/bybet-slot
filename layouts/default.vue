@@ -36,13 +36,10 @@ const usesDesktopContentReferenceShell = computed(() => {
   return path === '/explore/egames/customer-service'
     || path === '/explore/bonuses'
     || path.startsWith('/explore/bonuses/')
-    || path === '/explore/live-plaza'
     || path.startsWith('/explore/live-plaza/')
     || path === '/explore/account/me'
     || path.startsWith('/explore/account/')
-    || path === '/tutorial/transactions'
     || path.startsWith('/tutorial/transactions/')
-    || path === '/game-rules'
     || path.startsWith('/game-rules/')
     || path === '/tutorial/mock-betting'
     || path === '/tutorial'
@@ -407,13 +404,14 @@ onBeforeUnmount(() => {
 @media (min-width: 64rem) {
   .site-shell--desktop-content-reference {
     --desktop-content-max-width: 1368px;
+    --desktop-content-offset: max(0px, calc((100% - var(--desktop-content-max-width)) / 2));
     --site-max-width: 100vw;
 
     max-width: 100%;
   }
 
   .site-shell--desktop-content-reference :deep(.sidebar) {
-    left: max(0px, calc((100% - var(--desktop-content-max-width)) / 2));
+    left: var(--desktop-content-offset);
   }
 
   .site-shell--desktop-content-reference .content-layout {
@@ -421,10 +419,7 @@ onBeforeUnmount(() => {
       calc(100% - var(--sidebar-width)),
       calc(var(--desktop-content-max-width) - var(--sidebar-width))
     );
-    margin-left: calc(
-      max(0px, calc((100% - var(--desktop-content-max-width)) / 2))
-      + var(--sidebar-width)
-    );
+    margin-left: calc(var(--desktop-content-offset) + var(--sidebar-width));
   }
 
   .site-shell--desktop-content-reference .app-header-occlusion-plate {
@@ -433,6 +428,11 @@ onBeforeUnmount(() => {
     width: auto;
     margin: 0;
     transform: none;
+  }
+
+  .site-shell--desktop-content-reference :deep(.join-bar) {
+    right: var(--desktop-content-offset);
+    left: calc(var(--desktop-content-offset) + var(--sidebar-width));
   }
 
   .site-shell--desktop-reference {
@@ -518,6 +518,11 @@ onBeforeUnmount(() => {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  .app-header-occlusion-plate{
+    margin:0;
   }
 }
 </style>

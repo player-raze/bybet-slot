@@ -108,35 +108,38 @@ onBeforeUnmount(restorePageScroll)
           @keydown="keepFocusInsideDialog"
         >
           <div class="responsible-gaming-content">
-            <header class="responsible-gaming-header">
-              <img
-                src="/brand/bybet-logo.webp"
-                alt="ByBet"
-                class="responsible-gaming-logo"
-              >
-              <span class="responsible-gaming-divider" aria-hidden="true" />
-              <h2 id="responsible-gaming-title">
-                By entering this website,<br>
-                I acknowledge and confirm:
-              </h2>
-            </header>
+            <div class="responsible-gaming-masthead">
+              <header class="responsible-gaming-header">
+                <img
+                  src="/brand/bybet-logo.webp"
+                  alt="ByBet"
+                  class="responsible-gaming-logo"
+                >
+                <span class="responsible-gaming-divider" aria-hidden="true" />
+                <h2 id="responsible-gaming-title">
+                  By entering this website,<br>
+                  I acknowledge and confirm:
+                </h2>
+              </header>
 
-            <p id="responsible-gaming-description" class="responsible-gaming-intro">
-              Read our
-              <NuxtLink to="/responsible-gaming" target="_blank">
-                Responsible Gaming
-              </NuxtLink>
-              guidelines
-            </p>
+              <p id="responsible-gaming-description" class="responsible-gaming-intro">
+                Read our
+                <NuxtLink class="text-[#4c9eea]" to="/responsible-gaming" target="_blank">
+                  Responsible Gaming
+                </NuxtLink>
+                guidelines
+              </p>
+            </div>
 
-            <div class="eligibility-panel">
+            <div class="responsible-gaming-body">
+              <div class="eligibility-panel">
               <label class="eligibility-row eligibility-row--interactive">
                 <input
                   ref="ageCheckbox"
                   v-model="ageConfirmed"
                   type="checkbox"
                 >
-                <span class="confirmation-check" aria-hidden="true">
+                <span class="confirmation-check confirmation-check--active" aria-hidden="true">
                   <Check :size="11" :stroke-width="3" />
                 </span>
                 <span>I am over 21 years of age</span>
@@ -153,7 +156,23 @@ onBeforeUnmount(restorePageScroll)
                   Philippine National Police.
                 </span>
               </div>
-            </div>
+              <div class="eligibility-row">
+                <span class="confirmation-check confirmation-check--active" aria-hidden="true">
+                  <Check :size="11" :stroke-width="3" />
+                </span>
+                <span>
+                  I am not a Gaming Employment License (GEL) holder.
+                </span>
+              </div>
+              <div class="eligibility-row">
+                <span class="confirmation-check confirmation-check--active" aria-hidden="true">
+                  <Check :size="11" :stroke-width="3" />
+                </span>
+                <span>
+                  I am not included in the PAGCOR's National Database of Restricted Persons(NDRP).
+                </span>
+              </div>
+              </div>
 
             <ul class="responsible-gaming-list">
               <li>
@@ -195,7 +214,7 @@ onBeforeUnmount(restorePageScroll)
 
             <label class="terms-confirmation">
               <input v-model="termsConfirmed" type="checkbox">
-              <span class="confirmation-check" aria-hidden="true">
+              <span class="confirmation-check confirmation-check--active" aria-hidden="true">
                 <Check :size="11" :stroke-width="3" />
               </span>
               <span>
@@ -234,9 +253,16 @@ onBeforeUnmount(restorePageScroll)
               <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
             </div>
 
-            <p class="responsible-gaming-warning">
-              Gambling doesn’t guarantee earnings or financial improvement. Stay within your limits.
-            </p>
+              <p class="responsible-gaming-warning">
+                Gambling doesn’t guarantee earnings or financial improvement. Stay within your limits.
+              </p>
+
+              <img
+                class="responsible-gaming-hotline"
+                src="/responsible-gaming/support-hotline.webp"
+                alt="Responsible gaming support hotline"
+              >
+            </div>
           </div>
         </section>
       </div>
@@ -258,14 +284,14 @@ onBeforeUnmount(restorePageScroll)
 }
 
 .responsible-gaming-gate {
-  width: min(380px, calc(100vw - 8px));
+  width: min(376px, calc(100vw - 8px));
   max-height: calc(100dvh - 8px);
   overflow-x: hidden;
   overflow-y: auto;
   color: #f7f7f7;
-  background: #111313;
-  border: 8px solid #087b59;
-  border-radius: 22px;
+  background: #036242;
+  border: 0;
+  border-radius: 20px;
   box-shadow: 0 24px 80px rgb(0 0 0 / 70%);
   scrollbar-color: #2b745f #303131;
   scrollbar-width: thin;
@@ -286,18 +312,29 @@ onBeforeUnmount(restorePageScroll)
 }
 
 .responsible-gaming-content {
-  padding: 12px 7px 10px;
+  padding: 0;
+}
+
+.responsible-gaming-masthead {
+  padding: 12px 11px 10px;
+}
+
+.responsible-gaming-body {
+  margin: 0 11px 11px;
+  padding: 6px 0 14px;
+  border-radius: 20px 20px 14px 14px;
+  background: #111313;
 }
 
 .responsible-gaming-header {
   display: grid;
-  grid-template-columns: 70px 2px 1fr;
+  grid-template-columns: 60px 2px minmax(0, 1fr);
   align-items: center;
   gap: 9px;
 }
 
 .responsible-gaming-logo {
-  width: 70px;
+  width: 60px;
   height: auto;
 }
 
@@ -315,7 +352,7 @@ onBeforeUnmount(restorePageScroll)
 }
 
 .responsible-gaming-intro {
-  margin: 12px 2px 11px;
+  margin: 12px 0 0;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
@@ -323,11 +360,13 @@ onBeforeUnmount(restorePageScroll)
 
 .responsible-gaming-intro a,
 .terms-confirmation a {
-  color: #1591a5;
+  color: #4c9eea;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-
+.terms-confirmation a {
+  color: #036242;
+}
 .eligibility-panel {
   max-height: 145px;
   margin: 0 32px;
@@ -442,13 +481,13 @@ input:focus-visible + .confirmation-check {
 
 .responsible-gaming-accept {
   display: block;
-  width: calc(100% - 58px);
+  width: min(280px, calc(100% - 30px));
   min-height: 53px;
   margin: 0 auto;
   border: 0;
   border-radius: 13px;
   color: #fff;
-  background: #087b59;
+  background: #036242;
   font-size: 17px;
   font-weight: 700;
   cursor: pointer;
@@ -456,7 +495,7 @@ input:focus-visible + .confirmation-check {
 }
 
 .responsible-gaming-accept:hover:not(:disabled) {
-  background: #0a8b65;
+  background: #152A22;
 }
 
 .responsible-gaming-accept:active:not(:disabled) {
@@ -534,6 +573,15 @@ input:focus-visible + .confirmation-check {
   text-transform: uppercase;
 }
 
+.responsible-gaming-hotline {
+  display: block;
+  width: 125px;
+  height: auto;
+  margin: 20px auto 0;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
 .responsible-gaming-fade-enter-active,
 .responsible-gaming-fade-leave-active {
   transition: opacity 160ms ease;
@@ -550,18 +598,18 @@ input:focus-visible + .confirmation-check {
   }
 
   .responsible-gaming-gate {
-    max-height: calc(100dvh - 24px);
+    max-height: calc(90dvh - 24px);
   }
 }
 
 @media (max-width: 360px) {
   .responsible-gaming-header {
-    grid-template-columns: 62px 2px 1fr;
+    grid-template-columns: 56px 2px minmax(0, 1fr);
     gap: 7px;
   }
 
   .responsible-gaming-logo {
-    width: 62px;
+    width: 56px;
   }
 
   .eligibility-panel {

@@ -18,13 +18,20 @@ const tournamentName = computed(() => {
 
 useAppSeo({
   title: computed(() => `${tournamentName.value} Odds & Lines — ${sportName.value} | ByBet`),
-  description: computed(() => `Bet on ${tournamentName.value} with competitive ${sportName.value} odds at ByBet. Pre-match lines, moneyline, point spreads, over/under totals, and live markets.`),
+  description: computed(() => `Bet on ${tournamentName.value} with competitive ${sportName.value} odds at ByBet Philippines. Pre-match lines, moneylines, spreads, over/under totals, and live markets.`),
   breadcrumbs: computed(() => [
     { name: 'Home', path: '/' },
     { name: 'Sports', path: '/explore/sports/popular' },
     { name: sportName.value, path: `/explore/sports/${route.params.sport}` },
     { name: tournamentName.value, path: route.path },
   ]),
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${tournamentName.value} ${sportName.value} Betting - ByBet`,
+    url: `https://bybet.com${route.path}`,
+    description: `Bet on ${tournamentName.value} ${sportName.value} at ByBet Philippines with competitive betting odds and live lines.`,
+  })),
 })
 
 definePageMeta({
