@@ -178,7 +178,14 @@ const handleContentClick = (event: MouseEvent): void => {
       custom-class="bonus-detail-header"
     >
       <template #actions>
-        <span class="philippines-badge" role="img" aria-label="Philippines">🇵🇭</span>
+        <span class="philippines-badge" role="img" aria-label="Philippines">
+          <img
+                src="/icons/PHP.webp"
+                alt="ByBet"
+                class="h-7 sm:h-5 w-auto object-contain"
+                loading="lazy"
+              />
+            </span>
       </template>
     </SeoHeader>
 
@@ -364,7 +371,6 @@ const handleContentClick = (event: MouseEvent): void => {
       </article>
     </main>
 
-    <PromotionComplianceFooter />
 
     <div v-if="bonus.hasJoinButton" class="join-bar">
       <button type="button" @click="handleJoinNow">Join Now</button>

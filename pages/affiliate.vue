@@ -340,7 +340,12 @@ onBeforeUnmount(() => {
 
       <section v-else-if="activeTab === 'commission'" class="affiliate-panel">
         <div class="affiliate-surface commission-panel">
-          <span class="commission-flag" aria-label="Philippines">🇵🇭</span>
+          <span class="commission-flag" aria-label="Philippines"><img
+                src="/icons/PHP.webp"
+                alt="ByBet"
+                class="h-7 sm:h-5 w-auto object-contain"
+                loading="lazy"
+              /></span>
           <h2>Earn up to 50% commission every month<br>Affiliate Partnership Program</h2>
           <p>Affiliates receive commissions based on a percentage of the monthly net revenue generated from sports betting, online casino, slot games, and other gaming products.</p>
 

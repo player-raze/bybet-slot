@@ -637,7 +637,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
                 <div class="flex items-center gap-2.5 shrink-0">
                   <span
                     v-if="league.inplay"
-                    class="bg-[#0f382c] text-[#00e701] text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                    class="bg-[#093E2C] text-white text-[12px] px-2 py-0.5 rounded-md whitespace-nowrap"
                   >
                     In-Play
                   </span>

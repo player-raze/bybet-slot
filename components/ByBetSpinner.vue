@@ -30,7 +30,7 @@ const isDarkTheme = computed(() => {
   return effectiveTheme.value !== 'light'
 })
 
-const greenColor = computed(() => (isDarkTheme.value ? '#1FA779' : '#036242'))
+const greenColor = computed(() => (isDarkTheme.value ? '#fff' : '#036242'))
 
 const dimension = computed(() => {
   if (typeof props.size === 'number') return props.size
@@ -111,7 +111,7 @@ const gradientId = useId ? useId() : `bybet-spin-${Math.random().toString(36).sl
       <!-- Static ByBet Logo in the center (does NOT rotate) -->
       <div class="bybet-spinner__center">
         <img
-          :src="isDarkTheme ? '/brand/bybet-loader-logo-dark.png' : '/brand/bybet-loader-logo.png'"
+          :src="isDarkTheme ? '/brand/bybet-logo.webp' : '/brand/bybet-loader-logo.png'"
           alt="ByBet"
           class="bybet-spinner__logo select-none pointer-events-none object-contain"
           :style="{
@@ -128,7 +128,7 @@ const gradientId = useId ? useId() : `bybet-spin-${Math.random().toString(36).sl
     <p
       v-if="label"
       class="bybet-spinner__label"
-      :class="isDarkTheme ? 'text-[#a2a6a4]' : 'text-[#4a4f4d]'"
+      :class="isDarkTheme ? 'text-[#a2a6a4]' : 'text-white'"
     >
       {{ label }}
     </p>

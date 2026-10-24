@@ -5,8 +5,8 @@ const SESSION_KEY = 'bybet-responsible-gaming-accepted-v1'
 
 const isReady = ref(false)
 const isOpen = ref(false)
-const ageConfirmed = ref(false)
-const termsConfirmed = ref(false)
+const ageConfirmed = ref(true)
+const termsConfirmed = ref(true)
 const ageCheckbox = ref<HTMLInputElement | null>(null)
 const dialog = ref<HTMLElement | null>(null)
 
@@ -139,7 +139,11 @@ onBeforeUnmount(restorePageScroll)
                   v-model="ageConfirmed"
                   type="checkbox"
                 >
-                <span class="confirmation-check confirmation-check--active" aria-hidden="true">
+                <span
+                  class="confirmation-check"
+                  :class="{ 'confirmation-check--active': ageConfirmed }"
+                  aria-hidden="true"
+                >
                   <Check :size="11" :stroke-width="3" />
                 </span>
                 <span>I am over 21 years of age</span>
@@ -214,7 +218,11 @@ onBeforeUnmount(restorePageScroll)
 
             <label class="terms-confirmation">
               <input v-model="termsConfirmed" type="checkbox">
-              <span class="confirmation-check confirmation-check--active" aria-hidden="true">
+              <span
+                class="confirmation-check"
+                :class="{ 'confirmation-check--active': termsConfirmed }"
+                aria-hidden="true"
+              >
                 <Check :size="11" :stroke-width="3" />
               </span>
               <span>

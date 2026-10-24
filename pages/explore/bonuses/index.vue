@@ -67,7 +67,12 @@ useAppSeo({
         custom-class="bonus-page-header"
       >
         <template #actions>
-          <span class="philippines-badge" role="img" aria-label="Philippines">🇵🇭</span>
+          <span class="philippines-badge" role="img" aria-label="Philippines"><img
+                src="/icons/PHP.webp"
+                alt="ByBet"
+                class="h-7 sm:h-5 w-auto object-contain"
+                loading="lazy"
+              /></span>
         </template>
       </SeoHeader>
 
@@ -171,7 +176,6 @@ useAppSeo({
       </section>
     </div>
 
-    <PromotionComplianceFooter />
   </div>
 </template>
 
@@ -190,6 +194,7 @@ useAppSeo({
   margin: 0 -0.05rem 0;
   padding: 0 0.05rem 0.28rem;
   background: #000000;
+  border-radius: 50px 50px 0  0 ;
 }
 
 :deep(.bonus-page-header) {
@@ -458,7 +463,7 @@ useAppSeo({
 
 .promotion-row__copy small {
   margin-top: 0.08rem;
-  color: #747876;
+  color: #959799;
   font-size: 0.45rem;
   line-height: 1.2;
 }
