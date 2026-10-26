@@ -35,7 +35,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
 <template>
   <header class="app-header-shell">
     <button
-      class="menu-button"
+      class="menu-button hidden sm:flex"
       type="button"
       :aria-expanded="drawerOpen"
       aria-controls="mobile-navigation"
@@ -50,7 +50,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
       <img
         src="/brand/bybet-logo.webp"
         alt="ByBet"
-        width="195"
+        width="210"
         height="64"
         fetchpriority="high"
         decoding="async"
@@ -194,7 +194,7 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
   align-items: center;
   justify-content: center;
   padding: 0 10px;
-  border: 1px solid rgba(255, 255, 255, 0.46);
+  box-shadow: inset 1px 1px #ffffff4d, inset -1px -1px #ffffff80, inset 2px 2px 4px #00000005, inset -4px -4px 8px #00000005, 0 0 4px #0000000a, 0 4px 8px #00000014;
   border-radius: var(--header-button-radius);
   color: #ffffff;
   font-size: 11px;
@@ -202,7 +202,6 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
   letter-spacing: 0.01em;
   line-height: 1;
   background: rgba(255, 255, 255, 0.2);
-  box-shadow: none;
   transition:
     border-color 160ms ease,
     filter 160ms ease,
@@ -268,11 +267,11 @@ const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
   }
 
   .menu-button {
-    display: grid;
+    display: none;
   }
 
   .header-actions > .header-glass-icon--utility,
-  .header-actions > .header-glass-button--login {
+  .header-actions > .header-glass-icon--profile {
     display: none;
   }
 }

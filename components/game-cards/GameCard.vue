@@ -11,6 +11,11 @@ interface Game {
   provider: string
   providerLogo?: string
   badge?: string
+  new?: boolean
+  jackpot?: boolean
+  Jackpot?: boolean
+  jackpotPrice?: number | string
+  JackpotPrice?: number | string
   buyBonus?: boolean
   rtpPercent?: string
   livePlayers?: number
@@ -133,8 +138,66 @@ const displayTags = computed(() => {
   return ['Entertainment', 'Auto Game', 'Free Spins', 'Buy Spins']
 })
 
+const PROVIDER_LOGO_BY_NAME: Record<string, string> = {
+  PP: '/images/providers/pp.webp',
+  'PRAGMATIC PLAY': '/images/providers/pp.webp',
+  PRAGMATIC: '/images/providers/pp.webp',
+  PG: '/images/providers/pg.webp',
+  'PG SOFT': '/images/providers/pg.webp',
+  JDB: '/images/providers/jdb.webp',
+  JPG: '/images/providers/jdb.webp',
+  JILI: '/images/providers/jili.webp',
+  CQ9: '/images/providers/cq9.webp',
+  'RED TIGER': '/images/providers/red-tiger.webp',
+  REDTIGER: '/images/providers/red-tiger.webp',
+  UNKNOWN: '/images/providers/red-tiger.webp',
+}
+
+const resolveProviderLogo = (providerName?: string, explicitLogo?: string): string => {
+  const key = (providerName || '').trim().toUpperCase()
+  if (key === 'UNKNOWN' || key === 'RED TIGER' || key === 'REDTIGER') {
+    return '/images/providers/red-tiger.webp'
+  }
+  if (explicitLogo) return explicitLogo
+  if (!providerName) return ''
+  return PROVIDER_LOGO_BY_NAME[key] || ''
+}
+
 const providerLogo = computed(() => {
-  return getProviderLogoForTheme(props.game.providerLogo, effectiveTheme.value)
+  const baseLogo = resolveProviderLogo(props.game.provider, props.game.providerLogo)
+  return getProviderLogoForTheme(baseLogo, effectiveTheme.value)
+})
+
+const isJackpotGame = computed(() => {
+  return Boolean(props.game.jackpot || props.game.Jackpot || props.game.badge === 'JACKPOT')
+})
+
+const isNewGame = computed(() => {
+  return Boolean(props.game.new || props.game.badge === 'NEW')
+})
+
+const tagLabel = computed(() => {
+  if (isJackpotGame.value) return 'JACKPOT'
+  if (isNewGame.value) return 'NEW'
+  if (props.game.promo) return 'PROMO'
+  return null
+})
+
+const tagBgClass = computed(() => {
+  if (tagLabel.value === 'JACKPOT') return 'bg-[#e8921c]'
+  return 'bg-[#036242]'
+})
+
+const displayJackpotPool = computed(() => {
+  if (props.game.jackpotPool) return props.game.jackpotPool
+  const price = props.game.JackpotPrice ?? props.game.jackpotPrice
+  if (typeof price === 'number') {
+    return `₱${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  }
+  if (typeof price === 'string' && price.trim()) {
+    return price.startsWith('₱') ? price : `₱${price}`
+  }
+  return ''
 })
 
 onUnmounted(() => {
@@ -161,24 +224,23 @@ onUnmounted(() => {
         decoding="async"
       />
 
-      <!-- Top Left: NEW/PROMO Badge -->
+      <!-- Top Left: JACKPOT/NEW/PROMO Badge -->
       <span
-        v-if="game.badge === 'NEW' || game.promo"
-        class="absolute top-0 left-0 rounded-br bg-[#036242] text-white font-black text-[10px] px-1 py-0.5 leading-none shadow tracking-wide text-semibold"
+        v-if="tagLabel"
+        class="absolute top-0 left-0 rounded-br text-white font-black text-[10px] px-1 py-0.5 leading-none shadow tracking-wide text-semibold"
+        :class="tagBgClass"
       >
-        {{ game.badge === 'NEW' ? 'NEW' : 'PROMO' }}
+        {{ tagLabel }}
       </span>
-
 
       <!-- Top Right: Dual-color RTP Badge -->
       <div
-        v-else-if="game.rtpPercent"
-        class="absolute top-1 right-0.5 flex items-center rounded overflow-hidden shadow-md leading-none border border-[#036242]/40 text-[12px]  font-black"
+        v-if="game.rtpPercent"
+        class="absolute top-1 right-0.5 flex items-center rounded overflow-hidden shadow-md leading-none border border-[#036242]/40 text-[12px] font-black"
       >
         <span class="bg-[#036242] text-white px-1.5 py-0.5">RTP</span>
         <span class="bg-white/90 text-black px-1.5 py-0.5 font-semibold">{{ game.rtpPercent }}</span>
       </div>
-
 
       <!-- Top Right: Live Player Count Badge -->
       <span
@@ -189,17 +251,17 @@ onUnmounted(() => {
         <span>{{ game.livePlayers }}</span>
       </span>
 
-      <!-- Bottom Left: Hot/Cold/Multiplier Badge -->
+      <!-- Bottom Left: Hot/Cold/Multiplier/Jackpot Badge -->
       <span
         v-if="game.hotPercent"
-        class="absolute bottom-1 left-0.5 flex items-center gap-0.5  text-[12px] font-bold leading-none"
+        class="absolute bottom-1 left-0.5 flex items-center gap-0.5 text-[12px] font-bold leading-none"
       >
-        <span ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="size-4"><path d="M8.51859 15.8363C10.9091 15.3212 14 13.4708 14 8.68638C14 4.3331 11.0383 1.43365 8.90859 0.101583C8.43524 -0.194615 7.88235 0.194556 7.88235 0.782838V2.28686C7.88235 3.4733 7.41894 5.63884 6.13118 6.53977C5.47353 6.9997 4.76235 6.31104 4.68282 5.47181L4.61706 4.78233C4.54059 3.98095 3.782 3.49469 3.18706 3.98342C2.11724 4.85967 1 6.39825 1 8.68556C1 14.5363 5.04453 16 7.06641 16C7.18469 16 7.30806 15.9959 7.43653 15.9877C6.43782 15.8963 4.82353 15.2299 4.82353 13.0742C4.82353 11.3875 5.96676 10.248 6.83547 9.69263C7.06947 9.54453 7.34247 9.73788 7.34247 10.03V10.5154C7.34247 10.8857 7.47629 11.4657 7.79365 11.8623C8.15306 12.3115 8.67994 11.8409 8.722 11.2501C8.73576 11.0642 8.91012 10.9457 9.06 11.0395C9.55018 11.348 10.1765 12.0063 10.1765 13.0742C10.1765 14.7593 9.31312 15.5343 8.51859 15.8363Z" fill="url(#ck5SdWt3QklFQXpnY1A5Tw==)"></path><defs><linearGradient x1="7.5" y1="0" x2="2.68733" y2="15.8152" gradientUnits="userSpaceOnUse" id="ck5SdWt3QklFQXpnY1A5Tw=="><stop stop-color="#FF8400"></stop><stop offset="0.799537" stop-color="#FFBB02"></stop></linearGradient></defs></svg></span>
+        <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="size-4"><path d="M8.51859 15.8363C10.9091 15.3212 14 13.4708 14 8.68638C14 4.3331 11.0383 1.43365 8.90859 0.101583C8.43524 -0.194615 7.88235 0.194556 7.88235 0.782838V2.28686C7.88235 3.4733 7.41894 5.63884 6.13118 6.53977C5.47353 6.9997 4.76235 6.31104 4.68282 5.47181L4.61706 4.78233C4.54059 3.98095 3.782 3.49469 3.18706 3.98342C2.11724 4.85967 1 6.39825 1 8.68556C1 14.5363 5.04453 16 7.06641 16C7.18469 16 7.30806 15.9959 7.43653 15.9877C6.43782 15.8963 4.82353 15.2299 4.82353 13.0742C4.82353 11.3875 5.96676 10.248 6.83547 9.69263C7.06947 9.54453 7.34247 9.73788 7.34247 10.03V10.5154C7.34247 10.8857 7.47629 11.4657 7.79365 11.8623C8.15306 12.3115 8.67994 11.8409 8.722 11.2501C8.73576 11.0642 8.91012 10.9457 9.06 11.0395C9.55018 11.348 10.1765 12.0063 10.1765 13.0742C10.1765 14.7593 9.31312 15.5343 8.51859 15.8363Z" fill="url(#ck5SdWt3QklFQXpnY1A5Tw==)"></path><defs><linearGradient x1="7.5" y1="0" x2="2.68733" y2="15.8152" gradientUnits="userSpaceOnUse" id="ck5SdWt3QklFQXpnY1A5Tw=="><stop stop-color="#FF8400"></stop><stop offset="0.799537" stop-color="#FFBB02"></stop></linearGradient></defs></svg></span>
         <span>{{ game.hotPercent }}</span>
       </span>
       <span
         v-else-if="game.coldPercent"
-        class="absolute bottom-1 left-0.5 flex items-center gap-0.5  text-[12px] font-bold  leading-none"
+        class="absolute bottom-1 left-0.5 flex items-center gap-0.5 text-[12px] font-bold leading-none"
       >
         <span>❄️</span>
         <span>{{ game.coldPercent }}</span>
@@ -211,10 +273,10 @@ onUnmounted(() => {
         {{ game.bottomMultiplier }}
       </span>
       <span
-        v-else-if="game.jackpotPool"
+        v-else-if="displayJackpotPool"
         class="absolute bottom-2 left-2 rounded-sm bg-black/70 backdrop-blur-xs px-1.5 py-0.5 text-[9.5px] font-bold text-[#ffd700] leading-none shadow"
       >
-        {{ game.jackpotPool }}
+        {{ displayJackpotPool }}
       </span>
 
       <!-- Bottom-Right Info Icon -->

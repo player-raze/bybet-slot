@@ -129,7 +129,7 @@ const handleMatchLoaded = (payload: { sportKey: string; earliestTime: number | n
 }
 
 const getGroupTournaments = (group: string): Sport[] => {
-  const sports = effectiveSports.value.filter(item => item.group === group)
+  const sports = effectiveSports.value.filter(item => (item.country === group || item.group === group))
 
   if (currentSort.value === 'time') {
     return [...sports].sort((a, b) => {
@@ -147,16 +147,16 @@ const getGroupTournaments = (group: string): Sport[] => {
 
 const sortedGroups = computed(() => {
   const baseGroups = props.groups && props.groups.length > 0
-    ? props.groups.filter(g => effectiveSports.value.some(s => s.group === g))
-    : Array.from(new Set(effectiveSports.value.map(s => s.group)))
+    ? props.groups.filter(g => effectiveSports.value.some(s => s.group === g || s.country === g))
+    : Array.from(new Set(effectiveSports.value.map(s => s.country || s.group)))
 
   if (currentSort.value !== 'time') {
     return baseGroups
   }
 
   return [...baseGroups].sort((groupA, groupB) => {
-    const sportsA = effectiveSports.value.filter(s => s.group === groupA)
-    const sportsB = effectiveSports.value.filter(s => s.group === groupB)
+    const sportsA = effectiveSports.value.filter(s => s.group === groupA || s.country === groupA)
+    const sportsB = effectiveSports.value.filter(s => s.group === groupB || s.country === groupB)
     const minA = Math.min(...sportsA.map(s => earliestTimes.value[s.key] ?? Number.MAX_SAFE_INTEGER))
     const minB = Math.min(...sportsB.map(s => earliestTimes.value[s.key] ?? Number.MAX_SAFE_INTEGER))
     return minA - minB

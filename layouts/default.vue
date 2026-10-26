@@ -5,6 +5,7 @@ import CommentPanel from '~/components/comments/CommentPanel.vue'
 
 const { context: commentContext, openSportsComments, openGameComments, closeComments } = useCommentPanel()
 const route = useRoute()
+const mobileViewport = ref(false)
 const normalizedPath = computed(() => route.path.replace(/\/+$/, '') || '/')
 const desktopShellKind = computed<'sports' | 'games' | null>(() => {
   const path = normalizedPath.value
@@ -183,12 +184,18 @@ const initializeSectionMotion = (): void => {
 }
 
 const handleResize = (): void => {
-  if (window.innerWidth < 1024 && commentContext.value) {
-    closeComments()
+  const nextMobile = window.innerWidth < 1024
+  if (nextMobile !== mobileViewport.value) {
+    mobileViewport.value = nextMobile
+    if (nextMobile) closeComments()
+    else if (desktopShellKind.value === 'sports') openSportsComments()
+    else if (desktopShellKind.value === 'games') openGameComments()
+    else closeComments()
   }
 }
 
 onMounted(() => {
+  mobileViewport.value = window.innerWidth < 1024
   window.addEventListener('keydown', handleEscape)
   window.addEventListener('resize', handleResize, { passive: true })
 
@@ -245,7 +252,7 @@ onBeforeUnmount(() => {
       </div>
 
       <CommentPanel
-        v-if="commentContext"
+        v-if="commentContext && !mobileViewport"
         :key="isSportsPage ? 'sports-sidebar' : isGameChatPage ? 'casino-sidebar' : 'game-dialog'"
         :docked="isDockedChatPage"
       />

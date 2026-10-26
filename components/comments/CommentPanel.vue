@@ -5,20 +5,73 @@ import SportsPreview from './SportsPreview.vue'
 import EmptyConversation from './EmptyConversation.vue'
 import GameConversation from './GameConversation.vue'
 
-const props = defineProps<{ docked?: boolean }>()
+const props = defineProps<{ docked?: boolean; embedded?: boolean }>()
 
 const { context, closeComments } = useCommentPanel()
 const dialog = ref<HTMLElement | null>(null)
 const scrollContainer = ref<HTMLElement | null>(null)
 const isScrolledUp = ref(false)
 const isMobile = ref(false)
+const chatHeaderState = ref<'visible' | 'lowered' | 'hidden'>('visible')
 const route = useRoute()
 let previousOverflow = ''
+let previousPageScrollY = 0
+let headerScrollFrameId: number | null = null
+let footerIsVisible = false
+let footerObserver: IntersectionObserver | null = null
+
+const HEADER_SCROLL_THRESHOLD = 8
+const PAGE_TOP_THRESHOLD = 16
 
 const updateIsMobile = (): void => {
   if (import.meta.client) {
     isMobile.value = window.innerWidth < 1024
   }
+}
+
+const updateChatHeaderFromPageScroll = (): void => {
+  const currentScrollY = Math.max(window.scrollY, 0)
+  const scrollDelta = currentScrollY - previousPageScrollY
+
+  if (!footerIsVisible) {
+    if (currentScrollY <= PAGE_TOP_THRESHOLD || scrollDelta <= -HEADER_SCROLL_THRESHOLD) {
+      chatHeaderState.value = 'visible'
+    } else if (scrollDelta >= HEADER_SCROLL_THRESHOLD) {
+      chatHeaderState.value = 'lowered'
+    }
+  }
+
+  if (Math.abs(scrollDelta) >= HEADER_SCROLL_THRESHOLD || currentScrollY <= PAGE_TOP_THRESHOLD) {
+    previousPageScrollY = currentScrollY
+  }
+
+  headerScrollFrameId = null
+}
+
+const handlePageScroll = (): void => {
+  if (headerScrollFrameId === null) {
+    headerScrollFrameId = window.requestAnimationFrame(updateChatHeaderFromPageScroll)
+  }
+}
+
+const initializeChatHeaderMotion = (): void => {
+  previousPageScrollY = Math.max(window.scrollY, 0)
+  window.addEventListener('scroll', handlePageScroll, { passive: true })
+
+  const footer = document.getElementById('support')
+  if (!footer) return
+
+  footerObserver = new IntersectionObserver((entries) => {
+    footerIsVisible = entries.some(entry => entry.isIntersecting)
+
+    if (footerIsVisible) {
+      chatHeaderState.value = 'hidden'
+    } else if (chatHeaderState.value === 'hidden') {
+      chatHeaderState.value = 'visible'
+    }
+  }, { threshold: 0.05 })
+
+  footerObserver.observe(footer)
 }
 
 const handleScroll = (): void => {
@@ -37,7 +90,7 @@ const scrollToLatest = (behavior: ScrollBehavior = 'smooth'): void => {
 }
 
 const handleBackdropClick = (event: MouseEvent): void => {
-  if (!props.docked && event.target === dialog.value) {
+  if (!props.docked && !props.embedded && event.target === dialog.value) {
     closeComments()
   }
 }
@@ -46,7 +99,11 @@ onMounted(() => {
   updateIsMobile()
   window.addEventListener('resize', updateIsMobile, { passive: true })
 
-  if (!props.docked) {
+  if (props.docked) {
+    initializeChatHeaderMotion()
+  }
+
+  if (!props.docked && !props.embedded) {
     previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     if (dialog.value instanceof HTMLDialogElement) dialog.value.showModal()
@@ -60,7 +117,14 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateIsMobile)
-  if (props.docked) return
+  window.removeEventListener('scroll', handlePageScroll)
+  footerObserver?.disconnect()
+
+  if (headerScrollFrameId !== null) {
+    window.cancelAnimationFrame(headerScrollFrameId)
+  }
+
+  if (props.docked || props.embedded) return
 
   if (dialog.value instanceof HTMLDialogElement) dialog.value.close()
   document.body.style.overflow = previousOverflow
@@ -78,24 +142,36 @@ watch(() => context.value, () => {
 </script>
 
 <template>
-  <Teleport to="body" :disabled="docked">
+  <Teleport to="body" :disabled="docked || embedded">
     <component
-      :is="docked ? 'aside' : 'dialog'"
+      :is="docked || embedded ? 'aside' : 'dialog'"
       id="comment-panel"
       ref="dialog"
       class="comment-panel"
-      :class="{ 'comment-panel--docked': docked }"
-      aria-labelledby="comment-panel-title"
+      :class="{
+        'comment-panel--docked': docked,
+        'comment-panel--embedded': embedded,
+        'mobile-modal-slide-up': !docked && !embedded,
+      }"
+      :aria-labelledby="embedded ? 'mobile-chat-title' : 'comment-panel-title'"
       @cancel.prevent="!docked && closeComments()"
       @click="handleBackdropClick"
     >
       <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 pb-2 pr-2 text-white">
-        <header v-if="context.kind !== 'sports' || isMobile" class="flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2">
-          <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
-          <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
-            <X :size="10" aria-hidden="true" />
-          </button>
-        </header>
+        <template v-if="!embedded && (context.kind !== 'sports' || isMobile)">
+          <Transition name="chat-header">
+            <header
+              v-show="chatHeaderState !== 'hidden'"
+              class="chat-room-header flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2"
+              :class="{ 'chat-room-header--lowered': chatHeaderState === 'lowered' }"
+            >
+              <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
+              <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
+                <X :size="10" aria-hidden="true" />
+              </button>
+            </header>
+          </Transition>
+        </template>
         <div class="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
           <SportsPreview v-if="context.kind === 'sports'" class="shrink-0" />
          
@@ -164,6 +240,14 @@ watch(() => context.value, () => {
   max-height: calc(100dvh - var(--content-sticky-top, var(--header-height)));
 }
 
+.comment-panel--embedded {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border: 0;
+  background: transparent;
+}
+
 @media (max-width: 63.99rem) {
   .comment-panel--docked {
     position: relative;
@@ -211,6 +295,33 @@ watch(() => context.value, () => {
   background: transparent;
 }
 
+.chat-room-header {
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease;
+  will-change: transform, opacity;
+}
+
+.chat-room-header--lowered {
+  transform: translateY(6px);
+  opacity: 0.88;
+}
+
+.chat-header-enter-active,
+.chat-header-leave-active {
+  transition:
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 160ms ease;
+}
+
+.chat-header-enter-from,
+.chat-header-leave-to {
+  transform: translateY(calc(100% + 8px));
+  opacity: 0;
+}
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: opacity 200ms ease, transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -226,5 +337,17 @@ watch(() => context.value, () => {
 .fade-slide-leave-from {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-room-header,
+  .chat-header-enter-active,
+  .chat-header-leave-active {
+    transition: none;
+  }
+
+  .chat-room-header--lowered {
+    transform: none;
+  }
 }
 </style>

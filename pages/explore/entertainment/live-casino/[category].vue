@@ -2,6 +2,7 @@
 import { MessageCircle, Play } from 'lucide-vue-next'
 import { User } from 'lucide-vue-next'
 import ReminderModal from '~/components/modals/ReminderModal.vue'
+import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
 import {
   LIVE_CASINO_CATEGORIES,
   LIVE_CASINO_TABLES,
@@ -43,6 +44,13 @@ const { showDemoMessage } = useDemoInteraction()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
 
 const isReminderOpen = ref(false)
+const isMaintenanceOpen = ref(false)
+
+onMounted(() => {
+  if (activeCategory.value === 'poker') {
+    isMaintenanceOpen.value = true
+  }
+})
 
 const toggleChat = (): void => {
   if (commentContext.value) {
@@ -53,11 +61,19 @@ const toggleChat = (): void => {
 }
 
 const selectCategory = (key: string): void => {
+  if (key === 'poker') {
+    isMaintenanceOpen.value = true
+    return
+  }
   router.push(`/explore/entertainment/live-casino/${key}`)
 }
 
 const handleTableClick = (event: MouseEvent): void => {
   event.preventDefault()
+  if (activeCategory.value === 'poker') {
+    isMaintenanceOpen.value = true
+    return
+  }
   isReminderOpen.value = true
 }
 
@@ -175,7 +191,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
         </div>
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none  pl-2"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[56px] py-1 px-2.5 rounded-xl transition-all cursor-pointer select-none hidden sm:flex pl-2"
           :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
           @click="toggleChat"
         >
@@ -212,7 +228,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
     </div>
 
     <!-- Live Casino Tables Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-7 gap-2.5">
       
       <!-- Table Cards -->
       <div 
@@ -232,11 +248,11 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
               @error="($event.target as HTMLImageElement).src = '/images/casino/card1.webp'"
             />
             <div class="absolute top-0.5 inset-x-0.5 flex items-start justify-between gap-0.5 pointer-events-none">
-              <div class="p-0.5 rounded backdrop-blur-lg text-[11px] font-medium bg-black/10 leading-tight break-words min-w-0">
+              <div class="p-0.5 rounded backdrop-blur-lg text-[13px] sm:text-[11px] font-medium bg-black/10 leading-tight break-words min-w-0">
                 {{ table.title }}
               </div>
-              <div class="p-0.5 rounded-full bg-black/10 backdrop-blur-lg text-[10px] flex items-center gap-0 shrink-0">
-                <User class="h-1.5 w-1.5" />
+              <div class="p-0.5 rounded-full bg-black/10 backdrop-blur-lg text-[13px] sm:text-[10px] flex items-center gap-0 shrink-0">
+                <User class="h-3 w-3 sm:h-1.5 sm:w-1.5" />
                 {{ table.players }}
               </div>
             </div>
@@ -289,7 +305,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
                 <div
                   v-for="(res, i) in table.wins"
                   :key="i"
-                  class="w-2.5 h-2.5 flex items-center justify-center rounded-sm text-[9px] font-bold "
+                  class="w-6 h-6 sm:w-2.5 sm:h-2.5 flex items-center justify-center rounded-sm text-[15px] sm:text-[9px] font-bold "
                   :class="[getRouletteColor(res[1]), i === 0 ? 'border-white border-2' : '']"
                 >
                   {{ res[1] }}
@@ -322,7 +338,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
                 <div
                   v-for="(round, rIdx) in getSicBoRounds(table.wins)"
                   :key="rIdx"
-                  class="bg-[#FEDC7D] rounded-full  text-center text-[11px]  text-orange-950"
+                  class="bg-[#FEDC7D] rounded-full  text-center text-[15px] sm:text-[10px]  text-orange-950"
                 >
                   {{ round.total }}
                 </div>
@@ -332,7 +348,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
                   <div
                     v-for="(round, rIdx) in getSicBoRounds(table.wins)"
                     :key="rIdx"
-                    class=" rounded-full text-center text-[10px] text-white flex items-center justify-center"
+                    class=" rounded-full text-center text-[15px] sm:text-[10px] text-white flex items-center justify-center"
                     :class="round.bigSmall === 'B' ? 'bg-[#4C9EEA]' : 'bg-[#E7021A]'"
                   >
                     {{ round.bigSmall }}
@@ -342,7 +358,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
                   <div
                     v-for="(round, rIdx) in getSicBoRounds(table.wins)"
                     :key="rIdx"
-                    class=" rounded-full text-center text-[10px] text-white flex items-center justify-center"
+                    class=" rounded-full text-center text-[15px] sm:text-[10px] text-white flex items-center justify-center"
                     :class="round.oddEven === 'E' ? 'bg-[#4C9EEA]' : 'bg-[#E7021A]'"
                   >
                     {{ round.oddEven }}
@@ -357,7 +373,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
                 <div 
                   v-for="(val, i) in table.wins" 
                   :key="i" 
-                  class="flex-1 h-3 flex items-center justify-center rounded-full text-[11px] font-bold "
+                  class="flex-1 h-6 sm:h-3 flex items-center justify-center rounded-full text-[15px] sm:text-[11px] font-bold "
                   :class="i === 0 ? 'bg-red-600 text-white' : ''"
                 >
                   {{ val }}
@@ -371,10 +387,10 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
                 <div 
                   v-for="(active, i) in table.wins" 
                   :key="i" 
-                  class="w-2 h-2  flex items-center justify-center transition-colors text-white/30"
+                  class="w-7 h-7 sm:w-2 sm:h-2  flex items-center justify-center transition-colors text-white/30"
                 >
-                  <svg v-if="active" class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
-                  <svg v-else class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" /><line x1="4" y1="16" x2="16" y2="4" stroke="currentColor" stroke-width="5" /></svg>
+                  <svg v-if="active" class="w-5 h-5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+                  <svg v-else class="w-5 h-5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" /><line x1="4" y1="16" x2="16" y2="4" stroke="currentColor" stroke-width="5" /></svg>
                 </div>
               </div>
             </div>
@@ -391,6 +407,12 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
       message="Please login first"
       @close="isReminderOpen = false"
       @ok="handleOkClick"
+    />
+
+    <!-- Maintenance / Currency Prompt Modal -->
+    <UnderMaintenance
+      v-if="isMaintenanceOpen"
+      @close="isMaintenanceOpen = false"
     />
   </div>
 </template>

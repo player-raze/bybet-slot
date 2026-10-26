@@ -8,7 +8,7 @@ export const useCommentPanel = () => {
   const openSportsComments = (match: SportsEvent | null = null): void => {
     context.value = { kind: 'sports', match }
 
-    if (match && import.meta.client && window.innerWidth < 1280) {
+    if (match && import.meta.client && window.innerWidth >= 1024 && window.innerWidth < 1280) {
       void nextTick(() => {
         document.getElementById('comment-panel')?.scrollIntoView({ block: 'start', behavior: 'smooth' })
       })

@@ -26,13 +26,17 @@ import {
   SLOT_CATEGORIES,
   SLOT_CATEGORY_SVGS,
   SLOT_PROVIDERS,
-  SLOT_SECTIONS,
+  SLOTS,
+  isGameInSlotCategory,
+  normalizeSlotProvider,
   type SlotCategory,
   type SlotGame,
-  type SlotSection,
 } from '~/data/slots'
 import GameCard from '~/components/game-cards/GameCard.vue'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
+
+const { effectiveTheme } = useSiteTheme()
 
 const categoryIcons: Record<string, Component> = {
   House,
@@ -233,73 +237,195 @@ const handleDocumentClick = (event: MouseEvent): void => {
 onMounted(() => {
   if (import.meta.client) {
     document.addEventListener('click', handleDocumentClick)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    loadMoreObserver = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        loadMoreGames()
+      }
+    }, {
+      rootMargin: '0px 0px 400px 0px',
+    })
+
+    syncLoadMoreObserver()
   }
 })
 
 onBeforeUnmount(() => {
   if (import.meta.client) {
     document.removeEventListener('click', handleDocumentClick)
+    window.removeEventListener('scroll', handleScroll)
+    loadMoreObserver?.disconnect()
+    loadMoreObserver = null
   }
 })
+
+const INITIAL_SLOT_COUNT = 100
+const SLOT_BATCH_SIZE = 20
+
+const displayedCategoryCount = ref(INITIAL_SLOT_COUNT)
+const displayedSearchCount = ref(INITIAL_SLOT_COUNT)
+const loadMoreTrigger = ref<HTMLElement | null>(null)
+let loadMoreObserver: IntersectionObserver | null = null
 
 watch([searchQuery, activeProviders, activeCategory], () => {
   activeGameId.value = null
 })
 
-const searchResults = computed<SlotGame[]>(() => {
+watch([activeCategory, activeProviders, filterState], () => {
+  displayedCategoryCount.value = INITIAL_SLOT_COUNT
+})
+
+watch([searchQuery, activeProviders], () => {
+  displayedSearchCount.value = INITIAL_SLOT_COUNT
+})
+
+const allSearchResults = computed<SlotGame[]>(() => {
   const query = searchQuery.value.trim().toLowerCase()
   if (!query) return []
+  const providers = activeProviders.value.map(p => normalizeSlotProvider(p))
 
   const seen = new Set<string>()
   const results: SlotGame[] = []
 
-  for (const section of SLOT_SECTIONS) {
-    for (const game of section.games) {
-      const match =
-        game.title.toLowerCase().includes(query) ||
-        game.provider.toLowerCase().includes(query)
-      if (match) {
-        const key = `${game.title.toLowerCase()}__${game.provider.toLowerCase()}`
-        if (!seen.has(key)) {
-          seen.add(key)
-          results.push(game)
-        }
-      }
+  for (const game of SLOTS) {
+    if (seen.has(game.id)) continue
+
+    const gameProv = normalizeSlotProvider(game.provider)
+    if (!providers.includes('all') && !providers.includes(gameProv)) {
+      continue
+    }
+
+    const matchesProviderName =
+      game.provider.toLowerCase().includes(query) ||
+      (gameProv === 'pp' && ('pragmatic play'.includes(query) || 'pragmatic'.includes(query))) ||
+      (gameProv === 'pg' && ('pg soft'.includes(query) || 'pg'.includes(query)))
+
+    if (
+      game.title.toLowerCase().includes(query) ||
+      matchesProviderName
+    ) {
+      seen.add(game.id)
+      results.push(game)
     }
   }
 
   return results
 })
 
+const displayedSearchResults = computed<SlotGame[]>(() => {
+  return allSearchResults.value.slice(0, displayedSearchCount.value)
+})
+
+const hasMoreSearchResults = computed(() => {
+  return displayedSearchCount.value < allSearchResults.value.length
+})
+
 const isShowingResults = computed(() => {
   return isSearchOpen.value && isSearchSubmitted.value && searchQuery.value.trim().length > 0
 })
 
-const displayedGames = computed<SlotGame[]>(() => {
-  const providers = activeProviders.value.map(p => p.toLowerCase())
-  let games: SlotGame[] = []
+const allCategoryGames = computed<SlotGame[]>(() => {
+  const providers = activeProviders.value.map(p => normalizeSlotProvider(p))
+  const seen = new Set<string>()
+  const games: SlotGame[] = []
 
-  if (activeCategory.value === 'home') {
-    // Collect unique games from all sections
-    const seen = new Set<string>()
-    for (const s of SLOT_SECTIONS) {
-      for (const g of s.games) {
-        if (!seen.has(g.id)) {
-          seen.add(g.id)
-          games.push(g)
-        }
+  for (const game of SLOTS) {
+    if (seen.has(game.id)) continue
+
+    if (!isGameInSlotCategory(game, activeCategory.value)) {
+      continue
+    }
+
+    const gameProv = normalizeSlotProvider(game.provider)
+    if (!providers.includes('all') && !providers.includes(gameProv)) {
+      continue
+    }
+
+    if (filterState.value.theme !== 'All' && game.theme !== filterState.value.theme) {
+      continue
+    }
+    if (filterState.value.feature !== 'All' && (!game.features || !game.features.includes(filterState.value.feature))) {
+      continue
+    }
+    if (filterState.value.winningLine !== 'All') {
+      if (filterState.value.winningLine === '≤10 lines') {
+        const num = Number.parseInt(game.winningLine || '0', 10)
+        if (Number.isNaN(num) || num > 10) continue
+      } else if (filterState.value.winningLine === '11–99 lines') {
+        const num = Number.parseInt(game.winningLine || '0', 10)
+        if (Number.isNaN(num) || num < 11 || num > 99) continue
+      } else if (filterState.value.winningLine === '≥100 lines') {
+        const line = game.winningLine || ''
+        const isWays = line.toLowerCase().includes('way') || line.toLowerCase().includes('megaways')
+        const num = Number.parseInt(line, 10)
+        if (!isWays && (Number.isNaN(num) || num < 100)) continue
       }
     }
-  } else {
-    const sec = SLOT_SECTIONS.find(s => s.id === sectionId.value)
-    games = sec ? [...sec.games] : []
-  }
 
-  if (!providers.includes('all')) {
-    games = games.filter(g => providers.includes(g.provider.toLowerCase()))
+    seen.add(game.id)
+    games.push(game)
   }
 
   return games
+})
+
+const displayedGames = computed<SlotGame[]>(() => {
+  return allCategoryGames.value.slice(0, displayedCategoryCount.value)
+})
+
+const hasMoreCategoryGames = computed(() => {
+  return displayedCategoryCount.value < allCategoryGames.value.length
+})
+
+const hasMoreGames = computed(() => {
+  return isSearchSubmitted.value ? hasMoreSearchResults.value : hasMoreCategoryGames.value
+})
+
+const loadMoreGames = (): void => {
+  if (isSearchSubmitted.value) {
+    if (displayedSearchCount.value < allSearchResults.value.length) {
+      displayedSearchCount.value = Math.min(
+        displayedSearchCount.value + SLOT_BATCH_SIZE,
+        allSearchResults.value.length,
+      )
+      nextTick(() => {
+        syncLoadMoreObserver()
+      })
+    }
+  } else {
+    if (displayedCategoryCount.value < allCategoryGames.value.length) {
+      displayedCategoryCount.value = Math.min(
+        displayedCategoryCount.value + SLOT_BATCH_SIZE,
+        allCategoryGames.value.length,
+      )
+      nextTick(() => {
+        syncLoadMoreObserver()
+      })
+    }
+  }
+}
+
+const syncLoadMoreObserver = (): void => {
+  loadMoreObserver?.disconnect()
+
+  if (import.meta.client && loadMoreTrigger.value && hasMoreGames.value) {
+    loadMoreObserver?.observe(loadMoreTrigger.value)
+  }
+}
+
+const handleScroll = (): void => {
+  if (!hasMoreGames.value || !loadMoreTrigger.value) return
+  const rect = loadMoreTrigger.value.getBoundingClientRect()
+  if (rect.top <= window.innerHeight + 400) {
+    loadMoreGames()
+  }
+}
+
+watch([loadMoreTrigger, hasMoreGames], () => {
+  nextTick(() => {
+    syncLoadMoreObserver()
+  })
 })
 </script>
 
@@ -334,7 +460,7 @@ const displayedGames = computed<SlotGame[]>(() => {
 
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md transition-all cursor-pointer select-none shrink-0"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md hidden sm:flex transition-all cursor-pointer select-none shrink-0"
           :class="commentContext ? 'text-[#959799]' : 'text-[#959799]'"
           aria-label="Toggle chat room"
           @click="toggleChat"
@@ -363,11 +489,12 @@ const displayedGames = computed<SlotGame[]>(() => {
             v-for="prov in SLOT_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0"
+            class="provider-pill px-3.5 py-1 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0 flex items-center justify-center min-h-[30px]"
             :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
+            :aria-label="prov.label"
             @click="toggleProvider(prov.key)"
           >
-            {{ prov.label }}
+            <span >{{ prov.label }}</span>
           </button>
         </div>
 
@@ -477,11 +604,11 @@ const displayedGames = computed<SlotGame[]>(() => {
     <!-- Search Results View (Image 2) -->
     <div v-else-if="isSearchSubmitted" class="search-results-view mb-12">
       <div
-        v-if="searchResults.length > 0"
+        v-if="displayedSearchResults.length > 0"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5"
       >
         <GameCard
-          v-for="game in searchResults"
+          v-for="game in displayedSearchResults"
           :key="game.id"
           :game="game"
           :activeId="activeGameId"
@@ -508,6 +635,13 @@ const displayedGames = computed<SlotGame[]>(() => {
           Reset Search
         </button>
       </div>
+
+      <div
+        v-if="hasMoreSearchResults"
+        ref="loadMoreTrigger"
+        class="h-6 w-full pointer-events-none opacity-0"
+        aria-hidden="true"
+      />
     </div>
 
     <!-- Active Category Games Grid -->
@@ -530,6 +664,13 @@ const displayedGames = computed<SlotGame[]>(() => {
       <div v-else class="text-center py-12 text-sm text-[#8e9491]">
         No games available for this selection.
       </div>
+
+      <div
+        v-if="hasMoreCategoryGames"
+        ref="loadMoreTrigger"
+        class="h-6 w-full pointer-events-none opacity-0"
+        aria-hidden="true"
+      />
     </div>
 
     <SlotFilterModal
