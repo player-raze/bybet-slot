@@ -39,10 +39,16 @@ const KNOWN_COUNTRY_KEYS: Record<string, string> = {
   china: 'China',
   philippines: 'Philippines',
   pba: 'Philippines',
-  efl: 'England'
+  efl: 'England',
+  chile: 'Chile',
+  finland: 'Finland',
+  ireland: 'Ireland',
+  russia: 'Russia',
+  bolivia: 'Bolivia',
 }
 
-export function getCountryForSport(sport: Pick<Sport, 'key'> & Partial<Pick<Sport, 'title' | 'description'>>): string {
+export function getCountryForSport(sport: Pick<Sport, 'key'> & Partial<Pick<Sport, 'title' | 'description' | 'country'>>): string {
+  if (sport.country) return sport.country
   const key = (sport.key || '').toLowerCase()
   const text = `${sport.key ?? ''} ${sport.title ?? ''} ${sport.description ?? ''}`.toLowerCase()
 

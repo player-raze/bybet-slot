@@ -244,12 +244,16 @@ const handleDemo = (game: any): void => {
 }
 
 const filteredSections = computed<JackpotSection[]>(() => {
-  if (activeProvider.value === 'all') {
-    return [...JACKPOT_SECTIONS].sort((left, right) => (
-      JACKPOT_SECTION_ORDER.indexOf(left.id) - JACKPOT_SECTION_ORDER.indexOf(right.id)
-    ))
-  }
-  return JACKPOT_SECTIONS.filter((s) => s.id.toLowerCase() === activeProvider.value)
+  const sections = activeProvider.value === 'all'
+    ? [...JACKPOT_SECTIONS].sort((left, right) => (
+        JACKPOT_SECTION_ORDER.indexOf(left.id) - JACKPOT_SECTION_ORDER.indexOf(right.id)
+      ))
+    : JACKPOT_SECTIONS.filter((s) => s.id.toLowerCase() === activeProvider.value)
+
+  return sections.map((s) => ({
+    ...s,
+    count: s.games.length,
+  }))
 })
 </script>
 
@@ -264,7 +268,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
             v-for="tab in JACKPOT_NAV_TABS"
             :key="tab.key"
             type="button"
-            class="nav-tab flex h-6 min-w-[48px] shrink-0 cursor-pointer select-none items-center justify-center rounded-md px-2 transition-all"
+            class="nav-tab flex h-6 min-w-[48px] shrink-0 cursor-pointer select-none items-center justify-center rounded-md px-2 transition-all py-2"
             :class="activeProvider === tab.key.toLowerCase() ? 'bg-[#036242] shadow-md' : 'hover:bg-white/5'"
             :aria-label="tab.label"
             :aria-current="activeProvider === tab.key.toLowerCase() ? 'page' : undefined"
@@ -275,7 +279,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
               :alt="tab.label"
               class="object-contain transition-opacity"
               :class="[
-                tab.isAll ? 'h-5 w-5' : 'h-4 max-w-[42px]',
+                tab.isAll ? 'h-9 sm:h-5 w-6 sm:w-5' : 'h-9 sm:h-4 max-w-[50px] sm:max-w-[42px]',
                 activeProvider === tab.key.toLowerCase() ? '' : 'opacity-80',
                 effectiveTheme === 'dark'
                   ? activeProvider === tab.key.toLowerCase() ? 'brightness-150 contrast-150' : 'brightness-125'
@@ -288,8 +292,8 @@ const filteredSections = computed<JackpotSection[]>(() => {
         <!-- Right Chat Toggle -->
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex min-w-[56px] shrink-0 cursor-pointer select-none flex-col items-center justify-center rounded-xl px-2.5 py-1 transition-all"
-          :class="commentContext ? 'text-[#7a807d] font-semibold' : 'text-[#7a807d] '"
+          class="nav-tab nav-tab--chat flex min-w-[56px] shrink-0 cursor-pointer select-none flex-col items-center justify-center rounded-xl px-2.5 py-1 transition-all hidden sm:flex"
+          :class="commentContext ? 'text-[#7a807d] font-semibold ' : 'text-[#7a807d] '"
           aria-label="Toggle chat room"
           @click="toggleChat"
         >
@@ -407,8 +411,11 @@ const filteredSections = computed<JackpotSection[]>(() => {
       </div>
     </section>
 
-    <!-- Winners List Card -->
-    <div class="winners-card rounded-md bg-[#171817] shadow-sm mb-8">
+    <!-- Winners List Card (Shown only on JDB jackpot page) -->
+    <div
+      v-if="activeProvider === 'jdb'"
+      class="winners-card rounded-md bg-[#171817] shadow-sm mb-8"
+    >
       <div class="flex items-center justify-between pt-2 px-4">
         <h3 class="font-bold text-white text-[16px]">Winners List</h3>
         

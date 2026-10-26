@@ -7,6 +7,7 @@ export interface Sport {
   description: string
   active: boolean
   has_outrights: boolean
+  country?: string
   logo?: string
 }
 export interface SportsEvent {

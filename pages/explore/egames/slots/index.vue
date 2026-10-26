@@ -26,13 +26,17 @@ import {
   SLOT_CATEGORIES,
   SLOT_CATEGORY_SVGS,
   SLOT_PROVIDERS,
-  SLOT_SECTIONS,
+  SLOTS,
+  isGameInSlotCategory,
+  normalizeSlotProvider,
   type SlotCategory,
   type SlotGame,
-  type SlotSection,
 } from '~/data/slots'
 import GameCard from '~/components/game-cards/GameCard.vue'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
+import { getProviderLogoForTheme } from '~/utils/providerLogo'
+
+const { effectiveTheme } = useSiteTheme()
 
 useAppSeo({
   title: 'Online Slots — Real Money Slots & Jackpots | ByBet',
@@ -219,61 +223,187 @@ const handleDocumentClick = (event: MouseEvent): void => {
 onMounted(() => {
   if (import.meta.client) {
     document.addEventListener('click', handleDocumentClick)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    loadMoreObserver = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        loadMoreSearchResults()
+      }
+    }, {
+      rootMargin: '0px 0px 400px 0px',
+    })
+
+    syncLoadMoreObserver()
   }
 })
 
 onBeforeUnmount(() => {
   if (import.meta.client) {
     document.removeEventListener('click', handleDocumentClick)
+    window.removeEventListener('scroll', handleScroll)
+    loadMoreObserver?.disconnect()
+    loadMoreObserver = null
   }
 })
 
+const INITIAL_SLOT_COUNT = 100
+const SLOT_BATCH_SIZE = 20
+
+const displayedSearchCount = ref(INITIAL_SLOT_COUNT)
+const loadMoreTrigger = ref<HTMLElement | null>(null)
+let loadMoreObserver: IntersectionObserver | null = null
+
 watch([searchQuery, activeProviders], () => {
   activeGameId.value = null
+  displayedSearchCount.value = INITIAL_SLOT_COUNT
 })
 
-const searchResults = computed<SlotGame[]>(() => {
+const allSearchResults = computed<SlotGame[]>(() => {
   const query = searchQuery.value.trim().toLowerCase()
   if (!query) return []
-  const providers = activeProviders.value.map(p => p.toLowerCase())
+  const providers = activeProviders.value.map(p => normalizeSlotProvider(p))
 
   const seen = new Set<string>()
   const results: SlotGame[] = []
 
-  for (const section of SLOT_SECTIONS) {
-    for (const game of section.games) {
-      if (seen.has(game.id)) continue
+  for (const game of SLOTS) {
+    if (seen.has(game.id)) continue
 
-      if (!providers.includes('all') && !providers.includes(game.provider.toLowerCase())) {
-        continue
-      }
+    const gameProv = normalizeSlotProvider(game.provider)
+    if (!providers.includes('all') && !providers.includes(gameProv)) {
+      continue
+    }
 
-      if (
-        game.title.toLowerCase().includes(query) ||
-        game.provider.toLowerCase().includes(query)
-      ) {
-        seen.add(game.id)
-        results.push(game)
-      }
+    const matchesProviderName =
+      game.provider.toLowerCase().includes(query) ||
+      (gameProv === 'pp' && ('pragmatic play'.includes(query) || 'pragmatic'.includes(query))) ||
+      (gameProv === 'pg' && ('pg soft'.includes(query) || 'pg'.includes(query)))
+
+    if (
+      game.title.toLowerCase().includes(query) ||
+      matchesProviderName
+    ) {
+      seen.add(game.id)
+      results.push(game)
     }
   }
 
   return results
 })
 
-const filteredSections = computed<SlotSection[]>(() => {
-  const providers = activeProviders.value.map(p => p.toLowerCase())
+const displayedSearchResults = computed<SlotGame[]>(() => {
+  return allSearchResults.value.slice(0, displayedSearchCount.value)
+})
 
-  return SLOT_SECTIONS.map((section) => {
-    let games = section.games
+const hasMoreSearchResults = computed(() => {
+  return displayedSearchCount.value < allSearchResults.value.length
+})
 
-    if (!providers.includes('all')) {
-      games = games.filter((g) => providers.includes(g.provider.toLowerCase()))
+const loadMoreSearchResults = (): void => {
+  if (displayedSearchCount.value < allSearchResults.value.length) {
+    displayedSearchCount.value = Math.min(
+      displayedSearchCount.value + SLOT_BATCH_SIZE,
+      allSearchResults.value.length,
+    )
+    nextTick(() => {
+      syncLoadMoreObserver()
+    })
+  }
+}
+
+const syncLoadMoreObserver = (): void => {
+  loadMoreObserver?.disconnect()
+
+  if (import.meta.client && loadMoreTrigger.value && hasMoreSearchResults.value) {
+    loadMoreObserver?.observe(loadMoreTrigger.value)
+  }
+}
+
+const handleScroll = (): void => {
+  if (!isSearchSubmitted.value || !hasMoreSearchResults.value || !loadMoreTrigger.value) return
+  const rect = loadMoreTrigger.value.getBoundingClientRect()
+  if (rect.top <= window.innerHeight + 400) {
+    loadMoreSearchResults()
+  }
+}
+
+watch([loadMoreTrigger, hasMoreSearchResults], () => {
+  nextTick(() => {
+    syncLoadMoreObserver()
+  })
+})
+
+interface SlotSectionDisplay {
+  id: string
+  title: string
+  emoji?: string
+  iconImage?: string
+  iconName: string
+  count: number
+  hasHelp?: boolean
+  games: SlotGame[]
+}
+
+const sectionConfigs = [
+  { id: 'bonuses', title: 'Bonuses', emoji: '🟡', iconImage: '/icons/slots/bonuses.webp', iconName: 'Percent', hasHelp: false, count: 334 },
+  { id: 'top-pick', title: 'Top Pick', emoji: '👍', iconImage: '/icons/slots/top-pick.webp', iconName: 'ThumbsUp', hasHelp: false, count: 92 },
+  { id: 'top', title: 'Top', emoji: '🏅', iconImage: '/icons/slots/top.webp', iconName: 'Medal', hasHelp: false, count: 498 },
+  { id: 'new', title: 'New', emoji: '🆕', iconImage: '/icons/slots/new.webp', iconName: 'Sparkles', hasHelp: false, count: 6 },
+  { id: 'hot', title: 'Hot games', emoji: '🔥', iconImage: '/icons/slots/hot.webp', iconName: 'Flame', hasHelp: true, count: 6 },
+  { id: 'cold', title: 'Cold Games', emoji: '❄️', iconImage: '/icons/slots/cold.webp', iconName: 'Snowflake', hasHelp: true, count: 6 },
+  { id: 'max-rtp', title: 'Max RTP', emoji: '💵', iconImage: '/icons/slots/max-rtp.webp', iconName: 'Trophy', hasHelp: false, count: 6 },
+]
+
+const filteredSections = computed<SlotSectionDisplay[]>(() => {
+  const providers = activeProviders.value.map(p => normalizeSlotProvider(p))
+
+  let availableSlots = SLOTS
+  if (!providers.includes('all')) {
+    availableSlots = availableSlots.filter(g => providers.includes(normalizeSlotProvider(g.provider)))
+  }
+
+  if (filterState.value.theme !== 'All') {
+    availableSlots = availableSlots.filter(g => g.theme === filterState.value.theme)
+  }
+  if (filterState.value.feature !== 'All') {
+    availableSlots = availableSlots.filter(g => g.features && g.features.includes(filterState.value.feature))
+  }
+  if (filterState.value.winningLine !== 'All') {
+    availableSlots = availableSlots.filter(g => {
+      if (filterState.value.winningLine === '≤10 lines') {
+        const num = Number.parseInt(g.winningLine || '0', 10)
+        return !Number.isNaN(num) && num <= 10
+      } else if (filterState.value.winningLine === '11–99 lines') {
+        const num = Number.parseInt(g.winningLine || '0', 10)
+        return !Number.isNaN(num) && num >= 11 && num <= 99
+      } else if (filterState.value.winningLine === '≥100 lines') {
+        const line = g.winningLine || ''
+        const isWays = line.toLowerCase().includes('way') || line.toLowerCase().includes('megaways')
+        const num = Number.parseInt(line, 10)
+        return isWays || (!Number.isNaN(num) && num >= 100)
+      }
+      return true
+    })
+  }
+
+  const GAMES_PER_SECTION = 6
+
+  return sectionConfigs.map((cfg) => {
+    const allMatchingGames: SlotGame[] = []
+    const seenIds = new Set<string>()
+
+    for (const game of availableSlots) {
+      if (seenIds.has(game.id)) continue
+      if (isGameInSlotCategory(game, cfg.id)) {
+        seenIds.add(game.id)
+        allMatchingGames.push(game)
+      }
     }
 
     return {
-      ...section,
-      games,
+      ...cfg,
+      count: allMatchingGames.length,
+      games: allMatchingGames.slice(0, GAMES_PER_SECTION),
     }
   }).filter((section) => section.games.length > 0)
 })
@@ -320,7 +450,7 @@ const resetFilters = (): void => {
 
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md transition-all cursor-pointer select-none shrink-0"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md hidden sm:flex transition-all cursor-pointer select-none shrink-0"
           :class="commentContext ? 'text-[#959799] ' : 'text-[#959799]'"
           aria-label="Toggle chat room"
           @click="toggleChat"
@@ -349,11 +479,12 @@ const resetFilters = (): void => {
             v-for="prov in SLOT_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-4 py-1.5 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0"
+            class="provider-pill px-3.5 py-1 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0 flex items-center justify-center min-h-[30px]"
             :class="activeProviders.includes(prov.key) ? 'bg-[#036242] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
+            :aria-label="prov.label"
             @click="toggleProvider(prov.key)"
           >
-            {{ prov.label }}
+            <span>{{ prov.label }}</span>
           </button>
         </div>
 
@@ -463,11 +594,11 @@ const resetFilters = (): void => {
     <!-- Search Results View (Image 2) -->
     <div v-else-if="isSearchSubmitted" class="search-results-view mb-12">
       <div
-        v-if="searchResults.length > 0"
+        v-if="displayedSearchResults.length > 0"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5"
       >
         <GameCard
-          v-for="game in searchResults"
+          v-for="game in displayedSearchResults"
           :key="game.id"
           :game="game"
           :activeId="activeGameId"
@@ -494,6 +625,13 @@ const resetFilters = (): void => {
           Reset Search
         </button>
       </div>
+
+      <div
+        v-if="hasMoreSearchResults"
+        ref="loadMoreTrigger"
+        class="h-6 w-full pointer-events-none opacity-0"
+        aria-hidden="true"
+      />
     </div>
 
     <!-- Default Slots Sections (Home Page layout with 1 row of 6 games per section) -->

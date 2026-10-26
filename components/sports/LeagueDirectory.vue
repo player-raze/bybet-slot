@@ -28,143 +28,6 @@ const search = ref('')
 
 const isTennis = computed(() => route.params.sport === 'tennis')
 
-// Baseline mock tennis leagues matching the production design and user specification
-const DEFAULT_TENNIS_LEAGUES: DirectoryLeague[] = [
-  // ATP
-  {
-    key: 'tennis_atp_1000_shanghai_masters_singles',
-    group: 'Tennis',
-    title: 'ATP 1000 China Shanghai Masters Men Singles',
-    description: 'ATP 1000 Men Singles',
-    active: true,
-    has_outrights: false,
-    inplay: true,
-    count: 2,
-  },
-  {
-    key: 'tennis_atp_1000_shanghai_masters_doubles',
-    group: 'Tennis',
-    title: 'ATP 1000 China Shanghai Masters Men Doubles',
-    description: 'ATP 1000 Men Doubles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 1,
-  },
-  {
-    key: 'tennis_atp_bolivia_santa_cruz_2_challenger_singles',
-    group: 'Tennis',
-    title: 'ATP Bolivia Santa Cruz 2 Challenger Men Singles',
-    description: 'Challenger Men Singles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 4,
-  },
-  {
-    key: 'tennis_atp_bolivia_santa_cruz_2_challenger_doubles',
-    group: 'Tennis',
-    title: 'ATP Bolivia Santa Cruz 2 Challenger Men Doubles',
-    description: 'Challenger Men Doubles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 2,
-  },
-  {
-    key: 'tennis_atp_china_jinan_challenger_singles',
-    group: 'Tennis',
-    title: 'ATP China Jinan Challenger Men Singles',
-    description: 'Challenger Men Singles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 2,
-  },
-  // WTA
-  {
-    key: 'tennis_wta_125_spain',
-    group: 'Tennis',
-    title: 'WTA 125 Spain',
-    description: 'WTA 125 Women Singles',
-    active: true,
-    has_outrights: false,
-    inplay: true,
-    count: 3,
-  },
-  {
-    key: 'tennis_wta_wuhan_open_singles',
-    group: 'Tennis',
-    title: 'WTA Wuhan Open Women Singles',
-    description: 'WTA 1000 Women Singles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 2,
-  },
-  {
-    key: 'tennis_wta_us_open_singles',
-    group: 'Tennis',
-    title: 'WTA US Open Women Singles',
-    description: 'Grand Slam Women Singles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 4,
-  },
-  {
-    key: 'tennis_wta_beijing_china_open',
-    group: 'Tennis',
-    title: 'WTA 1000 China Beijing Open Women Singles',
-    description: 'WTA 1000 Women Singles',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 2,
-  },
-  // UTR
-  {
-    key: 'tennis_utr_pro_series_men_singles',
-    group: 'Tennis',
-    title: 'UTR Pro Tennis Series Men Singles',
-    description: 'UTR Pro Series',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 3,
-  },
-  {
-    key: 'tennis_utr_pro_series_women_singles',
-    group: 'Tennis',
-    title: 'UTR Pro Tennis Series Women Singles',
-    description: 'UTR Pro Series',
-    active: true,
-    has_outrights: false,
-    inplay: true,
-    count: 2,
-  },
-  {
-    key: 'tennis_utr_newport_beach_singles',
-    group: 'Tennis',
-    title: 'UTR Newport Beach Men Singles',
-    description: 'UTR Newport Beach',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 1,
-  },
-  {
-    key: 'tennis_utr_barcelona_singles',
-    group: 'Tennis',
-    title: 'UTR Barcelona Men Singles',
-    description: 'UTR Barcelona',
-    active: true,
-    has_outrights: false,
-    inplay: false,
-    count: 2,
-  },
-]
-
 // Query inplay catalog to mark real live events when available
 const { data: inplayData } = await useFetch('/api/sports', {
   query: { mode: 'inplay' },
@@ -185,14 +48,14 @@ const allLeagues = computed<DirectoryLeague[]>(() => {
   const currentSport = String(route.params.sport || '').toLowerCase()
   let baseList: Sport[] = []
 
-  if (isTennis.value) {
-    baseList = [...DEFAULT_TENNIS_LEAGUES]
-  } else if (currentSport === 'basketball') {
+  if (currentSport === 'basketball') {
     baseList = SAMPLE_SPORTS.filter(s => s.group === 'Basketball' && !s.has_outrights)
   } else if (currentSport === 'soccer') {
     baseList = SAMPLE_SPORTS.filter(s => s.group === 'Soccer' && !s.has_outrights)
   } else if (currentSport === 'baseball') {
     baseList = SAMPLE_SPORTS.filter(s => s.group === 'Baseball' && !s.has_outrights)
+  } else if (currentSport === 'tennis' || isTennis.value) {
+    baseList = SAMPLE_SPORTS.filter(s => s.group === 'Tennis' && !s.has_outrights)
   } else {
     // popular or all sports
     baseList = SAMPLE_SPORTS.filter(s => !s.has_outrights)
@@ -240,7 +103,7 @@ const filteredLeagues = computed(() => {
     return allLeagues.value
   }
   return allLeagues.value.filter(sport =>
-    `${sport.title} ${sport.description ?? ''} ${sport.group}`.toLowerCase().includes(q),
+    `${sport.title} ${sport.description ?? ''} ${sport.group} ${sport.country ?? ''}`.toLowerCase().includes(q),
   )
 })
 
@@ -254,13 +117,21 @@ const isPopular = (key: string): boolean => {
   const defaultPopular = [
     'basketball_nba',
     'basketball_euroleague',
-    'basketball_nba_preseason',
+    'basketball_pba',
     'soccer_epl',
-    'soccer_uefa_champions_league',
+    'soccer_uefa_champs_league',
+    'soccer_uefa_europa_league',
+    'soccer_uefa_europa_conference_league',
+    'soccer_uefa_nations_league',
+    'soccer_conmebol_copa_libertadores',
     'soccer_germany_bundesliga',
     'soccer_italy_serie_a',
     'soccer_spain_la_liga',
+    'soccer_france_ligue_one',
+    'soccer_usa_mls',
     'baseball_mlb',
+    'baseball_kbo',
+    'baseball_npb',
     'tennis_atp_wimbledon',
     'tennis_atp_1000_shanghai_masters_singles',
     'tennis_wta_125_spain',
@@ -273,45 +144,11 @@ const popularLeaguesList = computed(() => {
   return filteredLeagues.value.filter(sport => isPopular(sport.key))
 })
 
-// Grouping logic: Tennis uses ATP, WTA, UTR. Other sports use country.
-function getTennisCategory(sport: DirectoryLeague): 'ATP' | 'WTA' | 'UTR' {
-  const text = `${sport.key} ${sport.title} ${sport.description ?? ''}`.toLowerCase()
-  if (/\b(atp)\b/i.test(text) || sport.key.includes('_atp_') || sport.key.startsWith('tennis_atp')) {
-    return 'ATP'
-  }
-  if (/\b(wta)\b/i.test(text) || sport.key.includes('_wta_') || sport.key.startsWith('tennis_wta')) {
-    return 'WTA'
-  }
-  if (/\b(utr)\b/i.test(text) || sport.key.includes('_utr_') || sport.key.startsWith('tennis_utr')) {
-    return 'UTR'
-  }
-  return 'ATP'
-}
-
+// Country grouping for Basketball, Soccer, Tennis, Baseball
 const sections = computed(() => {
-  if (isTennis.value) {
-    const atp: DirectoryLeague[] = []
-    const wta: DirectoryLeague[] = []
-    const utr: DirectoryLeague[] = []
-
-    for (const sport of filteredLeagues.value) {
-      const cat = getTennisCategory(sport)
-      if (cat === 'ATP') atp.push(sport)
-      else if (cat === 'WTA') wta.push(sport)
-      else if (cat === 'UTR') utr.push(sport)
-    }
-
-    const result: { title: string; leagues: DirectoryLeague[]; type: 'atp' | 'wta' | 'utr' | 'country' }[] = []
-    if (atp.length) result.push({ title: 'ATP', leagues: atp, type: 'atp' })
-    if (wta.length) result.push({ title: 'WTA', leagues: wta, type: 'wta' })
-    if (utr.length) result.push({ title: 'UTR', leagues: utr, type: 'utr' })
-    return result
-  }
-
-  // Country grouping for Soccer, Basketball, Baseball, etc.
   const countryMap = new Map<string, DirectoryLeague[]>()
   for (const sport of filteredLeagues.value) {
-    const country = getCountryForSport(sport)
+    const country = sport.country || getCountryForSport(sport) || 'International'
     if (!countryMap.has(country)) {
       countryMap.set(country, [])
     }
@@ -410,6 +247,11 @@ const COUNTRY_FLAGS: Record<string, string> = {
   'Saudi Arabia': '🇸🇦',
   'China': '🇨🇳',
   'Philippines': '🇵🇭',
+  'Chile': '🇨🇱',
+  'Finland': '🇫🇮',
+  'Ireland': '🇮🇪',
+  'Russia': '🇷🇺',
+  'Bolivia': '🇧🇴',
   'International': '🌐',
 }
 </script>
@@ -509,7 +351,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
                 v-for="league in popularLeaguesList"
                 :key="league.key"
                 :to="leaguePath(league.key)"
-                class="flex flex-col items-center justify-top min-w-[72px] max-w-[72px] h-[88px] p-1 rounded-lg bg-[#252827] transition text-center shrink-0 group"
+                class="flex flex-col items-center justify-top min-w-[72px] max-w-[72px] h-[70px] sm:h-[88px] p-1 rounded-lg bg-[#252827] transition text-center shrink-0 group"
               >
                 <!-- Tournament logo with small sport ball at bottom right -->
                 <div class="relative w-5 h-5 flex items-center justify-center shrink-0 ">
@@ -550,35 +392,9 @@ const COUNTRY_FLAGS: Record<string, string> = {
               @click="toggleGroup(section.title)"
             >
               <div class="flex items-center gap-2">
-                <!-- ATP Header Badge -->
-                <div
-                  v-if="section.type === 'atp'"
-                  class="h-4 px-1 rounded bg-[#001e4e]  flex items-center justify-center shadow-sm"
-                >
-                  <span class="text-[8px] font-black tracking-wider text-white">ATP</span>
-                  <span class="text-[5.5px] font-semibold text-[#6899d3] ml-0.5 tracking-tight">TOUR</span>
-                </div>
-
-                <!-- WTA Header Badge -->
-                <div
-                  v-else-if="section.type === 'wta'"
-                  class="relative w-5 h-5 rounded-full bg-[#5c2d82] flex items-center justify-center shrink-0 shadow-sm"
-                >
-                  <span class="text-[7.5px] font-black italic text-white tracking-tighter">WTA</span>
-                  <span class="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#ccff00]" />
-                </div>
-
-                <!-- UTR Header Badge -->
-                <div
-                  v-else-if="section.type === 'utr'"
-                  class="h-4 px-1.5 rounded bg-[#00828a] flex items-center justify-center shadow-sm"
-                >
-                  <span class="text-[8px] font-black text-white tracking-wide">UTR</span>
-                </div>
-
                 <!-- Country Flag -->
                 <span
-                  v-else-if="COUNTRY_FLAGS[section.title]"
+                  v-if="COUNTRY_FLAGS[section.title]"
                   class="text-[17px] leading-none"
                   aria-hidden="true"
                 >
@@ -618,11 +434,11 @@ const COUNTRY_FLAGS: Record<string, string> = {
                 <!-- Left: Badge + League Title -->
                 <div class="flex items-center gap-2 min-w-0">
                   <!-- Tournament logo with small sport ball at bottom right -->
-                  <div class="relative  flex items-center justify-center shrink-0  ">
+                  <div class="relative w-[24px] h-[20px] flex items-center justify-center shrink-0">
                     <img
                       :src="getTournamentLogo(league)"
                       :alt="league.title"
-                      class="w-full h-[20px] object-contain"
+                      class="max-w-[24px] max-h-[20px] w-auto h-auto object-contain"
                       loading="lazy"
                     />
                   </div>

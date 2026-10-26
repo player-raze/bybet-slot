@@ -250,6 +250,7 @@ const filteredSections = computed<BingoSection[]>(() => {
 
     return {
       ...section,
+      count: games.length,
       games,
     }
   }).filter((section) => section.games.length > 0)
@@ -297,7 +298,7 @@ const resetFilters = (): void => {
 
         <button
           type="button"
-          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md transition-all cursor-pointer select-none shrink-0"
+          class="nav-tab nav-tab--chat flex flex-col items-center justify-center min-w-[48px] py-1 px-2 rounded-md transition-all cursor-pointer select-none shrink-0 hidden sm:flex"
           :class="commentContext ? 'text-[#959799] ' : 'text-[#959799]'"
           aria-label="Toggle chat room"
           @click="toggleChat"
@@ -553,7 +554,7 @@ const resetFilters = (): void => {
       class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-[2px]"
       @click.self="isFilterOpen = false"
     >
-      <div class="w-full max-w-[480px] sm:rounded-2xl rounded-t-[20px] bg-[#181919] border-t sm:border border-white/10 shadow-2xl flex flex-col max-h-[calc(100dvh-56px)] overflow-hidden">
+      <div class="mobile-modal-slide-up w-full max-w-[480px] sm:rounded-2xl rounded-t-[20px] bg-[#181919] border-t sm:border border-white/10 shadow-2xl flex flex-col max-h-[calc(100dvh-56px)] overflow-hidden">
         <!-- Pull bar / Handle at the top -->
         <div class="flex justify-center pt-2.5 pb-0.5">
           <span class="w-9 h-1 rounded-full bg-white/20" />

@@ -39,7 +39,7 @@ const handleImgError = (event: Event): void => {
 
 <template>
   <div class="share-modal-overlay" @click.self="emit('close')">
-    <div class="share-modal-container">
+    <div class="share-modal-container mobile-modal-slide-up">
       <div class="share-card">
         <!-- Top Decorative Section -->
         <div class="card-header-deco">

@@ -40,22 +40,51 @@ const isOddsDropdownOpen = ref(false)
 const oddsOptions = ['Euro Odds', 'Hong Kong Odds', 'Malay Odds', 'Indo Odds']
 
 const selectedTheme = ref<'International' | 'Asia'>('International')
+const headerScrollFade = ref(0)
+let headerScrollFrame: number | null = null
+
+const updateHeaderFade = (): void => {
+  headerScrollFade.value = Math.min(Math.max(window.scrollY, 0) / 80, 1)
+  headerScrollFrame = null
+}
+
+const handlePageScroll = (): void => {
+  if (headerScrollFrame === null) {
+    headerScrollFrame = window.requestAnimationFrame(updateHeaderFade)
+  }
+}
+
+onMounted(() => {
+  updateHeaderFade()
+  window.addEventListener('scroll', handlePageScroll, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handlePageScroll)
+  if (headerScrollFrame !== null) window.cancelAnimationFrame(headerScrollFrame)
+})
 </script>
 
 <template>
   <div class="me-page w-full min-w-0">
     <!-- Mobile View: Frosted Card & Green Felt Hero (< 1024px) -->
     <div class="me-mobile-view lg:hidden w-full min-w-0 pb-16 text-white bg-[#0e0f0e]">
+      <div
+        class="me-hero-background"
+        :style="{ '--me-hero-fade': `${48 + headerScrollFade * 24}px` }"
+        aria-hidden="true"
+      />
 
-    <!-- Hero Area with Green Felt Texture & "ByBet" Watermark -->
-    <div class="me-hero-wrapper relative w-full overflow-hidden">
       <!-- Mobile Dedicated Header (Hidden on Desktop) -->
-      <header class="me-mobile-header sticky-header-seal lg:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#071f14]/65 backdrop-blur-md border-b border-white/[0.04]">
+      <header
+        class="me-mobile-header lg:hidden z-30 flex items-center justify-between px-4 py-3"
+        :class="{ 'me-mobile-header--sticky': headerScrollFade > 0 }"
+      >
         <h1 class="text-[19px] font-bold text-white tracking-tight">Me</h1>
         <div class="flex items-center gap-2">
           <NuxtLink
             to="/explore/egames/customer-service"
-            class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 border border-white/25 backdrop-blur-md flex items-center justify-center text-white transition-all shadow-sm"
+            class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 border border-white/25 backdrop-blur-md flex items-center justify-center text-white transition-all "
             aria-label="Customer Service"
           >
             <Headphones class="w-4 h-4 text-white" />
@@ -71,6 +100,8 @@ const selectedTheme = ref<'International' | 'Asia'>('International')
         </div>
       </header>
 
+    <!-- Hero Area with Green Felt Texture & "ByBet" Watermark -->
+    <div class="me-hero-wrapper relative w-full overflow-hidden">
       <!-- Frosted Profile Card -->
       <div class="px-3.5 pt-2 pb-4 lg:px-6 lg:py-6">
         <div class="me-frosted-card mx-auto max-w-xl rounded-[20px] p-4 lg:p-6 bg-white/[0.14] backdrop-blur-xl border border-white/25 shadow-xl">
@@ -966,7 +997,7 @@ const selectedTheme = ref<'International' | 'Asia'>('International')
     </div>
 
     <!-- Accordion 5: Help -->
-    <div class="section-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-xl">
       <button
         type="button"
         class="flex w-full mb-2 items-center justify-between text-left cursor-pointer select-none"
@@ -1095,18 +1126,76 @@ const selectedTheme = ref<'International' | 'Asia'>('International')
 </template>
 
 <style scoped>
+@media (max-width: 63.99rem) {
+  .me-mobile-view {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .me-hero-background {
+    position: sticky;
+    top: 0;
+    z-index: -1;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .me-hero-background::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 300px;
+    background: #0d6047 url('/images/me/me-bg.png') right top / 100% auto no-repeat;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .me-mobile-header {
+    position: relative;
+    isolation: isolate;
+    min-height: 60px;
+  }
+
+  .me-mobile-header--sticky {
+    position: sticky;
+    top: 0;
+  }
+
+  .me-mobile-header--sticky::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -24px;
+    z-index: -1;
+    pointer-events: none;
+    /* background: #0d6047 url('/images/me/me-bg.png') right top / 100% auto no-repeat; */
+
+    background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%),
+    url('/images/me/me-bg.png');
+    background-size: cover;
+    background-position: top;
+     mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  /* Webkit support for Safari/older browsers */
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  height: 120px;
+    
+  }
+
+  .me-mobile-view .me-hero-wrapper {
+    background: transparent;
+  }
+}
+
 .me-hero-wrapper {
   background-image: url("/images/me/me-bg.png");
   background-size: cover;
   background-position: right top;
   background-repeat: no-repeat;
+      border-radius: 0 0 50px 50px;
 }
 
-.me-frosted-card {
-  background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+.me-buttons{
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
+      --tw-backdrop-blur: blur(8px) !important;
 }
 
 .menu-item {

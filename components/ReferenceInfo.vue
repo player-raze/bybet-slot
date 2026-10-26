@@ -34,9 +34,9 @@ const toggleFaq = (index: number): void => {
       <div class="app-promotion-content">
         <div class="app-promotion-copy">
           <span class="app-promotion-eyebrow">{{ translate('BYBET APP') }}</span>
-          <h1 class="app-promotion-heading">
+          <h2 class="app-promotion-heading">
             {{ translate('Download ByBet App for Slots, Live Casino and Sports Betting') }}
-          </h1>
+          </h2>
           <p class="app-promotion-description">
             {{ translate('Your favorite slots, live casino games, and sports bets all in one place. Take ByBet with you wherever you go.') }}
           </p>
@@ -83,7 +83,7 @@ const toggleFaq = (index: number): void => {
       <div class="faq-list">
         <article v-for="(faqItem, index) in faqItems" :key="faqItem.question">
           <button type="button" :aria-expanded="openFaqIndex === index" @click="toggleFaq(index)">
-            {{ translate(faqItem.question) }}
+            <h3>{{ translate(faqItem.question) }}</h3>
             <ChevronDown :size="12" :class="{ open: openFaqIndex === index }" />
           </button>
           <p v-if="openFaqIndex === index">{{ translate(faqItem.answer) }}</p>

@@ -38,7 +38,7 @@ onBeforeUnmount(() => {
   <Teleport to="body">
     <dialog
       ref="dialog"
-      class="reminder-modal"
+      class="reminder-modal mobile-modal-slide-up prompt-sheet"
       aria-labelledby="reminder-title"
       aria-describedby="reminder-description"
       @cancel.prevent="emit('close')"

@@ -524,6 +524,106 @@ input {
   fill: var(--bright, #32d49a);
 }
 
+@keyframes mobile-modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 3rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes prompt-sheet-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 63.99rem) and (prefers-reduced-motion: no-preference) {
+  .mobile-modal-slide-up {
+    animation: mobile-modal-slide-up 280ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .prompt-sheet:not(#_) {
+    position: fixed;
+    inset: auto 0 0;
+    width: min(500px, 100vw);
+    max-height: calc(100dvh - 12px);
+    margin: 0 auto;
+    border: 1px solid rgb(126 148 139 / 38%);
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(180deg, #252624 0%, #1c1d1c 100%);
+    box-shadow: 0 -18px 48px rgb(0 0 0 / 50%);
+  }
+
+  .prompt-sheet:not(#_)::backdrop {
+    background: rgb(0 0 0 / 68%);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+
+  .prompt-sheet:not(#_)::before {
+    content: '';
+    display: block;
+    width: 42px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 999px;
+    background: rgb(190 194 191 / 58%);
+  }
+
+  .prompt-sheet:not(#_) .reminder-content,
+  .prompt-sheet:not(#_) .maintenance-content {
+    padding: 16px 11px 11px;
+  }
+
+  .prompt-sheet:not(#_) .reminder-symbol,
+  .prompt-sheet:not(#_) .maintenance-symbol {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 12px;
+    background: #07805d;
+    font-size: 32px;
+  }
+
+  .prompt-sheet:not(#_) h2 {
+    font-size: 18px;
+    line-height: 25px;
+  }
+
+  .prompt-sheet:not(#_) p {
+    max-width: 360px;
+    margin: 5px auto 15px;
+    font-size: 15px;
+    line-height: 19px;
+  }
+
+  .prompt-sheet:not(#_) button {
+    min-height: 54px;
+    border-radius: 12px;
+    background: #057653;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 63.99rem) and (prefers-reduced-motion: no-preference) {
+  .prompt-sheet:not(#_)[open] {
+    animation: prompt-sheet-up 300ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}
+
 @media (max-width: 35rem) {
   :root {
     --sidebar-width: 0rem;
