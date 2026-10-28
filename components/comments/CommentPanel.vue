@@ -157,7 +157,7 @@ watch(() => context.value, () => {
       @cancel.prevent="!docked && closeComments()"
       @click="handleBackdropClick"
     >
-      <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 pb-2 pr-2 text-white">
+      <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 sm:pb-2 sm:pr-2 text-white">
         <template v-if="!embedded && (context.kind !== 'sports' || isMobile)">
           <Transition name="chat-header">
             <header

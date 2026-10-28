@@ -8,6 +8,7 @@ const props = withDefaults(
     showBack?: boolean
     sticky?: boolean
     customClass?: string
+    mobileTabs?: boolean
   }>(),
   {
     title: '',
@@ -15,6 +16,7 @@ const props = withDefaults(
     showBack: true,
     sticky: true,
     customClass: '',
+    mobileTabs: false,
   }
 )
 
@@ -40,6 +42,7 @@ const handleBack = (): void => {
     :class="[
       sticky ? 'subpage-header--sticky sticky-header-seal' : 'relative',
       customClass,
+      { 'subpage-header--mobile-tabs': mobileTabs },
     ]"
     role="banner"
   >
@@ -81,6 +84,47 @@ const handleBack = (): void => {
 </template>
 
 <style scoped>
+@media (max-width: 63.99rem) {
+  .subpage-header.subpage-header--mobile-tabs {
+    height: 48px;
+    min-height: 48px;
+    margin-bottom: 0;
+    padding: 0 12px;
+    gap: 12px;
+    box-shadow: none;
+  }
+  .subpage-header--mobile-tabs .subpage-header__left { min-width: 30px; }
+  .subpage-header--mobile-tabs .subpage-header__back-btn { width: 30px; height: 30px; border-color: #ffffff60; }
+  .subpage-header--mobile-tabs .subpage-header__center { padding: 0; }
+  .subpage-header--mobile-tabs .subpage-header__right { display: none; }
+  .subpage-header--mobile-tabs :deep([role="tablist"]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    gap: 8px;
+  }
+  .subpage-header--mobile-tabs :deep([role="tab"]) {
+    min-width: 0;
+    height: 30px;
+    padding: 0 8px;
+    border: 1px solid #ffffff60;
+    border-radius: 8px;
+    color: #fff;
+    background: #ffffff59;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: none;
+  }
+  .subpage-header--mobile-tabs :deep([role="tab"][aria-selected="true"]) {
+    color: #036242;
+    background: #fff;
+    border-color: #fff;
+  }
+}
+
 .subpage-header {
   position: relative;
   display: flex;

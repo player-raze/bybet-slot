@@ -218,6 +218,10 @@ const { translate } = useSiteLocale()
   .category-tabs--mobile {
     display: none;
   }
+
+  .category-tabs a{
+    font-size: 10px;
+  }
 }
 
 </style>

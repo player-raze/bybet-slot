@@ -554,8 +554,8 @@ onBeforeUnmount(() => {
   .hero-copy a {
     min-width: 0;
     flex: 1 1 0;
-    padding-inline: 0.32rem;
-    font-size: clamp(0.4rem, 2.4vw, 0.52rem);
+    padding-inline: 0.35rem;
+    font-size: clamp(0.5rem, 2.4vw, 1rem);
     white-space: nowrap;
   }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import '~/assets/css/sports.css'
+import MobileSportsNav from '~/components/sports/MobileSportsNav.vue'
 
 const route = useRoute()
 
@@ -35,14 +36,43 @@ const currentSport = computed(() => {
   }
   return 'all'
 })
+
+const mobileModeTabs = [
+  { key: 'league', label: 'League' },
+  { key: 'inplay', label: 'In-Play' },
+  { key: 'upcoming', label: 'Upcoming' },
+  { key: 'pre-match', label: 'Pre-Match' },
+  { key: 'smart-pick', label: 'Parlay' },
+  { key: 'outright', label: 'Outright' },
+]
+const externalSiteUrl = useRuntimeConfig().public.bybetRedirectUrl
+const mobileModePath = (key: string): string => {
+  if (key === 'inplay') return route.path
+  if (key === 'smart-pick' || key === 'outright') return externalSiteUrl
+  const sport = currentSport.value === 'all' ? 'popular' : currentSport.value
+  return `/explore/sports/${sport}/${key}`
+}
 </script>
 
 <template>
   <section class="sports-page live-page">
     <!-- Sports Tabs Navigation: Sport Ball Icons -->
     <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-1">
+      <MobileSportsNav />
+      <nav class="sports-tabs live-mobile-modes bg-[#1f1f1f]" aria-label="Sports categories">
+        <NuxtLink
+          v-for="tab in mobileModeTabs"
+          :key="tab.key"
+          :to="mobileModePath(tab.key)"
+          :external="tab.key === 'smart-pick' || tab.key === 'outright'"
+          :class="{ selected: tab.key === 'inplay' }"
+          :aria-current="tab.key === 'inplay' ? 'page' : undefined"
+        >
+          {{ tab.label }}
+        </NuxtLink>
+      </nav>
       <nav
-        class="sports-tabs bg-[#141414]"
+        class="sports-tabs live-sports-tabs bg-[#141414]"
         aria-label="Live sports categories"
       >
         <NuxtLink
@@ -71,5 +101,12 @@ const currentSport = computed(() => {
 <style scoped>
 .live-page {
   min-width: 0;
+}
+
+.live-page .live-mobile-modes { display: none; }
+
+@media (max-width: 63.99rem) {
+  .live-page .live-sports-tabs { display: none; }
+  .live-page .live-mobile-modes { display: flex; }
 }
 </style>

@@ -27,6 +27,6 @@ const handleClose = () => {
 <template>
   <div>
     <ComingSoonFallback :disable-seo="true" />
-    <DepositReminderModal v-if="showModal" @close="handleClose" @ok="handleClose" />
+    <DepositReminderModal v-if="showModal" @close="handleClose" />
   </div>
 </template>

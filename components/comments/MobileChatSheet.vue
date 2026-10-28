@@ -7,6 +7,25 @@ const route = useRoute()
 const expanded = computed(() => context.value !== null)
 let gestureStart: { x: number; y: number } | null = null
 let ignoreClick = false
+let previousBodyOverflow: string | null = null
+
+const restorePageScroll = (): void => {
+  if (previousBodyOverflow === null) return
+  document.body.style.overflow = previousBodyOverflow
+  previousBodyOverflow = null
+}
+
+watch(expanded, (isExpanded) => {
+  if (!import.meta.client) return
+  if (isExpanded && previousBodyOverflow === null) {
+    previousBodyOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+  } else if (!isExpanded) {
+    restorePageScroll()
+  }
+}, { immediate: true })
+
+onBeforeUnmount(restorePageScroll)
 
 const expand = (): void => {
   if (expanded.value) return
@@ -120,7 +139,20 @@ const endGesture = (event: PointerEvent): void => {
 }
 
 .mobile-chat-sheet--expanded .mobile-chat-sheet__content {
-  height: min(60dvh, 520px);
+  height: calc(100dvh - var(--header-height) - 72px);
+  flex: 1;
+  min-height: 0;
+}
+
+.mobile-chat-sheet--expanded {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  background: #252525;
+}
+
+.mobile-chat-sheet--expanded .mobile-chat-sheet__toggle {
+  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
