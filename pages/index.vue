@@ -7,7 +7,7 @@ import {
 } from '~/data/homepage'
 
 useAppSeo({
-  title: 'ByBet Casino Ph | Play Premium Online Slots Experience',
+  title: 'ByBet Casino PH Slots | Login, Spin Big and Win More Prizes',
   description: 'Experience top-tier gaming on the ByBet Casino Ph. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
   image: '/brand/bybet-logo.webp',
   schema: [
