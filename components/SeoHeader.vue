@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeft } from 'lucide-vue-next'
+import { formatSeoTitle } from '~/composables/useAppSeo'
 
 interface Props {
   title: string
@@ -32,18 +33,22 @@ const emit = defineEmits<{
 const router = useRouter()
 const route = useRoute()
 const config = useRuntimeConfig()
+const siteName = computed(() =>
+  String(config.public.siteName || 'ByBet Slots')
+    .trim()
+    .replace(/^['"]+|['"]+$/g, ''),
+)
+const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
 
 const fullTitle = computed(() => {
-  if (props.metaTitle) {
-    return props.metaTitle.includes('ByBet') ? props.metaTitle : `${props.metaTitle} | ByBet`
-  }
-  return props.title ? `${props.title} | ByBet` : 'ByBet'
+  return formatSeoTitle(props.metaTitle || props.title, siteName.value)
 })
 
 // Set reactive SEO metadata
 useSeoMeta({
   title: fullTitle,
   ogTitle: fullTitle,
+  ogSiteName: siteName,
   description: () => props.description,
   ogDescription: () => props.description,
   keywords: () => props.keywords,
@@ -59,7 +64,7 @@ useHead(() => ({
   link: [
     {
       rel: 'canonical',
-      href: `https://bybet.com${route.path}`,
+      href: `${siteUrl.value}${route.path}`,
     },
   ],
 }))

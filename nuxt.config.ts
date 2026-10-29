@@ -10,6 +10,8 @@ const environment = (
         USE_ODDS_API?: string
         KADARIO_API?: string
         BYBET_REDIRECT_URL?: string
+        SITE_NAME?: string
+        SITE_URL?: string
       }
     }
   }
@@ -26,6 +28,8 @@ export default defineNuxtConfig({
     public: {
       useOddsApi: environment?.USE_ODDS_API === 'true',
       bybetRedirectUrl: environment?.BYBET_REDIRECT_URL || 'https://bybet.com/',
+      siteName: environment?.SITE_NAME || 'ByBet Slots',
+      siteUrl: (environment?.SITE_URL || 'https://bybet.com').replace(/\/+$/, ''),
     },
     kadarioApi: environment?.KADARIO_API || 'https://live88.eu.cc/',
     kadarioSite: 'YBa-BnymZ6iN8pkfAUFTWIKn',

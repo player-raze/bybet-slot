@@ -6,35 +6,39 @@ import {
   recommendedGames,
 } from '~/data/homepage'
 
+const config = useRuntimeConfig()
+const siteName = computed(() => String(config.public.siteName || 'ByBet').trim())
+const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
+
 useAppSeo({
   title: 'ByBet Casino PH Slots | Login, Spin Big and Win More Prizes',
   description: 'Experience top-tier gaming on the ByBet Casino Ph. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
   image: '/brand/bybet-logo.webp',
-  schema: [
+  schema: computed(() => [
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'ByBet Philippines',
-      url: 'https://bybet.com/',
+      name: `${siteName.value} Philippines`,
+      url: `${siteUrl.value}/`,
       potentialAction: {
         '@type': 'SearchAction',
-        target: 'https://bybet.com/explore/egames/slots?q={search_term_string}',
+        target: `${siteUrl.value}/explore/egames/slots?q={search_term_string}`,
         'query-input': 'required name=search_term_string',
       },
     },
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'ByBet',
-      url: 'https://bybet.com/',
-      logo: 'https://bybet.com/brand/bybet-logo.webp',
+      name: siteName.value,
+      url: `${siteUrl.value}/`,
+      logo: `${siteUrl.value}/brand/bybet-logo.webp`,
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer service',
         availableLanguage: ['English', 'Filipino'],
       },
     },
-  ],
+  ]),
 })
 
 </script>

@@ -81,25 +81,55 @@ export const buildBreadcrumbsFromUrl = (routePath: string): BreadcrumbItem[] => 
   return items
 }
 
+const escapeRegExp = (str: string): string => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+export const formatSeoTitle = (rawTitle: string | undefined, siteName: string): string => {
+  const cleanSiteName = (siteName || 'ByBet Slots').trim().replace(/^['"]+|['"]+$/g, '')
+  const raw = (rawTitle || '').trim()
+  if (!raw) {
+    return cleanSiteName
+  }
+
+  const escapedSite = escapeRegExp(cleanSiteName)
+  const trailingBrandRegex = new RegExp(
+    `\\s*\\|\\s*(?:${escapedSite}(?:\\s+[^|]*)?|ByBet(?:\\s+[^|]*)?)\\s*$`,
+    'i',
+  )
+  const baseTitle = raw.replace(trailingBrandRegex, '').trim()
+
+  if (!baseTitle || baseTitle.toLowerCase() === cleanSiteName.toLowerCase()) {
+    return cleanSiteName
+  }
+
+  return `${baseTitle} | ${cleanSiteName}`
+}
+
 export const useAppSeo = (options: AppSeoOptions) => {
   const route = useRoute()
+  const config = useRuntimeConfig()
+  const siteName = computed(() =>
+    String(config.public.siteName || 'ByBet Slots')
+      .trim()
+      .replace(/^['"]+|['"]+$/g, ''),
+  )
+  const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
 
   const title = computed(() => {
-    const raw = resolveVal(options.title) || 'ByBet'
-    return raw.includes('ByBet') ? raw : `${raw} | ByBet`
+    const raw = resolveVal(options.title)
+    return formatSeoTitle(raw, siteName.value)
   })
 
   const description = computed(() => {
     return (
       resolveVal(options.description) ||
-      'ByBet — Premier Online Gaming, Live Casino, Sports Betting, and Slots in the Philippines.'
+      `${siteName.value} — Premier Online Gaming, Live Casino, Sports Betting, and Slots in the Philippines.`
     )
   })
 
   const keywords = computed(() => {
     return (
       resolveVal(options.keywords) ||
-      'ByBet, sports betting, online casino, slots, live casino, Philippines gaming'
+      `${siteName.value}, sports betting, online casino, slots, live casino, Philippines gaming`
     )
   })
 
@@ -109,12 +139,13 @@ export const useAppSeo = (options: AppSeoOptions) => {
 
   const canonicalUrl = computed(() => {
     const p = route.path || '/'
-    return `https://bybet.com${p}`
+    return `${siteUrl.value}${p}`
   })
 
   useSeoMeta({
     title,
     ogTitle: title,
+    ogSiteName: siteName,
     twitterTitle: title,
     description,
     ogDescription: description,
@@ -139,8 +170,8 @@ export const useAppSeo = (options: AppSeoOptions) => {
         item: item.path
           ? item.path.startsWith('http')
             ? item.path
-            : `https://bybet.com${item.path.startsWith('/') ? item.path : `/${item.path}`}`
-          : `https://bybet.com${route.path}`,
+            : `${siteUrl.value}${item.path.startsWith('/') ? item.path : `/${item.path}`}`
+          : `${siteUrl.value}${route.path}`,
       }))
 
       scripts.push({
