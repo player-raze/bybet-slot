@@ -286,7 +286,20 @@ const { translate } = useSiteLocale()
 
 @media (max-width: 63.99rem) {
   .jackpot-section {
-    margin-top: 0.45rem;
+    margin-top: 0.5rem;
+  }
+
+  .jackpot-section header {
+    min-height: 1.85rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .jackpot-section header > div {
+    gap: 0.38rem;
+  }
+
+  .jackpot-section h2 {
+    font-size: 0.95rem;
   }
 
   .jackpot-section header small,
@@ -294,8 +307,20 @@ const { translate } = useSiteLocale()
     display: none;
   }
 
+  .jackpot-section header > a {
+    min-height: 1.65rem;
+    padding: 0.22rem 0.65rem;
+    font-size: 0.75rem;
+    gap: 0.24rem;
+  }
+
+  .jackpot-section header > a :deep(svg) {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
   .jackpot-grid {
-    grid-auto-columns: calc((100% - 0.24rem) / 2);
+    grid-auto-columns: calc((100% - 0.38rem) / 2);
     grid-auto-flow: column;
     grid-template-columns: none;
     margin-right: calc(var(--page-padding) * -1);
@@ -306,7 +331,7 @@ const { translate } = useSiteLocale()
     scrollbar-width: none;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
-    gap: 0.24rem;
+    gap: 0.38rem;
   }
 
   .jackpot-grid::-webkit-scrollbar {
@@ -314,14 +339,24 @@ const { translate } = useSiteLocale()
   }
 
   .jackpot-grid > a {
-    height: 4rem;
-    padding-left: 42%;
+    --jackpot-card-radius: 0.5rem;
+    height: 4.35rem;
+    padding: 0.2rem 0.38rem 0.2rem 40%;
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
 
+  .jackpot-text {
+    gap: 0.08rem;
+  }
+
+  .jackpot-grid small {
+    font-size: clamp(0.58rem, 2.3vw, 0.72rem);
+    letter-spacing: 0.02em;
+  }
+
   .jackpot-grid strong {
-    font-size: 0.52rem;
+    font-size: clamp(0.78rem, 3.3vw, 1rem);
   }
 }
 </style>

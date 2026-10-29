@@ -58,6 +58,8 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .reminder-modal {
+  position: fixed;
+  inset: 0;
   width: min(375px, calc(100vw - 24px));
   max-width: none;
   max-height: calc(100dvh - 32px);

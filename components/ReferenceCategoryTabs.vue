@@ -190,7 +190,7 @@ const { translate } = useSiteLocale()
 @media (max-width: 63.99rem) {
   .category-tabs--desktop {
     display: flex;
-    margin-top: 0.38rem;
+    margin-top: 0.35rem;
     margin-right: calc(var(--page-padding) * -1);
     padding-right: var(--page-padding);
     overflow-x: auto;
@@ -199,6 +199,7 @@ const { translate } = useSiteLocale()
     scrollbar-width: none;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
+    gap: 0.38rem;
   }
 
   .category-tabs--desktop::-webkit-scrollbar {
@@ -206,21 +207,24 @@ const { translate } = useSiteLocale()
   }
 
   .category-tabs--desktop a {
-    min-width: clamp(6.2rem, 22vw, 9.2rem);
-    height: 2.5rem;
+    min-width: auto;
+    height: 2.35rem;
     flex: 0 0 auto;
-    padding-inline: 0.65rem;
-    border-radius: 0.42rem;
+    padding-inline: 0.82rem;
+    border-radius: 0.48rem;
+    font-size: 0.78rem;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    gap: 0.38rem;
+  }
+
+  .category-tabs--desktop .category-icon {
+    width: 0.95rem;
+    height: 0.95rem;
   }
 
   .category-tabs--mobile {
     display: none;
-  }
-
-  .category-tabs a{
-    font-size: 10px;
   }
 }
 

@@ -7,7 +7,7 @@ import {
 } from '~/data/homepage'
 
 useAppSeo({
-  title: 'ByBet Casino Ph | The Premium Online Sports Betting Site',
+  title: 'ByBet Casino Ph | Play Premium Online Slots Experience',
   description: 'Experience top-tier gaming on the ByBet Casino Ph. We provide competitive odds and a vast selection of digital casino titles for every visitor.',
   image: '/brand/bybet-logo.webp',
   schema: [
@@ -76,7 +76,9 @@ useAppSeo({
   .home-page {
     display: flex;
     flex-direction: column;
-    gap: 0.05rem;
+    gap: 0.35rem;
+    padding-inline: 0.25rem;
+    padding-bottom: 1.5rem;
   }
 }
 </style>

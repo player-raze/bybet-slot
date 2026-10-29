@@ -7,6 +7,7 @@ import ReminderModal from '~/components/modals/ReminderModal.vue'
 import {
   PROMOTION_PLACEHOLDER_IMAGES,
   getBonusDetail,
+  getPromoBannerUrl,
   getPromoHeaderUrl,
   type BonusDetail,
 } from '~/data/promotions'
@@ -26,6 +27,10 @@ const reminderMessage = ref('Please login first to join this promotion.')
 
 const bonusHeaderImageSrc = computed(() => {
   return getPromoHeaderUrl(bonus.value.headerImage || bonus.value.bannerImage, bonus.value.slug)
+})
+
+const bonusBannerImageSrc = computed(() => {
+  return getPromoBannerUrl(bonus.value.bannerImage, bonus.value.slug)
 })
 
 const isSvgString = (icon?: string): boolean => {
@@ -62,80 +67,32 @@ const seoImage = computed(() => {
 
 const canonicalUrl = computed(() => `https://bybet.com/explore/bonus/${bonus.value.slug}`)
 
-const jsonLd = computed(() => ({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'BreadcrumbList',
-      'itemListElement': [
-        {
-          '@type': 'ListItem',
-          'position': 1,
-          'name': 'Home',
-          'item': 'https://bybet.com',
-        },
-        {
-          '@type': 'ListItem',
-          'position': 2,
-          'name': 'Bonuses',
-          'item': 'https://bybet.com/explore/bonuses',
-        },
-        {
-          '@type': 'ListItem',
-          'position': 3,
-          'name': bonus.value.title,
-          'item': canonicalUrl.value,
-        },
-      ],
-    },
-    {
-      '@type': 'SaleEvent',
-      'name': bonus.value.title,
-      'description': seoDescription.value,
+useAppSeo({
+  title: seoTitle,
+  description: seoDescription,
+  keywords: seoKeywords,
+  image: seoImage,
+  schema: computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'SaleEvent',
+    'name': bonus.value.title,
+    'description': seoDescription.value,
+    'url': canonicalUrl.value,
+    'image': seoImage.value,
+    'eventStatus': 'https://schema.org/EventScheduled',
+    'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
+    'location': {
+      '@type': 'VirtualLocation',
       'url': canonicalUrl.value,
-      'image': seoImage.value,
-      'eventStatus': 'https://schema.org/EventScheduled',
-      'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
-      'location': {
-        '@type': 'VirtualLocation',
-        'url': canonicalUrl.value,
-      },
-      'organizer': {
-        '@type': 'Organization',
-        'name': 'ByBet Philippines',
-        'url': 'https://bybet.com',
-        'logo': 'https://bybet.com/brand/bybet-logo.webp',
-      },
     },
-  ],
-}))
-
-useHead(() => ({
-  title: seoTitle.value,
-  meta: [
-    { name: 'description', content: seoDescription.value },
-    { name: 'keywords', content: seoKeywords.value },
-    { property: 'og:title', content: seoTitle.value },
-    { property: 'og:description', content: seoDescription.value },
-    { property: 'og:image', content: seoImage.value },
-    { property: 'og:url', content: canonicalUrl.value },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:site_name', content: 'ByBet' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: seoTitle.value },
-    { name: 'twitter:description', content: seoDescription.value },
-    { name: 'twitter:image', content: seoImage.value },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl.value },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(jsonLd.value),
+    'organizer': {
+      '@type': 'Organization',
+      'name': 'ByBet Philippines',
+      'url': 'https://bybet.com',
+      'logo': 'https://bybet.com/brand/bybet-logo.webp',
     },
-  ],
-}))
+  })),
+})
 
 watch(bonusId, () => {
   bannerImageError.value = false
@@ -161,7 +118,7 @@ const handleModalOk = (): void => {
 const handleContentClick = (event: MouseEvent): void => {
   const target = (event.target as HTMLElement)?.closest('.promotion-terms-trigger, .text-green-1')
   if (target) {
-    navigateTo('/explore/legal/bonus-terms')
+    navigateTo('/explore/bonuses/terms-and-condition')
   }
 }
 </script>
@@ -193,15 +150,17 @@ const handleContentClick = (event: MouseEvent): void => {
     </SeoHeader>
 
     <main class="bonus-detail-content">
-      <section class="promotion-banner" :aria-label="`${bonus.title} banner`">
+      <section class="promotion-banner h-[250px] sm:h-[235px]" :aria-label="`${bonus.title} banner`">
         <span class="promotion-banner__save">◎ Save</span>
-        <img
-          v-if="!bannerImageError"
-          :src="bonusHeaderImageSrc"
-          :alt="bonus.title"
-          decoding="async"
-          @error="bannerImageError = true"
-        >
+        <picture v-if="!bannerImageError">
+          <source media="(max-width: 63.99rem)" :srcset="bonusBannerImageSrc">
+          <img
+            :src="bonusHeaderImageSrc"
+            :alt="bonus.title"
+            decoding="async"
+            @error="bannerImageError = true"
+          >
+        </picture>
         <div v-else class="promotion-banner__fallback">
           <strong>{{ bonus.title }}</strong>
           <span>{{ bonus.subtitle }}</span>
@@ -298,11 +257,39 @@ const handleContentClick = (event: MouseEvent): void => {
               <span v-if="bonus.eventContent.badge">{{ bonus.eventContent.badge }}</span>
             </div>
 
-            <p class="reward-section__description">{{ bonus.eventContent.description }}</p>
+            <p
+              v-if="bonus.eventContent.description || bonus.eventContent.descriptionParts?.length"
+              class="reward-section__description"
+              :class="{ 'reward-section__description--white': bonus.eventContent.descriptionTone === 'white' }"
+            >
+              <template v-if="bonus.eventContent.descriptionParts?.length">
+                <span
+                  v-for="(part, index) in bonus.eventContent.descriptionParts"
+                  :key="`${index}-${part.text}`"
+                  :class="{ 'reward-section__description-highlight': part.highlighted }"
+                >{{ part.text }}</span>
+              </template>
+              <template v-else>{{ bonus.eventContent.description }}</template>
+            </p>
+
+            <h3 v-if="bonus.eventContent.tableHeading" class="reward-section__table-heading">
+              {{ bonus.eventContent.tableHeading }}
+            </h3>
+
+            <div v-if="bonus.eventContent.paragraphs?.length" class="reward-paragraphs">
+              <p v-for="paragraph in bonus.eventContent.paragraphs" :key="paragraph">{{ paragraph }}</p>
+            </div>
 
             <div v-if="bonus.eventContent.methodCard" class="method-card">
               <strong>{{ bonus.eventContent.methodCard.title }}</strong>
               <span>{{ bonus.eventContent.methodCard.content }}</span>
+            </div>
+
+            <div v-if="bonus.eventContent.callouts?.length" class="reward-callouts">
+              <div v-for="callout in bonus.eventContent.callouts" :key="callout.label" class="reward-callout">
+                <strong>{{ callout.label }}</strong>
+                <span v-if="callout.badge">{{ callout.badge }}</span>
+              </div>
             </div>
 
             <div v-if="bonus.eventContent.tables?.length" class="reward-tables">
@@ -310,6 +297,8 @@ const handleContentClick = (event: MouseEvent): void => {
                 v-for="(table, tableIndex) in bonus.eventContent.tables"
                 :key="`${table.headerTitle || 'reward'}-${tableIndex}`"
                 class="reward-table"
+                :class="{ 'reward-table--outline': table.variant === 'outline' }"
+                :style="{ '--reward-table-accent': table.accentColor || '#429bdb' }"
               >
                 <div v-if="table.headerTitle" class="reward-table__title">
                   {{ table.headerTitle }}
@@ -322,7 +311,11 @@ const handleContentClick = (event: MouseEvent): void => {
                   <table>
                     <thead>
                       <tr>
-                        <th v-for="column in table.columns" :key="column.key">
+                        <th
+                          v-for="column in table.columns"
+                          :key="column.key"
+                          :style="column.width ? { width: column.width } : undefined"
+                        >
                           <span v-if="column.icon">{{ column.icon }}</span>
                           {{ column.label }}
                         </th>
@@ -330,9 +323,15 @@ const handleContentClick = (event: MouseEvent): void => {
                     </thead>
                     <tbody>
                       <tr v-for="(row, rowIndex) in table.rows" :key="rowIndex">
-                        <td v-for="column in table.columns" :key="column.key">
-                          {{ row[column.key] }}
-                        </td>
+                        <template v-for="column in table.columns" :key="column.key">
+                          <td
+                            v-if="!table.rowSpans?.[column.key] || rowIndex === 0"
+                            :rowspan="rowIndex === 0 ? table.rowSpans?.[column.key] : undefined"
+                            :class="{ 'reward-table__cell--highlight': table.highlightColumns?.includes(column.key) }"
+                          >
+                            {{ row[column.key] }}
+                          </td>
+                        </template>
                       </tr>
                     </tbody>
                   </table>
@@ -340,6 +339,10 @@ const handleContentClick = (event: MouseEvent): void => {
 
                 <p v-if="table.footnote" class="reward-table__footnote">{{ table.footnote }}</p>
               </div>
+            </div>
+
+            <div v-if="bonus.eventContent.notes?.length" class="reward-notes">
+              <p v-for="note in bonus.eventContent.notes" :key="note">{{ note }}</p>
             </div>
 
             <ul v-if="bonus.eventContent.bullets?.length" class="promotion-list">
@@ -357,7 +360,7 @@ const handleContentClick = (event: MouseEvent): void => {
 
           <section class="text-section">
             <h2>Rules:</h2>
-            <ul class="promotion-list">
+            <ul class="promotion-list" :class="{ 'promotion-list--plain': bonus.rulesStyle === 'plain' }">
               <li v-for="rule in bonus.rules" :key="rule">{{ rule }}</li>
             </ul>
           </section>
@@ -367,7 +370,7 @@ const handleContentClick = (event: MouseEvent): void => {
             <p>{{ bonus.withdrawalTerms }}</p>
           </section>
 
-          <NuxtLink to="/explore/legal/bonus-terms" class="promotion-terms-link">
+          <NuxtLink to="/explore/bonuses/terms-and-condition" class="promotion-terms-link">
             Terms and Conditions for Promotion
           </NuxtLink>
         </template>
@@ -456,10 +459,14 @@ const handleContentClick = (event: MouseEvent): void => {
   background: #171817;
 }
 
-.promotion-banner > img {
+.promotion-banner > picture,
+.promotion-banner > picture > img {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.promotion-banner > picture > img {
   object-fit: cover;
 }
 
@@ -1011,6 +1018,64 @@ const handleContentClick = (event: MouseEvent): void => {
   margin: 0 0 0.72rem;
 }
 
+.reward-section__description-highlight {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.reward-section__description--white {
+  color: #ffffff;
+}
+
+.reward-paragraphs {
+  color: #ffffff;
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
+.reward-paragraphs p {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.reward-paragraphs p + p {
+  margin-top: 0.7rem;
+}
+
+.reward-section__table-heading {
+  margin: 0 0 0.45rem;
+  color: #ffffff;
+  font-size: 0.55rem;
+  font-weight: 800;
+}
+
+.reward-callouts {
+  display: flex;
+  flex-direction: column;
+  margin: 0.7rem 0;
+  gap: 0.4rem;
+}
+
+.reward-callout {
+  display: flex;
+  align-items: center;
+  color: #f4f4f4;
+  font-size: 0.72rem;
+  gap: 0.4rem;
+}
+
+.reward-callout strong {
+  font-weight: 800;
+}
+
+.reward-callout span {
+  padding: 0.18rem 0.38rem;
+  border-radius: 0.22rem;
+  color: #d9fff1;
+  font-size: 0.52rem;
+  background: #087653;
+}
+
 .method-card,
 .reward-table {
   overflow: hidden;
@@ -1092,6 +1157,57 @@ const handleContentClick = (event: MouseEvent): void => {
   font-size: 0.48rem;
 }
 
+.reward-table--outline {
+  overflow: visible;
+  border: 0;
+}
+
+.reward-table--outline .reward-table__scroller {
+  overflow: hidden auto;
+  border: 2px solid var(--reward-table-accent);
+  border-radius: 0.38rem;
+}
+
+.reward-table--outline th {
+  background: transparent;
+}
+
+.reward-table--outline th + th,
+.reward-table--outline td + td {
+  border-left: 1px solid var(--reward-table-accent);
+}
+
+.reward-table--outline tbody tr + tr,
+.reward-table--outline tbody tr:first-child {
+  border-top-color: var(--reward-table-accent);
+}
+
+.reward-table--outline td:not(:first-child) {
+  color: #d7d8d7;
+}
+
+.reward-table .reward-table__cell--highlight {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.reward-notes {
+  margin-top: 0.55rem;
+  color: #ffffff;
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
+.reward-notes p {
+  margin: 0;
+}
+
+.reward-table--outline .reward-table__footnote {
+  padding: 0.5rem 0;
+  border: 0;
+  font-style: italic;
+}
+
 .promotion-list {
   margin-top: 0.65rem;
 }
@@ -1105,6 +1221,15 @@ const handleContentClick = (event: MouseEvent): void => {
   position: absolute;
   left: 0;
   content: '•';
+}
+
+.promotion-list--plain li {
+  padding-left: 0;
+  white-space: pre-line;
+}
+
+.promotion-list--plain li::before {
+  content: none;
 }
 
 .text-section__stack p,
@@ -1140,7 +1265,7 @@ const handleContentClick = (event: MouseEvent): void => {
 
 .join-bar {
   display: flex;
-  position: fixed;
+  position: sticky;
   z-index: 45;
   right: 0;
   bottom: 0;
@@ -1282,6 +1407,7 @@ const handleContentClick = (event: MouseEvent): void => {
 @media (max-width: 63.99rem) {
   .join-bar {
     right: 0;
+    /* bottom: calc(66px + env(safe-area-inset-bottom)); */
     left: 0;
   }
 }

@@ -9,12 +9,30 @@ import {
   PROMOTION_PLACEHOLDER_IMAGES,
   PROMOTION_SECTIONS,
   getPromoBannerUrl,
+  getPromotionCountdownText,
+  type PromotionItem,
 } from '~/data/promotions'
 
 const props = withDefaults(defineProps<{ category?: string }>(), { category: 'all' })
 const selectedCategory = ref(props.category)
 watch(() => props.category, category => { selectedCategory.value = category })
 const featuredTrack = ref<HTMLElement | null>(null)
+const nowMs = ref(Date.now())
+let countdownTimer: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  nowMs.value = Date.now()
+  countdownTimer = setInterval(() => {
+    nowMs.value = Date.now()
+  }, 1000)
+})
+
+onBeforeUnmount(() => {
+  if (countdownTimer) {
+    clearInterval(countdownTimer)
+    countdownTimer = null
+  }
+})
 
 const visibleSections = computed(() => {
   if (selectedCategory.value === 'all') {
@@ -35,12 +53,8 @@ const scrollFeatured = (direction: -1 | 1): void => {
   })
 }
 
-const getFeaturedMeta = (countdownText?: string): string => {
-  if (!countdownText || countdownText === 'Permanent') {
-    return countdownText || 'Permanent'
-  }
-
-  return `Event Countdown: ${countdownText}`
+const getFeaturedMeta = (promotion: PromotionItem): string => {
+  return getPromotionCountdownText(promotion, nowMs.value)
 }
 useAppSeo({
   title: 'Latest Promotions, Rebates & Deposit Bonuses | ByBet',
@@ -125,7 +139,7 @@ useAppSeo({
 
           <div class="featured-card__copy">
             <strong>{{ promotion.title }}</strong>
-            <span>{{ getFeaturedMeta(promotion.countdownText) }}</span>
+            <span>{{ getFeaturedMeta(promotion) }}</span>
           </div>
         </NuxtLink>
       </div>

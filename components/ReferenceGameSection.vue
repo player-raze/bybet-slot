@@ -503,12 +503,33 @@ watch(
     margin-top: 0.45rem;
   }
 
+  .reference-heading {
+    min-height: 1.85rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .reference-heading > div {
+    gap: 0.38rem;
+  }
+
   .reference-heading h2 {
-    font-size: clamp(0.58rem, 3.4vw, 0.72rem);
+    font-size: 0.95rem;
+  }
+
+  .reference-heading > a {
+    min-height: 1.65rem;
+    padding: 0.22rem 0.65rem;
+    font-size: 0.75rem;
+    gap: 0.24rem;
+  }
+
+  .reference-heading > a :deep(svg) {
+    width: 0.75rem;
+    height: 0.75rem;
   }
 
   .reference-game-row {
-    grid-auto-columns: calc((100% - 0.56rem) / 3);
+    grid-auto-columns: calc((100% - 0.76rem) / 3);
     grid-auto-flow: column;
     grid-template-columns: none;
     margin-right: calc(var(--page-padding) * -1);
@@ -520,7 +541,7 @@ watch(
     scrollbar-width: none;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
-    gap: 0.28rem;
+    gap: 0.38rem;
   }
 
   .reference-game-row::-webkit-scrollbar {
@@ -535,7 +556,7 @@ watch(
     aspect-ratio: auto;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    border-radius: 0.38rem;
+    border-radius: 0.45rem;
     background: #0b1411;
   }
 
@@ -548,7 +569,7 @@ watch(
     aspect-ratio: 3 / 4;
     height: auto;
     padding: 0;
-    border-radius: 0.38rem 0.38rem 0 0;
+    border-radius: 0.45rem 0.45rem 0 0;
     object-fit: cover;
     background: linear-gradient(155deg, #082a1d, #03150f);
   }
@@ -571,17 +592,17 @@ watch(
 
   .reference-game-caption {
     display: flex;
-    min-height: 1.55rem;
+    min-height: 2.35rem;
     flex-direction: column;
     justify-content: center;
-    padding: 0.18rem 0.22rem 0.2rem;
-    gap: 0.06rem;
+    padding: 0.28rem 0.35rem 0.32rem;
+    gap: 0.08rem;
   }
 
   .reference-game-caption strong {
     overflow: hidden;
     color: #f4f7f5;
-    font-size: 0.4rem;
+    font-size: 0.78rem;
     font-weight: 750;
     line-height: 1.2;
     text-overflow: ellipsis;
@@ -591,10 +612,27 @@ watch(
   .reference-game-caption small {
     overflow: hidden;
     color: #8ea097;
-    font-size: 0.34rem;
+    font-size: 0.66rem;
     line-height: 1.2;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .popular-hover-heading {
+    top: 0.5rem;
+    padding-top: 0;
+    font-size: 0.75rem;
+  }
+
+  .popular-hover-action {
+    min-height: 1.65rem;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.7rem;
+  }
+
+  .popular-hover-players {
+    bottom: 2.6rem;
+    font-size: 0.68rem;
   }
 }
 

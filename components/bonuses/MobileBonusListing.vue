@@ -3,13 +3,15 @@ import { ChevronRight } from 'lucide-vue-next'
 import MobileBonusHeader from './MobileBonusHeader.vue'
 import {
   PROMOTIONS, PROMO_CATEGORIES, PROMOTION_SECTIONS,
-  getPromoBannerUrl, getPromoThumbnailUrl, type PromotionItem,
+  getPromoBannerUrl, getPromoThumbnailUrl, getPromotionCountdownText, type PromotionItem,
 } from '~/data/promotions'
 
 const props = withDefaults(defineProps<{ category?: string }>(), { category: 'all' })
 const track = ref<HTMLElement | null>(null)
 const categoryNav = ref<HTMLElement | null>(null)
 const activeSlide = ref(0)
+const nowMs = ref(Date.now())
+let countdownTimer: ReturnType<typeof setInterval> | null = null
 const categoryPath = (key: string): string => key === 'all'
   ? '/explore/bonuses'
   : `/explore/bonuses/${key === 'deposit' ? 'deposits' : key}`
@@ -46,11 +48,7 @@ const sections = computed(() => PROMOTION_SECTIONS.map(section => ({
 })))
 
 const countdown = (promotion: PromotionItem): string => {
-  if (promotion.countdownText) return promotion.countdownText === 'Permanent'
-    ? 'Permanent' : `Event Countdown: ${promotion.countdownText}`
-  if (!promotion.endDate) return 'Permanent'
-  const days = Math.max(0, Math.ceil((Date.parse(promotion.endDate) - Date.now()) / 86400000))
-  return `Event Countdown: ${days} Days`
+  return getPromotionCountdownText(promotion, nowMs.value)
 }
 const updateSlide = (): void => {
   const firstCard = track.value?.firstElementChild as HTMLElement | null
@@ -66,7 +64,19 @@ const revealCategory = async (): Promise<void> => {
   if (active && categoryNav.value) categoryNav.value.scrollLeft = Math.max(0, active.offsetLeft - 64)
   activeSlide.value = 0
 }
-onMounted(revealCategory)
+onMounted(() => {
+  revealCategory()
+  nowMs.value = Date.now()
+  countdownTimer = setInterval(() => {
+    nowMs.value = Date.now()
+  }, 1000)
+})
+onBeforeUnmount(() => {
+  if (countdownTimer) {
+    clearInterval(countdownTimer)
+    countdownTimer = null
+  }
+})
 watch(() => props.category, revealCategory)
 </script>
 

@@ -50,20 +50,19 @@ onBeforeUnmount(() => {
 <style scoped>
 .maintenance-modal {
   position: fixed;
-  inset: auto 0 0;
-  width: min(500px, 100vw);
+  inset: 0;
+  width: min(375px, calc(100vw - 24px));
   max-width: none;
-  max-height: calc(100dvh - 16px);
-  margin: 0 auto;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
   padding: 0;
   overflow-y: auto;
-  border: 1px solid rgb(126 148 139 / 24%);
-  border-bottom: 0;
-  border-radius: 20px 20px 0 0;
+  border: 0;
+  border-radius: 11px;
   color: #fff;
-  background: #1c1d1c;
+  background: #1e1e1e;
   text-align: center;
-  box-shadow: 0 -18px 48px rgb(0 0 0 / 50%);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 30%);
 }
 
 .maintenance-modal::backdrop {
@@ -72,18 +71,8 @@ onBeforeUnmount(() => {
   -webkit-backdrop-filter: blur(2px);
 }
 
-.maintenance-modal::before {
-  content: '';
-  display: block;
-  width: 42px;
-  height: 4px;
-  margin: 10px auto 0;
-  border-radius: 999px;
-  background: rgb(190 194 191 / 58%);
-}
-
 .maintenance-content {
-  padding: 16px 16px 20px;
+  padding: 22px 16px 20px;
 }
 
 .maintenance-symbol {

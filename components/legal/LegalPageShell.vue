@@ -7,11 +7,13 @@ withDefaults(
     backTo?: string
     bannerSrc?: string
     bannerAlt?: string
+    showDocumentTitle?: boolean
   }>(),
   {
     backTo: '/explore/account/me',
     bannerSrc: '/brand/about-hero-banner.webp',
     bannerAlt: 'ByBet',
+    showDocumentTitle: true,
   }
 )
 </script>
@@ -39,7 +41,7 @@ withDefaults(
         </div>
 
         <!-- Centered Document Title -->
-        <h2 class="text-center font-bold text-base sm:text-lg text-white mb-6">
+        <h2 v-if="showDocumentTitle" class="text-center font-bold text-base sm:text-lg text-white mb-6">
           {{ title }}
         </h2>
 

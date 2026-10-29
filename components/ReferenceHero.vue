@@ -529,8 +529,9 @@ onBeforeUnmount(() => {
 
 @media (max-width: 35rem) {
   .hero {
-    min-height: 9rem;
-    aspect-ratio: 2.18 / 1;
+    min-height: 10.5rem;
+    aspect-ratio: 1.95 / 1;
+    border-radius: 0.55rem;
   }
 
   .hero-slide > img {
@@ -538,24 +539,44 @@ onBeforeUnmount(() => {
   }
 
   .hero::after {
-    background: linear-gradient(90deg, rgba(2, 18, 13, 0.88) 0%, rgba(2, 24, 17, 0.55) 48%, transparent 78%);
+    background: linear-gradient(90deg, rgba(2, 18, 13, 0.9) 0%, rgba(2, 24, 17, 0.58) 52%, transparent 82%);
   }
 
   .hero-copy {
+    top: 47%;
     left: 0.85rem;
-    width: 58%;
+    width: 64%;
+  }
+
+  .hero-copy > span {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero h1 {
+    margin-top: 0.18rem;
+    font-size: clamp(1.3rem, 6vw, 1.65rem);
+    line-height: 0.95;
+  }
+
+  .hero p {
+    margin: 0.28rem 0 0.48rem;
+    font-size: clamp(0.68rem, 2.7vw, 0.78rem);
+    line-height: 1.3;
   }
 
   .hero-copy > div {
     width: 100%;
-    gap: 0.22rem;
+    gap: 0.35rem;
   }
 
   .hero-copy a {
     min-width: 0;
+    height: 1.95rem;
     flex: 1 1 0;
-    padding-inline: 0.35rem;
-    font-size: clamp(0.5rem, 2.4vw, 1rem);
+    padding-inline: 0.5rem;
+    border-radius: 0.42rem;
+    font-size: clamp(0.68rem, 2.8vw, 0.78rem);
     white-space: nowrap;
   }
 
@@ -564,14 +585,15 @@ onBeforeUnmount(() => {
   }
 
   .hero-dots {
-    bottom: 0.35rem;
+    bottom: 0.38rem;
   }
 }
 
 @media (min-width: 35.01rem) and (max-width: 63.99rem) {
   .hero {
-    min-height: 10.5rem;
-    aspect-ratio: 3.2 / 1;
+    min-height: 11.5rem;
+    aspect-ratio: 2.9 / 1;
+    border-radius: 0.55rem;
   }
 
   .hero-slide > img {
@@ -584,7 +606,18 @@ onBeforeUnmount(() => {
 
   .hero-copy {
     left: 1.2rem;
-    width: 48%;
+    width: 52%;
+  }
+
+  .hero-copy > span {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .hero p {
+    margin: 0.32rem 0 0.55rem;
+    font-size: clamp(0.75rem, 2vw, 0.88rem);
+    line-height: 1.35;
   }
 
   .hero-arrow {
@@ -593,7 +626,9 @@ onBeforeUnmount(() => {
 
   .hero-copy a {
     min-width: 0;
+    height: 2.15rem;
     flex: 1 1 0;
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
   }
 }
 

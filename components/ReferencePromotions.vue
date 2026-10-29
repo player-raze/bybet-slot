@@ -375,8 +375,37 @@ const { translate } = useSiteLocale()
 }
 
 @media (max-width: 63.99rem) {
+  .promotions-section {
+    margin-top: 0.5rem;
+  }
+
+  .promotions-section header {
+    min-height: 1.85rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .promotions-section header > div {
+    gap: 0.38rem;
+  }
+
+  .promotions-section h2 {
+    font-size: 0.95rem;
+  }
+
+  .promotions-section header > a {
+    min-height: 1.65rem;
+    padding: 0.22rem 0.65rem;
+    font-size: 0.75rem;
+    gap: 0.24rem;
+  }
+
+  .promotions-section header > a :deep(svg) {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
   .promotion-grid {
-    grid-auto-columns: 82%;
+    grid-auto-columns: 84%;
     grid-auto-flow: column;
     grid-template-columns: none;
     margin-right: calc(var(--page-padding) * -1);
@@ -387,6 +416,7 @@ const { translate } = useSiteLocale()
     scrollbar-width: none;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
+    gap: 0.42rem;
   }
 
   .promotion-grid::-webkit-scrollbar {
@@ -394,8 +424,40 @@ const { translate } = useSiteLocale()
   }
 
   .promotion-grid a {
+    --promo-card-radius: 0.5rem;
+    aspect-ratio: 2.85 / 1;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+
+  .promotion-copy {
+    left: 5.5%;
+    width: 54%;
+  }
+
+  .promotion-copy small {
+    font-size: clamp(0.62rem, 2.5vw, 0.75rem);
+  }
+
+  .promotion-value {
+    margin-top: 0.14rem;
+    gap: 0.24rem;
+  }
+
+  .promotion-copy strong {
+    font-size: clamp(1.05rem, 4.4vw, 1.35rem);
+  }
+
+  .promotion-copy em {
+    font-size: clamp(0.58rem, 2.2vw, 0.7rem);
+  }
+
+  .promotion-action {
+    min-height: 1.6rem;
+    margin-top: 0.36rem;
+    padding: 0.22rem 0.75rem;
+    border-radius: 0.4rem;
+    font-size: clamp(0.68rem, 2.5vw, 0.78rem);
   }
 }
 </style>

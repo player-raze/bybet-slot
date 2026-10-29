@@ -26,6 +26,61 @@ const resolveVal = <T>(val: T | ComputedRef<T> | (() => T) | undefined): T | und
   return val as T
 }
 
+// Edit segment display names here to customize URL-based breadcrumb labels
+const BREADCRUMB_SEGMENT_LABELS: Record<string, string> = {
+  explore: 'Explore',
+  egames: 'E-Games',
+  entertainment: 'Entertainment',
+  'live-casino': 'Live Casino',
+  'live-plaza': 'Live Plaza',
+  'customer-service': 'Customer Service',
+  'max-rpt': 'Max RTP',
+  'top-pick': 'Top Pick',
+  inplay: 'In-Play',
+  'pre-match': 'Pre-Match',
+  'smart-pick': 'Smart Pick',
+  jili: 'JILI',
+  jdb: 'JDB',
+  cq9: 'CQ9',
+  fc: 'FC',
+  vip: 'VIP',
+  faq: 'FAQ',
+}
+
+const formatBreadcrumbSegment = (segment: string): string => {
+  const decoded = decodeURIComponent(segment).trim()
+  const lower = decoded.toLowerCase()
+  if (BREADCRUMB_SEGMENT_LABELS[lower]) {
+    return BREADCRUMB_SEGMENT_LABELS[lower]
+  }
+  return decoded
+    .split('-')
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+export const buildBreadcrumbsFromUrl = (routePath: string): BreadcrumbItem[] => {
+  const cleanPath = (routePath || '/').split('?')[0].split('#')[0].replace(/\/+$/, '') || '/'
+  if (cleanPath === '/') {
+    return []
+  }
+
+  const segments = cleanPath.split('/').filter(Boolean)
+  const items: BreadcrumbItem[] = [{ name: 'Home', path: '/' }]
+
+  let currentPath = ''
+  for (const segment of segments) {
+    currentPath += `/${segment}`
+    items.push({
+      name: formatBreadcrumbSegment(segment),
+      path: currentPath,
+    })
+  }
+
+  return items
+}
+
 export const useAppSeo = (options: AppSeoOptions) => {
   const route = useRoute()
 
@@ -72,11 +127,12 @@ export const useAppSeo = (options: AppSeoOptions) => {
   })
 
   useHead(() => {
-    const scripts: Array<{ type: string; children: string }> = []
+    const scripts: Array<{ key: string; type: string; children: string }> = []
 
-    const breadcrumbs = resolveVal(options.breadcrumbs)
-    if (breadcrumbs && breadcrumbs.length > 0) {
-      const itemListElement = breadcrumbs.map((item, index) => ({
+    // Always follow the current URL path as the single BreadcrumbList schema
+    const urlBreadcrumbs = buildBreadcrumbsFromUrl(route.path)
+    if (urlBreadcrumbs.length > 0) {
+      const itemListElement = urlBreadcrumbs.map((item, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         name: item.name,
@@ -88,6 +144,7 @@ export const useAppSeo = (options: AppSeoOptions) => {
       }))
 
       scripts.push({
+        key: 'schema-breadcrumb',
         type: 'application/ld+json',
         children: JSON.stringify({
           '@context': 'https://schema.org',
@@ -99,24 +156,23 @@ export const useAppSeo = (options: AppSeoOptions) => {
 
     const customSchema = resolveVal(options.schema)
     if (customSchema) {
-      if (Array.isArray(customSchema)) {
-        customSchema.forEach((s) => {
+      const schemaList = Array.isArray(customSchema) ? customSchema : [customSchema]
+      schemaList
+        .filter((s) => s && s['@type'] !== 'BreadcrumbList')
+        .forEach((s, index) => {
+          const schemaType = typeof s['@type'] === 'string' ? s['@type'].toLowerCase() : `item-${index}`
           scripts.push({
+            key: `schema-custom-${schemaType}-${index}`,
             type: 'application/ld+json',
             children: JSON.stringify(s),
           })
         })
-      } else {
-        scripts.push({
-          type: 'application/ld+json',
-          children: JSON.stringify(customSchema),
-        })
-      }
     }
 
     return {
       link: [
         {
+          key: 'canonical',
           rel: 'canonical',
           href: canonicalUrl.value,
         },
