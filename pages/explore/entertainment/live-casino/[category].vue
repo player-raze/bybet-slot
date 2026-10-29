@@ -28,7 +28,7 @@ useAppSeo({
   description: computed(() => `Join live ${categoryLabel.value} tables on ByBet Philippines. HD streaming, professional dealers, dynamic side bets, and seamless mobile wagering 24/7.`),
   breadcrumbs: computed(() => [
     { name: 'Home', path: '/' },
-    { name: 'Live Casino', path: '/explore/entertainment/live-casino/all' },
+    { name: 'Live Casino', path: '/explore/entertainment/live-casino/baccarat' },
     { name: categoryLabel.value, path: `/explore/entertainment/live-casino/${activeCategory.value}` },
   ]),
   schema: computed(() => ({

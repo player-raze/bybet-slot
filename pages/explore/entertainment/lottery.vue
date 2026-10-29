@@ -8,7 +8,7 @@ useAppSeo({
   description: 'Play online lottery, draw games, and instant win ticket draws on ByBet Philippines with top prize payouts.',
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: 'Entertainment', path: '/explore/entertainment/live-casino/all' },
+    { name: 'Entertainment', path: '/explore/entertainment/live-casino/baccarat' },
     { name: 'Lottery', path: '/explore/entertainment/lottery' },
   ],
 })

@@ -81,8 +81,7 @@ const handleAppStore = (): void => {
           <div class="sm:hidden w-full">
             <!-- iOS Card (matches screenshot) -->
             <div
-              v-if="selectedPlatform === 'ios'"
-              class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md"
+              class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md mb-2"
             >
               <div class="text-left pr-2">
                 <h2 class="text-[15px] font-bold text-white tracking-tight leading-tight">Apple Store</h2>
@@ -108,7 +107,6 @@ const handleAppStore = (): void => {
 
             <!-- Android Card -->
             <div
-              v-else
               class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md"
             >
               <div class="text-left pr-2">
@@ -137,7 +135,7 @@ const handleAppStore = (): void => {
             </div>
 
             <!-- Subtle Platform Toggle for testing/accessibility -->
-            <div class="flex items-center justify-center mt-2.5">
+            <!-- <div class="flex items-center justify-center mt-2.5">
               <button
                 type="button"
                 class="text-[11.5px] font-medium text-[#1fa779] hover:text-[#32d49a] transition-colors cursor-pointer select-none"
@@ -145,7 +143,7 @@ const handleAppStore = (): void => {
               >
                 {{ selectedPlatform === 'ios' ? 'Looking for Android? Switch to Google Play' : 'Looking for iOS? Switch to Apple Store' }}
               </button>
-            </div>
+            </div> -->
           </div>
 
           <!-- Desktop View: Both cards displayed side-by-side -->

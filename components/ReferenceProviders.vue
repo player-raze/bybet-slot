@@ -214,8 +214,37 @@ const providerLogo = (provider: string): string => {
 }
 
 @media (max-width: 63.99rem) {
+  .provider-section {
+    margin-top: 0.5rem;
+  }
+
+  .provider-section header {
+    min-height: 1.85rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .provider-section header > div {
+    gap: 0.38rem;
+  }
+
+  .provider-section h2 {
+    font-size: 0.95rem;
+  }
+
+  .provider-section header > a {
+    min-height: 1.65rem;
+    padding: 0.22rem 0.65rem;
+    font-size: 0.75rem;
+    gap: 0.24rem;
+  }
+
+  .provider-section header > a :deep(svg) {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
   .provider-grid {
-    grid-auto-columns: calc((100% - 0.84rem) / 4);
+    grid-auto-columns: calc((100% - 1.14rem) / 4);
     grid-auto-flow: column;
     grid-template-columns: none;
     margin-right: calc(var(--page-padding) * -1);
@@ -226,6 +255,7 @@ const providerLogo = (provider: string): string => {
     scrollbar-width: none;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
+    gap: 0.38rem;
   }
 
   .provider-grid::-webkit-scrollbar {
@@ -233,15 +263,25 @@ const providerLogo = (provider: string): string => {
   }
 
   .provider-grid a {
-    height: 2.65rem;
+    height: 3.1rem;
+    border-radius: 0.45rem;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+
+  .provider-grid img {
+    width: min(82%, 5.2rem);
+    height: 1.65rem;
+  }
+
+  .provider-grid strong {
+    font-size: 0.78rem;
   }
 }
 
 @media (max-width: 35rem) {
   .provider-grid {
-    grid-auto-columns: calc((100% - 0.56rem) / 3);
+    grid-auto-columns: calc((100% - 0.76rem) / 3);
   }
 }
 </style>

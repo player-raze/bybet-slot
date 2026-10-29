@@ -401,7 +401,7 @@ const handleOddClick = (prediction: Prediction, option: PredictionOption): void 
 .predictor-item__badge {
   display: grid;
   position: absolute;
-  top: -3px;
+  top: 0px;
   right: -3px;
   width: 19px;
   height: 19px;

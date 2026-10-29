@@ -20,13 +20,15 @@ import {
   BINGO_CATEGORIES,
   BINGO_CATEGORY_SVGS,
   BINGO_PROVIDERS,
-  BINGO_SECTIONS,
+  BingoGames,
   FREQUENTLY_SEARCHED_BINGO,
+  isGameInBingoCategory,
+  normalizeBingoProvider,
   type BingoCategory,
   type BingoGame,
-  type BingoSection,
 } from '~/data/bingo'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import GameRail from '~/components/game-cards/GameRail.vue'
 
 useAppSeo({
   title: 'Online Bingo Games — Fast Paced Fun & Wins | ByBet',
@@ -212,46 +214,82 @@ watch([searchQuery, activeProvider], () => {
 const searchResults = computed<BingoGame[]>(() => {
   const query = searchQuery.value.trim().toLowerCase()
   if (!query) return []
-  const provider = activeProvider.value.toLowerCase()
+  const provider = normalizeBingoProvider(activeProvider.value)
 
   const seen = new Set<string>()
   const results: BingoGame[] = []
 
-  for (const section of BINGO_SECTIONS) {
-    for (const game of section.games) {
-      if (seen.has(game.id)) continue
+  for (const game of BingoGames) {
+    if (seen.has(game.id)) continue
 
-      if (provider !== 'all' && game.provider.toLowerCase() !== provider) {
-        continue
-      }
+    const gameProv = normalizeBingoProvider(game.provider)
+    if (provider !== 'all' && gameProv !== provider) {
+      continue
+    }
 
-      if (
-        game.title.toLowerCase().includes(query) ||
-        game.provider.toLowerCase().includes(query)
-      ) {
-        seen.add(game.id)
-        results.push(game)
-      }
+    if (
+      game.title.toLowerCase().includes(query) ||
+      game.provider.toLowerCase().includes(query)
+    ) {
+      seen.add(game.id)
+      results.push(game)
     }
   }
 
   return results
 })
 
-const filteredSections = computed<BingoSection[]>(() => {
-  const provider = activeProvider.value.toLowerCase()
+interface BingoSectionDisplay {
+  id: string
+  title: string
+  emoji?: string
+  iconImage?: string
+  iconName: string
+  count: number
+  hasHelp?: boolean
+  games: BingoGame[]
+}
 
-  return BINGO_SECTIONS.map((section) => {
-    let games = section.games
+const sectionConfigs = [
+  { id: 'top', title: 'Top', emoji: '👑', iconImage: '/icons/slots/top.webp', iconName: 'Crown', hasHelp: false, count: 9 },
+  { id: 'hot', title: 'Hot Games', emoji: '🔥', iconImage: '/icons/slots/hot.webp', iconName: 'Flame', hasHelp: true, count: 0 },
+  { id: 'cold', title: 'Cold Games', emoji: '❄️', iconImage: '/icons/slots/cold.webp', iconName: 'Snowflake', hasHelp: true, count: 0 },
+  { id: 'max-rtp', title: 'Max RTP', emoji: '💵', iconImage: '/icons/slots/max-rtp.webp', iconName: 'Trophy', hasHelp: false, count: 0 },
+]
 
-    if (provider !== 'all') {
-      games = games.filter((g) => g.provider.toLowerCase() === provider)
+const filteredSections = computed<BingoSectionDisplay[]>(() => {
+  const provider = normalizeBingoProvider(activeProvider.value)
+
+  let availableGames = BingoGames
+  if (provider !== 'all') {
+    availableGames = availableGames.filter(g => normalizeBingoProvider(g.provider) === provider)
+  }
+
+  if (filterState.value.theme !== 'All') {
+    availableGames = availableGames.filter(g => g.theme === filterState.value.theme)
+  }
+  if (filterState.value.feature !== 'All') {
+    availableGames = availableGames.filter(g => g.features && g.features.includes(filterState.value.feature))
+  }
+
+  const GAMES_PER_SECTION = 6
+
+  return sectionConfigs.map((cfg) => {
+    const allMatchingGames: BingoGame[] = []
+    const seenIds = new Set<string>()
+
+    for (const game of availableGames) {
+      if (seenIds.has(game.id)) continue
+      if (isGameInBingoCategory(game, cfg.id)) {
+        seenIds.add(game.id)
+        allMatchingGames.push(game)
+      }
     }
 
     return {
-      ...section,
-      count: games.length,
-      games,
+      ...cfg,
+      count: allMatchingGames.length,
+      games: allMatchingGames.slice(0, GAMES_PER_SECTION),
     }
   }).filter((section) => section.games.length > 0)
 })
@@ -290,9 +328,9 @@ const resetFilters = (): void => {
             <component
               :is="categoryIcons[cat.iconName]"
               v-else-if="cat.iconName && categoryIcons[cat.iconName]"
-              class="h-4 w-4 mb-0.5 shrink-0"
+              class="h-10 w-10 sm:h-4 sm:w-4 mb-0.5 shrink-0"
             />
-            <span class="text-[10px] leading-tight whitespace-nowrap">{{ cat.shortLabel }}</span>
+            <span class="text-[12px] sm:text-[10px] leading-tight whitespace-nowrap">{{ cat.shortLabel }}</span>
           </button>
         </div>
 
@@ -316,7 +354,7 @@ const resetFilters = (): void => {
               d="M5.17487 19.8675L7.9565 18.1075C8.63891 18.2396 9.31883 18.308 10 18.308C15.4956 18.308 20 14.2442 20 9.15401C20 4.06434 15.4954 0 10 0C4.50461 0 0 4.06434 0 9.15401C0 12.0413 1.46921 14.6858 3.88947 16.3963L3.85501 19.0683C3.84572 19.7874 4.5896 20.2378 5.17487 19.8675ZM5.50007 10.9998C6.32849 10.9998 7.00007 10.3282 7.00007 9.49982C7.00007 8.67139 6.32849 7.99982 5.50007 7.99982C4.67164 7.99982 4.00007 8.67139 4.00007 9.49982C4.00007 10.3282 4.67164 10.9998 5.50007 10.9998ZM12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998C9.67164 10.9998 9.00007 10.3282 9.00007 9.49982C9.00007 8.67139 9.67164 7.99982 10.5001 7.99982C11.3285 7.99982 12.0001 8.67139 12.0001 9.49982C12.0001 10.3282 11.3285 10.9998 10.5001 10.9998ZM15.5001 10.9998C16.3285 10.9998 17.0001 10.3282 17.0001 9.49982C17.0001 8.67139 16.3285 7.99982 15.5001 7.99982C14.6716 7.99982 14.0001 8.67139 14.0001 9.49982C14.0001 10.3282 14.6716 10.9998 15.5001 10.9998Z"
             />
           </svg>
-          <span class="text-[10px] leading-tight whitespace-nowrap">Chat</span>
+          <span class="text-[12px] sm:text-[10px] leading-tight whitespace-nowrap">Chat</span>
         </button>
       </header>
 
@@ -532,19 +570,20 @@ const resetFilters = (): void => {
         </NuxtLink>
       </div>
 
-      <!-- Games Grid (1 row of 6 games) -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      <!-- Swipeable section preview -->
+      <GameRail :label="section.title">
         <GameCard
           v-for="game in section.games.slice(0, 6)"
           :key="game.id"
           :game="game"
           :activeId="activeGameId"
+          :displayCategory="section.id"
           @select="handleCardClick"
           @info="showGameDetails"
           @start="handleStartNow"
           @demo="handleDemo"
         />
-      </div>
+      </GameRail>
     </section>
     </template>
 
@@ -656,5 +695,11 @@ const resetFilters = (): void => {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+@media (max-width: 900px) {
+  .slot-nav-svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
 </style>

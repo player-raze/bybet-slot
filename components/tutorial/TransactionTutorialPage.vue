@@ -108,7 +108,7 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
 
 <template>
   <section class="transaction-tutorial" :class="`transaction-tutorial--${mode}`">
-    <SubpageHeader back-to="/explore/account/me" class="mb-2 sm:mb-3">
+    <SubpageHeader mobile-tabs back-to="/explore/account/me" class="mb-2 sm:mb-3">
       <template #center>
         <div class="transaction-pill-group" role="tablist">
           <NuxtLink
@@ -157,6 +157,14 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
 </template>
 
 <style scoped>
+@media (max-width: 63.99rem) {
+  .transaction-tutorial {
+    background: linear-gradient(#036242 0 74px, transparent 74px);
+  }
+  .transaction-board-wrapper { padding-right: 8px; padding-left: 8px; }
+  .transaction-board-wrapper .transaction-board { margin-top: 0; }
+}
+
 .transaction-tutorial {
   width: min(100%, 1170px);
   margin: 0 auto 28px;

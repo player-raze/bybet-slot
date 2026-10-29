@@ -2,6 +2,7 @@
 import { X } from 'lucide-vue-next'
 import MobileBottomNav from '~/components/MobileBottomNav.vue'
 import CommentPanel from '~/components/comments/CommentPanel.vue'
+import MobileLivePlazaHeader from '~/components/live-plaza/MobileLivePlazaHeader.vue'
 
 const { context: commentContext, openSportsComments, openGameComments, closeComments } = useCommentPanel()
 const route = useRoute()
@@ -37,6 +38,7 @@ const usesDesktopContentReferenceShell = computed(() => {
   return path === '/explore/egames/customer-service'
     || path === '/explore/bonuses'
     || path.startsWith('/explore/bonuses/')
+    || path.startsWith('/explore/bonus/')
     || path.startsWith('/explore/live-plaza/')
     || path === '/explore/account/me'
     || path.startsWith('/explore/account/')
@@ -58,7 +60,7 @@ const isEgamesPage = computed(() => route.path.startsWith('/explore/egames/') &&
 const isLiveCasinoPage = computed(() => route.path.startsWith('/explore/entertainment/live-casino'))
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
 const isAffiliatePage = computed(() => route.path === '/affiliate')
-const isBonusesPage = computed(() => route.path.startsWith('/explore/bonuses'))
+const isBonusesPage = computed(() => /^\/explore\/bonuses?(?:\/|$)/.test(route.path))
 const isLivePlazaPage = computed(() => route.path.startsWith('/explore/live-plaza'))
 const isJackpotPage = computed(() => route.path.startsWith('/explore/egames/jackpot'))
 const isAccountSettingsPage = computed(() => [
@@ -81,9 +83,11 @@ const isDedicatedMobileHeaderPage = computed(() => {
     '/about-us',
     '/game-rules',
     '/download-app',
-    '/explore/live-plaza/experts',
+    '/explore/live-plaza',
     '/explore/account/language',
     '/explore/account/timezone',
+    '/explore/bonuses',
+    '/explore/bonus',
   ].some(prefix => path === prefix || path.startsWith(prefix + '/'))
 })
 const isMobileDevice = (): boolean => {
@@ -224,8 +228,10 @@ onBeforeUnmount(() => {
       'site-shell--desktop-reference': usesDesktopReferenceShell,
       'site-shell--desktop-content-reference': usesDesktopContentReferenceShell,
       'site-shell--bonuses': isBonusesPage,
+      'site-shell--live-plaza': isLivePlazaPage,
       'site-shell--me': route.path === '/explore/account/me',
       'site-shell--dedicated-header': isDedicatedMobileHeaderPage,
+      'site-shell--green-header': isSportsPage || isEgamesPage || route.path.startsWith('/explore/entertainment/'),
     }"
   >
     <div class="app-header-underlay" aria-hidden="true" />
@@ -245,6 +251,7 @@ onBeforeUnmount(() => {
     <div class="content-layout">
       <div class="content-main-area">
         <main ref="pageContentElement" class="page-content pt-0">
+          <MobileLivePlazaHeader v-if="isLivePlazaPage && normalizedPath !== '/explore/live-plaza/experts'" />
           <slot />
         </main>
 
@@ -477,9 +484,40 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 63.99rem) {
+  .site-shell--green-header .page-content :deep(.sticky-header-seal),
+  .site-shell--green-header .page-content :deep(.sports-navigation) {
+    isolation: isolate;
+  }
+
+  .site-shell--green-header .page-content :deep(.sticky-header-seal)::before,
+  .site-shell--green-header .page-content :deep(.sports-navigation)::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: calc(0px - var(--header-height));
+    right: calc(0px - var(--page-padding));
+    left: calc(0px - var(--page-padding));
+    height: calc(var(--header-height) + 28px);
+    border-radius: 0 0 16px 16px;
+    background: #036242;
+    pointer-events: none;
+  }
+
   .site-shell--me,
   .site-shell--dedicated-header {
     padding-top: 0 !important;
+  }
+
+  .site-shell--live-plaza :deep(.seo-header-sticky-wrapper) {
+    display: none;
+  }
+
+  .site-shell--live-plaza :deep(.live-plaza-page),
+  .site-shell--live-plaza :deep(.expert-predictions-page),
+  .site-shell--live-plaza :deep(.live-plaza-streamer-page),
+  .site-shell--live-plaza :deep(.live-plaza-all-streamers-page) {
+    padding-right: 8px;
+    padding-left: 8px;
   }
 
   .site-shell--me > .app-header-shell,
@@ -506,7 +544,7 @@ onBeforeUnmount(() => {
   }
 
   .page-content {
-    padding: 0.5rem var(--page-padding) 0;
+    padding: 0.5rem 3px;
     background: var(--page);
   }
 }

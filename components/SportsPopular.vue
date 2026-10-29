@@ -13,6 +13,7 @@ import {
 } from 'lucide-vue-next'
 
 import LeagueDirectory from './sports/LeagueDirectory.vue'
+import MobileSportsNav from './sports/MobileSportsNav.vue'
 import League from './sports/tabs/League.vue'
 import Inplay from './sports/tabs/Inplay.vue'
 import Upcoming from './sports/tabs/Upcoming.vue'
@@ -289,22 +290,24 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="sports-page">
-    <nav
-      class="sports-tabs bg-[#1f1f1f]/95"
-      aria-label="Sports categories"
-    >
-      <NuxtLink
-        v-for="tab in visibleTabs"
-        :key="tab.key"
-        :to="redirectsToByBet(tab.key) ? bybetRedirectUrl : tabPath(tab.key)"
-        :external="redirectsToByBet(tab.key)"
-        :class="{ selected: activeTab === tab.key }"
-        :aria-current="activeTab === tab.key ? 'page' : undefined"
+    <div class="sports-navigation">
+      <MobileSportsNav />
+      <nav
+        class="sports-tabs bg-[#1f1f1f]/95"
+        aria-label="Sports categories"
       >
-        
-        {{ tabLabel(tab) }}
-      </NuxtLink>
-    </nav>
+        <NuxtLink
+          v-for="tab in visibleTabs"
+          :key="tab.key"
+          :to="redirectsToByBet(tab.key) ? bybetRedirectUrl : tabPath(tab.key)"
+          :external="redirectsToByBet(tab.key)"
+          :class="{ selected: activeTab === tab.key }"
+          :aria-current="activeTab === tab.key ? 'page' : undefined"
+        >
+          {{ tabLabel(tab) }}
+        </NuxtLink>
+      </nav>
+    </div>
 
     <div
       class="results"

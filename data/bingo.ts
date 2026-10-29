@@ -1,3 +1,5 @@
+import { SLOT_CATEGORY_SVGS } from './slots'
+
 export interface BingoGame {
   id: string
   title: string
@@ -12,22 +14,17 @@ export interface BingoGame {
   rtpPercent?: string
   livePlayers?: number
   href?: string
+  category?: string | string[]
+  categories?: string[]
+  theme?: string
+  features?: string[]
+  winningLine?: string
+  new?: boolean
+  jackpot?: boolean
+  Jackpot?: boolean
+  jackpotPrice?: number | string
+  JackpotPrice?: number | string
 }
-
-export const FREQUENTLY_SEARCHED_BINGO: string[] = [
-  'Super Bingo',
-  'Calaca Bingo',
-  'Fortune Bingo',
-  'iRich Bingo',
-  'Bingo Carnaval',
-  'Jackpot Bingo',
-  'Bingo Bonanza',
-  'Mega Ball Bingo',
-  'Golden Bingo Deluxe',
-  'Lucky Bingo Neko',
-]
-
-import { SLOT_CATEGORY_SVGS } from './slots'
 
 export interface BingoCategory {
   key: string
@@ -39,23 +36,24 @@ export interface BingoCategory {
   svg?: string
 }
 
+export const FREQUENTLY_SEARCHED_BINGO: string[] = [
+  'Jackpot Bingo',
+  'iRich Bingo',
+  'Bingo Carnaval',
+  'Fortune Bingo',
+  'Lucky Bingo',
+  'West Hunter Bingo',
+  'Super Bingo',
+  'Magic Lamp Bingo',
+  'Calaca Bingo',
+]
+
 export const BINGO_CATEGORY_SVGS: Record<string, string> = {
   home: SLOT_CATEGORY_SVGS.home,
   top: SLOT_CATEGORY_SVGS.top,
   hot: SLOT_CATEGORY_SVGS.hot,
   cold: SLOT_CATEGORY_SVGS.cold,
   'max-rpt': SLOT_CATEGORY_SVGS['max-rpt'],
-}
-
-export interface BingoSection {
-  id: string
-  title: string
-  emoji?: string
-  iconImage?: string
-  iconName: string
-  count: number
-  hasHelp?: boolean
-  games: BingoGame[]
 }
 
 export const BINGO_CATEGORIES: BingoCategory[] = [
@@ -66,283 +64,319 @@ export const BINGO_CATEGORIES: BingoCategory[] = [
   { key: 'max-rpt', label: 'Max RTP', shortLabel: 'Max...', iconName: 'Trophy', emoji: '💵', iconImage: '/icons/slots/max-rtp.webp', svg: SLOT_CATEGORY_SVGS['max-rpt'] },
 ]
 
-export const BINGO_PROVIDERS: { key: string; label: string }[] = [
+export interface BingoProviderOption {
+  key: string
+  label: string
+  logo?: string
+}
+
+export const BINGO_PROVIDERS: BingoProviderOption[] = [
   { key: 'all', label: 'All' },
-  { key: 'JILI', label: 'JILI' },
-  { key: 'JDB', label: 'JDB' },
-  { key: 'CQ9', label: 'CQ9' },
-  { key: 'PP', label: 'PP' },
-  { key: 'PG', label: 'PG' },
+  { key: 'JILI', label: 'JILI', logo: '/images/providers/jili.webp' },
 ]
 
-export const BINGO_SECTIONS: BingoSection[] = [
-  {
-    id: 'top',
-    title: 'Top',
-    emoji: '👑',
-    iconImage: '/icons/slots/top.webp',
-    iconName: 'Crown',
-    count: 120,
-    games: [
-      {
-        id: 'jackpot-bingo',
-        title: 'Jackpot Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/golden-empire.webp',
-        livePlayers: 47,
-      },
-      {
-        id: 'irich-bingo',
-        title: 'iRich Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/mega-ace.webp',
-        livePlayers: 16,
-      },
-      {
-        id: 'bingo-carnaval',
-        title: 'Bingo Carnaval',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/sugar-rush-dice.webp',
-        livePlayers: 13,
-      },
-      {
-        id: 'super-bingo',
-        title: 'Super Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/super-ace.webp',
-        livePlayers: 11,
-      },
-      {
-        id: 'west-hunter-bingo',
-        title: 'West Hunter Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/new-releases/wild-hop-and-drop.webp',
-        livePlayers: 6,
-      },
-      {
-        id: 'fortune-bingo',
-        title: 'Fortune Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/fortune-gems-2.webp',
-        livePlayers: 25,
-      },
-      {
-        id: 'magic-lamp-bingo',
-        title: 'Magic Lamp Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/new-releases/open-sesame.webp',
-        livePlayers: 23,
-      },
-      {
-        id: 'lucky-bingo',
-        title: 'Lucky Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/new-releases/7-wheel-money.webp',
-        livePlayers: 22,
-      },
-      {
-        id: 'calaca-bingo',
-        title: 'Calaca Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/super-ace-2.webp',
-        livePlayers: 21,
-      },
-      {
-        id: 'candyland-bingo',
-        title: 'Candyland Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/sweet-bonanza-1000.webp',
-        livePlayers: 21,
-      },
-    ],
-  },
-  {
-    id: 'hot',
-    title: 'Hot Games',
-    emoji: '🔥',
-    iconImage: '/icons/slots/hot.webp',
-    iconName: 'Flame',
-    count: 85,
-    hasHelp: true,
-    games: [
-      {
-        id: 'bingo-bonanza',
-        title: 'Bingo Bonanza',
-        provider: 'PP',
-        providerLogo: '/images/providers/pp.webp',
-        image: '/images/games/popular/sweet-bonanza-1000.webp',
-        hotPercent: '208.5%',
-      },
-      {
-        id: 'mega-ball-bingo',
-        title: 'Mega Ball Bingo',
-        provider: 'CQ9',
-        providerLogo: '/images/providers/cq9.webp',
-        image: '/images/games/new-releases/chinese-new-year-deluxe.webp',
-        hotPercent: '194.2%',
-      },
-      {
-        id: 'golden-bingo-deluxe',
-        title: 'Golden Bingo Deluxe',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/new-releases/golden-empire.webp',
-        hotPercent: '182.7%',
-      },
-      {
-        id: 'lucky-bingo-neko',
-        title: 'Lucky Bingo Neko',
-        provider: 'PG',
-        providerLogo: '/images/providers/pg.webp',
-        image: '/images/games/new-releases/lucky-neko.webp',
-        hotPercent: '175.0%',
-      },
-      {
-        id: 'wild-bingo-showdown',
-        title: 'Wild Bingo Showdown',
-        provider: 'PG',
-        providerLogo: '/images/providers/pg.webp',
-        image: '/images/games/new-releases/wild-bandito.webp',
-        hotPercent: '168.3%',
-      },
-      {
-        id: 'wheel-bingo-money',
-        title: 'Wheel Bingo Money',
-        provider: 'CQ9',
-        providerLogo: '/images/providers/cq9.webp',
-        image: '/images/games/new-releases/7-wheel-money.webp',
-        hotPercent: '159.6%',
-      },
-    ],
-  },
-  {
-    id: 'cold',
-    title: 'Cold Games',
-    emoji: '❄️',
-    iconImage: '/icons/slots/cold.webp',
-    iconName: 'Snowflake',
-    count: 64,
-    hasHelp: true,
-    games: [
-      {
-        id: 'dragons-bingo',
-        title: 'Dragons Bingo',
-        provider: 'JDB',
-        providerLogo: '/images/providers/jdb.webp',
-        image: '/images/games/popular/mega-ace.webp',
-        badge: '5000X',
-        coldPercent: '4.8%',
-      },
-      {
-        id: 'snakes-bingo',
-        title: 'Snakes & Bingo',
-        provider: 'PP',
-        providerLogo: '/images/providers/pp.webp',
-        image: '/images/games/new-releases/snakes-and-ladders-snake-eyes.webp',
-        badge: '3200X',
-        coldPercent: '9.2%',
-      },
-      {
-        id: 'ice-bass-bingo',
-        title: 'Ice Bass Bingo',
-        provider: 'PP',
-        providerLogo: '/images/providers/pp.webp',
-        image: '/images/games/new-releases/bigger-bass-blizzard.webp',
-        coldPercent: '12.6%',
-      },
-      {
-        id: 'open-sesame-bingo',
-        title: 'Open Sesame Bingo',
-        provider: 'JDB',
-        providerLogo: '/images/providers/jdb.webp',
-        image: '/images/games/new-releases/open-sesame.webp',
-        coldPercent: '15.4%',
-      },
-      {
-        id: 'olympus-lightning-bingo',
-        title: 'Olympus Bingo',
-        provider: 'PP',
-        providerLogo: '/images/providers/pp.webp',
-        image: '/images/games/popular/gates-of-olympus.webp',
-        coldPercent: '17.8%',
-      },
-      {
-        id: 'strike-777-bingo',
-        title: '777 Strike Bingo',
-        provider: 'JDB',
-        providerLogo: '/images/providers/jdb.webp',
-        image: '/images/games/new-releases/777-strike.webp',
-        coldPercent: '19.1%',
-      },
-    ],
-  },
-  {
-    id: 'max-rtp',
-    title: 'Max RTP',
-    emoji: '💵',
-    iconImage: '/icons/slots/max-rtp.webp',
-    iconName: 'Trophy',
-    count: 340,
-    games: [
-      {
-        id: 'fruity-bingo-carnival',
-        title: 'Fruity Carnival Bingo',
-        provider: 'CQ9',
-        providerLogo: '/images/providers/cq9.webp',
-        image: '/images/games/popular/sugar-rush-dice.webp',
-        rtpPercent: '98.1%',
-      },
-      {
-        id: 'jewel-bingo-luxury',
-        title: 'Jewel Luxury Bingo',
-        provider: 'CQ9',
-        providerLogo: '/images/providers/cq9.webp',
-        image: '/images/games/popular/sweet-bonanza-1000.webp',
-        rtpPercent: '97.9%',
-      },
-      {
-        id: 'xmas-festive-bingo',
-        title: 'Xmas Festive Bingo',
-        provider: 'CQ9',
-        providerLogo: '/images/providers/cq9.webp',
-        image: '/images/games/new-releases/7-wheel-money.webp',
-        rtpPercent: '97.8%',
-      },
-      {
-        id: 'rabbit-xtreme-bingo',
-        title: 'Rabbit Xtreme Bingo',
-        provider: 'PG',
-        providerLogo: '/images/providers/pg.webp',
-        image: '/images/games/new-releases/fortune-rabbit-xtreme.webp',
-        rtpPercent: '97.7%',
-      },
-      {
-        id: 'tut-respin-bingo',
-        title: 'Book of Tut Bingo',
-        provider: 'PP',
-        providerLogo: '/images/providers/pp.webp',
-        image: '/images/games/new-releases/john-hunter-book-of-tut-respin.webp',
-        rtpPercent: '97.6%',
-      },
-      {
-        id: 'golden-empire-bingo',
-        title: 'Golden Empire Bingo',
-        provider: 'JILI',
-        providerLogo: '/images/providers/jili.webp',
-        image: '/images/games/popular/golden-empire.webp',
-        rtpPercent: '97.5%',
-      },
-    ],
-  },
-]
+export const normalizeBingoProvider = (provider: string): string => {
+  const p = (provider || '').trim().toLowerCase()
+  if (p === 'pp' || p === 'pragmatic play' || p === 'pragmatic') return 'pp'
+  if (p === 'pg' || p === 'pg soft') return 'pg'
+  if (p === 'jdb' || p === 'jpg') return 'jdb'
+  if (p === 'jili') return 'jili'
+  if (p === 'cq9') return 'cq9'
+  if (p === 'red tiger' || p === 'redtiger' || p === 'unknown') return 'red tiger'
+  return p
+}
 
+export const getBingoProviderLogo = (provider: string): string => {
+  const norm = normalizeBingoProvider(provider)
+  if (norm === 'pp') return '/images/providers/pp.webp'
+  if (norm === 'pg') return '/images/providers/pg.webp'
+  if (norm === 'jdb') return '/images/providers/jdb.webp'
+  if (norm === 'jili') return '/images/providers/jili.webp'
+  if (norm === 'cq9') return '/images/providers/cq9.webp'
+  if (norm === 'red tiger') return '/images/providers/red-tiger.webp'
+  return ''
+}
+
+export const normalizeBingoCategory = (param: string): string => {
+  const p = (param || '').toLowerCase()
+  if (p === 'bonus' || p === 'bonuses') return 'bonus'
+  if (p === 'top-pick' || p === 'top-picks') return 'top-pick'
+  if (p === 'max-rpt' || p === 'max-rtp') return 'max-rpt'
+  return p
+}
+
+export const isGameInBingoCategory = (game: BingoGame, categoryKey: string): boolean => {
+  const target = normalizeBingoCategory(categoryKey)
+  const rawCats: string[] = Array.isArray(game.category)
+    ? game.category
+    : (game.categories || (game.category ? [game.category] : []))
+  const normCats = rawCats.map(c => normalizeBingoCategory(c))
+  const hasCat = normCats.includes(target)
+
+  if (target === 'bonus') {
+    return hasCat
+  }
+  if (target === 'top-pick') {
+    return hasCat
+  }
+  if (target === 'top') {
+    return hasCat || (game.livePlayers !== undefined && game.livePlayers > 0)
+  }
+  if (target === 'new') {
+    return hasCat || Boolean(game.new) || game.badge === 'NEW'
+  }
+  if (target === 'hot') {
+    return hasCat || Boolean(game.hotPercent)
+  }
+  if (target === 'cold') {
+    return hasCat || Boolean(game.coldPercent)
+  }
+  if (target === 'max-rpt') {
+    return hasCat || Boolean(game.rtpPercent)
+  }
+
+  return hasCat
+}
+
+export const BingoGames: BingoGame[] = [
+  {
+    "id": "jackpot-bingo",
+    "title": "Jackpot Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/jackpot-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 100,
+    "rtpPercent": "97.0%",
+    "coldPercent": "81.8%",
+    "theme": "Entertainment",
+    "features": [
+      "Buy Spins",
+      "Free Spins"
+    ]
+  },
+  {
+    "id": "irich-bingo",
+    "title": "iRich Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/irich-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 36,
+    "rtpPercent": "97.0%",
+    "coldPercent": "95.2%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "bingo-carnaval",
+    "title": "Bingo Carnaval",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/bingo-carnaval.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "hot"
+    ],
+    "livePlayers": 22,
+    "rtpPercent": "97.0%",
+    "hotPercent": "97.9%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "fortune-bingo",
+    "title": "Fortune Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/fortune-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 11,
+    "rtpPercent": "97.0%",
+    "coldPercent": "54.8%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "lucky-bingo",
+    "title": "Lucky Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/lucky-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 9,
+    "rtpPercent": "97.0%",
+    "coldPercent": "61.4%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "west-hunter-bingo",
+    "title": "West Hunter Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/west-hunter-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "hot"
+    ],
+    "livePlayers": 8,
+    "rtpPercent": "97.0%",
+    "hotPercent": "101.0%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "super-bingo",
+    "title": "Super Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/super-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 6,
+    "rtpPercent": "97.0%",
+    "coldPercent": "80.0%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "magic-lamp-bingo",
+    "title": "Magic Lamp Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/magic-lamp-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 6,
+    "rtpPercent": "97.0%",
+    "coldPercent": "56.3%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "calaca-bingo",
+    "title": "Calaca Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/calaca-bingo.webp",
+    "category": [
+      "top",
+      "max-rpt",
+      "cold"
+    ],
+    "livePlayers": 5,
+    "rtpPercent": "97.0%",
+    "coldPercent": "71.3%",
+    "theme": "Others",
+    "features": [
+      "Prize Pool"
+    ]
+  },
+  {
+    "id": "bingo-adventure",
+    "title": "Bingo Adventure",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/bingo-adventure.webp",
+    "category": [
+      "max-rpt"
+    ],
+    "rtpPercent": "97.0%",
+    "theme": "Adventures",
+    "features": [
+      "Buy Spins",
+      "Free Spins"
+    ],
+    "winningLine": "25"
+  },
+  {
+    "id": "go-goal-bingo",
+    "title": "Go Goal Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/go-goal-bingo.webp",
+    "category": [
+      "max-rpt"
+    ],
+    "rtpPercent": "97.0%",
+    "theme": "Sports",
+    "features": [
+      "Buy Spins",
+      "Free Spins"
+    ],
+    "winningLine": "25"
+  },
+  {
+    "id": "pearls-of-bingo",
+    "title": "Pearls of Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/pearls-of-bingo.webp",
+    "category": [
+      "max-rpt"
+    ],
+    "rtpPercent": "97.0%",
+    "theme": "Others",
+    "features": [
+      "Buy Spins",
+      "Free Spins"
+    ],
+    "winningLine": "25"
+  },
+  {
+    "id": "candyland-bingo",
+    "title": "Candyland Bingo",
+    "provider": "JILI",
+    "providerLogo": "/images/providers/jili.webp",
+    "image": "/images/slots/candyland-bingo.webp",
+    "category": [
+      "max-rpt"
+    ],
+    "rtpPercent": "97.0%",
+    "theme": "Foods",
+    "features": [
+      "Buy Spins",
+      "Free Spins"
+    ],
+    "winningLine": "25"
+  }
+]

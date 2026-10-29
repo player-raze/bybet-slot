@@ -725,7 +725,7 @@ const selectChoice = (id: string): void => {
     class="game-tutorial-page"
     :class="{ 'game-tutorial-page--lesson': activeMode === 'tutorial' }"
   >
-    <SubpageHeader back-to="/explore/account/me" class="mb-2">
+    <SubpageHeader mobile-tabs back-to="/explore/account/me" class="mb-2">
       <template #center>
         <div class="tutorial-pill-group" role="tablist">
           <NuxtLink
@@ -897,6 +897,12 @@ const selectChoice = (id: string): void => {
 </template>
 
 <style scoped>
+@media (max-width: 63.99rem) {
+  .game-tutorial-page {
+    background: linear-gradient(#036242 0 74px, transparent 74px);
+  }
+}
+
 .game-tutorial-page {
   display: flex;
   width: min(100%, 1285px);

@@ -50,7 +50,7 @@ onMounted(() => {
       title="24/7 Services"
       meta-title="24/7 Customer Support & Help Center | ByBet Philippines"
       description="Contact ByBet 24/7 Customer Support for fast assistance with deposits, withdrawals, promotions, and account verification. Chat live with us anytime."
-      back-to="/explore/entertainment/live-casino/all"
+      back-to="/explore/account/me"
     />
 
     <!-- Welcome Greeting Card -->

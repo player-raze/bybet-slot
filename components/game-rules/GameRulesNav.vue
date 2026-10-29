@@ -221,6 +221,45 @@ watch(() => route.path, () => {
 </template>
 
 <style scoped>
+@media (max-width: 63.99rem) {
+  .game-rules-sticky-wrapper {
+    padding-bottom: 0;
+    border-radius: 0;
+    background: linear-gradient(#036242 0 74px, #000 74px);
+  }
+  .game-rules-header-wrapper :deep(.subpage-header) {
+    height: 48px;
+    min-height: 48px;
+    margin-bottom: 0;
+    padding: 0 12px;
+    background: #036242;
+    box-shadow: none;
+  }
+  .game-rules-header-wrapper :deep(.subpage-header__title) { font-size: 16px; }
+  .game-rules-header-wrapper :deep(.subpage-header__back-btn) { width: 30px; height: 30px; border-color: #ffffff60; }
+  .game-rules-header-wrapper .game-rules-aa,
+  .game-rules-header-wrapper .game-rules-aa:hover { color: #fff; }
+  .game-rules-header-wrapper .game-rules-category-nav {
+    min-height: 46px;
+    margin: 0 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: #141414;
+    gap: 8px;
+  }
+  .game-rules-category-nav .game-rules-tab {
+    min-height: 30px;
+    padding: 5px 12px;
+    border: 0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    background: transparent;
+    box-shadow: none;
+  }
+  .game-rules-category-nav .game-rules-tab.tab-pill--active { background: #036242; }
+}
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }

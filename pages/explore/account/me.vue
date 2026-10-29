@@ -104,9 +104,9 @@ onBeforeUnmount(() => {
     <div class="me-hero-wrapper relative w-full overflow-hidden">
       <!-- Frosted Profile Card -->
       <div class="px-3.5 pt-2 pb-4 lg:px-6 lg:py-6">
-        <div class="me-frosted-card mx-auto max-w-xl rounded-[20px] p-4 lg:p-6 bg-white/[0.14] backdrop-blur-xl border border-white/25 shadow-xl">
+        <div class="me-frosted-card mx-auto max-w-xl rounded-[20px] p-4 lg:p-6 bg-white/[0.14] backdrop-blur-xl border border-white/25 shadow-0 ">
           <!-- User Avatar Silhouette -->
-          <div class="w-14 h-14 rounded-full border border-white/30 bg-white/10 flex items-center justify-center mx-auto mb-3 shadow-sm">
+          <div class="w-14 h-14 rounded-full border border-white/30 bg-white/10 flex items-center justify-center mx-auto mb-3 ">
             <UserRound class="w-7 h-7 text-white/90" :stroke-width="1.8" />
           </div>
 
@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Subtle fade to dark bottom edge -->
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-b from-transparent to-[#0e0f0e]"></div>
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-6 "></div>
     </div>
 
     <!-- Content Accordions Area -->
@@ -1166,10 +1166,8 @@ onBeforeUnmount(() => {
     inset: 0 0 -24px;
     z-index: -1;
     pointer-events: none;
-    /* background: #0d6047 url('/images/me/me-bg.png') right top / 100% auto no-repeat; */
 
     background-image: 
-    linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%),
     url('/images/me/me-bg.png');
     background-size: cover;
     background-position: top;
@@ -1198,6 +1196,4 @@ onBeforeUnmount(() => {
       --tw-backdrop-blur: blur(8px) !important;
 }
 
-.menu-item {
-}
 </style>

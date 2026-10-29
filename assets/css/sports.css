@@ -529,3 +529,26 @@
 .fill-icon-7 {
   fill: currentColor;
 }
+
+@media (max-width: 63.99rem) {
+  .sports-page { padding-top: 0; }
+
+  .sports-page .sports-navigation {
+    position: sticky;
+    top: var(--content-sticky-top, var(--header-height));
+    z-index: 30;
+    min-width: 0;
+    padding-bottom: 8px;
+    background: var(--page);
+  }
+
+  .sports-page .sports-tabs {
+    gap: 6px;
+    padding: 7px 8px;
+    border-radius: 12px;
+    scrollbar-width: none;
+  }
+
+  .sports-page .sports-tabs::-webkit-scrollbar { display: none; }
+  .sports-page .sports-tabs a { flex-shrink: 0; padding: 0 12px; }
+}

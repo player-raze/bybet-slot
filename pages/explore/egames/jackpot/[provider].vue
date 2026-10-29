@@ -5,7 +5,7 @@ import {
   Play,
   User,
 } from 'lucide-vue-next'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import usernamesList from '~/data/usernames.json'
 import {
   JACKPOT_NAV_TABS,
@@ -15,6 +15,8 @@ import {
   type JackpotWinner,
 } from '~/data/jackpot'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import GameRail from '~/components/game-cards/GameRail.vue'
+import { SLOTS, normalizeSlotProvider } from '~/data/slots'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
 const JACKPOT_REFRESH_INTERVAL_MS = 60_000
@@ -250,17 +252,30 @@ const filteredSections = computed<JackpotSection[]>(() => {
       ))
     : JACKPOT_SECTIONS.filter((s) => s.id.toLowerCase() === activeProvider.value)
 
-  return sections.map((s) => ({
-    ...s,
-    count: s.games.length,
-  }))
+  return sections.map((section) => {
+    const seenIds = new Set<string>()
+    const amount = section.showCounter ? getJackpotAmount(section) : 0
+    const poolText = amount > 0 ? `₱${jackpotNumberFormatter.format(amount)}` : undefined
+
+    const games = SLOTS.filter((game) => {
+      if (game.jackpot !== true && game.Jackpot !== true) return false
+      if (normalizeSlotProvider(game.provider) !== normalizeSlotProvider(section.id)) return false
+      if (seenIds.has(game.id)) return false
+      seenIds.add(game.id)
+      return true
+    }).map(game => (poolText ? { ...game, jackpotPool: poolText } : game))
+
+    return { ...section, games, count: games.length }
+  })
 })
+
+watch(activeProvider, () => { activeGameId.value = null })
 </script>
 
 <template>
   <div class="jackpot-page w-full min-w-0 pb-16">
     <!-- Sticky Header (Top Nav Tabs Bar) -->
-    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-1 pb-2">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-0 sm:px-1 pb-2">
       <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
       <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm">
         <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm">
@@ -384,31 +399,36 @@ const filteredSections = computed<JackpotSection[]>(() => {
         </div>
 
         <div class="jackpot-provider-count">
-          <a
-            :href="bybetRedirectUrl"
-            target="_blank"
-            rel="noopener noreferrer"
+          <NuxtLink
+            :to="`/explore/egames/jackpot/${section.id}`"
             class="count-badge flex items-center gap-0.5 rounded-full bg-[#202220] hover:bg-[#282a29] px-2.5 py-0.5 text-[11px] font-medium text-[#8e9491] hover:text-white transition-colors cursor-pointer"
           >
             <span>{{ section.count }}</span>
             <ChevronRight class="h-3 w-3" />
-          </a>
+          </NuxtLink>
         </div>
       </div>
 
-      <!-- Single-row game rail, matching the reference carousel layout -->
-      <div class="jackpot-game-rail no-scrollbar">
+      <GameRail
+        :label="`${section.provider} jackpot games`"
+        :layout="activeProvider === 'all' ? 'slider' : 'grid'"
+        :wide-columns="activeProvider === 'all' ? 8 : 6"
+      >
         <GameCard
           v-for="game in section.games"
           :key="game.id"
           :game="game"
           :activeId="activeGameId"
+          :displayCategory="section.id === 'jdb' || activeProvider === 'jdb' ? 'jackpot-jdb' : 'jackpot'"
           @select="handleCardClick"
           @info="showGameDetails"
           @start="handleStartNow"
           @demo="handleDemo"
         />
-      </div>
+      </GameRail>
+      <p v-if="section.games.length === 0" class="py-8 text-center text-sm text-[#8e9491]">
+        No jackpot games are available for this provider.
+      </p>
     </section>
 
     <!-- Winners List Card (Shown only on JDB jackpot page) -->
@@ -623,23 +643,6 @@ const filteredSections = computed<JackpotSection[]>(() => {
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.48));
 }
 
-.jackpot-game-rail {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 70px) / 8);
-  gap: 10px;
-  min-width: 0;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  padding-bottom: 2px;
-  scroll-snap-type: inline proximity;
-}
-
-.jackpot-game-rail > * {
-  min-width: 0;
-  scroll-snap-align: start;
-}
-
 .winner-item:nth-child(even) {
   background-color: #000;
 }
@@ -652,18 +655,6 @@ const filteredSections = computed<JackpotSection[]>(() => {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 1279px) {
-  .jackpot-game-rail {
-    grid-auto-columns: calc((100% - 50px) / 6);
-  }
-}
-
-@media (max-width: 1023px) {
-  .jackpot-game-rail {
-    grid-auto-columns: calc((100% - 30px) / 4);
   }
 }
 
@@ -694,9 +685,6 @@ const filteredSections = computed<JackpotSection[]>(() => {
     left: calc(50% + 60px);
   }
 
-  .jackpot-game-rail {
-    grid-auto-columns: calc((100% - 20px) / 3);
-  }
 }
 
 @media (max-width: 639px) {
@@ -734,9 +722,6 @@ const filteredSections = computed<JackpotSection[]>(() => {
     width: 8px;
   }
 
-  .jackpot-game-rail {
-    grid-auto-columns: minmax(140px, 46%);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

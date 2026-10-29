@@ -462,8 +462,17 @@ const toggleFaq = (index: number): void => {
 }
 
 @media (max-width: 63.99rem) {
+  .app-promotion {
+    margin-top: 0.65rem;
+  }
+
+  .app-promotion-card {
+    border-radius: 0.5rem;
+  }
+
   .app-promotion-media {
-    aspect-ratio: 2.7 / 1;
+    min-height: 9.8rem;
+    aspect-ratio: 2.15 / 1;
     background: #03150f;
   }
 
@@ -473,41 +482,92 @@ const toggleFaq = (index: number): void => {
     object-position: center;
   }
 
+  .app-promotion-content {
+    padding: 0.65rem 0.75rem;
+  }
+
   .app-promotion-qr-copy {
-    width: 18%;
+    top: 74%;
+    left: 91%;
+    width: 22%;
+  }
+
+  .app-promotion-qr-copy strong {
+    font-size: clamp(0.5rem, 2cqi, 0.64rem);
+  }
+
+  .app-promotion-qr-copy span {
+    font-size: clamp(0.42rem, 1.6cqi, 0.52rem);
   }
 
   .app-promotion-copy {
-    max-width: 52%;
+    width: 58%;
+    max-width: 58%;
+  }
+
+  .app-promotion-eyebrow {
+    font-size: 0.62rem;
   }
 
   .app-promotion-heading {
-    font-size: clamp(0.68rem, 3.1cqi, 0.9rem);
+    margin-top: 0.18rem;
+    font-size: clamp(0.82rem, 3.6cqi, 1.05rem);
+    line-height: 1.18;
   }
 
   .app-promotion-description {
-    font-size: clamp(0.4rem, 1.75cqi, 0.52rem);
-    line-height: 1.4;
+    margin-top: 0.24rem;
+    font-size: clamp(0.62rem, 2.4cqi, 0.75rem);
+    line-height: 1.35;
   }
 
   .app-promotion-cta {
-    min-height: clamp(1.15rem, 4.8cqi, 1.45rem);
-    padding-inline: clamp(0.65rem, 2.4cqi, 0.95rem);
-    font-size: clamp(0.42rem, 1.8cqi, 0.55rem);
+    min-height: 1.85rem;
+    margin-top: 0.42rem;
+    padding: 0.25rem 0.8rem;
+    border-radius: 0.42rem;
+    font-size: clamp(0.65rem, 2.5cqi, 0.78rem);
+    gap: 0.32rem;
   }
 
   .information-grid {
+    margin-top: 0.65rem;
     grid-template-columns: 1fr;
+    gap: 0.65rem;
   }
 
   .about-panel {
     height: auto;
-    min-height: 9.6rem;
+    min-height: auto;
+    padding: 1rem 0.85rem;
+    border-radius: 0.5rem;
   }
 
   .faq-panel {
     height: auto;
-    min-height: 12.1rem;
+    min-height: auto;
+    padding: 1rem 0.85rem;
+    border-radius: 0.5rem;
+  }
+
+  .about-panel h2,
+  .faq-panel h2 {
+    margin-bottom: 0.6rem;
+    font-size: 1.02rem;
+  }
+
+  .about-panel p {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  .about-panel-cta {
+    min-height: 1.95rem;
+    margin-top: 0.55rem;
+    padding: 0.28rem 0.9rem;
+    border-radius: 0.42rem;
+    font-size: 0.78rem;
   }
 
   .about-panel-copy {
@@ -519,6 +579,37 @@ const toggleFaq = (index: number): void => {
     opacity: 0.22;
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 35%);
     mask-image: linear-gradient(180deg, transparent, #000 35%);
+  }
+
+  .faq-list {
+    gap: 0.38rem;
+  }
+
+  .faq-list article {
+    border-radius: 0.42rem;
+  }
+
+  .faq-list button {
+    min-height: 2.5rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  .faq-list button h3 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: 600;
+  }
+
+  .faq-list svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .faq-list p {
+    padding: 0 0.75rem 0.65rem;
+    font-size: 0.76rem;
+    line-height: 1.5;
   }
 }
 </style>

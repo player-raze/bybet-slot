@@ -80,7 +80,11 @@ export interface BonusTableRow {
 export interface BonusTable {
   headerTitle?: string
   subHeaderTitle?: string
-  columns: { key: string; label: string; icon?: string }[]
+  variant?: 'filled' | 'outline'
+  accentColor?: string
+  highlightColumns?: string[]
+  rowSpans?: Record<string, number>
+  columns: { key: string; label: string; icon?: string; width?: string }[]
   rows: BonusTableRow[]
   footnote?: string
 }
@@ -110,15 +114,28 @@ export interface BonusDetail {
   eventContent: {
     badge?: string
     description: string
+    descriptionTone?: 'default' | 'white'
+    tableHeading?: string
+    descriptionParts?: Array<{
+      text: string
+      highlighted?: boolean
+    }>
     methodCard?: {
       title: string
       content: string
     }
+    callouts?: Array<{
+      label: string
+      badge?: string
+    }>
+    paragraphs?: string[]
     tables?: BonusTable[]
+    notes?: string[]
     bullets?: string[]
   }
   promotionTerms?: string[] | string
   rules: string[]
+  rulesStyle?: 'bullets' | 'plain'
   withdrawalTerms?: string
   hasJoinButton?: boolean
   contentHtml?: string
@@ -147,6 +164,7 @@ import {
   ROAD_TO_EUROPEAN_GLORY_INNER_ICON,
   ROAD_TO_EUROPEAN_GLORY_CONTENT_HTML,
 } from './promotion-content-html'
+import bonusDetailDatabase from './bonus-details.json'
 
 export * from './promotion-content-html'
 
@@ -291,14 +309,6 @@ export const PROMO_CATEGORIES: PromoCategory[] = [
   { key: 'others', label: 'Others' },
 ]
 
-// Target dates ~70 days into the future
-const getFutureDate = (daysAhead: number = 70): string => {
-  const d = new Date()
-  d.setDate(d.getDate() + daysAhead)
-  return d.toISOString()
-}
-
-
 export const PROMOTIONS: PromotionItem[] = [
   {
     id: 'your-deposit-your-reward',
@@ -315,7 +325,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["your-deposit-your-reward"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["your-deposit-your-reward"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(71),
   },
   {
     id: 'spins-bring-spins',
@@ -332,7 +341,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["spins-bring-spins"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["spins-bring-spins"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(65),
   },
   {
     id: 'unlimited-rebate',
@@ -349,7 +357,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["unlimited-rebate"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["unlimited-rebate"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: UNLIMITED_REBATE_INNER_ICON,
-    endDate: getFutureDate(90),
   },
   {
     id: 'slot-loss-rebate',
@@ -366,7 +373,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["slot-loss-rebate"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["slot-loss-rebate"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(71),
   },
   {
     id: 'weekly-treasure-chest',
@@ -384,7 +390,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["weekly-treasure-chest"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["weekly-treasure-chest"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: WEEKLY_TREASURE_CHEST_INNER_ICON,
-    endDate: getFutureDate(60),
   },
   {
     id: 'umuulan-ng-angpao',
@@ -401,7 +406,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["umuulan-ng-angpao"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["umuulan-ng-angpao"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: '2026-10-25T23:59:59+08:00',
   },
   {
     id: 'vip-sports-rebate',
@@ -417,7 +421,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["vip-sports-rebate"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["vip-sports-rebate"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: VIP_SPORTS_REBATE_INNER_ICON,
-    endDate: getFutureDate(71),
   },
   {
     id: 'champions-streak-fever',
@@ -433,8 +436,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["champions-streak-fever"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["champions-streak-fever"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: CHAMPIONS_STREAK_FEVER_INNER_ICON,
-    endDate: '2027-01-01T11:59:59+08:00',
-    countdownText: '2 Month 10 Day',
     imagePosition: 'right center',
   },
   {
@@ -451,7 +452,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["nba-back-to-back-boost"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["nba-back-to-back-boost"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: NBA_BACK_TO_BACK_BOOST_INNER_ICON,
-    endDate: '2026-12-31T23:59:00+08:00',
   },
   {
     id: 'hat-trick-safety-net',
@@ -467,7 +467,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["hat-trick-safety-net"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["hat-trick-safety-net"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(55),
   },
   {
     id: 'road-to-european-glory',
@@ -483,7 +482,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["road-to-european-glory"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["road-to-european-glory"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(60),
   },
   {
     id: 'vip-live-casino-rebate',
@@ -499,7 +497,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["vip-live-casino-rebate"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["vip-live-casino-rebate"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(71),
   },
   {
     id: 'lucky-8-streak',
@@ -515,7 +512,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["lucky-8-streak"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["lucky-8-streak"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(40),
   },
   {
     id: 'lucky-rankings',
@@ -531,7 +527,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["lucky-rankings"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["lucky-rankings"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(71),
   },
   {
     id: 'complete-account-information',
@@ -547,7 +542,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["complete-account-information"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["complete-account-information"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(85),
   },
   {
     id: 'referral-bonus',
@@ -563,7 +557,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["referral-bonus"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["referral-bonus"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(100),
   },
   {
     id: 'bybet-vip-center',
@@ -580,7 +573,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["bybet-vip-center"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["bybet-vip-center"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(120),
     countdownText: 'Permanent',
     imagePosition: 'left center',
   },
@@ -598,8 +590,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["bybet-giveaways-galore"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["bybet-giveaways-galore"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(30),
-    countdownText: '2 Month 9 Day',
     imagePosition: '38% center',
   },
   {
@@ -616,8 +606,6 @@ export const PROMOTIONS: PromotionItem[] = [
     headerImage: PROMO_IMAGE_MAP["spot-it-snap-it-win-it"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["spot-it-snap-it-win-it"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
-    endDate: getFutureDate(60),
-    countdownText: '2 Month 9 Day',
     showSaveBadge: true,
     imagePosition: '68% center',
   },
@@ -664,621 +652,149 @@ export const PROMOTION_SECTIONS: PromoSection[] = [
   },
 ]
 
-// Detailed Inner Pages Data matching the 3 provided screenshots
-export const BONUS_DETAILS: Record<string, BonusDetail> = {
-  'unlimited-rebate': {
-    id: 'unlimited-rebate',
-    slug: 'unlimited-rebate',
-    title: '1.5% UNLIMITED REBATE',
-    seoTitle: '1.5% Unlimited Daily Slot Rebate — All VIP Members | ByBet',
-    seoDesc: 'Enjoy a 1.5% unlimited daily rebate on all online slots at ByBet Philippines. Automatic daily credits with no maximum cap and low 1x turnover.',
-    subtitle: 'DAILY SLOT REBATE • ALL MEMBERS',
-    period: '2026-07-08 12:00:00 - 2026-12-31 23:59:59 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['unlimited-rebate'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['unlimited-rebate']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['unlimited-rebate']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: UNLIMITED_REBATE_INNER_ICON,
-    iconType: 'rebate',
-    accentColor: '#10b981',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      description: 'Play slots and get a 1.5% daily rebate, no matter your VIP level! Rebates are based on your settled valid bets from the previous day and are credited automatically. No need to claim!',
-      tables: [
-        {
-          headerTitle: '🎰 Slot Rebate',
-          columns: [
-            { key: 'vipLevel', label: 'VIP Level', icon: '👑' },
-            { key: 'dailyRebate', label: 'Daily Rebate' },
-          ],
-          rows: [
-            { vipLevel: 'VIP 0 - 10', dailyRebate: '1.5%' },
-          ],
-        },
-      ],
-    },
-    promotionTerms: [
-      'Bind your phone number',
-      'Bind your email',
-      'Complete your profile information',
-      'Same name (name and surname) is not applicable',
-      'Same IP is not applicable',
-    ],
-    rules: [
-      'Open to KYC-verified members only.',
-      'Slot rebates can be used on all games.',
-      'Slot rebates must meet a 1x turnover requirement before withdrawal.',
-      'BYBET reserves the right to modify, suspend, or cancel this promotion at any time.',
-      'BYBET General Terms and Conditions apply.',
-    ],
-    hasJoinButton: false,
-    contentHtml: UNLIMITED_REBATE_CONTENT_HTML,
-  },
+const ANGPAO_INNER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="41" viewBox="0 0 40 41" fill="none"><rect x="4" y="3" width="32" height="35" rx="4" fill="#087653"/><path d="M8 9.5L20 16.5L32 9.5M20 16.5V22" stroke="#06251B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 21L20 26L25 21M20 26V33M16.5 29H23.5" stroke="#06251B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 
-  'weekly-treasure-chest': {
-    id: 'weekly-treasure-chest',
-    slug: 'weekly-treasure-chest',
-    title: 'Weekly Treasure Chest: Receive a Mystery Treasure Chest according to the Valid Bet of points!',
-    seoTitle: 'Weekly Mystery Treasure Chest Rewards — 4x Per Week | ByBet',
-    seoDesc: 'Unlock up to 4 mystery treasure chests weekly based on your valid bet turnover across sports and casino games on ByBet Philippines.',
-    subtitle: 'Achievement Reward: Mystery Treasure Chest ×4/Week',
-    period: '2026-04-20 12:00:00 - 2026-12-31 23:59:00 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['weekly-treasure-chest'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['weekly-treasure-chest']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['weekly-treasure-chest']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: WEEKLY_TREASURE_CHEST_INNER_ICON,
-    innerPageIcon: WEEKLY_TREASURE_CHEST_INNER_ICON,
-    accentColor: '#fbbf24',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Period', value: '2026-01-30 12:00:00 ~ 2026-12-31 23:59:00 (GMT+08:00)' },
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      badge: 'Refresh 1 time weekly',
-      description: 'If you reach the threshold of the treasure chest mark, you can receive the reward content of the treasure chest.',
-      tables: [
-        {
-          headerTitle: 'Weekly Treasure Chest',
-          columns: [
-            { key: 'requirement', label: 'Valid Bets' },
-            { key: 'reward', label: 'Coupons' },
-          ],
-          rows: [
-            { requirement: 'Valid Bets 1,000', reward: 'Coupons 5' },
-            { requirement: 'Valid Bets 5,000', reward: 'Coupons 20' },
-            { requirement: 'Valid Bets 10,000', reward: 'Coupons 80' },
-            { requirement: 'Valid Bets 100,000', reward: 'Coupons 1,000' },
-          ],
-        },
-      ],
-    },
-    promotionTerms: [
-      '1. Bind your phone number',
-      '2. Bind your email',
-      '3. Complete your profile information',
-      '4. Same name (name and surname) is not applicable',
-      '5. Same IP is not applicable',
-      '6. When coupons/credits are used for sports betting, they can only be used for Euro and Hong Kong handicap, and low odds cannot be used',
-      '7. When coupons/credits are used for sports betting, it cannot be settled in advance',
-      '8. When betting with coupons/credits, please enter the betting amount in the shopping cart before selecting the coupons',
-    ],
-    rules: [
-      'Participating members must complete KYC verification.',
-      'Members must accumulate points in the valid turnover tiers each week to receive one Sports Mystery Chest.',
-      'Each member can receive a maximum of one chest per week.',
-      'Members must fulfill 1x turnover requirements before any withdrawals can be made.',
-      'All BYBET terms and conditions apply.',
-    ],
-    withdrawalTerms: 'Coupons obtained in this activity, the profit used for betting must reach the specified turnover before it can be withdrawn',
-    hasJoinButton: false,
-    contentHtml: WEEKLY_TREASURE_CHEST_CONTENT_HTML,
-  },
+const BONUS_ICON_MAP = {
+  default: DEFAULT_INNER_PAGE_ICON,
+  angpao: ANGPAO_INNER_ICON,
+  slotLossRebate: UNLIMITED_REBATE_INNER_ICON,
+  unlimitedRebate: UNLIMITED_REBATE_INNER_ICON,
+  weeklyTreasureChest: WEEKLY_TREASURE_CHEST_INNER_ICON,
+  vipSportsRebate: VIP_SPORTS_REBATE_INNER_ICON,
+  championsStreakFever: CHAMPIONS_STREAK_FEVER_INNER_ICON,
+  nbaBackToBackBoost: NBA_BACK_TO_BACK_BOOST_INNER_ICON,
+  hatTrickSafetyNet: HAT_TRICK_SAFETY_NET_INNER_ICON,
+  roadToEuropeanGlory: ROAD_TO_EUROPEAN_GLORY_INNER_ICON,
+} as const
 
-  'vip-sports-rebate': {
-    id: 'vip-sports-rebate',
-    slug: 'vip-sports-rebate',
-    title: 'VIP Sports Rebate',
-    seoTitle: 'VIP Sports Rebate — Daily Cashback on Sports Bets | ByBet',
-    seoDesc: 'Boost your sports betting with ByBet VIP Sports Rebates. Receive daily cashback on settled sports bets across football, basketball, tennis, and more.',
-    subtitle: 'Your Reward to End the Day',
-    period: '2026-07-08 12:00:00 - 2026-12-31 23:59:59 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['vip-sports-rebate'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['vip-sports-rebate']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['vip-sports-rebate']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: VIP_SPORTS_REBATE_INNER_ICON,
-    innerPageIcon: VIP_SPORTS_REBATE_INNER_ICON,
-    accentColor: '#10b981',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      description: 'Bet on sports and get up to 1.5% daily rebate based on your VIP level! Rebates are based on your settled valid bets from the previous day and are credited automatically. No need to claim!',
-      tables: [
-        {
-          headerTitle: '⚽ Sports Rebate',
-          columns: [
-            { key: 'vipLevel', label: 'VIP Level', icon: '👑' },
-            { key: 'dailyRebate', label: 'Daily Rebate' },
-          ],
-          rows: [
-            { vipLevel: 'VIP 0', dailyRebate: '0.30%' },
-            { vipLevel: 'VIP 1', dailyRebate: '0.35%' },
-            { vipLevel: 'VIP 2', dailyRebate: '0.40%' },
-            { vipLevel: 'VIP 3', dailyRebate: '0.45%' },
-            { vipLevel: 'VIP 4', dailyRebate: '0.50%' },
-            { vipLevel: 'VIP 5', dailyRebate: '0.60%' },
-            { vipLevel: 'VIP 6', dailyRebate: '0.70%' },
-            { vipLevel: 'VIP 7', dailyRebate: '0.80%' },
-            { vipLevel: 'VIP 8', dailyRebate: '1.00%' },
-            { vipLevel: 'VIP 9', dailyRebate: '1.20%' },
-            { vipLevel: 'VIP 10', dailyRebate: '1.50%' },
-          ],
-          footnote: '*Rebates are subject to a 1x turnover requirement.',
-        },
-      ],
-    },
-    promotionTerms: [
-      '1. Bind your phone number',
-      '2. Bind your email',
-      '3. Complete your profile information',
-      '4. Same name (name and surname) is not applicable',
-      '5. Same IP is not applicable',
-    ],
-    rules: [
-      'Open to KYC-verified members only.',
-      'Sports rebates can be used on all games.',
-      'Sports rebates must meet a 1x turnover requirement before withdrawal.',
-      'BYBET reserves the right to modify, suspend, or cancel this promotion at any time.',
-      'BYBET General Terms and Conditions apply.',
-    ],
-    hasJoinButton: false,
-    contentHtml: VIP_SPORTS_REBATE_CONTENT_HTML,
-  },
+const BONUS_CONTENT_TEMPLATE_MAP = {
+  unlimitedRebate: UNLIMITED_REBATE_CONTENT_HTML.replaceAll('#ff0000', '#10b981'),
+  weeklyTreasureChest: WEEKLY_TREASURE_CHEST_CONTENT_HTML,
+  vipSportsRebate: VIP_SPORTS_REBATE_CONTENT_HTML,
+  championsStreakFever: CHAMPIONS_STREAK_FEVER_CONTENT_HTML,
+  nbaBackToBackBoost: NBA_BACK_TO_BACK_BOOST_CONTENT_HTML,
+  hatTrickSafetyNet: HAT_TRICK_SAFETY_NET_CONTENT_HTML,
+  roadToEuropeanGlory: ROAD_TO_EUROPEAN_GLORY_CONTENT_HTML,
+} as const
 
-  'champions-streak-fever': {
-    id: 'champions-streak-fever',
-    slug: 'champions-streak-fever',
-    title: 'Champions Streak Fever',
-    seoTitle: 'Champions Streak Fever — Win Streaks Bonus | ByBet Sports',
-    seoDesc: 'Turn your winning streaks into massive bonus rewards on ByBet Sportsbook. More consecutive wins mean bigger cash bonuses on your bets.',
-    subtitle: 'More wins. More streaks. More rewards!',
-    period: '2026-08-23 12:00:00 - 2027-01-01 11:59:59 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['champions-streak-fever'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['champions-streak-fever']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['champions-streak-fever']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: CHAMPIONS_STREAK_FEVER_INNER_ICON,
-    innerPageIcon: CHAMPIONS_STREAK_FEVER_INNER_ICON,
-    accentColor: '#f97316',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      description: 'Members who place qualifying singles bets on UEFA Champions League matches shall receive a bonus as per table:',
-      tables: [
-        {
-          columns: [
-            { key: 'qualifyingBets', label: 'Number of Qualifying Bets' },
-            { key: 'bonus', label: 'Bonus' },
-            { key: 'wagering', label: 'Wagering Requirement' },
-          ],
-          rows: [
-            { qualifyingBets: '2 – 5 bets', bonus: '5% of average stake', wagering: '1x' },
-            { qualifyingBets: '5% of average stake', bonus: '10% of average stake', wagering: '1x' },
-            { qualifyingBets: 'More than 10 bets', bonus: '15% of average stake', wagering: '1x' },
-          ],
-        },
-      ],
-    },
-    promotionTerms: [
-      '1. Bind your phone number',
-      '2. Bind your email',
-      '3. Complete your profile information',
-      '4. Same name (name and surname) is not applicable',
-      '5. Same IP is not applicable',
-    ],
-    rules: [
-      'Participating members must complete KYC verification.',
-      'To claim bonus, members must contact Customer Service. Approved bonuses will be credited the same day.',
-      'Members must fulfill 1x turnover requirements before any withdrawals can be made.',
-      'All BYBET terms and conditions apply.',
-    ],
-    hasJoinButton: false,
-    contentHtml: CHAMPIONS_STREAK_FEVER_CONTENT_HTML,
-  },
+type BonusDatabaseRecord = Omit<
+  BonusDetail,
+  'bannerImage' | 'headerImage' | 'thumbnailImage' | 'innerIcon' | 'innerPageIcon' | 'contentHtml'
+> & {
+  iconKey: keyof typeof BONUS_ICON_MAP
+  contentTemplate?: keyof typeof BONUS_CONTENT_TEMPLATE_MAP
+}
 
-  'nba-back-to-back-boost': {
-    id: 'nba-back-to-back-boost',
-    slug: 'nba-back-to-back-boost',
-    title: 'NBA Back-to-Back Boost',
-    seoTitle: 'NBA Back-to-Back Boost — Basketball Betting Bonus | ByBet',
-    seoDesc: 'Bet on back-to-back NBA games with ByBet. Enjoy enhanced odds, parlay boosts, and special basketball rewards throughout the NBA season.',
-    subtitle: 'Back-to-back NBA action means more chances to win rewards.',
-    period: '2026-07-24 12:00:00 - 2026-12-31 23:59:00 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['nba-back-to-back-boost'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['nba-back-to-back-boost']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['nba-back-to-back-boost']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: NBA_BACK_TO_BACK_BOOST_INNER_ICON,
-    innerPageIcon: NBA_BACK_TO_BACK_BOOST_INNER_ICON,
-    accentColor: '#3b82f6',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      description: 'Back-to-back NBA action means more chances to win rewards. Place 3 or more prematch NBA bets or win 5+ prematch bets to receive special bonuses.',
-      tables: [
-        {
-          columns: [
-            { key: 'prizeType', label: 'Prize Type' },
-            { key: 'condition', label: 'Condition' },
-            { key: 'bonus', label: 'Bonus' },
-            { key: 'turnover', label: 'Turnover Requirement' },
-          ],
-          rows: [
-            {
-              prizeType: 'Back‑to‑Back Streak',
-              condition: 'Place 3 or more prematch NBA bets playing on the same day',
-              bonus: '15% cashback on total losing stakes',
-              turnover: '1x',
-            },
-            {
-              prizeType: 'Perfect Run',
-              condition: 'Win 5+ prematch NBA bets playing on the same day',
-              bonus: '₱500 Sports Credits',
-              turnover: '1x',
-            },
-          ],
-          footnote: 'Min. odds: 1.60 | Min. bet amount: ₱500 | Max daily cashback: ₱1,000',
-        },
-      ],
-    },
-    promotionTerms: [
-      '1. Bind your phone number',
-      '2. Bind your email',
-      '3. Complete your profile information',
-      '4. Same name (name and surname) is not applicable',
-      '5. Same IP is not applicable',
-    ],
-    rules: [
-      'Participating members must complete KYC verification.',
-      'To claim a bonus, members must contact Customer Service. Approved bonuses will be credited the same day.',
-      'Members must fulfill 1x turnover requirements before any withdrawals can be made.',
-      'All BYBET terms and conditions apply.',
-    ],
-    hasJoinButton: false,
-    contentHtml: NBA_BACK_TO_BACK_BOOST_CONTENT_HTML,
-  },
+const hydrateBonusDetail = (record: BonusDatabaseRecord): BonusDetail => {
+  const images = PROMO_IMAGE_MAP[record.slug]
 
-  'hat-trick-safety-net': {
-    id: 'hat-trick-safety-net',
-    slug: 'hat-trick-safety-net',
-    title: 'HAT-TRICK SAFETY NET',
-    seoTitle: 'Hat-Trick Safety Net — Up to ₱1,000 Football Cashback | ByBet',
-    seoDesc: 'Lose on the final leg? Get up to ₱1,000 safety net cashback on 3+ fold football parlays at ByBet Philippines. Bet with total peace of mind.',
-    subtitle: 'Lose your bet but catch a hat-trick? Get cashback with ByBet!',
-    period: '2026-07-24 12:00:00 ~ 2026-12-31 23:59:00 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['hat-trick-safety-net'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['hat-trick-safety-net']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['hat-trick-safety-net']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: HAT_TRICK_SAFETY_NET_INNER_ICON,
-    iconType: 'sports',
-    accentColor: '#0ea5e9',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      description: 'Place a qualifying singles bet on any Soccer European Top 5 League match. Get 15% cashback (sports credit) if the bet is lost but a player scores a hat‑trick (3 goals) in that same match.',
-    },
-    promotionTerms: [
-      'Bind your phone number',
-      'Bind your email',
-      'Complete your profile information',
-      'Same name (name and surname) is not applicable',
-      'Same IP is not applicable',
-    ],
-    rules: [
-      'Participating members must complete KYC verification.',
-      'To claim a bonus, members must contact Customer Service. Approved bonuses will be credited the same day.',
-      'Members must fulfill 1x turnover requirements before any withdrawals can be made.',
-      'All BYBET terms and conditions apply.',
-    ],
-    hasJoinButton: false,
-    contentHtml: HAT_TRICK_SAFETY_NET_CONTENT_HTML,
-  },
+  return {
+    ...record,
+    bannerImage: images || PROMOTION_PLACEHOLDER_IMAGES.banner,
+    headerImage: images?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
+    thumbnailImage: images?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
+    innerIcon: BONUS_ICON_MAP[record.iconKey] || DEFAULT_INNER_PAGE_ICON,
+    contentHtml: record.contentTemplate
+      ? BONUS_CONTENT_TEMPLATE_MAP[record.contentTemplate]
+      : undefined,
+  }
+}
 
-  'road-to-european-glory': {
-    id: 'road-to-european-glory',
-    slug: 'road-to-european-glory',
-    title: 'ROAD TO EUROPEAN GLORY',
-    seoTitle: 'Road to European Glory — UCL & Europa League Bonus | ByBet',
-    seoDesc: 'Bet on UEFA Champions League and Europa League with Road to European Glory on ByBet Philippines. Earn bonus rewards on qualifying European match bets.',
-    subtitle: 'Bet across Europe’s top leagues and unlock bigger rewards',
-    period: '2026-07-24 12:00:00 ~ 2026-12-31 23:59:00 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['road-to-european-glory'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['road-to-european-glory']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['road-to-european-glory']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: ROAD_TO_EUROPEAN_GLORY_INNER_ICON,
-    iconType: 'sports',
-    accentColor: '#10b981',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC、Mobile、App Sport' },
-    ],
-    eventContent: {
-      description: 'Members who place bets on any Soccer European Top 5 League and achieve the minimum total valid bets shall receive Sports Credits as follows:',
-      tables: [
-        {
-          columns: [
-            { key: 'requirement', label: 'Requirement' },
-            { key: 'coupon', label: 'Sports Coupon' },
-            { key: 'turnover', label: 'Turnover Requirement' },
-          ],
-          rows: [
-            { requirement: 'Bet on 2 different leagues + ₱5,000 total valid bets', coupon: '300', turnover: '1x' },
-            { requirement: 'Bet on 3 different leagues + ₱10,000 total valid bets', coupon: '1,500', turnover: '2x' },
-            { requirement: 'Bet on all 5 leagues + ₱15,000 total valid bets', coupon: '2,250', turnover: '3x' },
-          ],
-        },
-      ],
-      bullets: [
-        'Soccer European Top 5 League: England Premier League, France Ligue 1, Germany Bundesliga, Italy Serie A, Spain La Liga',
-        'Min odds: 1.60',
-        'Min bet amount: ₱2,000',
-      ],
-    },
-    promotionTerms: [
-      'Bind your phone number',
-      'Bind your email',
-      'Complete your profile information',
-      'Same name (name and surname) is not applicable',
-      'Same IP is not applicable',
-    ],
-    rules: [
-      'Participating members must complete KYC verification.',
-      'To claim a bonus, members must contact Customer Service. Approved bonuses will be credited the same day.',
-      'Members must fulfill turnover requirements before any withdrawals can be made.',
-      'All BYBET terms and conditions apply.',
-    ],
-    hasJoinButton: false,
-    contentHtml: ROAD_TO_EUROPEAN_GLORY_CONTENT_HTML,
-  },
+/**
+ * Portable, JSON-backed promotion detail database used by every
+ * `/explore/bonus/*` route. Large SVG/HTML assets stay referenced by key.
+ */
+export const BONUS_DETAILS: Record<string, BonusDetail> = Object.fromEntries(
+  Object.entries(bonusDetailDatabase.records).map(([slug, rawRecord]) => [
+    slug,
+    hydrateBonusDetail(rawRecord as BonusDatabaseRecord),
+  ]),
+)
 
+const DEFAULT_BONUS_PERIOD = '2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)'
 
-  'slot-loss-rebate': {
-    id: 'slot-loss-rebate',
-    slug: 'slot-loss-rebate',
-    title: 'Slot Loss Rebate',
-    seoTitle: 'Slot Loss Rebate — Up to ₱60,000 Cashback Bonus | ByBet',
-    seoDesc: 'Get up to ₱60,000 back on weekly slot losses at ByBet Philippines. Rebates are credited automatically and are subject to a 10x turnover requirement.',
-    subtitle: 'Bonus up to ₱60,000',
-    period: '2026-06-12 12:00:00 ~ 2026-12-31 23:59:00 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['slot-loss-rebate'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['slot-loss-rebate']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['slot-loss-rebate']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: DEFAULT_INNER_PAGE_ICON,
-    iconType: 'loss',
-    accentColor: '#3b82f6',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Period', value: '2026-06-10 12:00:00 ~ 2026-12-31 23:59:00 (GMT+08:00)' },
-      { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
-    ],
-    eventContent: {
-      description: 'Get up to ₱60,000 back on your weekly slot losses! Rebates are based on your total net loss from Monday 12:00 PM to the following Monday 11:59 AM and are credited automatically. No need to claim!',
-      tables: [
-        {
-          columns: [
-            { key: 'tier', label: 'Tier' },
-            { key: 'totalLoss', label: 'Total Loss' },
-            { key: 'bonus', label: 'Bonus' },
-          ],
-          rows: [
-            { tier: 'Tier 1', totalLoss: '₱10,000+', bonus: '₱500' },
-            { tier: 'Tier 2', totalLoss: '₱20,000+', bonus: '₱2,000' },
-            { tier: 'Tier 3', totalLoss: '₱50,000+', bonus: '₱6,000' },
-            { tier: 'Tier 4', totalLoss: '₱100,000+', bonus: '₱15,000' },
-            { tier: 'Tier 5', totalLoss: '₱400,000+', bonus: '₱60,000' },
-          ],
-          footnote: '*Rebates are subject to a 10x turnover requirement.',
-        },
-      ],
-    },
-    promotionTerms: [
-      '1. Bind your phone number',
-      '2. Bind your email',
-      '3. Complete your profile information',
-      '4. Same name (name and surname) is not applicable',
-      '5. Same IP is not applicable',
-    ],
-    rules: [
-      'Open to KYC-verified members only.',
-      'Slot loss rebates can be used on all games.',
-      'Slot loss rebates must meet a 10x turnover requirement before withdrawal.',
-      'BYBET reserves the right to modify, suspend, or cancel this promotion at any time.',
-      'BYBET General Terms and Conditions apply.',
-    ],
-    hasJoinButton: false,
-  },
+export const parseEndDateFromPeriod = (period?: string): string | undefined => {
+  if (!period || period.trim().toLowerCase() === 'permanent') {
+    return undefined
+  }
 
-  'umuulan-ng-angpao': {
-    id: 'umuulan-ng-angpao',
-    slug: 'umuulan-ng-angpao',
-    title: 'Umuulan ng Angpao',
-    seoTitle: 'Umuulan ng Angpao Daily Red Envelope Cash Drops | ByBet',
-    seoDesc: 'Catch falling red envelopes and win real cash bonuses with Umuulan ng Angpao on ByBet Philippines. Pikit, abot, kuha instant prizes!',
-    subtitle: 'Angpao falling — pikit, abot, kuha!',
-    period: '2026-10-19 ~ 2026-10-25 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['umuulan-ng-angpao'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['umuulan-ng-angpao']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['umuulan-ng-angpao']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: DEFAULT_INNER_PAGE_ICON,
-    iconType: 'angpao',
-    accentColor: '#ef4444',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
-      { label: 'Total Deposits', value: '2026-09-28 12:00:00 ~ 2026-10-05 11:59:59 — Above 500' },
-    ],
-    eventContent: {
-      description: 'Daily Event: 20:00:00 ~ 20:30:00 (GMT+08:00). Limited red-packet drops are available during this special event, so join us ASAP!',
-      methodCard: {
-        title: 'Received Amount (x):',
-        content: '1x per round',
-      },
-    },
-    promotionTerms: [
-      '1. Bind your phone number',
-      '2. Bind your email',
-      '3. Complete your profile information',
-      '4. Log in to see the red packet rain',
-      '5. Red packet rain can be claimed once per round',
-      '6. Same name (name and surname) is not applicable',
-      '7. Same IP is not applicable',
-    ],
-    rules: [
-      'Members must accumulate a minimum deposit of ₱500 during the event period (October 12 – October 19, 2026) to qualify for the Red Packet Rain.',
-      'Once the deposit requirement is met, the system will automatically grant the member access to the weekly Red Packet Rain—no additional application needed.',
-      'During the Red Packet Rain event, members must log in to their BYBET account and click to claim when the red packet icon appears on screen.',
-      'Each eligible member may claim only 1 red packet during this event. Duplicate claims are not allowed.',
-      'After successfully claiming a red packet, members must fulfill a 1x turnover requirement before withdrawal using sports betting only, with minimum odds of 1.66.',
-      'For any questions, members may contact 24/7 online customer service.',
-    ],
-    hasJoinButton: false,
-  },
+  const tzMatch = period.match(/GMT([+-]\d{2}:\d{2})/i)
+  const tzOffset = tzMatch?.[1] || '+08:00'
+  const matches = [...period.matchAll(/(\d{4}-\d{2}-\d{2})(?:\s+(\d{2}:\d{2}(?::\d{2})?))?/g)]
+  if (!matches.length) {
+    return undefined
+  }
 
-  'your-deposit-your-reward': {
-    id: 'your-deposit-your-reward',
-    slug: 'your-deposit-your-reward',
-    title: 'Your Deposit. Your Reward.',
-    seoTitle: 'Your Deposit. Your Reward. Daily Deposit Bonus | ByBet Philippines',
-    seoDesc: 'Unlock exclusive daily deposit bonuses with your first deposit every day on ByBet Philippines. Deposit via GCash, Maya, or ShopeePay to claim rewards.',
-    subtitle: 'Unlock bonus with first deposit of the everyday.',
-    period: '2026-10-20 12:00:00 ~ 2026-10-26 11:59:59 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['your-deposit-your-reward'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['your-deposit-your-reward']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['your-deposit-your-reward']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: DEFAULT_INNER_PAGE_ICON,
-    iconType: 'deposit',
-    accentColor: '#10b981',
-    showRequirements: false,
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
-    ],
-    eventContent: {
-      badge: 'Total Deposits',
-      description: 'Members making any deposits and meeting the promotional requirements will receive special rewards. (Once a Day)',
-      methodCard: {
-        title: 'Deposit Method for Promotion Participation',
-        content: 'E-Wallet Transfer, Gcash, Maya, ShopeePay',
-      },
-      tables: [
-        {
-          columns: [
-            { key: 'threshold', label: 'Deposit Threshold' },
-            { key: 'rewardMethod', label: 'Reward Method' },
-            { key: 'quota', label: 'Quota' },
-          ],
-          rows: [
-            { threshold: '100 ~ 299', rewardMethod: 'Bonus', quota: '10' },
-            { threshold: '300 ~ 499', rewardMethod: 'Bonus', quota: '30' },
-            { threshold: '500 ~ 799', rewardMethod: 'Bonus', quota: '75' },
-            { threshold: '800 ~ 999', rewardMethod: 'Bonus', quota: '120' },
-            { threshold: '1000 ~ 1199', rewardMethod: 'Bonus', quota: '160' },
-            { threshold: '1200 ~ 1499', rewardMethod: 'Bonus', quota: '200' },
-            { threshold: '1500 ~ 1999', rewardMethod: 'Bonus', quota: '280' },
-            { threshold: '2000 ~ 4999', rewardMethod: 'Bonus', quota: '300' },
-            { threshold: '5000 ~ 9999', rewardMethod: 'Bonus', quota: '500' },
-            { threshold: 'Above 10000', rewardMethod: 'Bonus', quota: '800' },
-          ],
-        },
-      ],
-    },
-    rules: [
-      'Participating members must complete KYC verification.',
-      'Bonus are subject to a 1x turnover requirement before withdrawal.',
-      'BYBET\'s Terms and Conditions apply.',
-    ],
-    withdrawalTerms: 'The winnings obtained through this event must be 1 times the bonus denomination before withdrawal can be made.',
-    hasJoinButton: true,
-  },
+  const endMatch = matches[matches.length - 1]
+  const datePart = endMatch[1]
+  const rawTimePart = endMatch[2] || '23:59:59'
+  const timePart = rawTimePart.length === 5 ? `${rawTimePart}:00` : rawTimePart
 
-  'spins-bring-spins': {
-    id: 'spins-bring-spins',
-    slug: 'spins-bring-spins',
-    title: 'Spins Bring Spins',
-    seoTitle: 'Spins Bring Spins — 100 Free Spins Daily | ByBet Philippines',
-    seoDesc: 'Claim up to 100 free spins every day on selected slot games at ByBet Philippines. Complete daily spin missions and boost your slots winnings.',
-    subtitle: '100 Free Spins Every Day!',
-    period: '2026-10-18 12:00:00 ~ 2026-10-26 11:59:59 (GMT+08:00)',
-    bannerImage: PROMO_IMAGE_MAP['spins-bring-spins'] || PROMOTION_PLACEHOLDER_IMAGES.banner,
-    headerImage: PROMO_IMAGE_MAP['spins-bring-spins']?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
-    thumbnailImage: PROMO_IMAGE_MAP['spins-bring-spins']?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
-    innerIcon: DEFAULT_INNER_PAGE_ICON,
-    iconType: 'spins',
-    accentColor: '#f59e0b',
-    showRequirements: true,
-    requirements: {
-      items: [
-        { text: 'Daily total spins 500', completed: false },
-        { text: 'Daily total spin amount PHP1,000', completed: false },
-      ],
-      viewProgressUrl: '#progress',
-    },
-    qualifications: [
-      { label: 'Registration Platform', value: 'PC, Mobile, App Sport' },
-      { label: 'Total Deposits', value: 'Above 100' },
-    ],
-    eventContent: {
-      badge: 'Reward 1 time daily',
-      description: 'Claim your rewards once you meet with the event requirement.',
-      tables: [
-        {
-          headerTitle: 'Terms & Conditions',
-          subHeaderTitle: 'Daily Total Spins',
-          columns: [
-            { key: 'req', label: 'Requirement' },
-            { key: 'method', label: 'Reward Method' },
-            { key: 'quota', label: 'Quota' },
-          ],
-          rows: [
-            { req: '500 time(s)', method: 'Coupons', quota: '100' },
-          ],
-        },
-        {
-          headerTitle: 'Terms & Conditions',
-          subHeaderTitle: 'Daily Total Spin Amount',
-          columns: [
-            { key: 'req', label: 'Requirement' },
-            { key: 'method', label: 'Reward Method' },
-            { key: 'quota', label: 'Quota' },
-          ],
-          rows: [
-            { req: '1,000', method: 'Coupons', quota: '100' },
-          ],
-        },
-      ],
-      bullets: [
-        'Complete daily missions on selected slot to earn free spins.',
-        'Calculation is based on the provider with highest progress.',
-        'Each task can only be claimed once per day.',
-        'Coupons are valid on the day of issue and will expire after that.',
-        'Rewards are limited and available while supplies last.',
-      ],
-    },
-    promotionTerms: 'To qualify, you must play slot games from eligible providers during promotion period. The list of slots can be found on the "Slots – Promotions" page.',
-    rules: [
-      'Open to KYC-verified members only.',
-      'BYBET reserves the right to modify, suspend, or cancel this promotion at any time.',
-      'BYBET General Terms and Conditions apply.',
-    ],
-    hasJoinButton: false,
-  },
+  return `${datePart}T${timePart}${tzOffset}`
+}
+
+export const formatCountdownFromEndDate = (endDate?: string, nowMs: number = Date.now()): string => {
+  if (!endDate || endDate === 'Permanent') {
+    return 'Permanent'
+  }
+
+  const endMs = Date.parse(endDate)
+  if (Number.isNaN(endMs)) {
+    return 'Permanent'
+  }
+
+  const diffMs = endMs - nowMs
+  if (diffMs <= 0) {
+    return '0 Hours 0 Mins 0 Secs'
+  }
+
+  const dayMs = 86_400_000
+  if (diffMs < dayMs) {
+    const totalSeconds = Math.floor(diffMs / 1000)
+    const hours = Math.floor(totalSeconds / 3600)
+    const mins = Math.floor((totalSeconds % 3600) / 60)
+    const secs = totalSeconds % 60
+    return `${hours} Hours ${mins} Mins ${secs} Secs`
+  }
+
+  const totalDays = Math.floor(diffMs / dayMs)
+  const months = Math.floor(totalDays / 30)
+  const days = totalDays % 30
+
+  if (months > 0) {
+    return `${months} Month ${days} Day`
+  }
+
+  return `${days} Day`
+}
+
+export const getPromotionCountdownText = (
+  promotion: Pick<PromotionItem, 'slug' | 'endDate' | 'countdownText'>,
+  nowMs: number = Date.now(),
+): string => {
+  if (promotion.countdownText === 'Permanent' || promotion.slug === 'bybet-vip-center') {
+    return 'Permanent'
+  }
+
+  const period = BONUS_DETAILS[promotion.slug]?.period
+  const endDate = parseEndDateFromPeriod(period) || promotion.endDate || parseEndDateFromPeriod(DEFAULT_BONUS_PERIOD)
+  const formatted = formatCountdownFromEndDate(endDate, nowMs)
+  return formatted === 'Permanent' ? 'Permanent' : `Event Countdown: ${formatted}`
+}
+
+for (const promotion of PROMOTIONS) {
+  if (promotion.countdownText === 'Permanent' || promotion.slug === 'bybet-vip-center') {
+    promotion.endDate = undefined
+    promotion.countdownText = 'Permanent'
+    continue
+  }
+
+  const period = BONUS_DETAILS[promotion.slug]?.period || DEFAULT_BONUS_PERIOD
+  const parsedEndDate = parseEndDateFromPeriod(period)
+  if (parsedEndDate) {
+    promotion.endDate = parsedEndDate
+    promotion.countdownText = formatCountdownFromEndDate(parsedEndDate)
+  }
 }
 
 // Lookup function with fallback for any promo slug or id
