@@ -282,7 +282,7 @@ watch(() => context.value, () => {
 }
 
 .chat-room-header--lowered {
-  transform: translateY(6px);
+  /* transform: translateY(6px); */
   opacity: 0.88;
 }
 
