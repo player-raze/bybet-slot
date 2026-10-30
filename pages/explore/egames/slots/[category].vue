@@ -33,6 +33,8 @@ import {
   type SlotGame,
 } from '~/data/slots'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
+import { sortRailGames } from '~/utils/gameSort'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
 
@@ -367,7 +369,10 @@ const allCategoryGames = computed<SlotGame[]>(() => {
     games.push(game)
   }
 
-  return games
+  return sortRailGames(games, {
+    category: activeCategory.value,
+    label: categoryLabel.value,
+  })
 })
 
 const displayedGames = computed<SlotGame[]>(() => {
@@ -621,21 +626,13 @@ watch([loadMoreTrigger, hasMoreGames], () => {
       </div>
 
       <!-- Empty State for Search Results -->
-      <div
+      <GameEmptyState
         v-else
-        class="my-12 flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-[#171817] p-8 text-center"
-      >
-        <Search class="h-10 w-10 text-[#7a807d]" />
-        <h3 class="text-base font-semibold text-white">No games found for "{{ searchQuery }}"</h3>
-        <p class="text-xs text-[#9ca3af]">Try adjusting your search query or provider filter.</p>
-        <button
-          type="button"
-          class="mt-2 rounded-full bg-[#036242] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#047b53] transition-colors cursor-pointer"
-          @click="resetSearch"
-        >
-          Reset Search
-        </button>
-      </div>
+        text="No Results"
+        :show-reset="true"
+        reset-text="Reset Search"
+        @reset="resetSearch"
+      />
 
       <div
         v-if="hasMoreSearchResults"
@@ -663,9 +660,10 @@ watch([loadMoreTrigger, hasMoreGames], () => {
           @demo="handleDemo"
         />
       </div>
-      <div v-else class="text-center py-12 text-sm text-[#8e9491]">
-        No games available for this selection.
-      </div>
+      <GameEmptyState
+        v-else
+        text="This is no game currently."
+      />
 
       <div
         v-if="hasMoreCategoryGames"

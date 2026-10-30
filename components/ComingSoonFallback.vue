@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft, Clock3, Home, Sparkles } from 'lucide-vue-next'
+import { formatSeoDescription, isHomepageRoute } from '~/composables/useAppSeo'
 
 const route = useRoute()
 const router = useRouter()
@@ -44,9 +45,20 @@ const props = withDefaults(
 )
 
 if (!props.disableSeo) {
+  const config = useRuntimeConfig()
+  const siteName = String(config.public.siteName || 'ByBet Slots')
+    .trim()
+    .replace(/^['"]+|['"]+$/g, '')
+  const description = computed(() => {
+    const raw = `${pageTitle.value} in ${sectionTitle.value} is coming soon to ByBet.`
+    return formatSeoDescription(raw, siteName, isHomepageRoute(route.path))
+  })
+
   useSeoMeta({
     title: () => `${pageTitle.value} — Coming Soon | ByBet`,
-    description: () => `${pageTitle.value} in ${sectionTitle.value} is coming soon to ByBet.`,
+    description,
+    ogDescription: description,
+    twitterDescription: description,
     robots: 'noindex, follow',
   })
 }

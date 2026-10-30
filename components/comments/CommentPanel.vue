@@ -12,13 +12,11 @@ const dialog = ref<HTMLElement | null>(null)
 const scrollContainer = ref<HTMLElement | null>(null)
 const isScrolledUp = ref(false)
 const isMobile = ref(false)
-const chatHeaderState = ref<'visible' | 'lowered' | 'hidden'>('visible')
+const chatHeaderState = ref<'visible' | 'lowered'>('visible')
 const route = useRoute()
 let previousOverflow = ''
 let previousPageScrollY = 0
 let headerScrollFrameId: number | null = null
-let footerIsVisible = false
-let footerObserver: IntersectionObserver | null = null
 
 const HEADER_SCROLL_THRESHOLD = 8
 const PAGE_TOP_THRESHOLD = 16
@@ -33,12 +31,10 @@ const updateChatHeaderFromPageScroll = (): void => {
   const currentScrollY = Math.max(window.scrollY, 0)
   const scrollDelta = currentScrollY - previousPageScrollY
 
-  if (!footerIsVisible) {
-    if (currentScrollY <= PAGE_TOP_THRESHOLD || scrollDelta <= -HEADER_SCROLL_THRESHOLD) {
-      chatHeaderState.value = 'visible'
-    } else if (scrollDelta >= HEADER_SCROLL_THRESHOLD) {
-      chatHeaderState.value = 'lowered'
-    }
+  if (currentScrollY <= PAGE_TOP_THRESHOLD || scrollDelta <= -HEADER_SCROLL_THRESHOLD) {
+    chatHeaderState.value = 'visible'
+  } else if (scrollDelta >= HEADER_SCROLL_THRESHOLD) {
+    chatHeaderState.value = 'lowered'
   }
 
   if (Math.abs(scrollDelta) >= HEADER_SCROLL_THRESHOLD || currentScrollY <= PAGE_TOP_THRESHOLD) {
@@ -57,21 +53,6 @@ const handlePageScroll = (): void => {
 const initializeChatHeaderMotion = (): void => {
   previousPageScrollY = Math.max(window.scrollY, 0)
   window.addEventListener('scroll', handlePageScroll, { passive: true })
-
-  const footer = document.getElementById('support')
-  if (!footer) return
-
-  footerObserver = new IntersectionObserver((entries) => {
-    footerIsVisible = entries.some(entry => entry.isIntersecting)
-
-    if (footerIsVisible) {
-      chatHeaderState.value = 'hidden'
-    } else if (chatHeaderState.value === 'hidden') {
-      chatHeaderState.value = 'visible'
-    }
-  }, { threshold: 0.05 })
-
-  footerObserver.observe(footer)
 }
 
 const handleScroll = (): void => {
@@ -118,7 +99,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateIsMobile)
   window.removeEventListener('scroll', handlePageScroll)
-  footerObserver?.disconnect()
 
   if (headerScrollFrameId !== null) {
     window.cancelAnimationFrame(headerScrollFrameId)
@@ -159,18 +139,15 @@ watch(() => context.value, () => {
     >
       <div v-if="context" class="flex h-full min-h-0 flex-col gap-2 p-0 sm:pb-2 sm:pr-2 text-white">
         <template v-if="!embedded && (context.kind !== 'sports' || isMobile)">
-          <Transition name="chat-header">
-            <header
-              v-show="chatHeaderState !== 'hidden'"
-              class="chat-room-header flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2"
-              :class="{ 'chat-room-header--lowered': chatHeaderState === 'lowered' }"
-            >
-              <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
-              <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
-                <X :size="10" aria-hidden="true" />
-              </button>
-            </header>
-          </Transition>
+          <header
+            class="chat-room-header flex shrink-0 items-center justify-between gap-3 rounded-lg bg-[#131313] px-1 py-2"
+            :class="{ 'chat-room-header--lowered': chatHeaderState === 'lowered' }"
+          >
+            <span id="comment-panel-title" class="text-[16px] font-bold">Chat Room</span>
+            <button type="button" class="grid h-4 w-4 place-items-center rounded-full bg-[#252525] text-[#a2a5a3] hover:text-white" aria-label="Close comments" autofocus @click="closeComments">
+              <X :size="10" aria-hidden="true" />
+            </button>
+          </header>
         </template>
         <div class="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
           <SportsPreview v-if="context.kind === 'sports'" class="shrink-0" />
@@ -305,21 +282,8 @@ watch(() => context.value, () => {
 }
 
 .chat-room-header--lowered {
-  transform: translateY(6px);
+  /* transform: translateY(6px); */
   opacity: 0.88;
-}
-
-.chat-header-enter-active,
-.chat-header-leave-active {
-  transition:
-    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 160ms ease;
-}
-
-.chat-header-enter-from,
-.chat-header-leave-to {
-  transform: translateY(calc(100% + 8px));
-  opacity: 0;
 }
 
 .fade-slide-enter-active,
@@ -340,9 +304,7 @@ watch(() => context.value, () => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chat-room-header,
-  .chat-header-enter-active,
-  .chat-header-leave-active {
+  .chat-room-header {
     transition: none;
   }
 

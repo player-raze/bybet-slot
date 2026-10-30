@@ -56,7 +56,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
   {
     id: 'msg_4',
     name: 'ikawlang27',
-    avatar: '/images/avatars/70031.png',
+    avatar: '/images/avatars/70031.webp',
     avatarType: 'emoji',
     avatarBg: '#1f354d',
     level: 'K1',
@@ -76,7 +76,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
   {
     id: 'msg_6',
     name: 'Kem*****',
-    avatar: '/images/avatars/kem.png',
+    avatar: '/images/avatars/kem.webp',
     avatarType: 'emoji',
     avatarBg: '#4a2559',
     level: 'K2',
@@ -157,7 +157,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
   {
     id: 'msg_10',
     name: 'ikawlang27',
-    avatar: '/images/avatars/70031.png',
+    avatar: '/images/avatars/70031.webp',
     avatarType: 'text',
     avatarBg: '#036242',
     level: 'K2',
@@ -167,7 +167,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
   {
     id: 'msg_10',
     name: 'ikawlang27',
-    avatar: '/images/avatars/70031.png',
+    avatar: '/images/avatars/70031.webp',
     avatarType: 'text',
     avatarBg: '#036242',
     level: 'K2',
@@ -176,7 +176,7 @@ export const SLOTS_COMMENTS: ChatMessage[] = [
   },
   {
     id: 'msg_11',
-    avatar: '/images/avatars/kem.png',
+    avatar: '/images/avatars/kem.webp',
     name: 'mar*****',
     avatarType: 'text',
     avatarBg: '#036242',

@@ -24,14 +24,14 @@ const statusLabels: Record<TutorialOutcomeStatus, string> = {
 
 const outcomeImageMap: Record<string, string> = {
   'win-lose': '/tutorial-assets/outcomes/win-lose.webp',
-  'lose-win': '/tutorial-assets/outcomes/lose-win.png',
-  'win-half-lose-half': '/tutorial-assets/outcomes/win-lose-half.png',
-  'lose-half-win-half': '/tutorial-assets/outcomes/lose-win-half.png',
-  'refund-refund': '/tutorial-assets/outcomes/refund.png',
-  'win-lose-lose': '/tutorial-assets/outcomes/win-lose-lose.png',
-  'lose-win-lose': '/tutorial-assets/outcomes/lose-win-lose.png',
-  'lose-lose-win': '/tutorial-assets/outcomes/lose-lose-win.png',
-  'lose-lose-lose': '/tutorial-assets/outcomes/lose-lose-lose.png',
+  'lose-win': '/tutorial-assets/outcomes/lose-win.webp',
+  'win-half-lose-half': '/tutorial-assets/outcomes/win-lose-half.webp',
+  'lose-half-win-half': '/tutorial-assets/outcomes/lose-win-half.webp',
+  'refund-refund': '/tutorial-assets/outcomes/refund.webp',
+  'win-lose-lose': '/tutorial-assets/outcomes/win-lose-lose.webp',
+  'lose-win-lose': '/tutorial-assets/outcomes/lose-win-lose.webp',
+  'lose-lose-win': '/tutorial-assets/outcomes/lose-lose-win.webp',
+  'lose-lose-lose': '/tutorial-assets/outcomes/lose-lose-lose.webp',
 }
 
 const baseImageName = computed(() => {
@@ -52,25 +52,25 @@ const fallbackSrc = computed(() => {
 
   if (statuses.length === 2) {
     if (statuses.includes('refund')) {
-      return '/tutorial-assets/outcomes/refund.png'
+      return '/tutorial-assets/outcomes/refund.webp'
     }
     if (statuses[0] === 'win' || statuses[0] === 'win-half') {
       return statuses[0] === 'win-half'
-        ? '/tutorial-assets/outcomes/win-lose-half.png'
+        ? '/tutorial-assets/outcomes/win-lose-half.webp'
         : '/tutorial-assets/outcomes/win-lose.webp'
     }
     if (statuses[1] === 'win' || statuses[1] === 'win-half') {
       return statuses[1] === 'win-half'
-        ? '/tutorial-assets/outcomes/lose-win-half.png'
-        : '/tutorial-assets/outcomes/lose-win.png'
+        ? '/tutorial-assets/outcomes/lose-win-half.webp'
+        : '/tutorial-assets/outcomes/lose-win.webp'
     }
   }
 
   if (statuses.length === 3) {
-    if (statuses[0] === 'win') return '/tutorial-assets/outcomes/win-lose-lose.png'
-    if (statuses[1] === 'win') return '/tutorial-assets/outcomes/lose-win-lose.png'
-    if (statuses[2] === 'win') return '/tutorial-assets/outcomes/lose-lose-win.png'
-    return '/tutorial-assets/outcomes/lose-lose-lose.png'
+    if (statuses[0] === 'win') return '/tutorial-assets/outcomes/win-lose-lose.webp'
+    if (statuses[1] === 'win') return '/tutorial-assets/outcomes/lose-win-lose.webp'
+    if (statuses[2] === 'win') return '/tutorial-assets/outcomes/lose-lose-win.webp'
+    return '/tutorial-assets/outcomes/lose-lose-lose.webp'
   }
 
   return '/tutorial-assets/outcomes/win-lose.webp'

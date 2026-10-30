@@ -4,7 +4,22 @@ import plugin from 'tailwindcss/plugin'
 export default {
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: [
+          '"PingFang SC"',
+          'PingFang',
+          'Manrope',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+      },
+    },
   },
   plugins: [
     plugin(({ addVariant }) => {

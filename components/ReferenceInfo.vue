@@ -128,7 +128,7 @@ const toggleFaq = (index: number): void => {
   display: grid;
   position: absolute;
   z-index: 2;
-  top: 72%;
+  top: 60%;
   left: 94%;
   width: 12%;
   color: #ffffff;

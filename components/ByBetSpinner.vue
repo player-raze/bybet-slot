@@ -111,7 +111,7 @@ const gradientId = useId ? useId() : `bybet-spin-${Math.random().toString(36).sl
       <!-- Static ByBet Logo in the center (does NOT rotate) -->
       <div class="bybet-spinner__center">
         <img
-          :src="isDarkTheme ? '/brand/bybet-logo.webp' : '/brand/bybet-loader-logo.png'"
+          :src="isDarkTheme ? '/brand/bybet-logo.webp' : '/brand/bybet-loader-logo.webp'"
           alt="ByBet"
           class="bybet-spinner__logo select-none pointer-events-none object-contain"
           :style="{

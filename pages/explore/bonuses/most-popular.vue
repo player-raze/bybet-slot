@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import BonusListing from '~/components/bonuses/BonusListing.vue'
+import BonusCategoryListing from '~/components/bonuses/BonusCategoryListing.vue'
 </script>
 
 <template>
-  <BonusListing category="most-popular" />
+  <BonusCategoryListing category="most-popular" />
 </template>

@@ -28,6 +28,8 @@ import {
   type BingoGame,
 } from '~/data/bingo'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
+import { sortRailGames } from '~/utils/gameSort'
 
 const categoryIcons: Record<string, Component> = {
   House,
@@ -267,7 +269,10 @@ const displayedGames = computed<BingoGame[]>(() => {
     games.push(game)
   }
 
-  return games
+  return sortRailGames(games, {
+    category: activeCategory.value,
+    label: categoryLabel.value,
+  })
 })
 </script>
 
@@ -464,9 +469,10 @@ const displayedGames = computed<BingoGame[]>(() => {
             @demo="handleDemo"
           />
         </div>
-        <div v-else class="text-center py-8 text-sm text-[#8e9491]">
-          No games found matching your search.
-        </div>
+        <GameEmptyState
+          v-else
+          text="No Results"
+        />
       </div>
     </div>
 
@@ -488,9 +494,10 @@ const displayedGames = computed<BingoGame[]>(() => {
           @demo="handleDemo"
         />
       </div>
-      <div v-else class="text-center py-12 text-sm text-[#8e9491]">
-        No games available for this selection.
-      </div>
+      <GameEmptyState
+        v-else
+        text="This is no game currently."
+      />
     </div>
 
     <!-- Filter Modal -->

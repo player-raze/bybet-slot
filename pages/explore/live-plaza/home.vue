@@ -34,6 +34,11 @@ useAppSeo({
 })
 
 const { showDemoMessage } = useDemoInteraction()
+const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+
+const redirectToByBet = (): void => {
+  void navigateTo(bybetRedirectUrl, { external: true })
+}
 const {
   data: predictionData,
   status: predictionStatus,
@@ -110,8 +115,8 @@ const handleEscape = (event: KeyboardEvent): void => {
   }
 }
 
-const handleGameClick = (game: PopularGame): void => {
-  showDemoMessage(`Selected ${game.homeTeam.name} vs ${game.awayTeam.name} (${game.league})`)
+const handleGameClick = (_game?: PopularGame): void => {
+  redirectToByBet()
 }
 
 const handleUnlock = (prediction: Prediction): void => {
@@ -124,8 +129,8 @@ const handleUnlock = (prediction: Prediction): void => {
   showDemoMessage(`Unlocked expert prediction by ${prediction.predictorName}!`)
 }
 
-const handleOddClick = (prediction: Prediction, option: PredictionOption): void => {
-  showDemoMessage(`Selected ${prediction.homeTeam} vs ${prediction.awayTeam} [${option.label} @ ${option.odd}]`)
+const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): void => {
+  redirectToByBet()
 }
 
 onMounted(() => {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeft } from 'lucide-vue-next'
+import { formatSeoTitle, formatSeoDescription, isHomepageRoute } from '~/composables/useAppSeo'
 
 interface Props {
   title: string
@@ -13,6 +14,9 @@ interface Props {
   showFlag?: boolean
   sticky?: boolean
   customClass?: string
+  includeSiteName?: boolean
+  includeCheckMore?: boolean
+  robots?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,6 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
   showFlag: true,
   sticky: false,
   customClass: '',
+  includeSiteName: undefined,
+  includeCheckMore: undefined,
+  robots: undefined,
 })
 
 const emit = defineEmits<{
@@ -32,34 +39,69 @@ const emit = defineEmits<{
 const router = useRouter()
 const route = useRoute()
 const config = useRuntimeConfig()
+const siteName = computed(() =>
+  String(config.public.siteName || 'ByBet Slots')
+    .trim()
+    .replace(/^['"]+|['"]+$/g, ''),
+)
+const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
+
+const isHomepage = computed(() => isHomepageRoute(route.path))
+
+const shouldIncludeSiteName = computed(() => {
+  if (typeof props.includeSiteName === 'boolean') {
+    return props.includeSiteName
+  }
+  return !isHomepage.value
+})
+
+const shouldIncludeCheckMore = computed(() => {
+  if (typeof props.includeCheckMore === 'boolean') {
+    return props.includeCheckMore
+  }
+  return !isHomepage.value
+})
 
 const fullTitle = computed(() => {
-  if (props.metaTitle) {
-    return props.metaTitle.includes('ByBet') ? props.metaTitle : `${props.metaTitle} | ByBet`
-  }
-  return props.title ? `${props.title} | ByBet` : 'ByBet'
+  return formatSeoTitle(props.metaTitle || props.title, siteName.value, shouldIncludeSiteName.value)
+})
+
+const fullDescription = computed(() => {
+  return formatSeoDescription(
+    props.description,
+    siteName.value,
+    isHomepage.value,
+    shouldIncludeCheckMore.value,
+  )
+})
+
+const robots = computed(() => {
+  if (props.robots) return props.robots
+  return config.public.indexFollow ? 'index, follow' : 'noindex, nofollow'
 })
 
 // Set reactive SEO metadata
 useSeoMeta({
   title: fullTitle,
   ogTitle: fullTitle,
-  description: () => props.description,
-  ogDescription: () => props.description,
+  ogSiteName: siteName,
+  description: fullDescription,
+  ogDescription: fullDescription,
   keywords: () => props.keywords,
   ogImage: () => props.ogImage,
   ogType: () => props.ogType || 'website',
   twitterTitle: fullTitle,
-  twitterDescription: () => props.description,
+  twitterDescription: fullDescription,
   twitterImage: () => props.ogImage,
   twitterCard: 'summary_large_image',
+  robots,
 })
 
 useHead(() => ({
   link: [
     {
       rel: 'canonical',
-      href: `https://bybet.com${route.path}`,
+      href: `${siteUrl.value}${route.path}`,
     },
   ],
 }))

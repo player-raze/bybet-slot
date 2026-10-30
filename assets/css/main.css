@@ -47,7 +47,7 @@
   --color-secondary: 3 98 66;
   --color-primary-hover: 14 137 96;
   color-scheme: dark;
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-family: 'PingFang SC', 'PingFang', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 html[data-theme='light'] {
@@ -102,8 +102,10 @@ body {
   overflow-x: clip;
   color: var(--text);
   background: var(--page);
+  font-family: inherit;
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: color 180ms ease, background-color 180ms ease;
 }
 
@@ -523,7 +525,11 @@ input {
 .fill-tab-bar-big-button {
   fill: var(--bright, #32d49a);
 }
-
+.eligibility-row input[type="checkbox"]:focus-visible{
+outline: none;
+outline-offset: 0;
+border: none;
+}
 @keyframes mobile-modal-slide-up {
   from {
     opacity: 0;

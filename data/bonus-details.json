@@ -932,49 +932,102 @@
       "seoTitle": "VIP Live Casino Rebate — Daily Live Dealer Cashback | ByBet",
       "seoDesc": "Get premium daily rebates on Baccarat, Roulette, Blackjack, and Live Dealer games at ByBet Live Casino with fast payouts and low turnover.",
       "seoDescription": "Get premium daily rebates on Baccarat, Roulette, Blackjack, and Live Dealer games at ByBet Live Casino with fast payouts and low turnover.",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-07-08 12:00:00 – 2026-12-31 23:59:59 (GMT+08:00)",
       "iconType": "rebate",
-      "accentColor": "#eab308",
+      "accentColor": "#087653",
       "showRequirements": false,
       "qualifications": [
         {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Your Reward to End the Day",
+        "description": "Play live casino and get up to 1% daily rebate based on your VIP level! Rebates are based on your settled valid bets from the previous day and are credited automatically. No need to claim! See the table below for rebate rates.",
+        "descriptionTone": "white",
+        "tableHeading": "🎲 Live Casino Rebate",
         "tables": [
           {
-            "headerTitle": "Promotion Rewards",
+            "variant": "outline",
+            "accentColor": "#429bdb",
             "columns": [
               {
-                "key": "tier",
-                "label": "Tier Level"
+                "key": "vipLevel",
+                "label": "👑 VIP Level",
+                "width": "50%"
               },
               {
-                "key": "benefit",
-                "label": "Benefit"
+                "key": "dailyRebate",
+                "label": "Daily Rebate",
+                "width": "50%"
               }
             ],
             "rows": [
               {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
+                "vipLevel": "VIP 0",
+                "dailyRebate": "0.10%"
+              },
+              {
+                "vipLevel": "VIP 1",
+                "dailyRebate": "0.15%"
+              },
+              {
+                "vipLevel": "VIP 2",
+                "dailyRebate": "0.20%"
+              },
+              {
+                "vipLevel": "VIP 3",
+                "dailyRebate": "0.25%"
+              },
+              {
+                "vipLevel": "VIP 4",
+                "dailyRebate": "0.30%"
+              },
+              {
+                "vipLevel": "VIP 5",
+                "dailyRebate": "0.35%"
+              },
+              {
+                "vipLevel": "VIP 6",
+                "dailyRebate": "0.40%"
+              },
+              {
+                "vipLevel": "VIP 7",
+                "dailyRebate": "0.50%"
+              },
+              {
+                "vipLevel": "VIP 8",
+                "dailyRebate": "0.60%"
+              },
+              {
+                "vipLevel": "VIP 9",
+                "dailyRebate": "0.80%"
+              },
+              {
+                "vipLevel": "VIP 10",
+                "dailyRebate": "1.00%"
               }
-            ]
+            ],
+            "footnote": "*Rebates are subject to a 1x turnover requirement."
           }
         ]
       },
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
+      ],
       "rules": [
         "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
+        "Live casino rebates can be used on all games.",
+        "Live casino rebates must meet a 1x turnover requirement before withdrawal.",
         "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
         "BYBET General Terms and Conditions apply."
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "hasJoinButton": false,
+      "iconKey": "vipLiveCasinoRebate"
     },
     "lucky-8-streak": {
       "id": "lucky-8-streak",
@@ -984,108 +1037,351 @@
       "seoTitle": "Lucky 8 Streak — Live Casino Consecutive Win Bonus | ByBet",
       "seoDesc": "Hit an 8-round winning streak on live casino baccarat and table games to take home extra cash rewards on ByBet Philippines.",
       "seoDescription": "Hit an 8-round winning streak on live casino baccarat and table games to take home extra cash rewards on ByBet Philippines.",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-06-12 12:00:00 – 2026-12-31 23:59:00 (GMT+08:00)",
       "iconType": "rebate",
       "accentColor": "#f59e0b",
       "showRequirements": false,
       "qualifications": [
         {
+          "label": "Registration Period",
+          "value": "2026-06-09 12:00:00 ~\n2026-12-31 23:59:00 (GMT+08:00)"
+        },
+        {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Earn exciting bonuses when you reach an 8-win streak on Live Casino games!",
+        "description": "Members are required to win at least 8 times in a row on any Live Baccarat, Dragon Tiger, Blackjack games and have the corresponding minimum total valid bet to get a bonus.",
+        "descriptionTone": "white",
         "tables": [
           {
-            "headerTitle": "Promotion Rewards",
+            "variant": "outline",
+            "accentColor": "#429bdb",
+            "rowSpans": {
+              "category": 5,
+              "eligibleGames": 5,
+              "winningStreak": 5,
+              "turnover": 5
+            },
             "columns": [
               {
-                "key": "tier",
-                "label": "Tier Level"
+                "key": "category",
+                "label": "",
+                "width": "16.67%"
               },
               {
-                "key": "benefit",
-                "label": "Benefit"
+                "key": "eligibleGames",
+                "label": "Eligible Games",
+                "width": "16.67%"
+              },
+              {
+                "key": "validBets",
+                "label": "Total Valid Bets in 8 Wins",
+                "width": "16.67%"
+              },
+              {
+                "key": "winningStreak",
+                "label": "Winning Streak",
+                "width": "16.67%"
+              },
+              {
+                "key": "bonus",
+                "label": "Bonus",
+                "width": "16.66%"
+              },
+              {
+                "key": "turnover",
+                "label": "Turnover Requirement",
+                "width": "16.66%"
               }
             ],
             "rows": [
               {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
+                "category": "Live Casino",
+                "eligibleGames": "Baccarat, Dragon Tiger, Blackjack",
+                "validBets": "10,000",
+                "winningStreak": "8 Wins",
+                "bonus": "150",
+                "turnover": "1x"
+              },
+              {
+                "category": "Live Casino",
+                "eligibleGames": "Baccarat, Dragon Tiger, Blackjack",
+                "validBets": "50,000",
+                "winningStreak": "8 Wins",
+                "bonus": "750",
+                "turnover": "1x"
+              },
+              {
+                "category": "Live Casino",
+                "eligibleGames": "Baccarat, Dragon Tiger, Blackjack",
+                "validBets": "300,000",
+                "winningStreak": "8 Wins",
+                "bonus": "4,500",
+                "turnover": "1x"
+              },
+              {
+                "category": "Live Casino",
+                "eligibleGames": "Baccarat, Dragon Tiger, Blackjack",
+                "validBets": "600,000",
+                "winningStreak": "8 Wins",
+                "bonus": "9,000",
+                "turnover": "1x"
+              },
+              {
+                "category": "Live Casino",
+                "eligibleGames": "Baccarat, Dragon Tiger, Blackjack",
+                "validBets": "1,200,000",
+                "winningStreak": "8 Wins",
+                "bonus": "18,000",
+                "turnover": "1x"
               }
             ]
           }
+        ],
+        "notes": [
+          "Each member can only claim a bonus once per day.",
+          "The maximum weekly bonus payout is ₱54,000."
         ]
       },
-      "rules": [
-        "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
-        "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
-        "BYBET General Terms and Conditions apply."
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "rules": [
+        "Participating members must complete KYC verification.",
+        "To claim bonus, Members must contact Customer Service the same day (12:00 AM–11:59PM). Approved bonuses will be credited the following day at 3:00 PM.",
+        "Members must fulfill 1x turnover requirements before any withdrawals can be made.",
+        "All BYBET terms and conditions apply."
+      ],
+      "hasJoinButton": false,
+      "iconKey": "lucky8Streak"
     },
     "lucky-rankings": {
       "id": "lucky-rankings",
       "slug": "lucky-rankings",
       "title": "Lucky Rankings – Let's Meet on Payday!",
       "subtitle": "Climb the rankings and win big on payday!",
-      "seoTitle": "Lucky Rankings Payday Tournament & Leaderboard Bonus | ByBet",
+      "seoTitle": "Lucky Rankings Payday Leaderboard Bonus | ByBet",
       "seoDesc": "Climb the leaderboard in ByBet's Lucky Rankings tournament. Compete on slot games and celebrate payday with a share of the grand prize pool.",
       "seoDescription": "Climb the leaderboard in ByBet's Lucky Rankings tournament. Compete on slot games and celebrate payday with a share of the grand prize pool.",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-06-17 12:00:00 – 2026-12-31 23:59:00 (GMT+08:00)",
       "iconType": "rebate",
       "accentColor": "#ec4899",
       "showRequirements": false,
       "qualifications": [
         {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Climb the rankings and win big on payday!",
+        "description": "",
+        "descriptionTone": "white",
+        "paragraphs": [
+          "Land your biggest wins and climb the rankings to win exciting payday bonuses every 15th and last day of the month! Each win is ranked separately on its provider's leaderboard: JILI, JDB, PP, PG, CQ9, and Red Tiger."
+        ],
+        "linkedParagraphs": [
+          {
+            "parts": [
+              { "text": "Reach the Top 10 on any leaderboard to win! Track your rank at " },
+              { "text": "official.bybet.com/promotions/lucky-rankings", "href": "https://official.bybet.com/promotions/lucky-rankings" },
+              { "text": "." }
+            ]
+          }
+        ],
+        "tableHeading": "Bonus per Rank",
         "tables": [
           {
-            "headerTitle": "Promotion Rewards",
+            "variant": "outline",
+            "accentColor": "#429bdb",
             "columns": [
               {
-                "key": "tier",
-                "label": "Tier Level"
+                "key": "rank",
+                "label": "Rank",
+                "width": "14.3%"
               },
               {
-                "key": "benefit",
-                "label": "Benefit"
+                "key": "jili",
+                "label": "JILI",
+                "width": "14.3%"
+              },
+              {
+                "key": "jdb",
+                "label": "JDB",
+                "width": "14.3%"
+              },
+              {
+                "key": "pp",
+                "label": "PP",
+                "width": "14.3%"
+              },
+              {
+                "key": "pg",
+                "label": "PG",
+                "width": "14.3%"
+              },
+              {
+                "key": "cq9",
+                "label": "CQ9",
+                "width": "14.3%"
+              },
+              {
+                "key": "redTiger",
+                "label": "Red Tiger",
+                "width": "14.2%"
               }
             ],
             "rows": [
               {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
+                "rank": "1",
+                "jili": "8,999",
+                "jdb": "1,499",
+                "pp": "3,999",
+                "pg": "8,999",
+                "cq9": "3,999",
+                "redTiger": "499"
+              },
+              {
+                "rank": "2",
+                "jili": "6,999",
+                "jdb": "999",
+                "pp": "2,499",
+                "pg": "6,999",
+                "cq9": "2,499",
+                "redTiger": "399"
+              },
+              {
+                "rank": "3",
+                "jili": "5,999",
+                "jdb": "799",
+                "pp": "1,999",
+                "pg": "5,999",
+                "cq9": "1,999",
+                "redTiger": "299"
+              },
+              {
+                "rank": "4",
+                "jili": "4,999",
+                "jdb": "599",
+                "pp": "1,499",
+                "pg": "4,999",
+                "cq9": "1,499",
+                "redTiger": "199"
+              },
+              {
+                "rank": "5",
+                "jili": "3,999",
+                "jdb": "499",
+                "pp": "999",
+                "pg": "3,999",
+                "cq9": "999",
+                "redTiger": "99"
+              },
+              {
+                "rank": "6",
+                "jili": "2,999",
+                "jdb": "399",
+                "pp": "699",
+                "pg": "2,999",
+                "cq9": "699",
+                "redTiger": "99"
+              },
+              {
+                "rank": "7",
+                "jili": "1,999",
+                "jdb": "299",
+                "pp": "499",
+                "pg": "1,999",
+                "cq9": "499",
+                "redTiger": "99"
+              },
+              {
+                "rank": "8",
+                "jili": "1,499",
+                "jdb": "199",
+                "pp": "399",
+                "pg": "1,499",
+                "cq9": "399",
+                "redTiger": "99"
+              },
+              {
+                "rank": "9",
+                "jili": "999",
+                "jdb": "99",
+                "pp": "299",
+                "pg": "999",
+                "cq9": "299",
+                "redTiger": "99"
+              },
+              {
+                "rank": "10",
+                "jili": "499",
+                "jdb": "99",
+                "pp": "99",
+                "pg": "499",
+                "cq9": "99",
+                "redTiger": "99"
+              }
+            ],
+            "footnote": "*Bonuses are subject to a 10x turnover requirement."
+          },
+          {
+            "variant": "outline",
+            "accentColor": "#429bdb",
+            "introText": "Rankings are finalized at the end of each cutoff period. Bonuses are credited the next day at 3:00 PM.",
+            "columns": [
+              {
+                "key": "cutoffPeriod",
+                "label": "Cutoff Period",
+                "width": "50%"
+              },
+              {
+                "key": "bonusCredited",
+                "label": "Bonus Credited",
+                "width": "50%"
+              }
+            ],
+            "rows": [
+              {
+                "cutoffPeriod": "Last day of the month - 14th",
+                "bonusCredited": "15th, 3:00 PM"
+              },
+              {
+                "cutoffPeriod": "15th - 2nd to the last day of the month",
+                "bonusCredited": "Last day of the month, 3:00 PM"
               }
             ]
           }
         ]
       },
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
+      ],
       "rules": [
         "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
+        "Lucky Ranking bonuses can be used on all games.",
+        "Lucky Ranking bonuses must meet a 10x turnover requirement before withdrawal.",
         "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
         "BYBET General Terms and Conditions apply."
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "hasJoinButton": false,
+      "iconKey": "luckyRankings"
     },
     "complete-account-information": {
       "id": "complete-account-information",
       "slug": "complete-account-information",
       "title": "Complete account information to get ₱20 Reward!",
       "subtitle": "After meeting the T&C requirements, simply click [Apply Now] to receive your 20 bonus reward automatically.",
-      "seoTitle": "Complete Profile & Verify Account to Get ₱20 Free Bonus | ByBet",
+      "seoTitle": "Complete Profile and Verify to Get ₱20 Free Bonus | ByBet",
       "seoDesc": "Verify your email and mobile number and complete your ByBet member profile to claim an instant ₱20 welcome reward automatically.",
       "seoDescription": "Verify your email and mobile number and complete your ByBet member profile to claim an instant ₱20 welcome reward automatically.",
       "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
@@ -1140,49 +1436,70 @@
       "seoTitle": "Refer a Friend Bonus Program — Earn Unlimited Commissions | ByBet",
       "seoDesc": "Invite friends to ByBet Philippines and earn recurring referral rewards when they register and deposit. Refer na may bonus pa!",
       "seoDescription": "Invite friends to ByBet Philippines and earn recurring referral rewards when they register and deposit. Refer na may bonus pa!",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-06-12 12:00:00 – Permanent (GMT+08:00)",
       "iconType": "rebate",
       "accentColor": "#14b8a6",
       "showRequirements": false,
       "qualifications": [
         {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Refer na may bonus pa!",
+        "description": "",
         "tables": [
           {
-            "headerTitle": "Promotion Rewards",
+            "variant": "outline",
+            "accentColor": "#429bdb",
             "columns": [
               {
-                "key": "tier",
-                "label": "Tier Level"
+                "key": "level",
+                "label": "Level",
+                "width": "18%"
               },
               {
-                "key": "benefit",
-                "label": "Benefit"
+                "key": "definition",
+                "label": "Definition",
+                "width": "34%"
+              },
+              {
+                "key": "commissionRate",
+                "label": "Commission Rate",
+                "width": "23%"
+              },
+              {
+                "key": "example",
+                "label": "Example (₱1,000 Bet)",
+                "width": "25%"
               }
             ],
             "rows": [
               {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
+                "level": "Tier 1",
+                "definition": "Members you directly invite",
+                "commissionRate": "",
+                "example": ""
               }
             ]
           }
         ]
       },
-      "rules": [
-        "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
-        "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
-        "BYBET General Terms and Conditions apply."
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "rules": [
+        "1. One account per person – No self-referral, no multiple accounts. Same IP/name/device will be banned.",
+        "2. Commission is automatic – No need to claim. Credits go directly to your account after bets are settled.",
+        "3. Unlimited earnings – No cap on commission. Earn as long as your referrals keep betting."
+      ],
+      "rulesStyle": "plain",
+      "hasJoinButton": false,
+      "iconKey": "referralBonus"
     },
     "bybet-vip-center": {
       "id": "bybet-vip-center",
@@ -1192,153 +1509,322 @@
       "seoTitle": "ByBet VIP Club & Loyalty Rewards Program | Exclusive Privileges",
       "seoDesc": "Level up your gaming experience in the ByBet VIP Center. Enjoy customized bonuses, higher withdrawal limits, birthday gifts, and personal VIP managers.",
       "seoDescription": "Level up your gaming experience in the ByBet VIP Center. Enjoy customized bonuses, higher withdrawal limits, birthday gifts, and personal VIP managers.",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-04-01 12:00:00 – Permanent (GMT+08:00)",
       "iconType": "rebate",
       "accentColor": "#a855f7",
       "showRequirements": false,
       "qualifications": [
         {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Exclusive Rewards Start Here",
-        "tables": [
+        "description": "Reach Higher. Earn More. Live VIP. Experience rewards, recognition, and exclusive VIP benefits as you rise through the rank",
+        "descriptionTone": "white",
+        "tierCards": [
           {
-            "headerTitle": "Promotion Rewards",
-            "columns": [
-              {
-                "key": "tier",
-                "label": "Tier Level"
-              },
-              {
-                "key": "benefit",
-                "label": "Benefit"
-              }
-            ],
-            "rows": [
-              {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
-              }
-            ]
+            "level": "VIP 1",
+            "turnover": "20,000",
+            "upgradeBonus": "20",
+            "monthlyRedPacket": "50",
+            "birthdayBonus": "100"
+          },
+          {
+            "level": "VIP 2",
+            "turnover": "50,000",
+            "upgradeBonus": "50",
+            "monthlyRedPacket": "100",
+            "birthdayBonus": "200"
+          },
+          {
+            "level": "VIP 3",
+            "turnover": "500,000",
+            "upgradeBonus": "200",
+            "monthlyRedPacket": "200",
+            "birthdayBonus": "400"
+          },
+          {
+            "level": "VIP 4",
+            "turnover": "2,000,000",
+            "upgradeBonus": "400",
+            "monthlyRedPacket": "400",
+            "birthdayBonus": "800"
+          },
+          {
+            "level": "VIP 5",
+            "turnover": "10,000,000",
+            "upgradeBonus": "2,000",
+            "monthlyRedPacket": "2,000",
+            "birthdayBonus": "3,000"
+          },
+          {
+            "level": "VIP 6",
+            "turnover": "20,000,000",
+            "upgradeBonus": "5,000",
+            "monthlyRedPacket": "5,000",
+            "birthdayBonus": "6,000"
+          },
+          {
+            "level": "VIP 7",
+            "turnover": "50,000,000",
+            "upgradeBonus": "12,000",
+            "monthlyRedPacket": "12,000",
+            "birthdayBonus": "15,000"
+          },
+          {
+            "level": "VIP 8",
+            "turnover": "150,000,000",
+            "upgradeBonus": "30,000",
+            "monthlyRedPacket": "30,000",
+            "birthdayBonus": "40,000"
+          },
+          {
+            "level": "VIP 9",
+            "turnover": "400,000,000",
+            "upgradeBonus": "40,000",
+            "monthlyRedPacket": "40,000",
+            "birthdayBonus": "50,000"
+          },
+          {
+            "level": "VIP 10",
+            "turnover": "1,200,000,000",
+            "upgradeBonus": "160,000",
+            "monthlyRedPacket": "160,000",
+            "birthdayBonus": "200,000"
           }
+        ],
+        "afterTableParagraphs": [
+          "💎 Upgrade Bonus:\nUpgrade bonuses are automatically rewarded once members reach the corresponding VIP level. Each VIP member can only receive an upgrade bonus once for each level. (Requires 1 times turnover to withdraw promotion bonus)",
+          "🧧 Monthly Red Packet:\nVIP members who make at least one successful deposit in the previous month will receive the monthly reward bonus for their current level on the 1st of each month. (Requires 1 times turnover to withdraw monthly red packet)",
+          "🎂 Birthday Bonus:\nMembers who have registered for more than 90 days need to self-claim the Birthday Bonus on the ‘VIP Center’ page on their birthday. However, VIP members who register within 90 days of their birthday will not be eligible to receive birthday points this year. (Requires 1 times turnover to withdraw birthday bonus)",
+          "You can check your VIP status and related benefits at any time via the following path: [Me] → [VIP]"
         ]
       },
-      "rules": [
-        "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
-        "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
-        "BYBET General Terms and Conditions apply."
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "rules": [
+        "VIP levels are updated automatically based on your valid bets.",
+        "Higher bets = higher level = more exclusive benefits."
+      ],
+      "rulesStyle": "plain",
+      "hasJoinButton": false,
+      "iconKey": "bybetVipCenter"
     },
     "bybet-giveaways-galore": {
       "id": "bybet-giveaways-galore",
       "slug": "bybet-giveaways-galore",
       "title": "Bybet lang sakalam giveaways galore!",
-      "subtitle": "Follow the established official community channels of Bybet",
+      "subtitle": "Follow the established official community channels of ByBet",
       "seoTitle": "ByBet Lang Sakalam Community Giveaways Galore | Official Promo",
       "seoDesc": "Follow ByBet's official Telegram, Facebook, and social channels to win free bet codes, gadgets, and exclusive community giveaway prizes.",
       "seoDescription": "Follow ByBet's official Telegram, Facebook, and social channels to win free bet codes, gadgets, and exclusive community giveaway prizes.",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-04-01 12:00:00 – 2026-12-31 23:59:00 (GMT+08:00)",
       "iconType": "rebate",
       "accentColor": "#06b6d4",
       "showRequirements": false,
       "qualifications": [
         {
+          "label": "Registration Period",
+          "value": "2026-01-30 12:00:00 ~\n2026-12-31 23:59:00 (GMT+08:00)"
+        },
+        {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Follow the established official community channels of Bybet",
-        "tables": [
+        "description": "",
+        "descriptionTone": "white",
+        "paragraphs": [
+          "Stay up-to-date with platform announcements, product updates, and special offers. Welcome to join the official ByBet community channel. Community benefits and rewards will be distributed periodically; please refer to community announcements for details.",
+          "ByBet Official Community"
+        ],
+        "linkedParagraphs": [
           {
-            "headerTitle": "Promotion Rewards",
-            "columns": [
-              {
-                "key": "tier",
-                "label": "Tier Level"
-              },
-              {
-                "key": "benefit",
-                "label": "Benefit"
-              }
-            ],
-            "rows": [
-              {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
-              }
+            "parts": [
+              { "text": "Facebook: " },
+              { "text": "@bybetph", "href": "https://www.facebook.com/bybetph/" }
             ]
+          },
+          {
+            "parts": [
+              { "text": "Instagram: " },
+              { "text": "@bybetph", "href": "https://www.instagram.com/bybetph/" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "X: " },
+              { "text": "@ByBetPH", "href": "https://x.com/ByBetPH" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "YouTube: " },
+              { "text": "@ByBetPH", "href": "https://www.youtube.com/@bybetph" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "TikTok: " },
+              { "text": "@bybetph", "href": "https://www.tiktok.com/@bybetph" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "Telegram: " },
+              { "text": "@bybetph", "href": "https://t.me/bybetph" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "Whatsapp: " },
+              { "text": "@bybetph", "href": "https://wa.me/message/H6MWPA64JHQAI1" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "Viber: " },
+              { "text": "@bybetph", "href": "https://invite.viber.com/?g2=AQBHOIfOXhlAOlXKy8PNTeHrOPSnMAnA%2F4tkd8dUdTp7pngfhAMjwO32e6l48dC5" }
+            ],
+            "ariaLabel": "ByBet Viber community"
           }
         ]
       },
-      "rules": [
-        "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
-        "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
-        "BYBET General Terms and Conditions apply."
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "rules": [
+        "1. Players must join the official ByBet community (Facebook or Telegram) via the website or official links.",
+        "2. To join the event, players must comment or chat their platform member account ID on the official channel.",
+        "3. Rewards will be announced via community announcements. Eligible members must follow the instructions provided to claim them.",
+        "4. Selected winners will be contacting customer service for security verification, which may include providing personal details (e.g., address for physical prizes).",
+        "5. Customer Service will verify that the claimant matches the original participant.",
+        "6. Electronic vouchers or bonuses will be credited directly to the member's ByBet account.",
+        "7. Physical gifts require members to provide shipping information and complete verification before dispatch.",
+        "8. Participation criteria vary per reward (e.g., valid turnover, KYC completion, and task completion) and are subject to each community announcement."
+      ],
+      "rulesStyle": "plain",
+      "hasJoinButton": false,
+      "iconKey": "bybetGiveawaysGalore"
     },
     "spot-it-snap-it-win-it": {
       "id": "spot-it-snap-it-win-it",
       "slug": "spot-it-snap-it-win-it",
-      "title": "Spot it. Snap it. Win it.",
+      "title": "Spot It. Snap It. Win It.",
       "subtitle": "Get up to 200 Bonus when you post a selfie with any Bybet placement",
       "seoTitle": "Spot It. Snap It. Win It. — Post a Selfie for ₱200 Bonus | ByBet",
       "seoDesc": "Spot a ByBet billboard, vehicle wrap, or advertisement anywhere in the Philippines, snap a selfie, post online, and get up to ₱200 bonus!",
       "seoDescription": "Spot a ByBet billboard, vehicle wrap, or advertisement anywhere in the Philippines, snap a selfie, post online, and get up to ₱200 bonus!",
-      "period": "2026-10-01 00:00:00 ~ 2026-12-31 23:59:59 (GMT+08:00)",
+      "period": "2026-07-23 12:00:00 – 2026-12-31 23:59:00 (GMT+08:00)",
       "iconType": "rebate",
       "accentColor": "#10b981",
       "showRequirements": false,
       "qualifications": [
         {
           "label": "Registration Platform",
-          "value": "PC, Mobile, App Sport"
+          "value": "PC、 Mobile、 App Sport"
         }
       ],
       "eventContent": {
-        "badge": "Special Bonus",
-        "description": "Get up to 200 Bonus when you post a selfie with any Bybet placement",
+        "description": "",
+        "descriptionTone": "white",
+        "paragraphs": [
+          "Get up to 200 Bonus when you pose with any Bybet placement!",
+          "1. Find an official ByBet billboard, banner, display, or branded signage.\n2. Take a photo or video with the branding clearly visible, post it publicly with hashtags #ByBetSpotted #ByBet and #ByBet(Billboard Location) (e.g., #ByBetGuadalupe, #ByBetEDSA, #ByBetCubao) tag the official ByBet account\n3. Post it on Bybet’s official social media pages.",
+          "ByBet Official Community"
+        ],
+        "linkedParagraphs": [
+          {
+            "parts": [
+              { "text": "Facebook: " },
+              { "text": "@bybetph", "href": "https://www.facebook.com/bybetph/" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "Instagram: " },
+              { "text": "@bybetph", "href": "https://www.instagram.com/bybetph/" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "X: " },
+              { "text": "@ByBetPH", "href": "https://x.com/ByBetPH" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "YouTube: " },
+              { "text": "@ByBetPH", "href": "https://www.youtube.com/@bybetph" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "TikTok: " },
+              { "text": "@bybetph", "href": "https://www.tiktok.com/@bybetph" }
+            ]
+          },
+          {
+            "parts": [
+              { "text": "Once your submission has been verified, your reward will be credited to your ByBet account." }
+            ]
+          }
+        ],
         "tables": [
           {
-            "headerTitle": "Promotion Rewards",
+            "variant": "outline",
+            "accentColor": "#429bdb",
             "columns": [
               {
-                "key": "tier",
-                "label": "Tier Level"
+                "key": "bonusAmount",
+                "label": "Bonus Amount",
+                "width": "50%"
               },
               {
-                "key": "benefit",
-                "label": "Benefit"
+                "key": "bonusIssuance",
+                "label": "Bonus Issuance",
+                "width": "50%"
               }
             ],
             "rows": [
               {
-                "tier": "All Verified Members",
-                "benefit": "Eligible for Bonus"
+                "bonusAmount": "100",
+                "bonusIssuance": "Contact CS and submit screenshot and link to your post/story"
+              },
+              {
+                "bonusAmount": "100",
+                "bonusIssuance": "Contact CS after 7 days"
               }
             ]
           }
         ]
       },
-      "rules": [
-        "Open to KYC-verified members only.",
-        "Promotional rewards are subject to standard 1x turnover requirements before withdrawal.",
-        "BYBET reserves the right to modify, suspend, or cancel this promotion at any time.",
-        "BYBET General Terms and Conditions apply."
+      "promotionTerms": [
+        "1. Bind your phone number",
+        "2. Bind your email",
+        "3. Complete your profile information",
+        "4. Same name (name and surname) is not applicable",
+        "5. Same IP is not applicable"
       ],
-      "hasJoinButton": true,
-      "iconKey": "default"
+      "rules": [
+        "Participating members must complete KYC verification.",
+        "To claim bonus, members must contact Customer Service. Approved bonuses will be credited the same day.",
+        "Members must fulfill 1x turnover requirements before any withdrawals can be made.",
+        "All BYBET terms and conditions apply."
+      ],
+      "hasJoinButton": false,
+      "iconKey": "spotItSnapItWinIt"
     }
   }
 }

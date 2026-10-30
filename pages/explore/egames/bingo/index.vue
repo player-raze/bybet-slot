@@ -29,6 +29,8 @@ import {
 } from '~/data/bingo'
 import GameCard from '~/components/game-cards/GameCard.vue'
 import GameRail from '~/components/game-cards/GameRail.vue'
+import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
+import { sortRailGames } from '~/utils/gameSort'
 
 useAppSeo({
   title: 'Online Bingo Games — Fast Paced Fun & Wins | ByBet',
@@ -248,6 +250,7 @@ interface BingoSectionDisplay {
   count: number
   hasHelp?: boolean
   games: BingoGame[]
+  allMatchingGames?: BingoGame[]
 }
 
 const sectionConfigs = [
@@ -286,10 +289,13 @@ const filteredSections = computed<BingoSectionDisplay[]>(() => {
       }
     }
 
+    const sortedGames = sortRailGames(allMatchingGames, { category: cfg.id, label: cfg.title })
+
     return {
       ...cfg,
       count: allMatchingGames.length,
-      games: allMatchingGames.slice(0, GAMES_PER_SECTION),
+      games: sortedGames.slice(0, GAMES_PER_SECTION),
+      allMatchingGames: sortedGames,
     }
   }).filter((section) => section.games.length > 0)
 })
@@ -495,41 +501,25 @@ const resetFilters = (): void => {
       </div>
 
       <!-- Empty State for Search Results -->
-      <div
+      <GameEmptyState
         v-else
-        class="my-12 flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-[#171817] p-8 text-center"
-      >
-        <Search class="h-10 w-10 text-[#7a807d]" />
-        <h3 class="text-base font-semibold text-white">No bingo games found for "{{ searchQuery }}"</h3>
-        <p class="text-xs text-[#9ca3af]">Try adjusting your search query or provider filter.</p>
-        <button
-          type="button"
-          class="mt-2 rounded-full bg-[#036242] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#047b53] transition-colors cursor-pointer"
-          @click="resetSearch"
-        >
-          Reset Search
-        </button>
-      </div>
+        text="No Results"
+        :show-reset="true"
+        reset-text="Reset Search"
+        @reset="resetSearch"
+      />
     </div>
 
     <!-- Default Bingo Sections (Home Page layout with 1 row of 6 games per section) -->
     <template v-else>
       <!-- Empty State -->
-      <div
+      <GameEmptyState
         v-if="filteredSections.length === 0"
-        class="my-12 flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-[#171817] p-8 text-center"
-      >
-        <Search class="h-10 w-10 text-[#7a807d]" />
-        <h3 class="text-base font-semibold text-white">No bingo games found</h3>
-        <p class="text-xs text-[#9ca3af]">Try adjusting your provider filter.</p>
-        <button
-          type="button"
-          class="mt-2 rounded-full bg-[#036242] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#047b53] transition-colors cursor-pointer"
-          @click="resetFilters"
-        >
-          Reset Filters
-        </button>
-      </div>
+        text="This is no game currently."
+        :show-reset="true"
+        reset-text="Reset Filters"
+        @reset="resetFilters"
+      />
 
       <!-- Bingo Sections (Home Page layout with full sections) -->
       <section
@@ -571,9 +561,15 @@ const resetFilters = (): void => {
       </div>
 
       <!-- Swipeable section preview -->
-      <GameRail :label="section.title">
+      <GameRail
+        :label="section.title"
+        :category="section.id"
+        :games="section.allMatchingGames || section.games"
+        :limit="6"
+        v-slot="{ games }"
+      >
         <GameCard
-          v-for="game in section.games.slice(0, 6)"
+          v-for="game in (games && games.length ? games : section.games.slice(0, 6))"
           :key="game.id"
           :game="game"
           :activeId="activeGameId"
