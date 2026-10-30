@@ -144,14 +144,14 @@ onBeforeUnmount(restorePageScroll)
                   :class="{ 'confirmation-check--active': ageConfirmed }"
                   aria-hidden="true"
                 >
-                  <Check :size="11" :stroke-width="3" />
+                  <Check :size="8" :stroke-width="3" />
                 </span>
                 <span>I am over 21 years of age</span>
               </label>
 
               <div class="eligibility-row">
                 <span class="confirmation-check confirmation-check--active" aria-hidden="true">
-                  <Check :size="11" :stroke-width="3" />
+                  <Check :size="8" :stroke-width="3" />
                 </span>
                 <span>
                   I am not a government official, or employee connected directly with the
@@ -162,7 +162,7 @@ onBeforeUnmount(restorePageScroll)
               </div>
               <div class="eligibility-row">
                 <span class="confirmation-check confirmation-check--active" aria-hidden="true">
-                  <Check :size="11" :stroke-width="3" />
+                  <Check :size="8" :stroke-width="3" />
                 </span>
                 <span>
                   I am not a Gaming Employment License (GEL) holder.
@@ -170,7 +170,7 @@ onBeforeUnmount(restorePageScroll)
               </div>
               <div class="eligibility-row">
                 <span class="confirmation-check confirmation-check--active" aria-hidden="true">
-                  <Check :size="11" :stroke-width="3" />
+                  <Check :size="8" :stroke-width="3" />
                 </span>
                 <span>
                   I am not included in the PAGCOR's National Database of Restricted Persons(NDRP).
@@ -223,7 +223,7 @@ onBeforeUnmount(restorePageScroll)
                 :class="{ 'confirmation-check--active': termsConfirmed }"
                 aria-hidden="true"
               >
-                <Check :size="11" :stroke-width="3" />
+                <Check :size="8" :stroke-width="3" />
               </span>
               <span>
                 I have read and agree to ByBet’s
@@ -440,11 +440,11 @@ onBeforeUnmount(restorePageScroll)
 .confirmation-check--active,
 input:checked + .confirmation-check {
   color: #fff;
-  background: #0c9870;
+  background: #036242;
 }
 
 input:focus-visible + .confirmation-check {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0c9870;
+  box-shadow: none;
 }
 
 .responsible-gaming-list {

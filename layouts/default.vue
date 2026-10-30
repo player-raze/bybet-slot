@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   transform: translateX(-50%);
   margin-right: var(--comment-width);
-  margin-left: var(--sidebar-width);
+  margin-left: cal(var(--sidebar-width) - 10px);
   transition: margin-right 180ms ease, margin-left 180ms ease;
 }
 

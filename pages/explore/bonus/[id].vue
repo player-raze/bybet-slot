@@ -14,6 +14,7 @@ import {
 
 const route = useRoute()
 const bybetRedirectUrl = useRuntimeConfig().public.bybetRedirectUrl
+const { markAsViewed } = useViewedPromotions()
 
 const bonusId = computed(() => {
   const id = route.params.id
@@ -98,6 +99,18 @@ watch(bonusId, () => {
   bannerImageError.value = false
 })
 
+onMounted(() => {
+  if (bonus.value?.slug) {
+    markAsViewed(bonus.value.slug)
+  }
+})
+
+watch(() => bonus.value?.slug, (slug) => {
+  if (slug) {
+    markAsViewed(slug)
+  }
+})
+
 const handleJoinNow = (): void => {
   reminderMessage.value = 'Please login first to participate in this promotion.'
   isReminderOpen.value = true
@@ -157,6 +170,7 @@ const handleContentClick = (event: MouseEvent): void => {
           <img
             :src="bonusHeaderImageSrc"
             :alt="bonus.title"
+            :class="{ 'promotion-banner__image--full-artwork': bonus.slug === 'lucky-rankings' }"
             decoding="async"
             @error="bannerImageError = true"
           >
@@ -272,13 +286,22 @@ const handleContentClick = (event: MouseEvent): void => {
               <template v-else>{{ bonus.eventContent.description }}</template>
             </p>
 
-            <h3 v-if="bonus.eventContent.tableHeading" class="reward-section__table-heading">
-              {{ bonus.eventContent.tableHeading }}
-            </h3>
-
             <div v-if="bonus.eventContent.paragraphs?.length" class="reward-paragraphs">
               <p v-for="paragraph in bonus.eventContent.paragraphs" :key="paragraph">{{ paragraph }}</p>
             </div>
+
+            <div v-if="bonus.eventContent.linkedParagraphs?.length" class="reward-linked-paragraphs">
+              <p v-for="(paragraph, paragraphIndex) in bonus.eventContent.linkedParagraphs" :key="paragraphIndex">
+                <template v-for="(part, partIndex) in paragraph.parts" :key="`${paragraphIndex}-${partIndex}`">
+                  <a v-if="part.href" :href="part.href" target="_blank" rel="noopener noreferrer">{{ part.text }}</a>
+                  <span v-else>{{ part.text }}</span>
+                </template>
+              </p>
+            </div>
+
+            <h3 v-if="bonus.eventContent.tableHeading" class="reward-section__table-heading">
+              {{ bonus.eventContent.tableHeading }}
+            </h3>
 
             <div v-if="bonus.eventContent.methodCard" class="method-card">
               <strong>{{ bonus.eventContent.methodCard.title }}</strong>
@@ -290,6 +313,18 @@ const handleContentClick = (event: MouseEvent): void => {
                 <strong>{{ callout.label }}</strong>
                 <span v-if="callout.badge">{{ callout.badge }}</span>
               </div>
+            </div>
+
+            <div v-if="bonus.eventContent.tierCards?.length" class="vip-tier-cards">
+              <article v-for="tier in bonus.eventContent.tierCards" :key="tier.level" class="vip-tier-card">
+                <strong class="vip-tier-card__level">👑 {{ tier.level }}</strong>
+                <div class="vip-tier-card__benefits">
+                  <div><span>🎯<br>Turnover Requirement</span><strong>{{ tier.turnover }}</strong></div>
+                  <div><span>💎<br>Upgrade Bonus</span><strong>{{ tier.upgradeBonus }}</strong></div>
+                  <div><span>🧧<br>Monthly Red Packet</span><strong>{{ tier.monthlyRedPacket }}</strong></div>
+                  <div><span>🎂<br>Birthday Bonus</span><strong>{{ tier.birthdayBonus }}</strong></div>
+                </div>
+              </article>
             </div>
 
             <div v-if="bonus.eventContent.tables?.length" class="reward-tables">
@@ -306,6 +341,7 @@ const handleContentClick = (event: MouseEvent): void => {
                 <div v-if="table.subHeaderTitle" class="reward-table__subtitle">
                   {{ table.subHeaderTitle }}
                 </div>
+                <p v-if="table.introText" class="reward-table__intro">{{ table.introText }}</p>
 
                 <div class="reward-table__scroller">
                   <table>
@@ -343,6 +379,10 @@ const handleContentClick = (event: MouseEvent): void => {
 
             <div v-if="bonus.eventContent.notes?.length" class="reward-notes">
               <p v-for="note in bonus.eventContent.notes" :key="note">{{ note }}</p>
+            </div>
+
+            <div v-if="bonus.eventContent.afterTableParagraphs?.length" class="reward-after-table-paragraphs">
+              <p v-for="paragraph in bonus.eventContent.afterTableParagraphs" :key="paragraph">{{ paragraph }}</p>
             </div>
 
             <ul v-if="bonus.eventContent.bullets?.length" class="promotion-list">
@@ -985,6 +1025,7 @@ const handleContentClick = (event: MouseEvent): void => {
 .qualification-table dd {
   justify-content: center;
   color: #d9d9d9;
+  white-space: pre-line;
 }
 
 .reward-section__heading {
@@ -1042,6 +1083,22 @@ const handleContentClick = (event: MouseEvent): void => {
   margin-top: 0.7rem;
 }
 
+.reward-linked-paragraphs {
+  margin-bottom: 0.65rem;
+  color: #ffffff;
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
+.reward-linked-paragraphs p {
+  margin: 0;
+}
+
+.reward-linked-paragraphs a {
+  color: #1687ff;
+  text-decoration: underline;
+}
+
 .reward-section__table-heading {
   margin: 0 0 0.45rem;
   color: #ffffff;
@@ -1074,6 +1131,65 @@ const handleContentClick = (event: MouseEvent): void => {
   color: #d9fff1;
   font-size: 0.52rem;
   background: #087653;
+}
+
+.vip-tier-cards {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.6rem;
+  gap: 0.55rem;
+}
+
+.vip-tier-card {
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: 20% minmax(0, 80%);
+  border: 2px solid #429bdb;
+  border-radius: 0.38rem;
+  color: #ffffff;
+  background: #151515;
+}
+
+.vip-tier-card__level {
+  display: grid;
+  min-width: 0;
+  place-items: center;
+  padding: 0.45rem 0.3rem;
+  border-right: 1px solid #429bdb;
+  font-size: 0.53rem;
+  text-align: center;
+}
+
+.vip-tier-card__benefits {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.vip-tier-card__benefits > div {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: 1fr auto;
+  text-align: center;
+}
+
+.vip-tier-card__benefits > div + div {
+  border-left: 1px solid #429bdb;
+}
+
+.vip-tier-card__benefits span,
+.vip-tier-card__benefits strong {
+  display: grid;
+  place-items: center;
+  padding: 0.32rem 0.2rem;
+  color: #ffffff;
+  font-size: 0.5rem;
+  line-height: 1.25;
+}
+
+.vip-tier-card__benefits span {
+  border-bottom: 1px solid #429bdb;
+  font-weight: 700;
 }
 
 .method-card,
@@ -1157,6 +1273,20 @@ const handleContentClick = (event: MouseEvent): void => {
   font-size: 0.48rem;
 }
 
+.reward-table--outline .reward-table__footnote {
+  padding-inline: 0;
+  border-top: 0;
+  color: #ffffff;
+  font-style: italic;
+}
+
+.reward-table__intro {
+  margin: 0 0 0.5rem;
+  color: #ffffff;
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
 .reward-table--outline {
   overflow: visible;
   border: 0;
@@ -1200,6 +1330,22 @@ const handleContentClick = (event: MouseEvent): void => {
 
 .reward-notes p {
   margin: 0;
+}
+
+.reward-after-table-paragraphs {
+  margin-top: 0.7rem;
+  color: #ffffff;
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
+.reward-after-table-paragraphs p {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.reward-after-table-paragraphs p + p {
+  margin-top: 0.7rem;
 }
 
 .reward-table--outline .reward-table__footnote {
@@ -1292,6 +1438,10 @@ const handleContentClick = (event: MouseEvent): void => {
 }
 
 @media (min-width: 64rem) {
+  .promotion-banner__image--full-artwork {
+    object-fit: fill;
+  }
+
   /* Keep pasted promotion markup at the same compact density as the
      structured detail renderer. The desktop root font scales up to 24px. */
   .promotion-custom-content :deep(.text-lgx) {
@@ -1406,9 +1556,27 @@ const handleContentClick = (event: MouseEvent): void => {
 
 @media (max-width: 63.99rem) {
   .join-bar {
+    position: fixed;
+    z-index: 50;
     right: 0;
-    /* bottom: calc(66px + env(safe-area-inset-bottom)); */
+    bottom: 0;
     left: 0;
+    padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
+    background: rgba(0, 0, 0, 0.95);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .join-bar button {
+    min-height: 2.6rem;
+    border-radius: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+
+  .bonus-detail-page--with-action {
+    padding-bottom: calc(4.2rem + env(safe-area-inset-bottom));
   }
 }
 

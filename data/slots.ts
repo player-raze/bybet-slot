@@ -18635,8 +18635,7 @@ const slotsBatch4: SlotGame[] = [
     "providerLogo": "/images/providers/cq9.webp",
     "image": "/images/slots/lucky-bats-jp.webp",
     "category": [
-      "max-rpt",
-      "bonus"
+      "jackpot",
     ],
     "rtpPercent": "96.1%",
     "theme": "Myth & History",

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import BonusListing from '~/components/bonuses/BonusListing.vue'
-
-definePageMeta({ alias: ['/explore/bonuses/deposit'] })
+definePageMeta({
+  middleware: () => navigateTo('/explore/bonuses/deposit', { redirectCode: 301, replace: true }),
+})
 </script>
 
 <template>
-  <BonusListing category="deposit" />
+  <div />
 </template>

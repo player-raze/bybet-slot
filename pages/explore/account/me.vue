@@ -1145,7 +1145,7 @@ onBeforeUnmount(() => {
     position: absolute;
     inset: 0 0 auto;
     height: 300px;
-    background: #0d6047 url('/images/me/me-bg.png') right top / 100% auto no-repeat;
+    background: #0d6047 url('/images/me/me-bg.webp') right top / 100% auto no-repeat;
     border-radius: 0 0 20px 20px;
   }
 
@@ -1168,7 +1168,7 @@ onBeforeUnmount(() => {
     pointer-events: none;
 
     background-image: 
-    url('/images/me/me-bg.png');
+    url('/images/me/me-bg.webp');
     background-size: cover;
     background-position: top;
      mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
@@ -1184,7 +1184,7 @@ onBeforeUnmount(() => {
 }
 
 .me-hero-wrapper {
-  background-image: url("/images/me/me-bg.png");
+  background-image: url("/images/me/me-bg.webp");
   background-size: cover;
   background-position: right top;
   background-repeat: no-repeat;

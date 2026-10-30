@@ -54,7 +54,8 @@ const hasChatRoom = computed(() => (
   || route.path.startsWith('/explore/sports/')
 ))
 const isChatExpanded = computed(() => isMobileViewport.value && hasChatRoom.value && chatContext.value !== null)
-const showNavigation = computed(() => isDoorAnimating.value || isChatExpanded.value || isNavVisible.value || (hasChatRoom.value && !isPageFooterVisible.value))
+const isBonusDetailPage = computed(() => route.path.startsWith('/explore/bonus/'))
+const showNavigation = computed(() => !isBonusDetailPage.value && (isDoorAnimating.value || isChatExpanded.value || isNavVisible.value || (hasChatRoom.value && !isPageFooterVisible.value)))
 const updateViewport = (): void => { isMobileViewport.value = window.innerWidth < 1024 }
 
 const SCROLL_DIRECTION_THRESHOLD = 8
@@ -366,6 +367,7 @@ const handleNavCell = (cell: NavCell): void => {
 
 <template>
   <nav
+    v-show="!isBonusDetailPage"
     class="mobile-bottom-nav"
     :class="{
       'mobile-bottom-nav--hidden': !showNavigation,

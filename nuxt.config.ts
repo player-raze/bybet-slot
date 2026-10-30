@@ -12,10 +12,13 @@ const environment = (
         BYBET_REDIRECT_URL?: string
         SITE_NAME?: string
         SITE_URL?: string
+        INDEX_FOLLOW?: string
       }
     }
   }
 ).process?.env
+
+const isIndexFollow = environment?.INDEX_FOLLOW === 'true'
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -30,6 +33,7 @@ export default defineNuxtConfig({
       bybetRedirectUrl: environment?.BYBET_REDIRECT_URL || 'https://bybet.com/',
       siteName: environment?.SITE_NAME || 'ByBet Slots',
       siteUrl: (environment?.SITE_URL || 'https://bybet.com').replace(/\/+$/, ''),
+      indexFollow: isIndexFollow,
     },
     kadarioApi: environment?.KADARIO_API || 'https://live88.eu.cc/',
     kadarioSite: 'YBa-BnymZ6iN8pkfAUFTWIKn',
@@ -41,19 +45,23 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'en' },
       meta: [
         { name: 'theme-color', content: '#080D0B' },
+        {
+          name: 'robots',
+          content: isIndexFollow ? 'index, follow' : 'noindex, nofollow',
+        },
       ],
       link: [
         { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon.webp' },
         {
           rel: 'preload',
           as: 'image',
-          href: '/brand/bybet-loader-logo-dark.png',
+          href: '/brand/bybet-loader-logo-dark.webp',
           fetchpriority: 'high',
         },
         {
           rel: 'preload',
           as: 'image',
-          href: '/brand/bybet-loader-logo.png',
+          href: '/brand/bybet-loader-logo.webp',
           fetchpriority: 'high',
         },
         {

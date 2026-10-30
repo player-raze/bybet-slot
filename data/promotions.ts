@@ -80,6 +80,7 @@ export interface BonusTableRow {
 export interface BonusTable {
   headerTitle?: string
   subHeaderTitle?: string
+  introText?: string
   variant?: 'filled' | 'outline'
   accentColor?: string
   highlightColumns?: string[]
@@ -120,6 +121,12 @@ export interface BonusDetail {
       text: string
       highlighted?: boolean
     }>
+    linkedParagraphs?: Array<{
+      parts: Array<{
+        text: string
+        href?: string
+      }>
+    }>
     methodCard?: {
       title: string
       content: string
@@ -128,9 +135,17 @@ export interface BonusDetail {
       label: string
       badge?: string
     }>
+    tierCards?: Array<{
+      level: string
+      turnover: string
+      upgradeBonus: string
+      monthlyRedPacket: string
+      birthdayBonus: string
+    }>
     paragraphs?: string[]
     tables?: BonusTable[]
     notes?: string[]
+    afterTableParagraphs?: string[]
     bullets?: string[]
   }
   promotionTerms?: string[] | string
@@ -203,99 +218,99 @@ export const getPromoHeaderUrl = (img?: PromoImages | string, slug?: string): st
 
 export const PROMO_IMAGE_MAP: Record<string, PromoImages> = {
   "your-deposit-your-reward": {
-    banner: "/images/promotions/your-deposit-your-reward.jpg",
-    header: "/images/promotions/your-deposit-your-reward_head.jpg",
-    thumbnail: "/images/promotions/your-deposit-your-reward_thumb.jpg",
+    banner: "/images/promotions/your-deposit-your-reward.webp",
+    header: "/images/promotions/your-deposit-your-reward_head.webp",
+    thumbnail: "/images/promotions/your-deposit-your-reward_thumb.webp",
   },
   "spins-bring-spins": {
-    banner: "/images/promotions/spins-bring-spins.jpg",
-    header: "/images/promotions/spins-bring-spins_head.jpg",
-    thumbnail: "/images/promotions/spins-bring-spins_thumb.jpg",
+    banner: "/images/promotions/spins-bring-spins.webp",
+    header: "/images/promotions/spins-bring-spins_head.webp",
+    thumbnail: "/images/promotions/spins-bring-spins_thumb.webp",
   },
   "unlimited-rebate": {
-    banner: "/images/promotions/unlimited-rebate.jpg",
-    header: "/images/promotions/unlimited-rebate_head.jpg",
-    thumbnail: "/images/promotions/unlimited-rebate_thumb.jpg",
+    banner: "/images/promotions/unlimited-rebate.webp",
+    header: "/images/promotions/unlimited-rebate_head.webp",
+    thumbnail: "/images/promotions/unlimited-rebate_thumb.webp",
   },
   "slot-loss-rebate": {
-    banner: "/images/promotions/slot-loss-rebate.jpg",
-    header: "/images/promotions/slot-loss-rebate_head.jpg",
-    thumbnail: "/images/promotions/slot-loss-rebate_thumb.jpg",
+    banner: "/images/promotions/slot-loss-rebate.webp",
+    header: "/images/promotions/slot-loss-rebate_head.webp",
+    thumbnail: "/images/promotions/slot-loss-rebate_thumb.webp",
   },
   "weekly-treasure-chest": {
-    banner: "/images/promotions/weekly-treasure-chest.jpg",
-    header: "/images/promotions/weekly-treasure-chest_head.jpg",
-    thumbnail: "/images/promotions/weekly-treasure-chest_thumb.png",
+    banner: "/images/promotions/weekly-treasure-chest.webp",
+    header: "/images/promotions/weekly-treasure-chest_head.webp",
+    thumbnail: "/images/promotions/weekly-treasure-chest_thumb.webp",
   },
   "umuulan-ng-angpao": {
-    banner: "/images/promotions/umuulan-ng-angpao.jpg",
-    header: "/images/promotions/umuulan-ng-angpao_head.jpg",
-    thumbnail: "/images/promotions/umuulan-ng-angpao_thumb.jpg",
+    banner: "/images/promotions/umuulan-ng-angpao.webp",
+    header: "/images/promotions/umuulan-ng-angpao_head.webp",
+    thumbnail: "/images/promotions/umuulan-ng-angpao_thumb.webp",
   },
   "vip-sports-rebate": {
-    banner: "/images/promotions/vip-sports-rebate.jpg",
-    header: "/images/promotions/vip-sports-rebate_head.jpg",
-    thumbnail: "/images/promotions/vip-sports-rebate_thumb.jpg",
+    banner: "/images/promotions/vip-sports-rebate.webp",
+    header: "/images/promotions/vip-sports-rebate_head.webp",
+    thumbnail: "/images/promotions/vip-sports-rebate_thumb.webp",
   },
   "champions-streak-fever": {
-    banner: "/images/promotions/champions-streak-fever.jpg",
-    header: "/images/promotions/champions-streak-fever_head.jpg",
-    thumbnail: "/images/promotions/champions-streak-fever_thumb.png",
+    banner: "/images/promotions/champions-streak-fever.webp",
+    header: "/images/promotions/champions-streak-fever_head.webp",
+    thumbnail: "/images/promotions/champions-streak-fever_thumb.webp",
   },
   "nba-back-to-back-boost": {
-    banner: "/images/promotions/nba-back-to-back-boost.jpg",
-    header: "/images/promotions/nba-back-to-back-boost_head.png",
-    thumbnail: "/images/promotions/nba-back-to-back-boost_thumb.png",
+    banner: "/images/promotions/nba-back-to-back-boost.webp",
+    header: "/images/promotions/nba-back-to-back-boost_head.webp",
+    thumbnail: "/images/promotions/nba-back-to-back-boost_thumb.webp",
   },
   "hat-trick-safety-net": {
-    banner: "/images/promotions/hat-trick-safety-net.jpg",
-    header: "/images/promotions/hat-trick-safety-net_head.png",
-    thumbnail: "/images/promotions/hat-trick-safety-net_thumb.png",
+    banner: "/images/promotions/hat-trick-safety-net.webp",
+    header: "/images/promotions/hat-trick-safety-net_head.webp",
+    thumbnail: "/images/promotions/hat-trick-safety-net_thumb.webp",
   },
   "road-to-european-glory": {
-    banner: "/images/promotions/road-to-european-glory.jpg",
-    header: "/images/promotions/road-to-european-glory_head.jpg",
-    thumbnail: "/images/promotions/road-to-european-glory_thumb.png",
+    banner: "/images/promotions/road-to-european-glory.webp",
+    header: "/images/promotions/road-to-european-glory_head.webp",
+    thumbnail: "/images/promotions/road-to-european-glory_thumb.webp",
   },
   "vip-live-casino-rebate": {
-    banner: "/images/promotions/vip-live-casino-rebate.jpg",
-    header: "/images/promotions/vip-live-casino-rebate_head.jpg",
-    thumbnail: "/images/promotions/vip-live-casino-rebate_thumb.jpg",
+    banner: "/images/promotions/vip-live-casino-rebate.webp",
+    header: "/images/promotions/vip-live-casino-rebate_head.webp",
+    thumbnail: "/images/promotions/vip-live-casino-rebate_thumb.webp",
   },
   "lucky-8-streak": {
-    banner: "/images/promotions/lucky-8-streak.jpg",
-    header: "/images/promotions/lucky-8-streak_head.jpg",
-    thumbnail: "/images/promotions/lucky-8-streak_thumb.png",
+    banner: "/images/promotions/lucky-8-streak.webp",
+    header: "/images/promotions/lucky-8-streak_head.webp",
+    thumbnail: "/images/promotions/lucky-8-streak_thumb.webp",
   },
   "lucky-rankings": {
-    banner: "/images/promotions/lucky-rankings.jpg",
-    header: "/images/promotions/lucky-rankings_head.jpg",
-    thumbnail: "/images/promotions/lucky-rankings_thumb.png",
+    banner: "/images/promotions/lucky-rankings.webp",
+    header: "/images/promotions/lucky-rankings_head.webp",
+    thumbnail: "/images/promotions/lucky-rankings_thumb.webp",
   },
   "complete-account-information": {
-    banner: "/images/promotions/complete-account-information.jpg",
-    header: "/images/promotions/complete-account-information.jpg",
-    thumbnail: "/images/promotions/complete-account-information_thumb.jpg",
+    banner: "/images/promotions/complete-account-information.webp",
+    header: "/images/promotions/complete-account-information_head.webp",
+    thumbnail: "/images/promotions/complete-account-information_thumb.webp",
   },
   "referral-bonus": {
-    banner: "/images/promotions/referral-bonus.jpg",
-    header: "/images/promotions/referral-bonus_head.jpg",
-    thumbnail: "/images/promotions/referral-bonus_thumb.jpg",
+    banner: "/images/promotions/referral-bonus.webp",
+    header: "/images/promotions/referral-bonus_head.webp",
+    thumbnail: "/images/promotions/referral-bonus_thumb.webp",
   },
   "bybet-vip-center": {
-    banner: "/images/promotions/bybet-vip-center.jpg",
-    header: "/images/promotions/bybet-vip-center_head.jpg",
-    thumbnail: "/images/promotions/bybet-vip-center_thumb.jpg",
+    banner: "/images/promotions/bybet-vip-center.webp",
+    header: "/images/promotions/bybet-vip-center_head.webp",
+    thumbnail: "/images/promotions/bybet-vip-center_thumb.webp",
   },
   "bybet-giveaways-galore": {
-    banner: "/images/promotions/bybet-giveaways-galore.jpg",
-    header: "/images/promotions/bybet-giveaways-galore_head.jpg",
-    thumbnail: "/images/promotions/bybet-giveaways-galore_thumb.png",
+    banner: "/images/promotions/bybet-giveaways-galore.webp",
+    header: "/images/promotions/bybet-giveaways-galore_head.webp",
+    thumbnail: "/images/promotions/bybet-giveaways-galore_thumb.webp",
   },
   "spot-it-snap-it-win-it": {
-    banner: "/images/promotions/spot-it-snap-it-win-it.jpg",
-    header: "/images/promotions/spot-it-snap-it-win-it_head.jpg",
-    thumbnail: "/images/promotions/spot-it-snap-it-win-it.png",
+    banner: "/images/promotions/spot-it-snap-it-win-it.webp",
+    header: "/images/promotions/spot-it-snap-it-win-it_head.webp",
+    thumbnail: "/images/promotions/spot-it-snap-it-win-it_thumb.webp",
   },
 }
 
@@ -314,7 +329,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'your-deposit-your-reward',
     slug: 'your-deposit-your-reward',
     title: 'Your Deposit. Your Reward.',
-    seoTitle: 'Your Deposit. Your Reward. Daily Deposit Bonus | ByBet Philippines',
+    seoTitle: 'Your Deposit. Your Reward. Daily Deposit Bonus  Philippines',
     seoDesc: 'Unlock exclusive daily deposit bonuses with your first deposit every day on ByBet Philippines. Deposit via GCash, Maya, or ShopeePay to claim rewards.',
     description: 'Unlock bonus with first deposit of the everyday.',
     category: 'deposit',
@@ -330,7 +345,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'spins-bring-spins',
     slug: 'spins-bring-spins',
     title: 'Spins Bring Spins',
-    seoTitle: 'Spins Bring Spins — 100 Free Spins Daily | ByBet Philippines',
+    seoTitle: 'Spins Bring Spins — 100 Free Spins Daily  Philippines',
     seoDesc: 'Claim up to 100 free spins every day on selected slot games at ByBet Philippines. Complete daily spin missions and boost your slots winnings.',
     description: '100 Free Spins Every Day!',
     category: 'slots',
@@ -346,7 +361,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'unlimited-rebate',
     slug: 'unlimited-rebate',
     title: '1.5% UNLIMITED REBATE',
-    seoTitle: '1.5% Unlimited Daily Slot Rebate — All VIP Members | ByBet',
+    seoTitle: '1.5% Unlimited Daily Slot Rebate — All VIP Members ',
     seoDesc: 'Enjoy a 1.5% unlimited daily rebate on all online slots at ByBet Philippines. Automatic daily credits with no maximum cap and low 1x turnover.',
     description: 'DAILY SLOT REBATE • ALL MEMBERS',
     category: 'slots',
@@ -362,7 +377,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'slot-loss-rebate',
     slug: 'slot-loss-rebate',
     title: 'Slot Loss Rebate',
-    seoTitle: 'Slot Loss Rebate — Up to ₱60,000 Cashback Bonus | ByBet',
+    seoTitle: 'Slot Loss Rebate — Up to ₱60,000 Cashback Bonus ',
     seoDesc: 'Play your favorite online slot games with peace of mind. Get up to ₱60,000 slot loss rebate cashback on ByBet Philippines with weekly settlements.',
     description: 'Bonus up to ₱60,000',
     category: 'slots',
@@ -378,7 +393,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'weekly-treasure-chest',
     slug: 'weekly-treasure-chest',
     title: 'Weekly Treasure Chest: Receive a Mystery Treasure Chest according to the Valid Bet of points!',
-    seoTitle: 'Weekly Mystery Treasure Chest Rewards — 4x Per Week | ByBet',
+    seoTitle: 'Weekly Mystery Treasure Chest Rewards — 4x Per Week ',
     seoDesc: 'Unlock up to 4 mystery treasure chests weekly based on your valid bet turnover across sports and casino games on ByBet Philippines.',
     description: 'Achievement Reward: Mystery Treasure Chest ×4/Week',
     category: 'others',
@@ -395,7 +410,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'umuulan-ng-angpao',
     slug: 'umuulan-ng-angpao',
     title: 'Umuulan ng Angpao',
-    seoTitle: 'Umuulan ng Angpao Daily Red Envelope Cash Drops | ByBet',
+    seoTitle: 'Umuulan ng Angpao Daily Red Envelope Cash Drops ',
     seoDesc: 'Catch falling red envelopes and win real cash bonuses with Umuulan ng Angpao on ByBet Philippines. Pikit, abot, kuha instant prizes!',
     description: 'Angpao falling — pikit, abot, kuha!',
     category: 'others',
@@ -411,7 +426,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'vip-sports-rebate',
     slug: 'vip-sports-rebate',
     title: 'VIP Sports Rebate',
-    seoTitle: 'VIP Sports Rebate — Daily Cashback on Sports Bets | ByBet',
+    seoTitle: 'VIP Sports Rebate — Daily Cashback on Sports Bets ',
     seoDesc: 'Boost your sports betting with ByBet VIP Sports Rebates. Receive daily cashback on settled sports bets across football, basketball, tennis, and more.',
     description: 'Your Reward to End the Day',
     category: 'sports',
@@ -426,7 +441,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'champions-streak-fever',
     slug: 'champions-streak-fever',
     title: 'Champions Streak Fever',
-    seoTitle: 'Champions Streak Fever — Win Streaks Bonus | ByBet Sports',
+    seoTitle: 'Champions Streak Fever — Win Streaks Bonus  Sports',
     seoDesc: 'Turn your winning streaks into massive bonus rewards on ByBet Sportsbook. More consecutive wins mean bigger cash bonuses on your bets.',
     description: 'More wins. More streaks. More rewards!',
     category: 'sports',
@@ -442,7 +457,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'nba-back-to-back-boost',
     slug: 'nba-back-to-back-boost',
     title: 'NBA Back-to-Back Boost',
-    seoTitle: 'NBA Back-to-Back Boost — Basketball Betting Bonus | ByBet',
+    seoTitle: 'NBA Back-to-Back Boost — Basketball Betting Bonus ',
     seoDesc: 'Bet on back-to-back NBA games with ByBet. Enjoy enhanced odds, parlay boosts, and special basketball rewards throughout the NBA season.',
     description: 'Back-to-back NBA action means more chances to win rewards.',
     category: 'sports',
@@ -457,7 +472,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'hat-trick-safety-net',
     slug: 'hat-trick-safety-net',
     title: 'Hat-trick Safety Net',
-    seoTitle: 'Hat-trick Safety Net — Soccer Betting Cashback Guarantee | ByBet',
+    seoTitle: 'Hat-trick Safety Net — Soccer Betting Cashback Guarantee ',
     seoDesc: 'Don\'t let one missed goal ruin your bet slip. Get cashback on soccer match bets with the Hat-trick Safety Net on ByBet Sportsbook.',
     description: 'Lose your last ball catch a hat-trick? Get cashback with ByBet!',
     category: 'sports',
@@ -472,7 +487,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'road-to-european-glory',
     slug: 'road-to-european-glory',
     title: 'Road to European Glory',
-    seoTitle: 'Road to European Glory — Champions League & Euro Football Promo | ByBet',
+    seoTitle: 'Road to European Glory — Champions League & Euro Football Promo ',
     seoDesc: 'Wager on top European football leagues including UEFA Champions League, Premier League, and La Liga to unlock exclusive tier rewards on ByBet.',
     description: "Bet across Europe's top leagues and unlock bigger rewards",
     category: 'sports',
@@ -487,7 +502,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'vip-live-casino-rebate',
     slug: 'vip-live-casino-rebate',
     title: 'VIP Live Casino Rebate',
-    seoTitle: 'VIP Live Casino Rebate — Daily Live Dealer Cashback | ByBet',
+    seoTitle: 'VIP Live Casino Rebate — Daily Live Dealer Cashback ',
     seoDesc: 'Get premium daily rebates on Baccarat, Roulette, Blackjack, and Live Dealer games at ByBet Live Casino with fast payouts and low turnover.',
     description: 'Your Reward to End the Day',
     category: 'live-casino',
@@ -502,7 +517,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'lucky-8-streak',
     slug: 'lucky-8-streak',
     title: 'Lucky 8 Streak',
-    seoTitle: 'Lucky 8 Streak — Live Casino Consecutive Win Bonus | ByBet',
+    seoTitle: 'Lucky 8 Streak — Live Casino Consecutive Win Bonus ',
     seoDesc: 'Hit an 8-round winning streak on live casino baccarat and table games to take home extra cash rewards on ByBet Philippines.',
     description: 'Earn exciting bonuses when you reach an 8-win streak on Live Casino games!',
     category: 'live-casino',
@@ -516,13 +531,13 @@ export const PROMOTIONS: PromotionItem[] = [
   {
     id: 'lucky-rankings',
     slug: 'lucky-rankings',
-    title: "Lucky Rankings – Let's Meet on Payday!",
-    seoTitle: 'Lucky Rankings Payday Tournament & Leaderboard Bonus | ByBet',
-    seoDesc: 'Climb the leaderboard in ByBet\'s Lucky Rankings tournament. Compete on slot games and celebrate payday with a share of the grand prize pool.',
+    title: "Lucky Rankings - Let's Meet on Payday!",
+    seoTitle: 'Lucky Rankings - Lets Meet on Payday!',
+    seoDesc: 'Complete your ByBet account information and claim a ₱20 bonus reward after meeting the promotion requirements.',
     description: 'Climb the rankings and win big on payday!',
-    category: 'slots',
-    thumbnailType: 'chest',
-    accentColor: '#ec4899',
+    category: 'others',
+    thumbnailType: 'profile',
+    accentColor: '#087653',
     bannerImage: PROMO_IMAGE_MAP["lucky-rankings"] || PROMOTION_PLACEHOLDER_IMAGES.banner,
     headerImage: PROMO_IMAGE_MAP["lucky-rankings"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
     thumbnailImage: PROMO_IMAGE_MAP["lucky-rankings"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
@@ -532,8 +547,8 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'complete-account-information',
     slug: 'complete-account-information',
     title: 'Complete account information to get ₱20 Reward!',
-    seoTitle: 'Complete Profile & Verify Account to Get ₱20 Free Bonus | ByBet',
-    seoDesc: 'Verify your email and mobile number and complete your ByBet member profile to claim an instant ₱20 welcome reward automatically.',
+    seoTitle: 'Complete Profile & Verify to Get ₱20 Bonus',
+    seoDesc: 'Verify your email and mobile number and complete your ByBet member profile to claim ₱20 welcome reward automatically.',
     description: 'After meeting the T&C requirements, simply click [Apply Now] to receive your 20 bonus reward automatically.',
     category: 'others',
     thumbnailType: 'profile',
@@ -547,7 +562,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'referral-bonus',
     slug: 'referral-bonus',
     title: 'Referral Bonus',
-    seoTitle: 'Refer a Friend Bonus Program — Earn Unlimited Commissions | ByBet',
+    seoTitle: 'Refer a Friend Bonus Program — Earn Unlimited Commissions',
     seoDesc: 'Invite friends to ByBet Philippines and earn recurring referral rewards when they register and deposit. Refer na may bonus pa!',
     description: 'Refer na may bonus pa!',
     category: 'others',
@@ -555,6 +570,7 @@ export const PROMOTIONS: PromotionItem[] = [
     accentColor: '#14b8a6',
     bannerImage: PROMO_IMAGE_MAP["referral-bonus"] || PROMOTION_PLACEHOLDER_IMAGES.banner,
     headerImage: PROMO_IMAGE_MAP["referral-bonus"]?.header || PROMOTION_PLACEHOLDER_IMAGES.header,
+    countdownText: 'Permanent',
     thumbnailImage: PROMO_IMAGE_MAP["referral-bonus"]?.thumbnail || PROMOTION_PLACEHOLDER_IMAGES.thumbnail,
     innerIcon: DEFAULT_INNER_PAGE_ICON,
   },
@@ -596,7 +612,7 @@ export const PROMOTIONS: PromotionItem[] = [
     id: 'spot-it-snap-it-win-it',
     slug: 'spot-it-snap-it-win-it',
     title: 'Spot it. Snap it. Win it.',
-    seoTitle: 'Spot It. Snap It. Win It. — Post a Selfie for ₱200 Bonus | ByBet',
+    seoTitle: 'Spot It. Snap It. Win It. — Post a Selfie for ₱200 Bonus ',
     seoDesc: 'Spot a ByBet billboard, vehicle wrap, or advertisement anywhere in the Philippines, snap a selfie, post online, and get up to ₱200 bonus!',
     description: 'Get up to 200 Bonus when you post a selfie with any Bybet placement',
     category: 'others',
@@ -654,6 +670,8 @@ export const PROMOTION_SECTIONS: PromoSection[] = [
 
 const ANGPAO_INNER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="41" viewBox="0 0 40 41" fill="none"><rect x="4" y="3" width="32" height="35" rx="4" fill="#087653"/><path d="M8 9.5L20 16.5L32 9.5M20 16.5V22" stroke="#06251B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 21L20 26L25 21M20 26V33M16.5 29H23.5" stroke="#06251B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 
+const ACCOUNT_INFORMATION_INNER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="41" viewBox="0 0 40 41" fill="none"><rect x="4" y="3" width="32" height="35" rx="4" fill="#087653"/><path d="M12 11H28M12 17H23M12 23H20" stroke="#06372A" stroke-width="2.5" stroke-linecap="round"/><path d="M21.5 29L25 32.5L32 24.5" stroke="#06372A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+
 const BONUS_ICON_MAP = {
   default: DEFAULT_INNER_PAGE_ICON,
   angpao: ANGPAO_INNER_ICON,
@@ -665,6 +683,13 @@ const BONUS_ICON_MAP = {
   nbaBackToBackBoost: NBA_BACK_TO_BACK_BOOST_INNER_ICON,
   hatTrickSafetyNet: HAT_TRICK_SAFETY_NET_INNER_ICON,
   roadToEuropeanGlory: ROAD_TO_EUROPEAN_GLORY_INNER_ICON,
+  vipLiveCasinoRebate: UNLIMITED_REBATE_INNER_ICON,
+  lucky8Streak: UNLIMITED_REBATE_INNER_ICON,
+  luckyRankings: UNLIMITED_REBATE_INNER_ICON,
+  referralBonus: UNLIMITED_REBATE_INNER_ICON,
+  bybetVipCenter: UNLIMITED_REBATE_INNER_ICON,
+  bybetGiveawaysGalore: UNLIMITED_REBATE_INNER_ICON,
+  spotItSnapItWinIt: UNLIMITED_REBATE_INNER_ICON,
 } as const
 
 const BONUS_CONTENT_TEMPLATE_MAP = {

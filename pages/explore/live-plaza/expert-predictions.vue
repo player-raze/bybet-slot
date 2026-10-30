@@ -159,8 +159,8 @@ const handleUnlock = (prediction: Prediction): void => {
   showDemoMessage(`Unlocked expert prediction by ${prediction.predictorName}!`)
 }
 
-const handleOddClick = (prediction: Prediction, option: PredictionOption): void => {
-  showDemoMessage(`Selected ${prediction.homeTeam} vs ${prediction.awayTeam} [${option.label} @ ${option.odd}]`)
+const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): void => {
+  redirectToByBet()
 }
 </script>
 

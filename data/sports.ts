@@ -20,7 +20,7 @@ export const getTournamentLogo = (sport: Sport | string | undefined | null): str
   if (key.includes('nations_league') || key.includes('nations league')) return '/images/sports/uefa-nations-league.webp'
   if (key.includes('champions_league') || key.includes('champs_league') || key.includes('uefa_champions') || key.includes('ucl')) return '/images/sports/uefa-champions-league.webp'
   if (key.includes('libertadores') || key.includes('conmebol')) return '/images/sports/conmebol-libertadores.webp'
-  if (key.includes('mls')) return '/images/sports/mls.png'
+  if (key.includes('mls')) return '/images/sports/mls.webp'
   if (key.includes('bundesliga')) return '/images/sports/bundesliga.webp'
   if (key.includes('serie_a') || key.includes('serie a')) return '/images/sports/serie-a.webp'
   if (key.includes('la_liga') || key.includes('laliga') || key.includes('la liga')) return '/images/sports/la-liga.webp'
@@ -588,7 +588,7 @@ export const SAMPLE_SPORTS: Sport[] = [
     active: true,
     has_outrights: false,
     country: "USA",
-    logo: "/images/sports/mls.png",
+    logo: "/images/sports/mls.webp",
   },
   {
     key: "soccer_uefa_europa_conference_league",

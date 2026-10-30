@@ -1,11 +1,60 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+import { computed } from 'vue'
+import {
+  sortRailGames,
+  type GameRailSortField,
+  type GameRailSortOrder,
+  type GameRailSortPreset,
+} from '~/utils/gameSort'
+
+export interface GameRailProps {
   label: string
   layout?: 'slider' | 'grid'
   wideColumns?: number
+  games?: any[]
+  sort?: GameRailSortPreset | GameRailSortField | string | ((a: any, b: any) => number)
+  sortBy?: GameRailSortField
+  sortOrder?: GameRailSortOrder
+  category?: string
+  limit?: number
+}
+
+const props = withDefaults(defineProps<{
+  label: string
+  layout?: 'slider' | 'grid'
+  wideColumns?: number
+  games?: any[]
+  sort?: GameRailSortPreset | GameRailSortField | string | ((a: any, b: any) => number)
+  sortBy?: GameRailSortField
+  sortOrder?: GameRailSortOrder
+  category?: string
+  limit?: number
 }>(), {
   layout: 'slider',
   wideColumns: 6,
+  games: undefined,
+  sort: undefined,
+  sortBy: undefined,
+  sortOrder: undefined,
+  category: undefined,
+  limit: undefined,
+})
+
+const sortedGames = computed(() => {
+  if (!props.games || !Array.isArray(props.games)) {
+    return []
+  }
+  const sorted = sortRailGames(props.games, {
+    sort: props.sort,
+    sortBy: props.sortBy,
+    sortOrder: props.sortOrder,
+    category: props.category,
+    label: props.label,
+  })
+  if (typeof props.limit === 'number' && props.limit > 0) {
+    return sorted.slice(0, props.limit)
+  }
+  return sorted
 })
 </script>
 
@@ -18,7 +67,7 @@ withDefaults(defineProps<{
     :aria-label="label"
     :tabindex="layout === 'slider' ? 0 : undefined"
   >
-    <slot />
+    <slot :games="sortedGames" :sorted-games="sortedGames" />
   </div>
 </template>
 

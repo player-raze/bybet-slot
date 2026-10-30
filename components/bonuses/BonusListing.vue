@@ -14,8 +14,12 @@ import {
 } from '~/data/promotions'
 
 const props = withDefaults(defineProps<{ category?: string }>(), { category: 'all' })
+const { markAsViewed } = useViewedPromotions()
 const selectedCategory = ref(props.category)
 watch(() => props.category, category => { selectedCategory.value = category })
+const categoryPath = (key: string): string => key === 'all'
+  ? '/explore/bonuses'
+  : `/explore/bonuses/${key}`
 const featuredTrack = ref<HTMLElement | null>(null)
 const nowMs = ref(Date.now())
 let countdownTimer: ReturnType<typeof setInterval> | null = null
@@ -41,10 +45,6 @@ const visibleSections = computed(() => {
 
   return PROMOTION_SECTIONS.filter(section => section.category === selectedCategory.value)
 })
-
-const selectCategory = (key: string): void => {
-  selectedCategory.value = key
-}
 
 const scrollFeatured = (direction: -1 | 1): void => {
   featuredTrack.value?.scrollBy({
@@ -96,16 +96,15 @@ useAppSeo({
       </SeoHeader>
 
       <nav class="category-nav" aria-label="Promotion categories">
-        <button
+        <NuxtLink
           v-for="category in PROMO_CATEGORIES"
           :key="category.key"
-          type="button"
+          :to="categoryPath(category.key)"
           :class="{ 'category-nav__button--active': selectedCategory === category.key }"
-          :aria-pressed="selectedCategory === category.key"
-          @click="selectCategory(category.key)"
+          :aria-current="selectedCategory === category.key ? 'page' : undefined"
         >
           {{ category.label }}
-        </button>
+        </NuxtLink>
       </nav>
     </div>
 
@@ -125,6 +124,7 @@ useAppSeo({
           :key="promotion.id"
           :to="`/explore/bonus/${promotion.slug}`"
           class="featured-card"
+          @click="markAsViewed(promotion.slug)"
         >
           <div class="featured-card__media">
             <img
@@ -160,14 +160,13 @@ useAppSeo({
         :key="section.id"
         class="promotion-group"
       >
-        <button
-          type="button"
+        <NuxtLink
+          :to="categoryPath(section.category)"
           class="promotion-group__heading"
-          @click="selectCategory(section.category)"
         >
           <span>{{ section.title }}</span>
           <ChevronRight :size="16" aria-hidden="true" />
-        </button>
+        </NuxtLink>
 
         <div class="promotion-group__list">
           <NuxtLink
@@ -175,6 +174,7 @@ useAppSeo({
             :key="`${section.id}-${promotion.id}`"
             :to="`/explore/bonus/${promotion.slug}`"
             class="promotion-row"
+            @click="markAsViewed(promotion.slug)"
           >
             <img
               class="promotion-row__thumbnail"
@@ -261,7 +261,7 @@ useAppSeo({
   display: none;
 }
 
-.category-nav button {
+.category-nav a {
   min-height: 1.45rem;
   flex: 0 0 auto;
   padding: 0 0.62rem;
@@ -272,15 +272,16 @@ useAppSeo({
   font-weight: 700;
   background: transparent;
   cursor: pointer;
+  text-decoration: none;
   transition: color 150ms ease, background-color 150ms ease;
 }
 
-.category-nav button:hover {
+.category-nav a:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.04);
 }
 
-.category-nav button.category-nav__button--active {
+.category-nav a.category-nav__button--active {
   color: #ffffff;
   background: #07835c;
 }
@@ -525,7 +526,7 @@ useAppSeo({
 }
 
 @media (max-width: 35rem) {
-  .category-nav button {
+  .category-nav a {
     min-height: 1.7rem;
     padding: 0 0.7rem;
     font-size: 0.64rem;

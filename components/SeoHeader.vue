@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeft } from 'lucide-vue-next'
-import { formatSeoTitle } from '~/composables/useAppSeo'
+import { formatSeoTitle, formatSeoDescription, isHomepageRoute } from '~/composables/useAppSeo'
 
 interface Props {
   title: string
@@ -14,6 +14,9 @@ interface Props {
   showFlag?: boolean
   sticky?: boolean
   customClass?: string
+  includeSiteName?: boolean
+  includeCheckMore?: boolean
+  robots?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,6 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
   showFlag: true,
   sticky: false,
   customClass: '',
+  includeSiteName: undefined,
+  includeCheckMore: undefined,
+  robots: undefined,
 })
 
 const emit = defineEmits<{
@@ -40,8 +46,38 @@ const siteName = computed(() =>
 )
 const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
 
+const isHomepage = computed(() => isHomepageRoute(route.path))
+
+const shouldIncludeSiteName = computed(() => {
+  if (typeof props.includeSiteName === 'boolean') {
+    return props.includeSiteName
+  }
+  return !isHomepage.value
+})
+
+const shouldIncludeCheckMore = computed(() => {
+  if (typeof props.includeCheckMore === 'boolean') {
+    return props.includeCheckMore
+  }
+  return !isHomepage.value
+})
+
 const fullTitle = computed(() => {
-  return formatSeoTitle(props.metaTitle || props.title, siteName.value)
+  return formatSeoTitle(props.metaTitle || props.title, siteName.value, shouldIncludeSiteName.value)
+})
+
+const fullDescription = computed(() => {
+  return formatSeoDescription(
+    props.description,
+    siteName.value,
+    isHomepage.value,
+    shouldIncludeCheckMore.value,
+  )
+})
+
+const robots = computed(() => {
+  if (props.robots) return props.robots
+  return config.public.indexFollow ? 'index, follow' : 'noindex, nofollow'
 })
 
 // Set reactive SEO metadata
@@ -49,15 +85,16 @@ useSeoMeta({
   title: fullTitle,
   ogTitle: fullTitle,
   ogSiteName: siteName,
-  description: () => props.description,
-  ogDescription: () => props.description,
+  description: fullDescription,
+  ogDescription: fullDescription,
   keywords: () => props.keywords,
   ogImage: () => props.ogImage,
   ogType: () => props.ogType || 'website',
   twitterTitle: fullTitle,
-  twitterDescription: () => props.description,
+  twitterDescription: fullDescription,
   twitterImage: () => props.ogImage,
   twitterCard: 'summary_large_image',
+  robots,
 })
 
 useHead(() => ({
