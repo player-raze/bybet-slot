@@ -4,3 +4,49 @@ node_modules
 .output
 .env
 graphify-out
+data/jackpots.json
+.htaccess
+yarn.lock
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.apdisk
+
+# macOS archive folders
+__MACOSX/
+
+# SQLite databases & storage
+data/*.sqlite
+data/*.sqlite-journal
+data/*.sqlite-wal
+data/*.sqlite-shm
+*.sqlite
+*.db
+
+# Runtime data caches & dynamic storage
+data/daily-predictions.json
+data/sitemap-dates.json
+data/jackpots.json
+
+# Build-generated sitemap
+public/sitemap.xml
+
+# Logs
+data/*.log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local environment & IDE
+.env*.local
+.vscode/
+.idea/
