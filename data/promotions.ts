@@ -727,7 +727,7 @@ const hydrateBonusDetail = (record: BonusDatabaseRecord): BonusDetail => {
 
 /**
  * Portable, JSON-backed promotion detail database used by every
- * `/explore/bonus/*` route. Large SVG/HTML assets stay referenced by key.
+ * `/bonus/*` route. Large SVG/HTML assets stay referenced by key.
  */
 export const BONUS_DETAILS: Record<string, BonusDetail> = Object.fromEntries(
   Object.entries(bonusDetailDatabase.records).map(([slug, rawRecord]) => [

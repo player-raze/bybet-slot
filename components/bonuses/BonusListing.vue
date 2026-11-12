@@ -18,8 +18,8 @@ const { markAsViewed } = useViewedPromotions()
 const selectedCategory = ref(props.category)
 watch(() => props.category, category => { selectedCategory.value = category })
 const categoryPath = (key: string): string => key === 'all'
-  ? '/explore/bonuses'
-  : `/explore/bonuses/${key}`
+  ? '/bonuses'
+  : `/bonuses/${key}`
 const featuredTrack = ref<HTMLElement | null>(null)
 const nowMs = ref(Date.now())
 let countdownTimer: ReturnType<typeof setInterval> | null = null
@@ -61,13 +61,13 @@ useAppSeo({
   description: 'Explore all exclusive ByBet promotions: daily deposit matches, unlimited cash rebates, weekly treasure chests, and VIP sports bonuses. Claim today!',
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: 'Promotions', path: '/explore/bonuses' },
+    { name: 'Promotions', path: '/bonuses' },
   ],
   schema: {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'ByBet Promotions & Bonuses',
-    url: 'https://bybet.com/explore/bonuses',
+    url: 'https://bybet.com/bonuses',
     description: 'Explore all exclusive ByBet promotions: daily deposit matches, unlimited cash rebates, weekly treasure chests, and VIP sports bonuses.',
   },
 })
@@ -122,7 +122,7 @@ useAppSeo({
         <NuxtLink
           v-for="promotion in PROMOTIONS"
           :key="promotion.id"
-          :to="`/explore/bonus/${promotion.slug}`"
+          :to="`/bonus/${promotion.slug}`"
           class="featured-card"
           @click="markAsViewed(promotion.slug)"
         >
@@ -172,7 +172,7 @@ useAppSeo({
           <NuxtLink
             v-for="promotion in section.items"
             :key="`${section.id}-${promotion.id}`"
-            :to="`/explore/bonus/${promotion.slug}`"
+            :to="`/bonus/${promotion.slug}`"
             class="promotion-row"
             @click="markAsViewed(promotion.slug)"
           >

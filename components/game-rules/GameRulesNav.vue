@@ -27,7 +27,7 @@ const handleBack = (): void => {
   if (import.meta.client && window.history.length > 1) {
     router.back()
   } else {
-    router.push('/explore/account/me')
+    router.push('/account/me')
   }
 }
 
@@ -129,7 +129,7 @@ watch(() => route.path, () => {
       <!-- Universal Emerald Subpage Header with AA text scaler -->
       <SubpageHeader
         title="Game Rules"
-        back-to="/explore/account/me"
+        back-to="/account/me"
         :sticky="false"
         class="mb-2"
       >

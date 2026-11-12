@@ -11,14 +11,14 @@ useAppSeo({
   description: `Chat with ByBet 24/7 Customer Service ${props.serviceNumber} for account, deposit, withdrawal, promotion, and verification assistance.`,
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: 'Customer Service', path: '/explore/egames/customer-service' },
-    { name: `24/7 Services ${props.serviceNumber}`, path: `/explore/egames/customer-service/${props.serviceNumber}` },
+    { name: 'Customer Service', path: '/egames/customer-service' },
+    { name: `24/7 Services ${props.serviceNumber}`, path: `/egames/customer-service/${props.serviceNumber}` },
   ],
   schema: {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
     name: `ByBet 24/7 Customer Service ${props.serviceNumber}`,
-    url: `https://bybet.com/explore/egames/customer-service/${props.serviceNumber}`,
+    url: `https://bybet.com/egames/customer-service/${props.serviceNumber}`,
   },
 })
 
@@ -34,7 +34,7 @@ onMounted(() => {
       title="24/7 Services"
       :meta-title="`24/7 Services ${serviceNumber} | ByBet Philippines`"
       :description="`Chat with ByBet 24/7 Customer Service ${serviceNumber} for fast assistance.`"
-      back-to="/explore/egames/customer-service"
+      back-to="/egames/customer-service"
     />
 
     <section class="customer-service-chat-stage" :aria-label="`24/7 Services ${serviceNumber} chat`">

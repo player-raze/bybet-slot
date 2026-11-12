@@ -24,7 +24,7 @@ const emit = defineEmits<{
 const search = ref('')
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => sportsRouteBase.value === '/explore/sports/popular')
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 const oddsCols = computed<2 | 3>(() => route.params.sport === 'soccer' ? 3 : 2)
 const selectedDate = ref('all')
 watch(() => route.params.date, value => {

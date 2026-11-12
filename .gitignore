@@ -36,8 +36,12 @@ data/daily-predictions.json
 data/sitemap-dates.json
 data/jackpots.json
 
-# Build-generated sitemap
+# Build-generated sitemap & LLM files
 public/sitemap.xml
+llms.txt
+llms-full.txt
+public/llms.txt
+public/llms-full.txt
 
 # Logs
 data/*.log

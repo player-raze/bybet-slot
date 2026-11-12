@@ -14,8 +14,8 @@ const nowMs = ref(Date.now())
 let countdownTimer: ReturnType<typeof setInterval> | null = null
 
 const categoryPath = (key: string): string => key === 'all'
-  ? '/explore/bonuses'
-  : `/explore/bonuses/${key}`
+  ? '/bonuses'
+  : `/bonuses/${key}`
 
 const categoryLabel = computed(() =>
   PROMO_CATEGORIES.find(item => item.key === props.category)?.label || 'Bonuses',
@@ -91,7 +91,7 @@ useAppSeo({
   description: () => `Explore ${categoryLabel.value.toLowerCase()} bonuses and promotions available at ByBet Philippines.`,
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: 'Bonuses', path: '/explore/bonuses' },
+    { name: 'Bonuses', path: '/bonuses' },
     { name: categoryLabel.value, path: categoryPath(props.category) },
   ],
 })
@@ -105,7 +105,7 @@ useAppSeo({
         :meta-title="`${categoryLabel} Bonuses & Promotions | ByBet`"
         :description="`Explore ${categoryLabel.toLowerCase()} bonuses and promotions available at ByBet Philippines.`"
         keywords="ByBet bonuses, promotions, deposit rewards, rebates"
-        back-to="/explore/bonuses"
+        back-to="/bonuses"
         custom-class="bonus-category-header"
       >
         <template #actions>
@@ -131,7 +131,7 @@ useAppSeo({
       <NuxtLink
         v-for="promotion in featuredPromotions"
         :key="promotion.id"
-        :to="`/explore/bonus/${promotion.slug}`"
+        :to="`/bonus/${promotion.slug}`"
         class="category-card"
         @click="markAsViewed(promotion.slug)"
       >
@@ -160,7 +160,7 @@ useAppSeo({
       <NuxtLink
         v-for="promotion in categoryPromotions"
         :key="promotion.id"
-        :to="`/explore/bonus/${promotion.slug}`"
+        :to="`/bonus/${promotion.slug}`"
         class="category-card"
         @click="markAsViewed(promotion.slug)"
       >

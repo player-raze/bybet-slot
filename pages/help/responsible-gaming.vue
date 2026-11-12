@@ -1,0 +1,17 @@
+<script setup lang="ts">
+useAppSeo({
+  title: 'Responsible Gaming & Player Assistance | ByBet Philippines',
+  description: 'ByBet is dedicated to safe and responsible gaming. Learn about player protection tools, deposit limits, and support hotlines in the Philippines.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Help', path: '/help/contact-us' },
+    { name: 'Responsible Gaming', path: '/responsible-gaming' },
+  ],
+})
+
+navigateTo('/responsible-gaming', { redirectCode: 301 })
+</script>
+
+<template>
+  <div />
+</template>

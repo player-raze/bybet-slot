@@ -98,12 +98,12 @@ onBeforeUnmount(() => {
         <Transition name="accordion">
           <div v-show="openSections.specialPromotion" class="pt-3 pb-1 text-[13px] sm:text-[14px] text-[#8e9491] space-y-2">
             <div>
-              <NuxtLink to="/explore/bonuses" class="hover:text-white transition-colors inline-block">
+              <NuxtLink to="/bonuses" class="hover:text-white transition-colors inline-block">
                 Your Deposit. Your Reward.
               </NuxtLink>
             </div>
             <div>
-              <NuxtLink to="/explore/bonuses" class="hover:text-white transition-colors inline-block">
+              <NuxtLink to="/bonuses" class="hover:text-white transition-colors inline-block">
                 Latest Deals
               </NuxtLink>
             </div>
@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
 
         <Transition name="accordion">
           <div v-show="openSections.help" class="pt-3 pb-1 text-[13px] sm:text-[14px] text-[#8e9491] space-y-2">
-            <div><NuxtLink to="/explore/egames/customer-service" class="hover:text-white transition-colors inline-block">24/7 Services</NuxtLink></div>
+            <div><NuxtLink to="/egames/customer-service" class="hover:text-white transition-colors inline-block">24/7 Services</NuxtLink></div>
             <div><NuxtLink to="/game-rules/sports-betting-rules" class="hover:text-white transition-colors inline-block">Game Rules</NuxtLink></div>
             <div><NuxtLink to="/responsible-gaming" class="hover:text-white transition-colors inline-block">Responsible Gaming</NuxtLink></div>
             <div><NuxtLink to="/terms-of-use" class="hover:text-white transition-colors inline-block">Terms of Use</NuxtLink></div>

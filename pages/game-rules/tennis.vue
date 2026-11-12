@@ -33,40 +33,4 @@ useAppSeo({
 .tennis-rules-card {
   word-break: break-word;
 }
-
-/* Dark mode theme adaptations for Google Docs exported HTML */
-:deep(.editor-container) {
-  color: #d1d5db;
-  font-family: inherit;
-}
-
-:deep(.editor-container [style*="color:#7b7b7b"]),
-:deep(.editor-container [style*="color:#6e6e6e"]) {
-  color: #e5e7eb !important;
-}
-
-:deep(.editor-container [style*="background-color:#e1e1e1"]) {
-  background-color: #1a2e22 !important;
-  border-color: var(--main-color) !important;
-  color: #32d49a !important;
-  border-radius: 8px;
-}
-
-:deep(.editor-container [style*="border-left:solid #bbbbb5"]),
-:deep(.editor-container [style*="border-right:solid #bbbbb5"]),
-:deep(.editor-container [style*="border-top:solid #bbbbb5"]),
-:deep(.editor-container [style*="border-bottom:solid #bbbbb5"]) {
-  border-color: var(--main-color) !important;
-}
-
-:deep(.editor-container h2 strong span),
-:deep(.editor-container strong span[style*="font-size:21pt"]),
-:deep(.editor-container strong span[style*="font-size:22pt"]) {
-  color: #ffffff !important;
-}
-
-:deep(.editor-container h4 strong span),
-:deep(.editor-container h4 span) {
-  color: #ffffff !important;
-}
 </style>

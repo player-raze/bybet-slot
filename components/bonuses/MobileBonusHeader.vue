@@ -10,7 +10,7 @@ withDefaults(defineProps<{ backTo?: string }>(), { backTo: '/' })
       <ChevronLeft :size="20" aria-hidden="true" />
     </NuxtLink>
     <h1>Bonuses</h1>
-    <NuxtLink to="/explore/account/language" class="mobile-bonus-header__flag" aria-label="Language: Philippines">
+    <NuxtLink to="/account/language" class="mobile-bonus-header__flag" aria-label="Language: Philippines">
       <img src="/icons/PHP.webp" alt="Philippines" width="24" height="24">
     </NuxtLink>
   </header>

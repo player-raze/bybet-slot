@@ -14,8 +14,8 @@ const activeSlide = ref(0)
 const nowMs = ref(Date.now())
 let countdownTimer: ReturnType<typeof setInterval> | null = null
 const categoryPath = (key: string): string => key === 'all'
-  ? '/explore/bonuses'
-  : `/explore/bonuses/${key}`
+  ? '/bonuses'
+  : `/bonuses/${key}`
 
 const featuredPromotions = computed(() => {
   const featured = ['lucky-rankings', 'weekly-treasure-chest']
@@ -84,7 +84,7 @@ watch(() => props.category, revealCategory)
 <template>
   <div class="mobile-bonuses">
     <div class="mobile-bonuses__sticky">
-      <MobileBonusHeader :back-to="category === 'all' ? '/' : '/explore/bonuses'" />
+      <MobileBonusHeader :back-to="category === 'all' ? '/' : '/bonuses'" />
       <nav ref="categoryNav" class="mobile-bonuses__categories mx-1" aria-label="Bonus categories">
         <NuxtLink
           v-for="item in PROMO_CATEGORIES" :key="item.key"
@@ -95,7 +95,7 @@ watch(() => props.category, revealCategory)
 
     <section class="mobile-bonuses__banners" :aria-label="category === 'all' ? 'Featured bonuses' : `${PROMO_CATEGORIES.find(item => item.key === category)?.label} bonuses`">
       <div ref="track" :class="category === 'all' ? 'mobile-bonuses__carousel' : 'mobile-bonuses__stack'" @scroll.passive="updateSlide">
-        <NuxtLink v-for="(promotion, index) in cards" :key="promotion.id" :to="`/explore/bonus/${promotion.slug}`" class="mobile-bonus-card" @click="markAsViewed(promotion.slug)">
+        <NuxtLink v-for="(promotion, index) in cards" :key="promotion.id" :to="`/bonus/${promotion.slug}`" class="mobile-bonus-card" @click="markAsViewed(promotion.slug)">
           <div class="mobile-bonus-card__image">
             <img :src="getPromoBannerUrl(promotion.bannerImage, promotion.slug)" :alt="promotion.title" :style="{ objectPosition: promotion.imagePosition || 'center' }" :loading="index < 2 ? 'eager' : 'lazy'" decoding="async">
             <span v-if="promotion.showSaveBadge" class="mobile-bonus-card__save">◎ Save</span>
@@ -119,7 +119,7 @@ watch(() => props.category, revealCategory)
         <NuxtLink class="mobile-bonuses__heading" :to="categoryPath(section.category)">
           <h2>{{ section.title }}</h2><ChevronRight :size="20" aria-hidden="true" />
         </NuxtLink>
-        <NuxtLink v-for="promotion in section.items" :key="promotion.id" :to="`/explore/bonus/${promotion.slug}`" class="mobile-bonus-row" @click="markAsViewed(promotion.slug)">
+        <NuxtLink v-for="promotion in section.items" :key="promotion.id" :to="`/bonus/${promotion.slug}`" class="mobile-bonus-row" @click="markAsViewed(promotion.slug)">
           <img :src="getPromoThumbnailUrl(promotion.thumbnailImage, promotion.slug)" :alt="promotion.title" loading="lazy" width="54" height="54">
           <span class="mobile-bonus-row__copy"><strong>{{ promotion.title }}</strong><small>{{ promotion.description }}</small></span>
           <span class="mobile-bonus-row__details">Details</span>

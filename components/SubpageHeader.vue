@@ -12,7 +12,7 @@ const props = withDefaults(
   }>(),
   {
     title: '',
-    backTo: '/explore/account/me',
+    backTo: '/account/me',
     showBack: true,
     sticky: true,
     customClass: '',

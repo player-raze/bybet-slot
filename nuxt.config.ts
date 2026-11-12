@@ -50,6 +50,12 @@ export default defineNuxtConfig({
         } catch (e) {
           console.warn('[sitemap] Build hook warning:', e)
         }
+        try {
+          const { generateLlmsFile } = await import('./scripts/generate-llms.mjs')
+          await generateLlmsFile(nitro.options.runtimeConfig?.public?.siteUrl)
+        } catch (e) {
+          console.warn('[llms] Build hook warning:', e)
+        }
       },
     },
   },

@@ -32,7 +32,7 @@ const searchedGroups = computed(() => {
 
 const tournamentPath = (key: string): string => {
   const [sport, ...tournament] = key.split('_')
-  const base = sportsRouteBase.value || '/explore/sports/popular'
+  const base = sportsRouteBase.value || '/sports/popular'
   const sportPath = base.endsWith('/popular') ? `/${sport}` : ''
   return `${base}${sportPath}/${tournament.join('-')}`
 }
@@ -41,7 +41,7 @@ const tournamentPath = (key: string): string => {
 
 <template>
   <div class="outright-tab">
-    <div v-if="sportsRouteBase !== '/explore/sports/popular'" class="toolbar">
+    <div v-if="!['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase)" class="toolbar">
       <Ai
         v-if="aiTo"
         :to="aiTo"

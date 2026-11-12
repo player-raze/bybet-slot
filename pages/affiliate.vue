@@ -218,7 +218,7 @@ const handleBack = (): void => {
     return
   }
 
-  router.push('/explore/account/me')
+  router.push('/account/me')
 }
 
 const toggleAdvantage = (id: string): void => {
@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
   <div class="affiliate-page">
     <SubpageHeader
       title="Affiliate"
-      back-to="/explore/account/me"
+      back-to="/account/me"
       class="mb-1.5 sm:mb-2.5"
     />
 

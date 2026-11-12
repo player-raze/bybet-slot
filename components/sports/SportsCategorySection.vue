@@ -19,7 +19,7 @@ const background = computed(() => getSportsCategoryBackground(props.sport))
 const panelId = useId()
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => sportsRouteBase.value === '/explore/sports/popular' || route.path.startsWith('/explore/sports/popular'))
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value) || route.path.startsWith('/sports/popular') || route.path.startsWith('/explore/sports/popular'))
 
 const shouldShowBanner = computed(() => {
   if (props.showBanner === false) return false
