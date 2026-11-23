@@ -15,8 +15,9 @@ export interface PlaynowTrackerStats {
   updatedAt?: string
 }
 
-export default defineEventHandler(async (_event: H3Event): Promise<PlaynowTrackerStats> => {
-  const envUrl = resolvePlaynowEnvUrl()
+export default defineEventHandler(async (event: H3Event): Promise<PlaynowTrackerStats> => {
+  const config = useRuntimeConfig(event)
+  const envUrl = String(config.public?.bybetRedirectUrl || resolvePlaynowEnvUrl()).trim()
 
   const storageCandidates = [
     process.env.APP_STORAGE_DIR ? path.resolve(process.env.APP_STORAGE_DIR, 'playnow-clicks.json') : '',

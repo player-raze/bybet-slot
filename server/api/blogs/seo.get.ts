@@ -6,7 +6,7 @@ export default defineEventHandler(async (event: H3Event): Promise<BlogSeoSetting
   const bloggeristUrl = (config.bloggeristUrl || config.public?.bloggeristUrl || 'http://localhost:8082').replace(/\/+$/, '')
 
   try {
-    const res = await $fetch<BlogSeoSettingsResponse>(`${bloggeristUrl}/api/settings/seo.php`)
+    const res = await $fetch<BlogSeoSettingsResponse>(`${bloggeristUrl}/api/settings/seo.php`, { timeout: 3000 })
     return res
   } catch (err: any) {
     return {
@@ -16,6 +16,7 @@ export default defineEventHandler(async (event: H3Event): Promise<BlogSeoSetting
         website_name: 'Blog',
         website_url: bloggeristUrl,
         google_analytics_id: '',
+        google_tag_id: '',
         google_search_console_verification: '',
       },
     }

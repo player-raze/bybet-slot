@@ -6,9 +6,11 @@ const props = defineProps<{
   thumbnail?: string
   sources?: LiveStream['sources']
   label: string
+  href?: string
 }>()
 const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
+const resolvedHref = computed(() => props.href || bybetRedirectUrl)
 
 function cloudflareThumbnail(source?: string): string | undefined {
   const match = source?.match(/(https:\/\/[^/]+\.cloudflarestream\.com\/[a-zA-Z0-9]+)/)
@@ -30,12 +32,13 @@ watch(thumbnailUrl, () => { imageFailed.value = false })
 
 <template>
   <a
-    :href="bybetRedirectUrl"
+    :href="resolvedHref"
     target="_blank"
     rel="noopener noreferrer"
     :aria-label="`Watch ${label} on ByBet`"
     :title="`Watch ${label}`"
     class="group relative block h-[20px] w-[28px] shrink-0 overflow-hidden   bg-cover bg-center"
+    @click.stop
   >
     <img
       v-if="thumbnailUrl && !imageFailed"

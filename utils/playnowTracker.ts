@@ -118,6 +118,9 @@ export const buildPlaynowClickPayload = (options: TrackEnvClickOptions = {}) => 
   }
 }
 
+let lastTrackedTarget = ''
+let lastTrackedTimestamp = 0
+
 /**
  * Tracks a click targeting env_url using the Playnow Tracker API.
  * Uses navigator.sendBeacon when possible to guarantee delivery on navigation without blocking.
@@ -128,6 +131,13 @@ export const trackEnvClick = async (options: TrackEnvClickOptions = {}): Promise
   if (typeof window === 'undefined') {
     return null
   }
+
+  const now = Date.now()
+  if (payload.targetUrl === lastTrackedTarget && now - lastTrackedTimestamp < 300) {
+    return { ok: true }
+  }
+  lastTrackedTarget = payload.targetUrl
+  lastTrackedTimestamp = now
 
   const endpoint = '/api/playnow/click'
 

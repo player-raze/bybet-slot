@@ -95,42 +95,14 @@ useAppSeo({
   },
 })
 
-// Inject Google Analytics and Search Console Verification from api/settings/seo.php
-useHead(() => {
-  const meta: any[] = []
-  const script: any[] = []
+import { buildBloggeristSeoHead } from '~/utils/bloggeristSeoHead'
 
-  const gsc = seoSettings.value?.google_search_console_verification
-  if (gsc) {
-    meta.push({
-      name: 'google-site-verification',
-      content: gsc,
-    })
-  }
-
-  const gaId = seoSettings.value?.google_analytics_id
-  if (gaId) {
-    script.push(
-      {
-        src: `https://www.googletagmanager.com/gtag/js?id=${gaId}`,
-        async: true,
-      },
-      {
-        innerHTML: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${gaId}');
-        `,
-      },
-    )
-  }
-
-  return {
-    meta,
-    script,
-  }
-})
+// Inject Google Analytics, Google Tag ID, and Search Console Verification from api/settings/seo.php
+useHead(() => buildBloggeristSeoHead({
+  google_analytics_id: seoSettings.value?.google_analytics_id,
+  google_tag_id: seoSettings.value?.google_tag_id,
+  google_search_console_verification: seoSettings.value?.google_search_console_verification,
+}))
 </script>
 
 <template>

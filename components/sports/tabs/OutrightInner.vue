@@ -259,6 +259,8 @@ const toggleCollapseAll = (): void => {
                       :key="outcome.name"
                       type="button"
                       class="text-white bg-[#232323] hover:bg-[#122F25] rounded-[8px] p-1 "
+                      :data-redirect-url="bybetRedirectUrl"
+                      data-section="Sports"
                       @click="navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
                     >
                       <span class="text-[#959799]">{{ outcome.name }}</span>

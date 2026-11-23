@@ -4,6 +4,9 @@ import { isEnvRedirectUrl, trackEnvClick, resolvePlaynowEnvUrl } from '~/utils/p
 export default defineNuxtPlugin(() => {
   if (typeof window === 'undefined') return
 
+  const config = useRuntimeConfig()
+  const envRedirectUrl = String(config?.public?.bybetRedirectUrl || resolvePlaynowEnvUrl()).trim()
+
   const handleGlobalClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement | null
     if (!target) return
@@ -24,10 +27,10 @@ export default defineNuxtPlugin(() => {
     }
 
     if (!destinationUrl && clickable.hasAttribute('data-env-redirect')) {
-      destinationUrl = resolvePlaynowEnvUrl()
+      destinationUrl = envRedirectUrl
     }
 
-    if (destinationUrl && isEnvRedirectUrl(destinationUrl)) {
+    if (destinationUrl && isEnvRedirectUrl(destinationUrl, envRedirectUrl)) {
       const buttonText = (
         clickable.innerText ||
         clickable.getAttribute('aria-label') ||
@@ -49,6 +52,7 @@ export default defineNuxtPlugin(() => {
         buttonText,
         buttonClass: clickable.className ? String(clickable.className).slice(0, 150) : undefined,
         buttonId: clickable.id || undefined,
+        buttonTag: clickable.tagName.toLowerCase(),
         section,
         location: window.location.pathname,
         x: event.clientX,

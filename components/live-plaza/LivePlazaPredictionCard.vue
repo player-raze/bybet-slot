@@ -83,6 +83,8 @@ const isPredictedOption = (option: PredictionOption): boolean => {
     role="link"
     tabindex="0"
     :aria-label="`Open ${prediction.predictorName}'s prediction on ByBet`"
+    :data-redirect-url="bybetRedirectUrl"
+    data-section="LivePlaza"
     @click="handleCardClick"
     @keydown="handleCardKeydown"
   >
@@ -164,6 +166,8 @@ const isPredictedOption = (option: PredictionOption): boolean => {
           :key="`${option.label}-${option.odd}`"
           type="button"
           :class="{ 'match-box__odd--predicted': isPredictedOption(option) }"
+          :data-redirect-url="bybetRedirectUrl"
+          data-section="LivePlaza"
           @click="emit('selectOdd', prediction, option)"
         >
           <span>{{ option.label }}</span>

@@ -197,6 +197,8 @@ const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): v
           class="predictor-item"
           :class="{ 'predictor-item--active': selectedPredictorId === predictor.id }"
           :aria-pressed="selectedPredictorId === predictor.id"
+          :data-redirect-url="bybetRedirectUrl"
+          data-section="LivePlaza"
           @click="redirectToByBet"
         >
           <span class="predictor-item__avatar-wrap">

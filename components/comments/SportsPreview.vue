@@ -1,22 +1,19 @@
 <script setup lang="ts">
-import { MessageCircle, ShoppingBag, GraduationCap, ChartPie, Video, PanelsTopLeft, Play, X } from 'lucide-vue-next'
+import { MessageCircle, ShoppingBag, GraduationCap, ChartPie, Video, PanelsTopLeft, Play } from 'lucide-vue-next'
 
 import type { LiveStreamCatalog } from '~/types/livestream'
-import StreamPlayer from './StreamPlayer.vue'
+import { buildBybetRedirectUrl } from '~/utils/sportsRedirect'
 
 const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
-const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
+const bybetRedirectUrl = buildBybetRedirectUrl('login', rawRedirectUrl, bybetRedirectCode)
 
 const { data: catalog, status, refresh } = useFetch<LiveStreamCatalog>('/api/livestream', { server: false })
 const selectedStreamId = ref('')
-const endedStreamIds = ref(new Set<string>())
-const isPlaying = ref(false)
 const thumbnailError = ref(false)
 
 const streams = computed(() => {
   const list = (catalog.value?.results ?? [])
-    .filter(stream => !endedStreamIds.value.has(stream.id)
-      && (!stream.status || stream.status === 'live'))
+    .filter(stream => !stream.status || stream.status === 'live')
   return list.toSorted((a, b) => {
     const aHasVideo = (a.hasStream || (a.sources && a.sources.length > 0)) ? 1 : 0
     const bHasVideo = (b.hasStream || (b.sources && b.sources.length > 0)) ? 1 : 0
@@ -30,7 +27,6 @@ watch(selectedStream, stream => {
 }, { immediate: true })
 
 watch(selectedStreamId, () => {
-  isPlaying.value = false
   thumbnailError.value = false
 })
 
@@ -42,12 +38,6 @@ const streamThumbnail = computed(() => {
 function handleThumbnailError() {
   thumbnailError.value = true
 }
-
-const iframeSrc = computed(() => {
-  const stream = selectedStream.value
-  if (!stream) return ''
-  return stream.iframe?.src || `https://live88.eu.cc/embed/live/${encodeURIComponent(stream.id)}?site=YBa-BnymZ6iN8pkfAUFTWIKn`
-})
 
 const streamTitle = computed(() => {
   const stream = selectedStream.value
@@ -64,13 +54,6 @@ function refreshStreams() {
   if (disposed) return Promise.resolve()
   pendingRefresh ??= refresh().finally(() => { pendingRefresh = undefined })
   return pendingRefresh
-}
-
-async function switchEndedStream(id: string) {
-  if (disposed || endedStreamIds.value.has(id)) return
-  endedStreamIds.value = new Set([...endedStreamIds.value, id])
-  await refreshStreams()
-  if (!disposed) selectedStreamId.value = streams.value[0]?.id ?? ''
 }
 
 onMounted(() => { refreshTimer = setInterval(() => void refreshStreams(), 30000) })
@@ -101,75 +84,38 @@ const tabs = [
       
     </div>
     <div class="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#14261d]">
-      <template v-if="selectedStream">
-        <!-- Live Video Player (Playing) -->
-        <div v-if="isPlaying" class="relative h-full w-full">
-          <StreamPlayer
-            v-if="selectedStream.sources?.length"
-            :key="selectedStream.id"
-            :sources="selectedStream.sources"
-            @ended="switchEndedStream(selectedStream.id)"
-            @unavailable="switchEndedStream(selectedStream.id)"
-          />
-          <iframe
-            v-else-if="iframeSrc"
-            :key="selectedStream.id + previewMode"
-            :src="iframeSrc"
-            :title="streamTitle"
-            class="absolute inset-0 h-full w-full border-0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-          />
-          <!-- Return to Thumbnail Picture -->
-          <button
-            type="button"
-            class="absolute top-2 right-2 z-20 flex h-2 w-2 items-center justify-center rounded-full bg-black/75 text-white/80 hover:text-white hover:bg-black transition-colors"
-            title="Stop stream & return to preview"
-            aria-label="Return to preview"
-            @click.stop="isPlaying = false"
+      <a
+        v-if="selectedStream"
+        :href="bybetRedirectUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-section="SportsTV"
+        :aria-label="`Play ${streamTitle}`"
+        class="group relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden bg-gradient-to-br from-[#0b1712] via-[#10241b] to-[#07130e] select-none"
+      >
+        <!-- Background Picture / Thumbnail -->
+        <img
+          :src="streamThumbnail"
+          :alt="streamTitle"
+          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          @error="handleThumbnailError"
+        />
+
+        <!-- Dark Gradient Overlays for Readability & Cinematic Contrast -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/60 pointer-events-none" />
+
+        <!-- Play Button in the Middle -->
+        <div class="relative z-10 flex flex-col items-center justify-center gap-2">
+          <span
+            class="relative flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-white text-black shadow-xl shadow-white/40 transition-all duration-300 ease-out group-hover:scale-110 active:scale-95 cursor-pointer"
+            aria-hidden="true"
           >
-            <X :size="3" />
-          </button>
+            <!-- Outer glowing pulse ring -->
+            <span class="absolute inset-0 rounded-full bg-white opacity-30 animate-ping pointer-events-none" />
+            <Play :size="20" class="fill-current text-black translate-x-0.5 transition-transform group-hover:scale-110" />
+          </span>
         </div>
-
-        <!-- Thumbnail Picture with Play Button in Middle -->
-        <div
-          v-else
-          class="group relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden bg-gradient-to-br from-[#0b1712] via-[#10241b] to-[#07130e] select-none"
-          role="button"
-          tabindex="0"
-          :aria-label="`Play ${streamTitle}`"
-          @click="isPlaying = true"
-          @keydown.enter.prevent="isPlaying = true"
-          @keydown.space.prevent="isPlaying = true"
-        >
-          <!-- Background Picture / Thumbnail -->
-          <img
-            :src="streamThumbnail"
-            :alt="streamTitle"
-            class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-            @error="handleThumbnailError"
-          />
-
-          <!-- Dark Gradient Overlays for Readability & Cinematic Contrast -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/60 pointer-events-none" />
-
-          <!-- Play Button in the Middle -->
-          <div class="relative z-10 flex flex-col items-center justify-center gap-2">
-            <button
-              type="button"
-              class="relative flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-white text-black shadow-xl shadow-white/40 transition-all duration-300 ease-out group-hover:scale-110 active:scale-95 cursor-pointer"
-              aria-label="Play live stream"
-              tabindex="-1"
-            >
-              <!-- Outer glowing pulse ring -->
-              <span class="absolute inset-0 rounded-full bg-white opacity-30 animate-ping pointer-events-none" />
-              <Play :size="20" class="fill-current text-black translate-x-0.5 transition-transform group-hover:scale-110" />
-            </button>
-          </div>
-
-        </div>
-      </template>
+      </a>
       <div v-else class="flex h-full flex-col items-center justify-center px-5 text-center" role="status">
         <Video :size="26" class="mb-2 text-white/60" aria-hidden="true" />
         <p class="text-[14px] font-semibold text-white">

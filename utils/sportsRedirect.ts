@@ -152,3 +152,140 @@ export const resolveSportsTabRedirectUrl = (
   if (!path) return null
   return buildBybetRedirectUrl(path, bybetRedirectUrl, redirectCode)
 }
+
+export const normalizeBybetSportSlug = (sport: string): string => {
+  const normalized = (sport || '').trim().toLowerCase()
+  if (normalized === 'soccer' || normalized === 'football') {
+    return 'football'
+  }
+  return normalized
+}
+
+export const formatBybetDateParam = (rawDate?: string | null): string | null => {
+  const value = (rawDate || '').trim()
+  if (!value) return null
+
+  const mmddyyyy = /^(\d{2})-(\d{2})-(\d{4})$/.exec(value)
+  if (mmddyyyy) {
+    const [, month, day, year] = mmddyyyy
+    return `${year}${month}${day}`
+  }
+
+  const yyyymmddDashed = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+  if (yyyymmddDashed) {
+    const [, year, month, day] = yyyymmddDashed
+    return `${year}${month}${day}`
+  }
+
+  if (/^\d{8}$/.test(value)) {
+    return value
+  }
+
+  return null
+}
+
+export const formatBybetHoursParam = (rawHours?: string | null): string | null => {
+  const value = (rawHours || '').trim().toLowerCase()
+  if (!value) return null
+  const match = /^(\d+)(?:hours?)?$/.exec(value)
+  return match?.[1] ?? null
+}
+
+export const getSportsMatchRedirectPath = (rawPath?: string | null): string | null => {
+  const stripped = (rawPath || '')
+    .split(/[?#]/)[0]
+    .trim()
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/^explore\//i, '')
+
+  const segments = stripped
+    .split('/')
+    .map(segment => segment.trim().toLowerCase())
+    .filter(Boolean)
+
+  if (segments[0] !== 'sports') {
+    return null
+  }
+
+  if (!segments[1]) {
+    return 'sportEvents/hotGame/incoming'
+  }
+
+  if (segments[1] === 'live') {
+    if (!segments[2] || segments[2] === 'all') {
+      return 'sportEvents/liveGame/all'
+    }
+    return `sportEvents/liveGame/${normalizeBybetSportSlug(segments[2])}`
+  }
+
+  if (segments[1] === 'popular') {
+    const tab = segments[2] || 'upcoming'
+    const param = segments[3]
+
+    if (tab === 'upcoming') {
+      const hour = formatBybetHoursParam(param)
+      return hour ? `sportEvents/hotGame/incoming?hour=${hour}` : 'sportEvents/hotGame/incoming'
+    }
+    if (tab === 'league') {
+      return 'sportEvents/hotGame/tournament'
+    }
+    if (tab === 'pre-match' || tab === 'prematch') {
+      const date = formatBybetDateParam(param)
+      return date ? `sportEvents/hotGame/early?date=${date}` : 'sportEvents/hotGame/early'
+    }
+    if (tab === 'inplay') {
+      return 'sportEvents/liveGame/all'
+    }
+    if (tab === 'smart-pick' || tab === 'smartpick') {
+      return 'sportEvents/hotGame/smartPick'
+    }
+    if (tab === 'outright') {
+      return 'sportEvents/hotGame/outright'
+    }
+    return 'sportEvents/hotGame/incoming'
+  }
+
+  const bybetSport = normalizeBybetSportSlug(segments[1])
+  const tab = segments[2] || 'inplay'
+  const param = segments[3]
+
+  if (tab === 'upcoming') {
+    const hour = formatBybetHoursParam(param)
+    return hour ? `sportEvents/incoming/${bybetSport}?hour=${hour}` : `sportEvents/incoming/${bybetSport}`
+  }
+  if (tab === 'pre-match' || tab === 'prematch') {
+    const date = formatBybetDateParam(param)
+    return date
+      ? `sportEvents/early/${bybetSport}/interval/${date}`
+      : `sportEvents/early/${bybetSport}/interval/todayAndAll`
+  }
+  if (tab === 'league') {
+    return `sportEvents/tournament/${bybetSport}`
+  }
+  if (tab === 'inplay') {
+    return `sportEvents/inplay/${bybetSport}`
+  }
+  if (tab === 'smart-pick' || tab === 'smartpick' || tab === 'parlay') {
+    return getSportsTabRedirectPath(segments[1], tab) ?? `sportEvents/inplay/${bybetSport}`
+  }
+  if (tab === 'outright') {
+    return `sportEvents/outright/${bybetSport}`
+  }
+  if (tab === 'replay') {
+    return getSportsTabRedirectPath(segments[1], tab) ?? `sportEvents/inplay/${bybetSport}`
+  }
+
+  return `sportEvents/inplay/${bybetSport}`
+}
+
+export const resolveSportsMatchRedirectUrl = (
+  rawPath?: string | null,
+  bybetRedirectUrl?: string,
+  redirectCode?: string,
+): string => {
+  const secondPath = getSportsMatchRedirectPath(rawPath)
+  if (secondPath) {
+    return buildBybetRedirectUrl(secondPath, bybetRedirectUrl, redirectCode)
+  }
+  return buildBybetRedirectUrl('login', bybetRedirectUrl, redirectCode)
+}
