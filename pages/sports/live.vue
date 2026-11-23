@@ -78,10 +78,11 @@ const mobileModePath = (key: string): string => {
 
 <template>
   <section class="sports-page live-page">
+    <h1 class="sr-only">{{ currentSport === 'all' ? 'Live Sports Betting' : `Live ${currentSport.charAt(0).toUpperCase() + currentSport.slice(1)} Betting` }}</h1>
     <!-- Sports Tabs Navigation: Sport Ball Icons -->
     <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-1">
       <MobileSportsNav />
-      <nav class="sports-tabs live-mobile-modes bg-[#1f1f1f]" aria-label="Sports categories">
+      <nav class="sports-tabs live-mobile-modes bg-[#1f1f1f] light:bg-[#edf4f0] light:border light:border-black/10" aria-label="Sports categories">
         <NuxtLink
           v-for="tab in mobileModeTabs"
           :key="tab.key"
@@ -94,7 +95,7 @@ const mobileModePath = (key: string): string => {
         </NuxtLink>
       </nav>
       <nav
-        class="sports-tabs live-sports-tabs bg-[#141414]"
+        class="sports-tabs live-sports-tabs bg-[#141414] light:bg-white light:border light:border-black/10"
         aria-label="Live sports categories"
       >
         <NuxtLink

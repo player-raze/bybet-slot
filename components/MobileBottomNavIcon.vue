@@ -116,6 +116,6 @@ defineProps<{ name: string }>()
   display: grid; position: absolute; top: -8px; right: -12px;
   min-width: 20px; height: 20px; place-items: center; padding: 0 4px;
   border-radius: 10px; color: #fff; font-size: 10px; font-weight: 700;
-  line-height: 1; background: #00875e; box-shadow: 0 0 0 2px #111;
+  line-height: 1; background: #00875e;
 }
 </style>

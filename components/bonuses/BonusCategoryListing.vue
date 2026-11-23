@@ -99,8 +99,10 @@ useAppSeo({
 
 <template>
   <div class="bonus-category-page">
-    <div class="bonus-category-sticky sticky-header-seal">
+    <h1 class="sr-only">{{ categoryLabel }} — Bonuses</h1>
+    <div class="bonus-category-sticky sticky-header-seal light:bg-[#eef5f1]">
       <SeoHeader
+        heading-tag="p"
         title="Bonuses"
         :meta-title="`${categoryLabel} Bonuses & Promotions | ByBet`"
         :description="`Explore ${categoryLabel.toLowerCase()} bonuses and promotions available at ByBet Philippines.`"
@@ -115,7 +117,7 @@ useAppSeo({
         </template>
       </SeoHeader>
 
-      <nav class="category-nav" aria-label="Promotion categories">
+      <nav class="category-nav light:bg-white light:border light:border-black/10" aria-label="Promotion categories">
         <NuxtLink
           v-for="item in PROMO_CATEGORIES"
           :key="item.key"
@@ -132,7 +134,7 @@ useAppSeo({
         v-for="promotion in featuredPromotions"
         :key="promotion.id"
         :to="`/bonus/${promotion.slug}`"
-        class="category-card"
+        class="category-card light:bg-white light:border light:border-black/10"
         @click="markAsViewed(promotion.slug)"
       >
         <div class="category-card__media">
@@ -146,7 +148,7 @@ useAppSeo({
           <span v-if="promotion.showSaveBadge" class="category-card__save">◎ Save</span>
         </div>
         <div class="category-card__copy">
-          <strong>{{ promotion.title }}</strong>
+          <h2 class="promotion-card-title">{{ promotion.title }}</h2>
           <span>{{ countdown(promotion) }}</span>
         </div>
       </NuxtLink>
@@ -175,7 +177,7 @@ useAppSeo({
           <span v-if="promotion.showSaveBadge" class="category-card__save">◎ Save</span>
         </div>
         <div class="category-card__copy">
-          <strong>{{ promotion.title }}</strong>
+          <h2 class="promotion-card-title">{{ promotion.title }}</h2>
           <span>{{ countdown(promotion) }}</span>
         </div>
       </NuxtLink>
@@ -327,14 +329,14 @@ useAppSeo({
   background: linear-gradient(180deg, #07543e, #064433);
 }
 
-.category-card__copy strong,
+.category-card__copy .promotion-card-title,
 .category-card__copy span {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.category-card__copy strong {
+.category-card__copy .promotion-card-title {
   color: #ffffff;
   font-size: 0.6rem;
   font-weight: 800;
@@ -409,7 +411,7 @@ useAppSeo({
     padding: 0.45rem 0.7rem 0.55rem;
   }
 
-  .category-card__copy strong {
+  .category-card__copy .promotion-card-title {
     font-size: 0.9rem;
   }
 

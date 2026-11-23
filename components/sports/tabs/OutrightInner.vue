@@ -14,6 +14,8 @@ const props = defineProps<{
 const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
 const route = useRoute()
+const sportsRouteBase = useSportsRouteBase()
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 const search = ref('')
 
 const searchedSports = computed(() => {
@@ -191,6 +193,7 @@ const toggleCollapseAll = (): void => {
           :key="sport.key"
           class="outright-accordion"
         >
+          <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ sport.title }}</component>
           <button
             :id="`outright-trigger-${sport.key}`"
             type="button"
@@ -227,7 +230,7 @@ const toggleCollapseAll = (): void => {
             :aria-busy="outrightLoading[sport.key] || false"
           >
             <div v-if="outrightLoading[sport.key]" class="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4" role="status" aria-label="Loading outright odds">
-              <div v-for="i in 4" :key="i" class="h-10 rounded-md bg-[##141414] animate-pulse" />
+              <div v-for="i in 4" :key="i" class="h-10 rounded-md bg-[#141414] light:bg-[#edf4f0] light:border light:border-black/5 animate-pulse" />
             </div>
             <div v-else-if="outrightErrors[sport.key]" role="alert">
               <p class="note">{{ outrightErrors[sport.key] }}</p>
@@ -241,7 +244,7 @@ const toggleCollapseAll = (): void => {
                 :key="event.id"
                 class="outright-market"
               >
-                <h4 class="pb-1.5">Winner</h4>
+                <component :is="isPopular ? 'h4' : 'h3'" class="m-0 pb-1.5 text-[14px]">Winner</component>
                 <div
                   v-for="bookmaker in (event.bookmakers ?? []).slice(0, 1)"
                   :key="bookmaker.key"

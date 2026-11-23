@@ -725,6 +725,7 @@ const selectChoice = (id: string): void => {
     class="game-tutorial-page"
     :class="{ 'game-tutorial-page--lesson': activeMode === 'tutorial' }"
   >
+    <h1 class="sr-only">{{ activeMode === 'tutorial' ? 'How to Play Sports Betting on ByBet — A Step-by-Step Tutorial' : 'Mock Betting — Practice Sports Betting on ByBet' }}</h1>
     <SubpageHeader mobile-tabs back-to="/account/me" class="mb-2">
       <template #center>
         <div class="tutorial-pill-group" role="tablist">
@@ -792,15 +793,15 @@ const selectChoice = (id: string): void => {
         </div>
       </div>
 
-      <div class="market-panel" :class="{ 'market-panel--outright': isOutright }">
+      <div class="market-panel light:bg-white light:border light:border-black/10 light:text-[#14251d]" :class="{ 'market-panel--outright': isOutright }">
         <div v-if="isOutright" class="outright-heading">
-          <h1>Spanish LaLiga</h1>
+          <h2>Spanish LaLiga</h2>
           <p>Real Madrid wins the championship, Barcelona is the runner-up, and Atletico Madrid is third place</p>
         </div>
 
         <div class="market-panel-heading">
           <h2 v-if="!isOutright" class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
-          <h2 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h2>
+          <h3 v-else class="market-panel-title">{{ activeMarket.panelTitle }}</h3>
 
           <div v-if="activeMarketKey === 'correct-score'" class="correct-score-filters" aria-label="Correct score selections">
             <button
@@ -839,7 +840,7 @@ const selectChoice = (id: string): void => {
       </div>
 
       <Transition name="result-card">
-        <article v-if="selectedChoice" class="betting-result" aria-live="polite">
+        <article v-if="selectedChoice" class="betting-result light:bg-white light:border light:border-black/10 light:text-[#14251d]" aria-live="polite">
           <div class="betting-result-copy">
             <h2>Betting Result</h2>
             <p>{{ selectedChoice.selection }} @{{ selectedChoice.odds }}</p>
@@ -863,9 +864,9 @@ const selectChoice = (id: string): void => {
         {{ activeTutorial.intro }}
       </p>
 
-      <span v-if="activeTutorial.title" class="tutorial-section-title">
+      <h2 v-if="activeTutorial.title" class="tutorial-section-title">
         {{ activeTutorial.title }}
-      </span>
+      </h2>
 
       <div v-if="activeTutorial.scenarios" class="tutorial-card-grid">
         <TutorialScenarioCard
@@ -1240,7 +1241,7 @@ html[data-theme='light']:not(#_) .game-tutorial-page .match-score{
   background: #007653;
 }
 
-.outright-heading h1 {
+.outright-heading h2 {
   margin: 0 0 2px;
   color: #f4f4f4;
   font-size: 16px;

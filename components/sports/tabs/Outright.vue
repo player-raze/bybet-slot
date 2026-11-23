@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const search = ref('')
 const sportsRouteBase = useSportsRouteBase()
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 
 const searchedSports = computed(() => {
   const q = search.value.toLowerCase().trim()
@@ -76,6 +77,7 @@ const tournamentPath = (key: string): string => {
           :to="tournamentPath(sport.key)"
           class="league-card"
         >
+          <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ sport.title }}</component>
           <span class="league-icon">
             <Trophy :size="19" aria-hidden="true" />
           </span>

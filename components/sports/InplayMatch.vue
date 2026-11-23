@@ -179,14 +179,14 @@ const copyMatchLink = async (): Promise<void> => {
       <time v-else class="winner-date text-[12px]" :datetime="match.commence_time" >
         <span class="whitespace-pre-line">{{ liveClock }}</span>
       </time>
-      <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] pr-2">
-        <span class="winner-home-team text-[12px]">{{ match.home_team }}</span>
-        <span class="winner-away-team text-[12px]">{{ match.away_team }}</span>
+      <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] light:border-black/10 pr-2">
+        <span class="winner-home-team text-[12px] light:text-[#14251d]">{{ match.home_team }}</span>
+        <span class="winner-away-team text-[12px] light:text-[#14251d]">{{ match.away_team }}</span>
       </div>
       <!-- Scores from the live provider; unavailable values remain blank. --> 
-      <div v-if="!fullMarkets" class="winner-teams border-r border-[#e5e7eb33] pr-2">
-        <span class="winner-home-team text-[12px] text-right">{{ score('home') }}</span>
-        <span class="winner-away-team text-[12px] text-right">{{ score('away') }}</span>
+      <div v-if="!fullMarkets" class="winner-teams border-r border-[#e5e7eb33] light:border-black/10 pr-2">
+        <span class="winner-home-team text-[12px] light:text-[#14251d] text-right">{{ score('home') }}</span>
+        <span class="winner-away-team text-[12px] light:text-[#14251d] text-right">{{ score('away') }}</span>
       </div>
       <div class="winner-actions">
         <MatchVideoThumbnail
@@ -242,7 +242,7 @@ const copyMatchLink = async (): Promise<void> => {
           v-for="market in row.markets"
           :key="market.key"
           type="button"
-          class="winner-price team-market-price"
+          class="winner-price team-market-price light:text-black light:bg-[#f3f5f7]"
           :class="{ 'winner-price--locked': !isMarketValid(market) }"
           :disabled="!isMarketValid(market)"
           :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, ${market.key === 'h2h' ? 'implied decimal odds ' + formatDecimalOdds(market.outcome?.price) : 'odds ' + (market.outcome?.price ?? 'unavailable')}`"
@@ -250,7 +250,7 @@ const copyMatchLink = async (): Promise<void> => {
           @click="selectMarket(market.key, market.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
         >
           <template v-if="isMarketValid(market)">
-            <span class="text-[#999]">{{ market.label }}</span>
+            <span class="text-[#999] light:text-[#55695e]">{{ market.label }}</span>
             <br>
             <strong>{{ market.key === 'h2h' ? formatDecimalOdds(market.outcome!.price) : market.outcome!.price.toFixed(2) }}</strong>
           </template>
@@ -273,7 +273,7 @@ const copyMatchLink = async (): Promise<void> => {
         v-for="outcome in outcomes"
         :key="outcome.label"
         type="button"
-        class="winner-price"
+        class="winner-price light:text-black light:bg-[#f3f5f7]"
         :class="{ 'winner-price--locked': !isOutcomeValid(outcome) }"
         :disabled="!isOutcomeValid(outcome)"
         :aria-label="`${outcome.name}, implied decimal odds ${formatDecimalOdds(outcome.price)}`"

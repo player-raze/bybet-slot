@@ -59,7 +59,7 @@ useAppSeo({
 </script>
 
 <template>
-  <div class="home-page">
+  <div class="home-page ">
     <ReferenceHero />
     <ReferenceCategoryTabs />
     <ReferenceGameSection

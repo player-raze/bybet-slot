@@ -16,7 +16,7 @@ useAppSeo({
 </script>
 
 <template>
-  <section class="preference-page language-page w-full min-w-0 pb-16 text-white">
+  <section class="preference-page language-page w-full min-w-0 pb-16 text-white light:bg-[#eef5f1] light:text-[#14251d]">
     <SubpageHeader
       title="Language"
       back-to="/account/me"
@@ -24,7 +24,7 @@ useAppSeo({
     />
 
     <div class="px-2.5 sm:px-0">
-      <div class="preference-list overflow-hidden rounded-xl">
+      <div class="preference-list overflow-hidden rounded-xl light:bg-white light:border light:border-black/10">
         <button
           v-for="language in languageOptions"
           :key="language.code"

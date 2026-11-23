@@ -35,7 +35,7 @@ const filteredTimeZones = computed(() => {
 </script>
 
 <template>
-  <section class="preference-page timezone-page w-full min-w-0 pb-16 text-white">
+  <section class="preference-page timezone-page w-full min-w-0 pb-16 text-white light:bg-[#eef5f1] light:text-[#14251d]">
     <SubpageHeader
       title="Time Zone"
       back-to="/account/me"
@@ -43,19 +43,19 @@ const filteredTimeZones = computed(() => {
     />
 
     <div class="px-2.5 sm:px-0">
-      <label class="search-box mb-2 flex min-h-[40px] items-center gap-2 rounded-xl px-3">
+      <label class="search-box mb-2 flex min-h-[40px] items-center gap-2 rounded-xl px-3 light:bg-white light:border light:border-black/10">
         <Search class="h-[18px] w-[18px] shrink-0 text-[#919694]" aria-hidden="true" />
         <span class="sr-only">Search country or city</span>
         <input
           v-model="searchQuery"
           type="search"
-          class="w-full bg-transparent text-[14px] text-white outline-none placeholder:text-[#919694]"
+          class="w-full bg-transparent text-[14px] text-white outline-none placeholder:text-[#919694] light:text-[#14251d] light:placeholder-[#8c918f]"
           placeholder="Search country or city"
           autocomplete="off"
         >
       </label>
 
-      <div class="preference-list overflow-hidden rounded-xl">
+      <div class="preference-list overflow-hidden rounded-xl light:bg-white light:border light:border-black/10">
         <button
           v-for="option in filteredTimeZones"
           :key="option.timeZone"

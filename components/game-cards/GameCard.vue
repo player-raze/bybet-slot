@@ -5,6 +5,8 @@ import ReminderModal from '~/components/modals/ReminderModal.vue'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
 import { JACKPOT_SECTIONS } from '~/data/jackpot'
 import { normalizeSlotProvider } from '~/data/slots'
+import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
+import { trackEnvClick } from '~/utils/playnowTracker'
 
 interface Game {
   id: string
@@ -37,18 +39,38 @@ interface Props {
   game: Game
   activeId?: string | null
   displayCategory?: string | null
+  headingTag?: 'h2' | 'h3'
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { headingTag: 'h3' })
 const route = useRoute()
+const runtimeConfig = useRuntimeConfig()
 const { effectiveTheme } = useSiteTheme()
 const emit = defineEmits<{
   (e: 'select', game: Game): void
   (e: 'info', game: Game): void
   (e: 'start', game: Game): void
-  (e: 'demo', game: Game): void
+  (e: 'demo', game: Game, redirectUrl?: string): void
   (e: 'close'): void
 }>()
+
+const handleDemoClick = () => {
+  const targetUrl = resolveDemoRedirectUrl(
+    route.path,
+    props.displayCategory,
+    runtimeConfig.public?.bybetRedirectUrl,
+    runtimeConfig.public?.bybetRedirectCode,
+  )
+  trackEnvClick({
+    targetUrl,
+    buttonText: 'Demo',
+    buttonClass: 'game-card-demo-btn',
+    buttonId: `demo-${props.game.id}`,
+    section: 'GameCard',
+    location: route.path,
+  })
+  emit('demo', props.game, targetUrl)
+}
 
 const canShowDemo = (provider: string): boolean => {
   const p = (provider || '').trim().toUpperCase()
@@ -109,6 +131,15 @@ const handleStartNowClick = () => {
 
 const handleReminderOk = () => {
   showReminderModal.value = false
+  const targetUrl = props.game.href || runtimeConfig.public?.bybetRedirectUrl || 'https://bybet.com'
+  trackEnvClick({
+    targetUrl,
+    buttonText: 'Start Now',
+    buttonClass: 'game-card-start-btn',
+    buttonId: `start-${props.game.id}`,
+    section: 'GameCard',
+    location: route.path,
+  })
   emit('close')
   emit('start', props.game)
 }
@@ -290,18 +321,31 @@ const showBottomMultiplier = computed(() => {
   return false
 })
 
+const isJdbProvider = computed(() => {
+  return normalizeSlotProvider(props.game.provider) === 'jdb'
+})
+
+const isJdbJackpot = computed(() => {
+  if (!isJdbProvider.value) return false
+  if (isJdbJackpotPage.value || isJackpotPage.value) return true
+  return Boolean(
+    isJackpotGame.value ||
+    props.game.jackpotPool ||
+    props.game.jackpotPrice ||
+    props.game.JackpotPrice
+  )
+})
+
 const showJackpotPool = computed(() => {
-  if (isJackpotPage.value) {
-    return Boolean(displayJackpotPool.value)
-  }
-  const cat = normalizedCategory.value
-  if (cat === 'hot' || cat === 'cold') {
+  if (!isJdbJackpot.value) {
     return false
   }
   return Boolean(displayJackpotPool.value)
 })
 
 const displayJackpotPool = computed(() => {
+  if (!isJdbProvider.value) return ''
+
   if (props.game.jackpotPool) return props.game.jackpotPool
   const price = props.game.JackpotPrice ?? props.game.jackpotPrice
   if (typeof price === 'number' && price > 0) {
@@ -310,12 +354,12 @@ const displayJackpotPool = computed(() => {
   if (typeof price === 'string' && price.trim()) {
     return price.startsWith('₱') ? price : `₱${price}`
   }
-  if (isJackpotGame.value) {
-    const prov = normalizeSlotProvider(props.game.provider)
-    const sec = JACKPOT_SECTIONS.find(s => normalizeSlotProvider(s.id) === prov || normalizeSlotProvider(s.provider) === prov)
-    if (sec && sec.showCounter && sec.jackpotAmount > 0) {
+  if (isJackpotGame.value || isJackpotPage.value || isJdbJackpotPage.value) {
+    const sec = JACKPOT_SECTIONS.find(s => s.id === 'jdb')
+    if (sec && sec.jackpotAmount > 0) {
       return `₱${sec.jackpotAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     }
+    return '₱3,015.46'
   }
   return ''
 })
@@ -467,7 +511,7 @@ onUnmounted(() => {
           v-if="canShowDemo(game.provider)"
           type="button"
           class="w-full max-w-[85px] py-1.5 px-0.5 rounded-full bg-[#242624]/90  text-white font-bold text-[11px] leading-tight text-center transition-all active:scale-95 cursor-pointer"
-          @click.stop="emit('demo', game)"
+          @click.stop="handleDemoClick"
         >
           Demo
         </button>
@@ -477,9 +521,9 @@ onUnmounted(() => {
 
   <!-- Bottom Caption: Title & Provider Logo -->
   <div class="my-0.5 flex items-center justify-between gap-1 px-1">
-    <span class="truncate text-[12px] font-semibold text-[#e5e7eb] transition-colors">
+    <component :is="headingTag" class="m-0 truncate text-[12px] font-semibold text-[#e5e7eb] transition-colors">
       {{ game.title }}
-    </span>
+    </component>
 
     <div class="flex items-center shrink-0">
       <img

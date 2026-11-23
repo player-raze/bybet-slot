@@ -3,8 +3,6 @@ node_modules
 .nuxt-build
 .output
 .env
-graphify-out
-data/jackpots.json
 .htaccess
 yarn.lock
 
@@ -23,25 +21,35 @@ yarn.lock
 # macOS archive folders
 __MACOSX/
 
+# Graphify knowledge graph
+graphify-out/
+**/graphify-out/
+
 # SQLite databases & storage
-data/*.sqlite
-data/*.sqlite-journal
-data/*.sqlite-wal
-data/*.sqlite-shm
-*.sqlite
-*.db
+data/*.sqlite*
+data/*.db*
+*.sqlite*
+*.db*
 
 # Runtime data caches & dynamic storage
 data/daily-predictions.json
 data/sitemap-dates.json
 data/jackpots.json
+data/predictions-cache/
 
 # Build-generated sitemap & LLM files
+sitemap.xml
+sitemap*.xml
 public/sitemap.xml
+public/sitemap*.xml
+public/sitemaps/
+sitemaps/
 llms.txt
 llms-full.txt
+llms*.txt
 public/llms.txt
 public/llms-full.txt
+public/llms*.txt
 
 # Logs
 data/*.log

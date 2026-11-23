@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { History, Trash2, Gamepad2, ArrowRight } from 'lucide-vue-next'
 import GameCard from '~/components/game-cards/GameCard.vue'
+import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
 
 useAppSeo({
   title: 'E-Games History — Slots & Casino Session Logs | ByBet',
@@ -13,6 +14,7 @@ useAppSeo({
 })
 
 const { recentGames, clearRecentGames } = useRecentGames()
+const route = useRoute()
 const { showDemoMessage } = useDemoInteraction()
 const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
@@ -34,8 +36,19 @@ const handleStartNow = (game: any): void => {
   }
 }
 
-const handleDemo = (game: any): void => {
-  showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
+const handleDemo = (game: any, redirectUrl?: string): void => {
+  const targetUrl = redirectUrl || resolveDemoRedirectUrl(
+    route.path,
+    undefined,
+    rawRedirectUrl,
+    bybetRedirectCode,
+  )
+  if (import.meta.client && targetUrl) {
+    const opened = window.open(targetUrl, '_blank')
+    if (!opened) {
+      window.location.href = targetUrl
+    }
+  }
 }
 
 const showGameDetails = (game: any): void => {
@@ -102,6 +115,7 @@ onBeforeUnmount(() => {
         v-for="game in recentGames"
         :key="game.id"
         :game="game"
+        heading-tag="h2"
         :activeId="activeGameId"
         @select="handleCardClick"
         @info="showGameDetails"
@@ -118,7 +132,7 @@ onBeforeUnmount(() => {
       <div class="h-14 w-14 rounded-2xl bg-[#202220] flex items-center justify-center text-[#7a807d]">
         <Gamepad2 class="h-7 w-7" />
       </div>
-      <h3 class="text-base font-semibold text-white">No game history yet</h3>
+      <h2 class="text-base font-semibold text-white">No game history yet</h2>
       <p class="text-xs text-[#8e9491] max-w-sm">
         Games you play or explore will be saved in your browser's history so you can easily return to them anytime.
       </p>

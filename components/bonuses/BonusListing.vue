@@ -75,10 +75,12 @@ useAppSeo({
 
 <template>
   <div class="bonuses-page">
+    <h1 class="sr-only">Bonuses and Promotions</h1>
     <MobileBonusListing :category="category" />
     <div class="bonuses-desktop">
-    <div class="bonuses-sticky sticky-header-seal">
+    <div class="bonuses-sticky sticky-header-seal light:bg-[#eef5f1]">
       <SeoHeader
+        heading-tag="p"
         title="Bonuses"
         meta-title="Latest Promotions, Rebates & Deposit Bonuses | ByBet"
         description="Explore all exclusive ByBet promotions: daily deposit matches, unlimited cash rebates, weekly treasure chests, and VIP sports bonuses. Claim today!"
@@ -95,7 +97,7 @@ useAppSeo({
         </template>
       </SeoHeader>
 
-      <nav class="category-nav" aria-label="Promotion categories">
+      <nav class="category-nav light:bg-white light:border light:border-black/10" aria-label="Promotion categories">
         <NuxtLink
           v-for="category in PROMO_CATEGORIES"
           :key="category.key"
@@ -109,6 +111,7 @@ useAppSeo({
     </div>
 
     <section class="featured-promotions" aria-label="Featured promotions">
+      <h2 class="sr-only">Featured promotions</h2>
       <button
         type="button"
         class="featured-promotions__arrow featured-promotions__arrow--left"
@@ -123,7 +126,7 @@ useAppSeo({
           v-for="promotion in PROMOTIONS"
           :key="promotion.id"
           :to="`/bonus/${promotion.slug}`"
-          class="featured-card"
+          class="featured-card light:bg-white light:border light:border-black/10"
           @click="markAsViewed(promotion.slug)"
         >
           <div class="featured-card__media">
@@ -138,7 +141,7 @@ useAppSeo({
           </div>
 
           <div class="featured-card__copy">
-            <strong>{{ promotion.title }}</strong>
+            <h3 class="promotion-card-title">{{ promotion.title }}</h3>
             <span>{{ getFeaturedMeta(promotion) }}</span>
           </div>
         </NuxtLink>
@@ -164,7 +167,7 @@ useAppSeo({
           :to="categoryPath(section.category)"
           class="promotion-group__heading"
         >
-          <span>{{ section.title }}</span>
+          <h2>{{ section.title }}</h2>
           <ChevronRight :size="16" aria-hidden="true" />
         </NuxtLink>
 
@@ -184,10 +187,10 @@ useAppSeo({
               decoding="async"
             >
 
-            <span class="promotion-row__copy">
-              <strong>{{ promotion.title }}</strong>
+            <div class="promotion-row__copy">
+              <h3 class="promotion-card-title">{{ promotion.title }}</h3>
               <small>{{ promotion.description }}</small>
-            </span>
+            </div>
 
             <span class="promotion-row__details">Details</span>
           </NuxtLink>
@@ -277,7 +280,6 @@ useAppSeo({
 }
 
 .category-nav a:hover {
-  color: #ffffff;
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -357,14 +359,14 @@ useAppSeo({
   background: linear-gradient(180deg, #07543e, #064433);
 }
 
-.featured-card__copy strong,
+.featured-card__copy .promotion-card-title,
 .featured-card__copy span {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.featured-card__copy strong {
+.featured-card__copy .promotion-card-title {
   color: #ffffff;
   font-size: 0.58rem;
   font-weight: 800;
@@ -472,14 +474,14 @@ useAppSeo({
   justify-content: center;
 }
 
-.promotion-row__copy strong,
+.promotion-row__copy .promotion-card-title,
 .promotion-row__copy small {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.promotion-row__copy strong {
+.promotion-row__copy .promotion-card-title {
   color: #efefef;
   font-size: 0.6rem;
   font-weight: 750;
@@ -547,7 +549,7 @@ useAppSeo({
     height: 2.75rem;
   }
 
-  .promotion-row__copy strong {
+  .promotion-row__copy .promotion-card-title {
     font-size: 0.68rem;
   }
 

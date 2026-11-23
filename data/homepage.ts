@@ -18,6 +18,7 @@ import {
   Table2,
   UserRound,
   Volleyball,
+  Newspaper,
 } from 'lucide-vue-next'
 
 export interface RailSubItem {
@@ -299,6 +300,7 @@ export const createRailItems = (bybetRedirectUrl: string, redirectCode?: string)
   { label: 'Withdraw', icon: CreditCard, sectionId: null, to: `${(bybetRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${redirectCode || 'xjSD'}`, external: true }, //account/withdraw
   { label: 'VIP', icon: Crown, sectionId: null, to: `${(bybetRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${redirectCode || 'xjSD'}`, external: true }, //account/vip
   { label: 'History', icon: NotebookTabs, sectionId: null, to: `${(bybetRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${redirectCode || 'xjSD'}`, external: true }, // account/history
+  { label: 'Blogs', icon: Newspaper, sectionId: null, to: '/blogs' },
   { label: 'English', icon: Globe, sectionId: null, control: 'language', surface: true },
   { label: 'Auto', icon: Moon, sectionId: null, control: 'theme', surface: true },
 ]

@@ -99,6 +99,18 @@ const activeTab = computed(() => {
   return props.initialTab ?? 'league'
 })
 
+const pageHeading = computed(() => {
+  const sport = isPopular.value
+    ? 'Popular Sports'
+    : String(route.params.sport || 'Sports').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  const tournament = String(route.params.leagueTournament || tournamentSlug.value || '')
+    .split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  const tab = tabs.find(item => item.key === activeTab.value)?.label || 'Betting'
+  const time = route.params.hours ? ` — Next ${String(route.params.hours).replace('hours', ' Hours')}` : ''
+  const date = route.params.date ? ` — ${route.params.date}` : ''
+  return `${sport} ${tournament ? `${tournament} Betting Odds` : `${tab} Betting`}${time}${date}`
+})
+
 const activeSportKey = computed(() => {
   if (isPopular.value) return 'popular'
   const match = sportsRouteBase.value.match(/\/explore\/sports\/([^/]+)/)
@@ -361,10 +373,11 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="sports-page" :class="{ 'sports-page--popular': isPopular }">
+    <h1 class="sr-only">{{ pageHeading }}</h1>
     <div class="sports-navigation">
       <MobileSportsNav />
       <nav
-        class="sports-tabs bg-[#1f1f1f]/95"
+        class="sports-tabs bg-[#1f1f1f]/95 light:bg-[#edf4f0] light:border light:border-black/10"
         aria-label="Sports categories"
       >
         <NuxtLink

@@ -177,7 +177,7 @@ onBeforeUnmount(() => {
             <div
               v-if="sortMenuOpen"
               id="expert-sort-menu"
-              class="experts-sort__menu"
+              class="experts-sort__menu light:bg-white light:border light:border-black/10"
               role="menu"
               aria-label="Sort experts"
             >
@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
     </SubpageHeader>
 
     <div class="experts-content-container px-2.5 sm:px-0">
-      <section class="experts-filter-bar" aria-label="Filter experts">
+      <section class="experts-filter-bar light:bg-white light:border light:border-black/10" aria-label="Filter experts">
         <LivePlazaSportFilters v-model="selectedSport" />
       </section>
 
@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
       <NuxtLink
         v-for="expert in displayedExperts"
         :key="expert.id"
-        class="expert-card"
+        class="expert-card light:bg-white light:border light:border-black/10"
         :to="bybetRedirectUrl"
         external
       >

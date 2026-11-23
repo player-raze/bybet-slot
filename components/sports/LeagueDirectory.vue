@@ -315,10 +315,10 @@ const COUNTRY_FLAGS: Record<string, string> = {
 
       <!-- Loading Skeleton -->
       <div v-if="loading" class="flex flex-col gap-4 mt-4" aria-busy="true">
-        <div v-for="s in 2" :key="s" class="rounded-[12px] bg-[#181a19]  p-4">
-          <div class="mb-3 h-5 w-32 rounded bg-[#2e3230] animate-pulse" />
+        <div v-for="s in 2" :key="s" class="rounded-[12px] bg-[#181a19] light:bg-white light:border light:border-black/10 light:shadow-sm p-4">
+          <div class="mb-3 h-5 w-32 rounded bg-[#2e3230] light:bg-[#d6e2dc] animate-pulse" />
           <div class="space-y-2">
-            <div v-for="i in 3" :key="i" class="h-12 rounded-lg bg-[#222423] animate-pulse" />
+            <div v-for="i in 3" :key="i" class="h-12 rounded-lg bg-[#222423] light:bg-[#edf4f0] animate-pulse" />
           </div>
         </div>
       </div>
@@ -327,15 +327,16 @@ const COUNTRY_FLAGS: Record<string, string> = {
         <!-- Popular Leagues Section (Collapsible) -->
         <section
           v-if="popularLeaguesList.length"
-          class="rounded-[12px] bg-[#181a19]  overflow-hidden"
+          class="rounded-[12px] bg-[#181a19] light:bg-white light:border light:border-black/10 light:shadow-sm overflow-hidden"
         >
+          <h2 class="sr-only">Popular Leagues</h2>
           <button
             type="button"
             class="w-full  flex items-center justify-between px-2 py-1 text-left  transition-colors"
             :aria-expanded="isGroupExpanded('__popular__')"
             @click="toggleGroup('__popular__')"
           >
-            <span class="text-[15px] font-semibold text-white">Popular Leagues</span>
+            <span class="text-[15px] font-semibold text-white light:text-[#14251d]">Popular Leagues</span>
             <ChevronDown
               :size="18"
               class="text-neutral-400 transition-transform duration-200"
@@ -353,8 +354,9 @@ const COUNTRY_FLAGS: Record<string, string> = {
                 v-for="league in popularLeaguesList"
                 :key="league.key"
                 :to="leaguePath(league.key)"
-                class="flex flex-col items-center justify-top min-w-[72px] max-w-[72px] h-[70px] sm:h-[88px] p-1 rounded-lg bg-[#252827] transition text-center shrink-0 group"
+                class="flex flex-col items-center justify-top min-w-[72px] max-w-[72px] h-[70px] sm:h-[88px] p-1 rounded-lg bg-[#252827] light:bg-[#f0f6f3] light:border light:border-black/5 light:hover:bg-[#e4ede8] transition text-center shrink-0 group"
               >
+                <h3 class="sr-only">{{ league.title }}</h3>
                 <!-- Tournament logo with small sport ball at bottom right -->
                 <div class="relative w-5 h-5 flex items-center justify-center shrink-0 ">
                   <img
@@ -367,11 +369,11 @@ const COUNTRY_FLAGS: Record<string, string> = {
                     v-if="getSportBall(league, route.params.sport as string)"
                     :src="getSportBall(league, route.params.sport as string)"
                     alt=""
-                    class="absolute -bottom-1 -right-1 w-[12px] h-[12px] rounded-full  bg-[#181a19] shadow-sm object-contain pointer-events-none"
+                    class="absolute -bottom-1 -right-1 w-[12px] h-[12px] rounded-full  bg-[#181a19] light:bg-white shadow-sm object-contain pointer-events-none"
                   />
                 </div>
 
-                <span class="text-[11px] font-medium text-[#ccc] leading-tight line-clamp-2 mt-2">
+                <span class="text-[11px] font-medium text-[#ccc] light:text-[#23352c] leading-tight line-clamp-2 mt-2">
                   {{ league.title }}
                 </span>
               </NuxtLink>
@@ -384,8 +386,9 @@ const COUNTRY_FLAGS: Record<string, string> = {
           <section
             v-for="section in sections"
             :key="section.title"
-            class="rounded-[12px] bg-[#181a19] overflow-hidden"
+            class="rounded-[12px] bg-[#181a19] light:bg-white light:border light:border-black/10 light:shadow-sm overflow-hidden"
           >
+            <h2 class="sr-only">{{ section.title }}</h2>
             <!-- Group Accordion Header -->
             <button
               type="button"
@@ -411,7 +414,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
                   aria-hidden="true"
                 />
 
-                <span class="text-[15px] font-semibold text-white">{{ section.title }}</span>
+                <span class="text-[15px] font-semibold text-white light:text-[#14251d]">{{ section.title }}</span>
               </div>
 
               <ChevronDown
@@ -425,14 +428,15 @@ const COUNTRY_FLAGS: Record<string, string> = {
             <!-- Group Accordion Body: League Rows -->
             <div
               v-show="isGroupExpanded(section.title)"
-              class="divide-y divide-[#222524] "
+              class="divide-y divide-[#222524] light:divide-black/5"
             >
               <NuxtLink
                 v-for="league in section.leagues"
                 :key="league.key"
                 :to="leaguePath(league.key)"
-                class="flex items-center justify-between px-2 py-1  transition-colors group cursor-pointer"
+                class="flex items-center justify-between px-2 py-1  transition-colors group cursor-pointer light:hover:bg-[#f0f6f3]"
               >
+                <h3 class="sr-only">{{ league.title }}</h3>
                 <!-- Left: Badge + League Title -->
                 <div class="flex items-center gap-2 min-w-0">
                   <!-- Tournament logo with small sport ball at bottom right -->
@@ -446,7 +450,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
                   </div>
 
                   <!-- Title -->
-                  <span class="text-[13.5px] text-[#e0e2e1] truncate">
+                  <span class="text-[13.5px] text-[#e0e2e1] light:text-[#14251d] truncate">
                     {{ league.title }}
                   </span>
                 </div>
@@ -459,7 +463,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
                   >
                     In-Play
                   </span>
-                  <span class="text-[13px] text-[#888] min-w-[14px] text-right font-normal">
+                  <span class="text-[13px] text-[#888] light:text-[#6a7d74] min-w-[14px] text-right font-normal">
                     {{ league.count ?? 1 }}
                   </span>
                 </div>

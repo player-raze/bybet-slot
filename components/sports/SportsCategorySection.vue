@@ -33,6 +33,7 @@ const toggleExpanded = (): void => {
 
 <template>
   <section class="sports-category-section" :class="{ 'sports-category-section--compact': isPopular }">
+    <h2 v-if="shouldShowBanner" class="sr-only">{{ title }}</h2>
     <button
       v-if="shouldShowBanner"
       type="button"

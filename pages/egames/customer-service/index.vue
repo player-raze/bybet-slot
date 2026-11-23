@@ -25,7 +25,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="customer-service-page w-full min-w-0 pb-16 text-white">
+  <div class="customer-service-page w-full min-w-0 pb-16 text-white light:text-[#14251d]">
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
       sticky
@@ -36,7 +36,7 @@ onMounted(() => {
     />
 
     <!-- Welcome Greeting Card -->
-    <div class="welcome-card flex items-center gap-1 rounded-lg bg-[#141414] p-1 sm:p-2 mb-2 shadow-sm">
+    <div class="welcome-card flex items-center gap-1 rounded-lg bg-[#141414] p-1 sm:p-2 mb-2 shadow-sm light:bg-white light:border light:border-black/10">
       <div class="logo-box h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-[var(--main-color)] p-1 flex items-center justify-center shadow-sm">
         <img
           src="/icons/bybet-square.webp"
@@ -45,17 +45,17 @@ onMounted(() => {
         >
       </div>
       <div class="welcome-info flex flex-col justify-center">
-        <h2 class="text-[16px] font-bold leading-tight text-white">
+        <h2 class="text-[16px] font-bold leading-tight text-white light:text-[#14251d]">
           Hi, Dear Customer
         </h2>
-        <p class="text-[12px] text-[#7a807d] mt-1">
+        <p class="text-[12px] text-[#7a807d] mt-1 light:text-[#607068]">
           Welcome to Customer Service Center
         </p>
       </div>
     </div>
 
     <!-- Service Options Card -->
-    <div class="services-card px-0.5 rounded-md bg-[#141414] overflow-hidden shadow-sm" aria-label="Customer service channels">
+    <div class="services-card px-0.5 rounded-md bg-[#141414] overflow-hidden shadow-sm light:bg-white light:border light:border-black/10" aria-label="Customer service channels">
       <!-- 24/7 Services 1 -->
       <NuxtLink
         to="/egames/customer-service/1"

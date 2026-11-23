@@ -31,6 +31,7 @@ const { translate } = useSiteLocale()
         }"
         :aria-label="`${promotion.title}: ${promotion.description}`"
       >
+        <h3 class="sr-only">{{ promotion.title }}</h3>
         <img
           :src="getPromoBannerUrl(promotion.bannerImage, promotion.slug)"
           :alt="promotion.title"

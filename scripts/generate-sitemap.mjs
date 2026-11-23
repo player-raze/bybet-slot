@@ -87,6 +87,9 @@ export async function generateSitemapFile(customSiteUrl) {
     { path: '/bonuses/deposit', changefreq: 'weekly', priority: 0.7 },
     { path: '/bonuses/terms-and-condition', changefreq: 'monthly', priority: 0.5 },
 
+    // Blogs
+    { path: '/blogs', changefreq: 'daily', priority: 0.8 },
+
     // Game Rules
     { path: '/game-rules/sports-betting-rules', changefreq: 'monthly', priority: 0.7 },
     { path: '/game-rules/football', changefreq: 'monthly', priority: 0.7 },

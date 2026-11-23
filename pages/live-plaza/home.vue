@@ -223,7 +223,9 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="live-plaza-page">
+    <h1 class="sr-only">Live Plaza</h1>
     <SeoHeader
+      heading-tag="p"
       sticky
       title="Live Plaza"
       description="Live Plaza on ByBet Philippines. Real-time game streaming, popular matches, and expert sports predictions."
@@ -231,14 +233,14 @@ onBeforeUnmount(() => {
       :show-flag="false"
     />
 
-    <section class="popular-panel" aria-labelledby="popular-games-title">
+    <section class="popular-panel light:bg-white light:border light:border-black/10" aria-labelledby="popular-games-title">
       <div class="panel-heading">
         <h2 id="popular-games-title">Popular Games</h2>
         <div ref="popularSortControl" class="popular-sort-control">
           <button
             ref="popularSortButton"
             type="button"
-            class="panel-action panel-action--popular-sort"
+            class="panel-action panel-action--popular-sort light:bg-[#edf4f0] light:text-[#14251d]"
             :class="{ 'panel-action--open': popularSortMenuOpen }"
             aria-haspopup="menu"
             :aria-expanded="popularSortMenuOpen"
@@ -253,7 +255,7 @@ onBeforeUnmount(() => {
             <div
               v-if="popularSortMenuOpen"
               id="popular-game-sort-menu"
-              class="popular-sort-menu"
+              class="popular-sort-menu light:bg-white light:border light:border-black/10"
               role="menu"
               aria-label="Sort popular games"
             >
@@ -287,7 +289,7 @@ onBeforeUnmount(() => {
             v-for="game in filteredPopularGames"
             :key="game.id"
             type="button"
-            class="popular-game"
+            class="popular-game light:bg-[#edf4f0] light:text-[#14251d]"
             @click="handleGameClick(game)"
           >
             <span class="popular-game__topline">
@@ -319,7 +321,8 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="predictions-block" aria-label="Expert Predictions">
+    <section class="predictions-block" aria-labelledby="expert-predictions-title">
+      <h2 id="expert-predictions-title" class="sr-only">Expert Predictions</h2>
       <div class="predictions-toolbar">
         <div class="panel-filters">
           <LivePlazaSportFilters v-model="predictionsSport" />

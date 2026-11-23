@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 <template>
   <section id="promotions" aria-labelledby="promotions-title">
-    <h1 id="promotions-title" class="sr-only">Casino promotions</h1>
+    <h2 id="promotions-title" class="sr-only">Casino promotions</h2>
     <div class="promo-scroller">
       <article
         v-for="(banner, index) in banners"
@@ -23,7 +23,7 @@ const emit = defineEmits<{
       >
         <div class="promo-copy">
           <span class="promo-eyebrow">{{ banner.eyebrow }}</span>
-          <h2>{{ banner.title }}</h2>
+          <h3>{{ banner.title }}</h3>
           <p>{{ banner.copy }}</p>
           <button type="button" @click="emit('demo-action', banner.action)">
             {{ banner.action }}
@@ -94,7 +94,7 @@ const emit = defineEmits<{
   letter-spacing: 0.12em;
 }
 
-.promo-copy h2 {
+.promo-copy h3 {
   max-width: 12rem;
   margin: 0;
   font-size: clamp(1.05rem, 1.45vw, 1.5rem);

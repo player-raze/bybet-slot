@@ -177,11 +177,12 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
 </script>
 
 <template>
-  <div class="live-casino-page w-full min-w-0 pb-16 text-white">
-    <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] bg-black rounded-t-2xl z-30 -mx-1 px-1 pb-0.5">
+  <div class="live-casino-page w-full min-w-0 pb-16 text-white light:text-[#14251d]">
+    <h1 class="sr-only">{{ categoryLabel }} Live Casino</h1>
+    <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] bg-black rounded-t-2xl z-30 -mx-1 px-1 pb-0.5 light:bg-[#eef5f1]">
       <!-- Top Bar -->
-      <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm">
-        <div class="flex items-center pl-1 bg-[#141414] width-full  flex-auto px-3 py-1.5 shadow-sm">
+      <header class="top-brand-bar flex items-center justify-between gap-2 rounded-lg bg-[#202020] p-0 py-1 mb-1.5 shadow-sm light:bg-[#edf4f0] light:border light:border-black/10">
+        <div class="flex items-center pl-1 bg-[#141414] width-full flex-auto px-3 py-1.5 shadow-sm light:bg-white">
           <div class="h-6 w-8 rounded-md bg-[var(--main-color)] flex items-center justify-center shadow-md">
             <img
               :src="pragmaticPlayLogo"
@@ -214,12 +215,12 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
       </header>
 
       <!-- Category Filter Bar -->
-      <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817]  px-1 py-1.5 mb-1.5 shadow-sm">
+      <div class="category-nav-bar flex items-center gap-1.5 overflow-x-auto no-scrollbar rounded-lg bg-[#171817] px-1 py-1.5 mb-1.5 shadow-sm light:bg-white light:border light:border-black/10">
         <button
           v-for="cat in LIVE_CASINO_CATEGORIES"
           :key="cat.key"
           type="button"
-          class="category-pill px-1.5 py-0.5 rounded-md text-[14px]  whitespace-nowrap transition-all cursor-pointer select-none"
+          class="category-pill px-1.5 py-0.5 rounded-md text-[14px] whitespace-nowrap transition-all cursor-pointer select-none"
           :class="activeCategory === cat.key ? 'bg-[var(--main-color)] text-white font-bold shadow' : 'text-[#8e9491] '"
           @click="selectCategory(cat.key)"
         >
@@ -238,7 +239,7 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
         class="table-card relative group cursor-pointer w-full min-w-0" 
         @click="handleTableClick"
       >
-        <div class="overflow-hidden rounded-md bg-[#141414] shadow-md w-full">
+        <div class="overflow-hidden rounded-md bg-[#141414] shadow-md w-full light:bg-white light:border light:border-black/10">
           
           <!-- Top Part: Image -->
           <div class="relative w-full aspect-[4/3] overflow-hidden">
@@ -249,10 +250,10 @@ const getSicBoRounds = (wins?: any[]): SicBoRound[] => {
               @error="($event.target as HTMLImageElement).src = '/images/casino/card1.webp'"
             />
             <div class="absolute top-0.5 inset-x-0.5 flex items-start justify-between gap-0.5 pointer-events-none">
-              <div class="p-0.5 rounded backdrop-blur-lg text-[13px] sm:text-[11px] font-medium bg-black/10 leading-tight break-words min-w-0">
+              <h2 class="m-0 p-0.5 rounded backdrop-blur-lg text-[13px] sm:text-[11px] font-medium bg-black/10 leading-tight break-words min-w-0 light:bg-white/10 light:text-white">
                 {{ table.title }}
-              </div>
-              <div class="p-0.5 rounded-full bg-black/10 backdrop-blur-lg text-[13px] sm:text-[10px] flex items-center gap-0 shrink-0">
+              </h2>
+              <div class="p-0.5 rounded-full bg-black/10 backdrop-blur-lg text-[13px] sm:text-[10px] flex items-center gap-0 shrink-0 light:text-white ">
                 <User class="h-3 w-3 sm:h-1.5 sm:w-1.5" />
                 {{ table.players }}
               </div>

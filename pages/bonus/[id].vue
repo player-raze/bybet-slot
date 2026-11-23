@@ -141,6 +141,7 @@ const handleContentClick = (event: MouseEvent): void => {
   <div class="bonus-detail-page" :class="{ 'bonus-detail-page--with-action': bonus.hasJoinButton }">
     <MobileBonusHeader back-to="/bonuses" />
     <SeoHeader
+      heading-tag="p"
       class="bonus-detail-desktop-header"
       sticky
       title="Bonuses"
@@ -182,7 +183,7 @@ const handleContentClick = (event: MouseEvent): void => {
         </div>
       </section>
 
-      <article class="promotion-sheet">
+      <article class="promotion-sheet light:bg-white light:text-[#14251d] light:border light:border-black/10">
         <div
           v-if="bonus.contentHtml"
           class="promotion-custom-content"

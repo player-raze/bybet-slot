@@ -55,17 +55,20 @@ const handleAppStore = (): void => {
 </script>
 
 <template>
-  <div class="download-app-page max-w-4xl mx-auto pb-16 text-white">
+  <div class="download-app-page max-w-4xl mx-auto pb-16 text-white light:text-[#14251d]">
+    <h1 class="sr-only">Download the ByBet App</h1>
     <!-- Top Universal Emerald Subpage Header -->
     <SubpageHeader
+      heading-tag="p"
       title="Download APP"
       back-to="/account/me"
       class="mb-2.5 sm:mb-3"
     />
 
     <div class="px-2 sm:px-4">
+      <h2 class="sr-only">Native App</h2>
       <!-- Main Visual & Download Card matching mobile screenshot -->
-      <div class="app-card rounded-[22px] bg-[#141514] border border-white/5 p-3.5 sm:p-6 lg:p-8 mb-5 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden">
+      <div class="app-card rounded-[22px] bg-[#141514] border border-white/5 p-3.5 sm:p-6 lg:p-8 mb-5 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden light:bg-white light:border-black/10">
         <!-- Center Player Graphic with "LEAGUE" Background -->
         <div class="w-full flex items-center justify-center pt-1 pb-3 sm:py-4">
           <img
@@ -82,42 +85,42 @@ const handleAppStore = (): void => {
           <div class="sm:hidden w-full">
             <!-- iOS Card (matches screenshot) -->
             <div
-              class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md mb-2"
+              class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md mb-2 light:bg-[#f8fbf9] light:border-black/10"
             >
               <div class="text-left pr-2">
-                <h2 class="text-[15px] font-bold text-white tracking-tight leading-tight">Apple Store</h2>
-                <p class="text-[12px] text-[#8e918f] font-normal leading-tight mt-0.5">iOS Download</p>
+                <h3 class="text-[15px] font-bold text-white tracking-tight leading-tight light:text-[#14251d]">Apple Store</h3>
+                <p class="text-[12px] text-[#8e918f] font-normal leading-tight mt-0.5 light:text-[#607068]">iOS Download</p>
               </div>
 
               <button
                 type="button"
-                class="app-badge-btn flex items-center gap-2 rounded-[10px] bg-black px-3.5 py-1.5 border border-white/25 active:scale-95 transition-all cursor-pointer shadow-lg shrink-0"
+                class="app-badge-btn flex items-center gap-2 rounded-[10px] bg-black px-3.5 py-1.5 border border-white/25 active:scale-95 transition-all cursor-pointer shadow-lg shrink-0 light:bg-[#edf4f0] light:border-black/15"
                 aria-label="Download on the App Store"
                 @click="handleAppStore"
               >
                 <!-- Official Apple Logo SVG -->
-                <svg class="h-6 w-6 shrink-0 fill-white" viewBox="0 0 170 170">
+                <svg class="h-6 w-6 shrink-0 fill-white light:fill-[#14251d]" viewBox="0 0 170 170">
                   <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.09-7.65-7.94-11.86-14.54-6.41-10.08-11.41-21.47-15-34.18-3.59-12.7-5.39-24.52-5.39-35.45 0-14.07 3.51-25.75 10.53-35.04 7.02-9.29 16.03-14.05 27.03-14.29 5.86 0 12.18 1.48 18.96 4.45 6.78 2.97 11.2 4.51 13.26 4.62 1.5.08 5.66-1.52 12.48-4.8 6.82-3.28 13.06-4.78 18.72-4.5 13.88.75 25.07 6.13 33.56 16.14-12.22 7.42-18.17 17.65-17.86 30.68.3 10.3 4.22 18.84 11.75 25.62 7.54 6.78 16.64 10.59 27.31 11.44-2.14 6.53-4.69 13.04-7.65 19.52zM119.22 33.64c0-7.25 2.62-14.28 7.86-21.08 5.24-6.8 11.85-11.39 19.82-13.76.62 2.14.93 4.3.93 6.48 0 7.2-2.73 14.22-8.19 21.05-5.46 6.83-12.2 11.47-20.22 13.91-.07-2.2-.2-4.4-.2-6.6z" />
                 </svg>
                 <div class="text-left leading-none">
-                  <span class="block text-[8.5px] font-medium text-white/80 tracking-tight">Download on the</span>
-                  <span class="block text-[14px] font-bold text-white tracking-tight -mt-0.5 font-sans">App Store</span>
+                  <span class="block text-[8.5px] font-medium text-white/80 tracking-tight light:text-[#607068]">Download on the</span>
+                  <span class="block text-[14px] font-bold text-white tracking-tight -mt-0.5 font-sans light:text-[#14251d]">App Store</span>
                 </div>
               </button>
             </div>
 
             <!-- Android Card -->
             <div
-              class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md"
+              class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md light:bg-[#f8fbf9] light:border-black/10"
             >
               <div class="text-left pr-2">
-                <h2 class="text-[15px] font-bold text-white tracking-tight leading-tight">Google Play</h2>
-                <p class="text-[12px] text-[#8e918f] font-normal leading-tight mt-0.5">Android Download</p>
+                <h3 class="text-[15px] font-bold text-white tracking-tight leading-tight light:text-[#14251d]">Google Play</h3>
+                <p class="text-[12px] text-[#8e918f] font-normal leading-tight mt-0.5 light:text-[#607068]">Android Download</p>
               </div>
 
               <button
                 type="button"
-                class="app-badge-btn flex items-center gap-2 rounded-[10px] bg-black px-3.5 py-1.5 border border-white/25 active:scale-95 transition-all cursor-pointer shadow-lg shrink-0"
+                class="app-badge-btn flex items-center gap-2 rounded-[10px] bg-black px-3.5 py-1.5 border border-white/25 active:scale-95 transition-all cursor-pointer shadow-lg shrink-0 light:bg-[#edf4f0] light:border-black/15"
                 aria-label="Get it on Google Play"
                 @click="handleGooglePlay"
               >
@@ -129,8 +132,8 @@ const handleAppStore = (): void => {
                   <path d="M3.609 1.814c.73-.418 1.62-.387 2.303.099l11.458 6.51-3.578 3.577L3.609 1.814z" fill="#00E676"/>
                 </svg>
                 <div class="text-left leading-none">
-                  <span class="block text-[8px] font-medium text-white/80 uppercase tracking-tight">GET IT ON</span>
-                  <span class="block text-[13.5px] font-bold text-white tracking-tight -mt-0.5 font-sans">Google Play</span>
+                  <span class="block text-[8px] font-medium text-white/80 uppercase tracking-tight light:text-[#607068]">GET IT ON</span>
+                  <span class="block text-[13.5px] font-bold text-white tracking-tight -mt-0.5 font-sans light:text-[#14251d]">Google Play</span>
                 </div>
               </button>
             </div>
@@ -152,7 +155,7 @@ const handleAppStore = (): void => {
             <!-- Apple Store Card -->
             <div class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md">
               <div class="text-left pr-2">
-                <h2 class="text-[15px] font-bold text-white tracking-tight leading-tight">Apple Store</h2>
+                <h3 class="text-[15px] font-bold text-white tracking-tight leading-tight">Apple Store</h3>
                 <p class="text-[12px] text-[#8e918f] font-normal leading-tight mt-0.5">iOS Download</p>
               </div>
 
@@ -175,7 +178,7 @@ const handleAppStore = (): void => {
             <!-- Google Play Card -->
             <div class="app-store-pill flex items-center justify-between rounded-2xl bg-[#1e1f1e] border border-white/10 px-4 py-3 shadow-md">
               <div class="text-left pr-2">
-                <h2 class="text-[15px] font-bold text-white tracking-tight leading-tight">Google Play</h2>
+                <h3 class="text-[15px] font-bold text-white tracking-tight leading-tight">Google Play</h3>
                 <p class="text-[12px] text-[#8e918f] font-normal leading-tight mt-0.5">Android Download</p>
               </div>
 

@@ -54,6 +54,10 @@ ByBet is an online gaming and sports wagering portal built for players in the Ph
 - [Deposit Match Bonus](${siteUrl}/bonuses/deposit): First deposit bonuses and reload promotions.
 - [Bonus Terms & Conditions](${siteUrl}/bonuses/terms-and-condition): Wagering requirements, rollover rules, and bonus eligibility.
 
+## Blogs & Articles
+
+- [Blogs Center](${siteUrl}/blogs): Latest casino guides, sports analysis, slot strategies, and platform announcements.
+
 ## Game Rules & Betting Guidelines
 
 - [General Sports Rules](${siteUrl}/game-rules/sports-betting-rules): General sports betting rules, bet acceptance, and void criteria.

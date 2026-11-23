@@ -9,7 +9,7 @@ withDefaults(defineProps<{ backTo?: string }>(), { backTo: '/' })
     <NuxtLink :to="backTo" class="mobile-bonus-header__back" aria-label="Go back">
       <ChevronLeft :size="20" aria-hidden="true" />
     </NuxtLink>
-    <h1>Bonuses</h1>
+    <p class="mobile-bonus-header__title">Bonuses</p>
     <NuxtLink to="/account/language" class="mobile-bonus-header__flag" aria-label="Language: Philippines">
       <img src="/icons/PHP.webp" alt="Philippines" width="24" height="24">
     </NuxtLink>
@@ -31,7 +31,7 @@ withDefaults(defineProps<{ backTo?: string }>(), { backTo: '/' })
     color: #fff;
     background: var(--main-color);
   }
-  h1 { margin: 0; text-align: center; font-size: 16px; font-weight: 800; }
+  .mobile-bonus-header__title { margin: 0; text-align: center; font-size: 16px; font-weight: 800; }
   .mobile-bonus-header__back, .mobile-bonus-header__flag {
     display: grid;
     place-items: center;

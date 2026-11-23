@@ -28,8 +28,8 @@ interface ActiveTicker {
   timer: ReturnType<typeof setTimeout> | null
 }
 
-const DEFAULT_DELAY_MS = [50_000, 70_000] as const
-const DEFAULT_INITIAL_DELAY_MS = [15_000, 30_000] as const
+const DEFAULT_DELAY_MS = [3_000, 3_000] as const
+const DEFAULT_INITIAL_DELAY_MS = [3_000, 3_000] as const
 const TWEEN_MAX_DURATION_MS = 1_500
 
 // One ticker per key, so several components sharing a counter don't double-increment it.
@@ -84,7 +84,7 @@ export const formatJackpotAmount = (value: number): string => jackpotAmountForma
 const getInitialJackpotAmount = (key: string, fallback: number): number => {
   const record = defaultJackpots as Record<string, unknown>
   const value = record[key]
-  return typeof value === 'number' && !Number.isNaN(value) ? value : fallback
+  return typeof value === 'number' && !Number.isNaN(value) && value > 0 ? value : fallback
 }
 
 export const MEGA_JACKPOT_COUNTER: JackpotCounterOptions = {
@@ -95,8 +95,8 @@ export const MEGA_JACKPOT_COUNTER: JackpotCounterOptions = {
   step: [12, 85],
   decreaseStep: [8, 65],
   increaseProbability: 0.6,
-  delayMs: [50_000, 70_000],
-  initialDelayMs: [15_000, 30_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const JDB_JACKPOT_COUNTER: JackpotCounterOptions = {
@@ -107,32 +107,32 @@ export const JDB_JACKPOT_COUNTER: JackpotCounterOptions = {
   step: [0.5, 6],
   decreaseStep: [0.3, 4.5],
   increaseProbability: 0.6,
-  delayMs: [50_000, 75_000],
-  initialDelayMs: [15_000, 30_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const JILI_JACKPOT_COUNTER: JackpotCounterOptions = {
   key: 'jili',
-  initial: () => getInitialJackpotAmount('jili', 7_854.20),
+  initial: () => getInitialJackpotAmount('jili', 7_964.15),
   min: 5_000,
   max: 15_000,
-  step: [1, 15],
-  decreaseStep: [0.8, 11],
+  step: [1, 10],
+  decreaseStep: [0.5, 8],
   increaseProbability: 0.6,
-  delayMs: [50_000, 75_000],
-  initialDelayMs: [16_000, 32_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const CQ9_JACKPOT_COUNTER: JackpotCounterOptions = {
   key: 'cq9',
-  initial: () => getInitialJackpotAmount('cq9', 6_328.50),
-  min: 5_000,
-  max: 15_000,
-  step: [1, 12],
-  decreaseStep: [0.7, 9],
+  initial: () => getInitialJackpotAmount('cq9', 6_411.69),
+  min: 4_000,
+  max: 12_000,
+  step: [1, 8],
+  decreaseStep: [0.5, 6],
   increaseProbability: 0.6,
-  delayMs: [55_000, 80_000],
-  initialDelayMs: [18_000, 35_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const GRAND_JACKPOT_COUNTER: JackpotCounterOptions = {
@@ -143,8 +143,8 @@ export const GRAND_JACKPOT_COUNTER: JackpotCounterOptions = {
   step: [6, 45],
   decreaseStep: [4, 35],
   increaseProbability: 0.6,
-  delayMs: [50_000, 75_000],
-  initialDelayMs: [18_000, 35_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const MAJOR_JACKPOT_COUNTER: JackpotCounterOptions = {
@@ -155,8 +155,8 @@ export const MAJOR_JACKPOT_COUNTER: JackpotCounterOptions = {
   step: [3, 22],
   decreaseStep: [2, 18],
   increaseProbability: 0.6,
-  delayMs: [55_000, 80_000],
-  initialDelayMs: [20_000, 40_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const MINOR_JACKPOT_COUNTER: JackpotCounterOptions = {
@@ -167,8 +167,8 @@ export const MINOR_JACKPOT_COUNTER: JackpotCounterOptions = {
   step: [1, 8],
   decreaseStep: [0.5, 6.5],
   increaseProbability: 0.6,
-  delayMs: [55_000, 80_000],
-  initialDelayMs: [22_000, 45_000],
+  delayMs: [3_000, 3_000],
+  initialDelayMs: [3_000, 3_000],
 }
 
 export const useJackpotCounter = (options: JackpotCounterOptions) => {
@@ -187,37 +187,9 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
 
   const animateTo = (target: number): void => {
     stopTween()
-    const from = displayAmount.value
-
-    if (typeof window === 'undefined') {
-      displayAmount.value = target
-      return
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion || from === target) {
-      displayAmount.value = target
-      return
-    }
-
-    // Smooth cubic ease-out tweening over ~1.2s for gentle per-minute transitions
-    const duration = Math.min(TWEEN_MAX_DURATION_MS, 1_200)
-    const startedAt = performance.now()
-
-    const step = (now: number): void => {
-      const elapsed = now - startedAt
-      const progress = Math.min(1, elapsed / duration)
-      const eased = 1 - (1 - progress) ** 3
-      displayAmount.value = toCents(from + (target - from) * eased)
-      if (progress < 1) {
-        frameId = window.requestAnimationFrame(step)
-      } else {
-        frameId = null
-        displayAmount.value = target
-      }
-    }
-
-    frameId = window.requestAnimationFrame(step)
+    // Directly update displayAmount to the target on the 1-minute tick;
+    // visual digit scrolling / odometer reels in UI handle the smooth vertical animation.
+    displayAmount.value = target
   }
 
   const scheduleTick = (ticker: ActiveTicker, delay?: number): void => {

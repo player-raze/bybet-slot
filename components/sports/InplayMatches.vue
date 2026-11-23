@@ -32,6 +32,8 @@ const SPORT_CATEGORIES: Record<string, Omit<SportCategory, 'events'>> = {
 
 const SPORT_ORDER = ['basketball', 'soccer', 'tennis', 'baseball']
 
+const sportsRouteBase = useSportsRouteBase()
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 const collapsed = ref<string[]>([])
 const selectedOutcomes = ref<Record<string, string>>({})
 const sportType = (event: SportsEvent) => (event.sport || event.sport_key.split('_')[0] || '').toLowerCase()
@@ -109,8 +111,9 @@ const sportCategories = computed(() => {
         <article
           v-for="tournament in tournaments(category.events)"
           :key="tournament.key"
-          class="league-preview"
+          class="league-preview light:bg-white light:border light:border-black/10"
         >
+          <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ tournament.title }}</component>
           <button
             :id="`inplay-trigger-${tournament.key}`"
             class="league-card league-preview-heading"
@@ -119,7 +122,7 @@ const sportCategories = computed(() => {
             :aria-controls="`inplay-panel-${tournament.key}`"
             @click="toggleTournament(tournament.key)"
           >
-            <span class="league-name truncate text-[12px] text-[#999]" :title="tournament.title">{{ tournament.title }}</span>
+            <span class="league-name truncate text-[12px] text-[#999] light:text-[#4d5f56]" :title="tournament.title">{{ tournament.title }}</span>
             <ChevronDown :size="16" class="shrink-0" :class="{ 'rotate-180': isExpanded(tournament.key) }" aria-hidden="true" />
           </button>
           <div

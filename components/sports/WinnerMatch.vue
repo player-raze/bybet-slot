@@ -150,9 +150,9 @@ const copyMatchLink = async (): Promise<void> => {
       <time v-else class="winner-date text-[12px]" :datetime="match.commence_time" >
         <span>{{ matchDate }} {{ matchTime }}</span>
       </time>
-      <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] pr-2">
-        <span class="winner-home-team text-[12px]">{{ match.home_team }}</span>
-        <span class="winner-away-team text-[12px]">{{ match.away_team }}</span>
+      <div v-if="!fullMarkets" class="winner-teams border-l border-[#e5e7eb33] light:border-black/10 pr-2">
+        <span class="winner-home-team text-[12px] light:text-[#14251d]">{{ match.home_team }}</span>
+        <span class="winner-away-team text-[12px] light:text-[#14251d]">{{ match.away_team }}</span>
       </div>
       <div class="winner-actions">
         <button
@@ -233,7 +233,7 @@ const copyMatchLink = async (): Promise<void> => {
           v-for="market in row.markets"
           :key="market.key"
           type="button"
-          class="winner-price team-market-price"
+          class="winner-price team-market-price light:text-black light:bg-[#f3f5f7]"
           :class="{ 'winner-price--locked': !isMarketValid(market) }"
           :disabled="!isMarketValid(market)"
           :aria-label="`${row.team}, ${market.key}, ${market.label ?? ''}, odds ${market.outcome?.price ?? 'unavailable'}`"
@@ -241,7 +241,7 @@ const copyMatchLink = async (): Promise<void> => {
           @click="selectMarket(market.key, market.name); navigateTo(bybetRedirectUrl, { external: true, open: { target: '_blank', windowFeatures: { noopener: true, noreferrer: true } } })"
         >
           <template v-if="isMarketValid(market)">
-            <span class="text-[#999]">{{ market.label }}</span>
+            <span class="text-[#999] light:text-[#55695e]">{{ market.label }}</span>
             <br>
             <strong>{{ market.outcome!.price.toFixed(2) }}</strong>
           </template>
@@ -263,7 +263,7 @@ const copyMatchLink = async (): Promise<void> => {
         v-for="outcome in outcomes"
         :key="outcome.label"
         type="button"
-        class="winner-price"
+        class="winner-price light:text-black light:bg-[#f3f5f7]"
         :class="{ 'winner-price--locked': !isOutcomeValid(outcome) }"
         :disabled="!isOutcomeValid(outcome)"
         :aria-label="`${outcome.name}, odds ${outcome.price ?? 'unavailable'}`"
@@ -446,11 +446,11 @@ const copyMatchLink = async (): Promise<void> => {
 
 .winner-match--compact {
   padding: 8px 8px 10px;
-  background: #131313;
+  background: var(--surface, #131313);
 }
 
 .winner-match--compact:hover {
-  background: #131313;
+  background: var(--surface, #131313);
 }
 
 .winner-match--compact + .winner-match--compact {

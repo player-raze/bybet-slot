@@ -29,7 +29,7 @@ withDefaults(
 
     <div class="px-2.5 sm:px-4">
       <!-- Main Content Card -->
-      <div class="doc-card rounded-2xl bg-[#141414] p-4 sm:p-6 lg:p-8 border border-white/5 shadow-md">
+      <div class="doc-card rounded-2xl bg-[#141414] light:bg-white p-4 sm:p-6 lg:p-8 border border-white/5 light:border-black/10 shadow-md">
         <!-- Top Hero Banner -->
         <div class="hero-banner-wrapper mb-6 overflow-hidden rounded-2xl">
           <img

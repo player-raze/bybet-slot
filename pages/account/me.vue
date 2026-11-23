@@ -69,8 +69,9 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="me-page w-full min-w-0">
+    <h1 class="sr-only">My Account</h1>
     <!-- Mobile View: Frosted Card & Green Felt Hero (< 1024px) -->
-    <div class="me-mobile-view lg:hidden w-full min-w-0 pb-16 text-white bg-[#0e0f0e]">
+    <div class="me-mobile-view lg:hidden w-full min-w-0 pb-16 text-white light:text-[#14251d] bg-[#0e0f0e] light:bg-[#eef5f1]">
       <div
         class="me-hero-background"
         :style="{ '--me-hero-fade': `${48 + headerScrollFade * 24}px` }"
@@ -82,7 +83,7 @@ onBeforeUnmount(() => {
         class="me-mobile-header lg:hidden z-30 flex items-center justify-between px-4 py-3"
         :class="{ 'me-mobile-header--sticky': headerScrollFade > 0 }"
       >
-        <h1 class="text-[19px] font-bold text-white tracking-tight">Me</h1>
+        <p class="text-[19px] font-bold text-white tracking-tight">Me</p>
         <div class="flex items-center gap-2">
           <NuxtLink
             to="/egames/customer-service"
@@ -187,7 +188,7 @@ onBeforeUnmount(() => {
     <!-- Content Accordions Area -->
     <div class="me-sections px-3.5 space-y-3 max-w-4xl mx-auto">
       <!-- Accordion 1: General -->
-      <div class="section-card rounded-2xl bg-[#141514] p-4 shadow-sm border border-white/[0.04]">
+      <div class="section-card rounded-2xl bg-[#141514] light:bg-white p-4 shadow-sm border border-white/[0.04] light:border-black/5">
         <button
           type="button"
           class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -257,7 +258,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Accordion 2: Live Plaza -->
-      <div class="section-card rounded-2xl bg-[#141514] p-4 shadow-sm border border-white/[0.04]">
+      <div class="section-card rounded-2xl bg-[#141514] light:bg-white p-4 shadow-sm border border-white/[0.04] light:border-black/5">
         <button
           type="button"
           class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -305,7 +306,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Accordion 3: Game Settings -->
-      <div class="section-card rounded-2xl bg-[#141514] p-4 shadow-sm border border-white/[0.04]">
+      <div class="section-card rounded-2xl bg-[#141514] light:bg-white p-4 shadow-sm border border-white/[0.04] light:border-black/5">
         <button
           type="button"
           class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -328,7 +329,7 @@ onBeforeUnmount(() => {
             <div class="relative">
               <button
                 type="button"
-                class="flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-[13px] text-white hover:bg-[#2e312f] transition-colors cursor-pointer"
+                class="flex items-center gap-1.5 rounded-lg bg-black light:bg-[#edf4f0] px-3 py-1.5 text-[13px] text-white light:text-[#14251d] hover:bg-[#2e312f] light:hover:bg-[#e4eee8] transition-colors cursor-pointer"
                 @click="isOddsDropdownOpen = !isOddsDropdownOpen"
               >
                 <span>{{ selectedOdds }}</span>
@@ -336,7 +337,7 @@ onBeforeUnmount(() => {
               </button>
               <div
                 v-if="isOddsDropdownOpen"
-                class="absolute right-0 top-full mt-1.5 z-30 rounded-xl bg-[#1f211f] border border-white/10 shadow-xl py-1.5 min-w-[130px]"
+                class="absolute right-0 top-full mt-1.5 z-30 rounded-xl bg-[#1f211f] light:bg-white border border-white/10 light:border-black/10 shadow-xl py-1.5 min-w-[130px]"
               >
                 <button
                   v-for="opt in oddsOptions"
@@ -372,7 +373,7 @@ onBeforeUnmount(() => {
               <span class="text-[14px] text-white">Theme</span>
             </div>
             <!-- Segmented Pill Toggle -->
-            <div class="flex items-center rounded-full bg-black p-0.5 text-[13px]">
+            <div class="flex items-center rounded-full bg-black light:bg-[#edf4f0] p-0.5 text-[13px]">
               <button
                 type="button"
                 class="rounded-full px-3 py-1 text-[12px] font-medium transition-all cursor-pointer"
@@ -409,7 +410,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Accordion 4: System Settings -->
-      <div class="section-card rounded-2xl bg-[#141514] p-4 shadow-sm border border-white/[0.04]">
+      <div class="section-card rounded-2xl bg-[#141514] light:bg-white p-4 shadow-sm border border-white/[0.04] light:border-black/5">
         <button
           type="button"
           class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -458,7 +459,7 @@ onBeforeUnmount(() => {
               <span class="text-[14px] text-white">Mode</span>
             </div>
             <!-- Segmented Pill Toggle -->
-            <div class="flex items-center rounded-full bg-black p-0.5 text-[13px]">
+            <div class="flex items-center rounded-full bg-black light:bg-[#edf4f0] p-0.5 text-[13px]">
               <button
                 type="button"
                 class="rounded-full px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer"
@@ -492,7 +493,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Accordion 5: Help -->
-      <div class="section-card rounded-2xl bg-[#141514] p-4 shadow-sm border border-white/[0.04]">
+      <div class="section-card rounded-2xl bg-[#141514] light:bg-white p-4 shadow-sm border border-white/[0.04] light:border-black/5">
         <button
           type="button"
           class="flex w-full items-center justify-between text-left cursor-pointer select-none"
@@ -620,17 +621,17 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Desktop View: Classic Dashboard Layout (>= 1024px) -->
-    <div class="me-desktop-view hidden lg:block w-full min-w-0   text-white">
+    <div class="me-desktop-view hidden lg:block w-full min-w-0 text-white light:text-[#14251d]">
     <!-- Top Account Card: Login / Sign Up & Action Buttons -->
     <div class="sticky-header-seal sticky top-[var(--content-sticky-top)] z-20 -mx-1 px-1  pb-1 mb-2">
-      <div class="account-card rounded-lg bg-[#141414] px-2 py-3 shadow-sm">
+      <div class="account-card rounded-lg bg-[#141414] light:bg-white light:border light:border-black/5 px-2 py-3 shadow-sm">
       <div class="px-2">
         <div class="flex items-center gap-1">
           <a
             :href="bybetRedirectUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-[#2b2b2b] rounded-lg border border-[#1fa779] px-4 py-1 text-[12px] font-semibold text-[#1fa779] hover:bg-[#252525] transition-colors"
+            class="bg-[#2b2b2b] light:bg-[#edf4f0] rounded-lg border border-[#1fa779] px-4 py-1 text-[12px] font-semibold text-[#1fa779] hover:bg-[#252525] transition-colors"
           >
             Login
           </a>
@@ -644,7 +645,7 @@ onBeforeUnmount(() => {
           </a>
         </div>
 
-        <p class="mt-2 text-[12px] text-[#707070]">Hi, please log in/register first.</p>
+        <p class="mt-2 text-[12px] text-[#707070] light:text-[#4d5b54]">Hi, please log in/register first.</p>
       </div>
       
 
@@ -687,13 +688,13 @@ onBeforeUnmount(() => {
   </div>
 
     <!-- Accordion 1: General -->
-    <div class="section-card rounded-lg bg-[#141414] px-2 py-3 mb-2 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414] light:bg-white light:border light:border-black/5 px-2 py-3 mb-2 shadow-sm">
       <button
         type="button"
         class="flex w-full mb-2 mb-2 items-center justify-between text-left cursor-pointer select-none"
         @click="toggleSection('general')"
       >
-        <span class="text-[16px] font-bold text-white">General</span>
+        <span class="text-[16px] font-bold text-white light:text-[#14251d]">General</span>
         <ChevronUp v-if="openSections.general" class="h-4 w-4 text-[#7a807d]" />
         <ChevronDown v-else class="h-4 w-4 text-[#7a807d]" />
       </button>
@@ -757,13 +758,13 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 2: Live Plaza -->
-    <div class="section-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414] light:bg-white light:border light:border-black/5 px-2 py-3 mb-2 shadow-sm">
       <button
         type="button"
         class="flex w-full items-center justify-between text-left cursor-pointer select-none"
         @click="toggleSection('livePlaza')"
       >
-        <span class="text-[16px] font-bold text-white">Live Plaza</span>
+        <span class="text-[16px] font-bold text-white light:text-[#14251d]">Live Plaza</span>
         <ChevronUp v-if="openSections.livePlaza" class="h-4 w-4 text-[#7a807d]" />
         <ChevronDown v-else class="h-4 w-4 text-[#7a807d]" />
       </button>
@@ -805,13 +806,13 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 3: Game Settings -->
-    <div class="section-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414] light:bg-white light:border light:border-black/5 px-2 py-3 mb-2 shadow-sm">
       <button
         type="button"
         class="flex w-full mb-2 items-center justify-between text-left cursor-pointer select-none"
         @click="toggleSection('gameSettings')"
       >
-        <span class="text-[16px] font-bold text-white">Game Settings</span>
+        <span class="text-[16px] font-bold text-white light:text-[#14251d]">Game Settings</span>
         <ChevronUp v-if="openSections.gameSettings" class="h-4 w-4 text-[#7a807d]" />
         <ChevronDown v-else class="h-4 w-4 text-[#7a807d]" />
       </button>
@@ -909,13 +910,13 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 4: System Settings -->
-    <div class="section-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-sm">
+    <div class="section-card rounded-lg bg-[#141414] light:bg-white light:border light:border-black/5 px-2 py-3 mb-2 shadow-sm">
       <button
         type="button"
         class="flex w-full mb-2 items-center justify-between text-left cursor-pointer select-none"
         @click="toggleSection('systemSettings')"
       >
-        <span class="text-[16px] font-bold text-white">System Settings</span>
+        <span class="text-[16px] font-bold text-white light:text-[#14251d]">System Settings</span>
         <ChevronUp v-if="openSections.systemSettings" class="h-4 w-4 text-[#7a807d]" />
         <ChevronDown v-else class="h-4 w-4 text-[#7a807d]" />
       </button>
@@ -1006,13 +1007,13 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Accordion 5: Help -->
-    <div class="section-card rounded-lg bg-[#141414]  px-2 py-3 mb-2 shadow-xl">
+    <div class="section-card rounded-lg bg-[#141414] light:bg-white light:border light:border-black/5 px-2 py-3 mb-2 shadow-xl">
       <button
         type="button"
         class="flex w-full mb-2 items-center justify-between text-left cursor-pointer select-none"
         @click="toggleSection('help')"
       >
-        <span class="text-[16px] font-bold text-white">Help</span>
+        <span class="text-[16px] font-bold text-white light:text-[#14251d]">Help</span>
         <ChevronUp v-if="openSections.help" class="h-4 w-4 text-[#7a807d]" />
         <ChevronDown v-else class="h-4 w-4 text-[#7a807d]" />
       </button>

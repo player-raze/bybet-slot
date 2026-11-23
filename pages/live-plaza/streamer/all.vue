@@ -27,9 +27,11 @@ const handleBack = (): void => {
 </script>
 
 <template>
-  <div class="live-plaza-all-streamers-page w-full min-w-0 pb-16  text-white">
+  <div class="live-plaza-all-streamers-page w-full min-w-0 pb-16 text-white light:text-[#14251d]">
+    <h1 class="sr-only">All Streamers</h1>
     <!-- Reusable Top SEO Header Bar -->
     <SeoHeader
+      heading-tag="p"
       sticky
       :title="translate('All Streamers')"
       description="Watch and follow top casino, sports, and gaming streamers live on ByBet Philippines."
@@ -37,19 +39,19 @@ const handleBack = (): void => {
     />
 
     <!-- Search Section -->
-    <section class="search-card rounded-xl bg-[#141414] p-2.5 sm:p-3 mb-2 shadow-sm flex justify-center">
+    <section class="search-card rounded-xl bg-[#141414] p-2.5 sm:p-3 mb-2 shadow-sm flex justify-center light:bg-white light:border light:border-black/10">
       <div class="relative w-full max-w-[540px] flex items-center">
-        <Search class="pointer-events-none absolute left-3 w-3 h-3 text-white" />
+        <Search class="pointer-events-none absolute left-3 w-3 h-3 text-white light:text-[#607068]" />
         <input
           v-model="searchQuery"
           type="text"
           :placeholder="translate('Search: Streamer, League, Team, Event...')"
-          class="w-full h-6 pl-8 pr-7 rounded-full bg-black  text-[14px] text-white placeholder-white focus:outline-none  "
+          class="w-full h-6 pl-8 pr-7 rounded-full bg-black text-[14px] text-white placeholder-white focus:outline-none light:bg-[#edf4f0] light:text-[#14251d] light:placeholder-[#607068]"
         />
         <button
           v-if="searchQuery"
           type="button"
-          class="absolute right-2.5 text-[#666666] hover:text-white transition-colors cursor-pointer"
+          class="absolute right-2.5 text-[#666666] hover:text-white transition-colors cursor-pointer light:hover:text-[#14251d]"
           aria-label="Clear search"
           @click="searchQuery = ''"
         >
@@ -59,8 +61,8 @@ const handleBack = (): void => {
     </section>
 
     <!-- Main Empty State Card -->
-    <section class="streamers-content-card rounded-xl bg-[#141414] p-4 min-h-[320px] sm:min-h-[420px] flex items-center justify-center shadow-sm">
-      <div class="text-xs sm:text-[18px] text-[#737373] select-none">
+    <section class="streamers-content-card rounded-xl bg-[#141414] p-4 min-h-[320px] sm:min-h-[420px] flex items-center justify-center shadow-sm light:bg-white light:border light:border-black/10">
+      <div class="text-xs sm:text-[18px] text-[#737373] select-none light:text-[#8c918f]">
         {{ translate('No related streamer') }}
       </div>
     </section>

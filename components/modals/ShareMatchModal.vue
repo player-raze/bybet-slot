@@ -29,6 +29,25 @@ const getSportIcon = (sportKey: string) => {
   return '🏆'
 }
 
+const knownTeams = new Set([
+  'ada-blois',
+  'fagiano-okayama',
+  'fc-tokyo',
+  'hapoel-jerusalem',
+  'kashiwa-reysol',
+  'machida-zelvia',
+  'mito-hollyhock',
+  'orleans',
+  'rigas-zelli',
+  'shimizu-s-pulse',
+])
+
+const getTeamLogo = (teamName?: string | null): string | null => {
+  if (!teamName) return null
+  const slug = teamName.toLowerCase().replace(/ /g, '-')
+  return knownTeams.has(slug) ? `/images/teams/${slug}.webp` : null
+}
+
 const handleImgError = (event: Event): void => {
   const target = event.target as HTMLImageElement | null
   if (target) {
@@ -62,11 +81,11 @@ const handleImgError = (event: Event): void => {
 
           <div class="teams-section">
             <div class="team-row">
-              <img v-if="match.home_team" :src="`/images/teams/${match.home_team.toLowerCase().replace(/ /g, '-')}.webp`" class="team-logo" alt="" @error="handleImgError" />
+              <img v-if="getTeamLogo(match.home_team)" :src="getTeamLogo(match.home_team)!" class="team-logo" alt="" @error="handleImgError" />
               <span class="team-name">{{ match.home_team }}</span>
             </div>
             <div class="team-row">
-              <img v-if="match.away_team" :src="`/images/teams/${match.away_team.toLowerCase().replace(/ /g, '-')}.webp`" class="team-logo" alt="" @error="handleImgError" />
+              <img v-if="getTeamLogo(match.away_team)" :src="getTeamLogo(match.away_team)!" class="team-logo" alt="" @error="handleImgError" />
               <span class="team-name">{{ match.away_team }}</span>
             </div>
           </div>

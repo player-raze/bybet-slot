@@ -20,12 +20,15 @@ import {
   CQ9_JACKPOT_COUNTER,
   useJackpotCounter,
 } from '~/composables/useJackpotCounter'
+import JackpotDigitReel from '~/components/egames/JackpotDigitReel.vue'
 import GameCard from '~/components/game-cards/GameCard.vue'
 import GameRail from '~/components/game-cards/GameRail.vue'
 import { SLOTS, normalizeSlotProvider } from '~/data/slots'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
+import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
+import { trackEnvClick } from '~/utils/playnowTracker'
 
-const JACKPOT_REFRESH_INTERVAL_MS = 60_000
+const JACKPOT_REFRESH_INTERVAL_MS = 3_000
 
 const JACKPOT_CHARACTER_IMAGES: Record<JackpotSection['jackpotCharacter'], string> = {
   dragon: '/images/jackpot/jili-jackpot.webp',
@@ -46,7 +49,7 @@ const JACKPOT_SEPARATOR_IMAGES: Record<string, string> = {
 }
 
 const JACKPOT_INCREMENT_RANGES: Record<string, readonly [number, number]> = {
-  jili: [680, 2_800],
+  jili: [0, 0],
   cq9: [0, 0],
   jdb: [12, 120],
 }
@@ -112,9 +115,97 @@ const storeAmounts: Record<string, Ref<number>> = {
   cq9: cq9Display,
 }
 
+const sectionDirections = ref<Record<string, 'up' | 'down'>>({
+  jdb: 'up',
+  jili: 'up',
+  cq9: 'up',
+})
+
+const previousAmounts = ref<Record<string, number>>({})
+
+const getJackpotDirection = (section: JackpotSection): 'up' | 'down' => {
+  return sectionDirections.value[section.id] || 'up'
+}
+
+watch(
+  () => jdbDisplay.value,
+  (newVal, oldVal) => {
+    if (oldVal !== undefined && oldVal !== null && oldVal > 0) {
+      sectionDirections.value.jdb = newVal >= oldVal ? 'up' : 'down'
+      previousAmounts.value.jdb = oldVal
+    }
+  },
+)
+
 watch([jdbDisplay, jiliDisplay, cq9Display], () => {
   jackpotRevision.value += 1
 })
+
+interface JackpotDisplayItem {
+  id: string
+  char: string
+  isDigit: boolean
+  delay: number
+}
+
+const getJackpotDisplayItems = (section: JackpotSection): JackpotDisplayItem[] => {
+  const formatted = jackpotNumberFormatter.format(getJackpotAmount(section))
+  const parts = formatted.split('.')
+  const intPart = parts[0] || '0'
+  const decPart = parts[1] || '00'
+
+  const items: JackpotDisplayItem[] = []
+
+  // Count integer digits only to compute stable positional IDs from right to left
+  const intDigitsOnly = intPart.replace(/\D/g, '')
+  let intDigitIndexFromRight = intDigitsOnly.length - 1
+  let commaIndexFromRight = 0
+
+  for (let i = 0; i < intPart.length; i++) {
+    const ch = intPart[i]
+    if (/\d/.test(ch)) {
+      const place = intDigitIndexFromRight
+      intDigitIndexFromRight--
+      items.push({
+        id: `${section.id}-int-${place}`,
+        char: ch,
+        isDigit: true,
+        delay: 100 + place * 45,
+      })
+    } else {
+      const commaPlace = commaIndexFromRight
+      commaIndexFromRight++
+      items.push({
+        id: `${section.id}-sep-comma-${commaPlace}`,
+        char: ch,
+        isDigit: false,
+        delay: 0,
+      })
+    }
+  }
+
+  // Decimal point separator
+  items.push({
+    id: `${section.id}-sep-dot`,
+    char: '.',
+    isDigit: false,
+    delay: 0,
+  })
+
+  // Decimal digits (tenths and hundredths)
+  for (let i = 0; i < decPart.length; i++) {
+    const ch = decPart[i]
+    const placeFromRight = decPart.length - 1 - i
+    items.push({
+      id: `${section.id}-dec-${placeFromRight}`,
+      char: ch,
+      isDigit: true,
+      delay: (1 - placeFromRight) * 45,
+    })
+  }
+
+  return items
+}
 
 const WINNER_PROVIDER_LOGO = '/images/providers/jdb.webp'
 
@@ -164,7 +255,25 @@ const scheduleRandomWinner = (): void => {
   }, delay)
 }
 
+const shouldShowCounter = (section: JackpotSection): boolean => {
+  const id = (section?.id || '').toLowerCase()
+  if (id === 'jili') {
+    return false
+  }
+  if (id === 'cq9') {
+    return true
+  }
+  if (!section?.showCounter) {
+    return false
+  }
+  return getJackpotAmount(section) > 0
+}
+
 const getJackpotAmount = (section: JackpotSection): number => {
+  const id = (section?.id || '').toLowerCase()
+  if (id === 'jili' || id === 'cq9') {
+    return 0
+  }
   if (storeAmounts[section.id]) {
     return storeAmounts[section.id].value
   }
@@ -190,7 +299,7 @@ const getJackpotLabel = (section: JackpotSection): string => {
 const refreshJackpotAmounts = (): void => {
   const nextAmounts = { ...jackpotAmounts.value }
 
-  JACKPOT_SECTIONS.filter(section => section.showCounter).forEach((section) => {
+  JACKPOT_SECTIONS.filter(section => shouldShowCounter(section)).forEach((section) => {
     const [minimum, maximum] = JACKPOT_INCREMENT_RANGES[section.id] ?? [20, 200]
     const increment = Math.random() * (maximum - minimum) + minimum
     nextAmounts[section.id] = Math.round((getJackpotAmount(section) + increment) * 100) / 100
@@ -259,14 +368,40 @@ const handleCardClick = (game: any): void => {
 }
 
 const handleStartNow = (game: any): void => {
+  const targetUrl = game.href || bybetRedirectUrl
+  trackEnvClick({
+    targetUrl,
+    buttonText: `Start Now - ${game?.title || 'Game'}`,
+    buttonId: game?.id,
+    section: 'JackpotGrid',
+    location: route.path,
+  })
   showDemoMessage(`Starting ${game.title} (${game.provider})...`)
   if (import.meta.client) {
-    window.open(game.href || bybetRedirectUrl, '_blank')
+    window.open(targetUrl, '_blank')
   }
 }
 
-const handleDemo = (game: any): void => {
-  showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
+const handleDemo = (game: any, redirectUrl?: string): void => {
+  const targetUrl = redirectUrl || resolveDemoRedirectUrl(
+    route.path,
+    activeProvider.value,
+    rawRedirectUrl,
+    bybetRedirectCode,
+  )
+  trackEnvClick({
+    targetUrl,
+    buttonText: `Demo - ${game?.title || 'Game'}`,
+    buttonId: game?.id,
+    section: 'JackpotGrid',
+    location: route.path,
+  })
+  if (import.meta.client && targetUrl) {
+    const opened = window.open(targetUrl, '_blank')
+    if (!opened) {
+      window.location.href = targetUrl
+    }
+  }
 }
 
 const filteredSections = computed<JackpotSection[]>(() => {
@@ -278,8 +413,10 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
   return sections.map((section) => {
     const seenIds = new Set<string>()
-    const amount = section.showCounter ? getJackpotAmount(section) : 0
-    const poolText = amount > 0 ? `₱${jackpotNumberFormatter.format(amount)}` : undefined
+    const isJdbSection = section.id.toLowerCase() === 'jdb'
+    const showCounter = shouldShowCounter(section)
+    const amount = isJdbSection ? (getJackpotAmount(section) || section.jackpotAmount || 3015.46) : 0
+    const poolText = (isJdbSection && amount > 0) ? `₱${jackpotNumberFormatter.format(amount)}` : undefined
 
     const jackpotGames = SLOTS.filter((game) => {
       if (game.jackpot !== true && game.Jackpot !== true) return false
@@ -301,7 +438,7 @@ const filteredSections = computed<JackpotSection[]>(() => {
 
     const games = jackpotGames.map(game => (poolText ? { ...game, jackpotPool: poolText } : game))
 
-    return { ...section, games, count: games.length }
+    return { ...section, showCounter, games, count: games.length }
   })
 })
 
@@ -310,11 +447,12 @@ watch(activeProvider, () => { activeGameId.value = null })
 
 <template>
   <div class="jackpot-page w-full min-w-0 pb-16">
+    <h1 class="sr-only">{{ providerName }} Progressive Jackpots</h1>
     <!-- Sticky Header (Top Nav Tabs Bar) -->
     <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-50 -mx-1 px-0 sm:px-1 pb-2">
       <!-- Top Nav Tabs Bar (777, JILI, JDB, CQ9 + Chat) -->
-      <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm">
-        <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm">
+      <header class="top-nav-bar flex items-center justify-between gap-2 overflow-hidden rounded-lg bg-[#202020] py-1 shadow-sm light:bg-[#edf4f0] light:border light:border-black/10">
+        <div class="provider-nav-track no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto bg-[#141414] px-1 py-1.5 shadow-sm light:bg-white">
           <button
             v-for="tab in JACKPOT_NAV_TABS"
             :key="tab.key"
@@ -373,10 +511,11 @@ watch(activeProvider, () => { activeGameId.value = null })
       :key="section.id"
       class="jackpot-provider-section scroll-mt-[85px]"
     >
+      <h2 class="sr-only">{{ section.provider }} Jackpot Games</h2>
       <!-- Provider identity, supplied jackpot artwork, and reference-style counter strip -->
       <div
         class="jackpot-provider-header"
-        :class="{ 'jackpot-provider-header--with-counter': section.showCounter }"
+        :class="{ 'jackpot-provider-header--with-counter': shouldShowCounter(section) }"
       >
         <div class="jackpot-provider-identity">
           <img
@@ -402,30 +541,27 @@ watch(activeProvider, () => { activeGameId.value = null })
         </div>
 
         <div
-          v-if="section.showCounter"
-          class="jackpot-counter-track"
+          v-if="shouldShowCounter(section)"
+          class="jackpot-counter-track light:bg-[#E6E6E6]"
           role="status"
           aria-live="polite"
           :aria-label="getJackpotLabel(section)"
         >
           <div class="jackpot-counter" aria-hidden="true">
             <template
-              v-for="(character, index) in getJackpotCharacters(section)"
-              :key="`${section.id}-${jackpotRevision}-${index}-${character}`"
+              v-for="item in getJackpotDisplayItems(section)"
+              :key="item.id"
             >
-              <span v-if="/\d/.test(character)" class="jackpot-counter-character">
-                <img
-                  v-if="getJackpotDigitImage(character)"
-                  :src="getJackpotDigitImage(character)"
-                  alt=""
-                  class="jackpot-digit-image"
-                />
-                <span v-else class="jackpot-digit-fallback">{{ character }}</span>
-              </span>
+              <JackpotDigitReel
+                v-if="item.isDigit"
+                :digit="item.char"
+                :is-increase="getJackpotDirection(section) === 'up'"
+                :stagger-delay="item.delay"
+              />
               <span v-else class="jackpot-separator">
                 <img
-                  v-if="getJackpotSeparatorImage(character)"
-                  :src="getJackpotSeparatorImage(character)"
+                  v-if="getJackpotSeparatorImage(item.char)"
+                  :src="getJackpotSeparatorImage(item.char)"
                   alt=""
                   class="jackpot-separator-image"
                 />
@@ -475,7 +611,7 @@ watch(activeProvider, () => { activeGameId.value = null })
       class="winners-card rounded-md bg-[#171817] shadow-sm mb-8"
     >
       <div class="flex items-center justify-between pt-2 px-4">
-        <h3 class="font-bold text-white text-[16px]">Winners List</h3>
+        <h2 class="font-bold text-white text-[16px]">Winners List</h2>
         
       </div>
 
@@ -603,9 +739,7 @@ watch(activeProvider, () => { activeGameId.value = null })
   justify-content: center;
   border-radius: 7px;
   background: #5d5d5d;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+  
 }
 
 .jackpot-counter {
@@ -630,7 +764,6 @@ watch(activeProvider, () => { activeGameId.value = null })
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 2px 3px rgba(0, 0, 0, 0.4);
-  animation: jackpot-digit-pop 420ms cubic-bezier(0.2, 0.85, 0.35, 1.2) both;
 }
 
 .jackpot-digit-image {

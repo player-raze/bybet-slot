@@ -76,7 +76,7 @@ const destination = (sport: typeof sports[number]): string => {
 </script>
 
 <template>
-  <nav class="mobile-sports-nav" :aria-label="translate('Sports')">
+  <nav class="mobile-sports-nav light:bg-[#edf4f0] light:border light:border-black/10" :aria-label="translate('Sports')">
     <NuxtLink
       v-for="sport in sports"
       :key="sport.key"
@@ -104,7 +104,7 @@ const destination = (sport: typeof sports[number]): string => {
     <NuxtLink
       :to="bybetRedirectSearch"
       external
-      class="mobile-sports-nav__item mobile-sports-nav__search"
+      class="mobile-sports-nav__item mobile-sports-nav__search light:text-[#14251d]"
       :aria-label="translate('Search sports')"
     >
       <Search :size="24" :stroke-width="1.5" aria-hidden="true" />

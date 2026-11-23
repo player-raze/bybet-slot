@@ -20,7 +20,7 @@ const backTo = computed(() => path.value.endsWith('/streamer/all')
     <NuxtLink :to="backTo" class="mobile-live-plaza-header__back" aria-label="Go back">
       <ChevronLeft :size="20" aria-hidden="true" />
     </NuxtLink>
-    <h1>{{ title }}</h1>
+    <p class="mobile-live-plaza-header__title">{{ title }}</p>
     <span aria-hidden="true" />
   </header>
 </template>
@@ -40,7 +40,7 @@ const backTo = computed(() => path.value.endsWith('/streamer/all')
     background: var(--main-color);
     color: #fff;
   }
-  h1 { margin: 0; text-align: center; font-size: 16px; font-weight: 800; }
+  .mobile-live-plaza-header__title { margin: 0; text-align: center; font-size: 16px; font-weight: 800; }
   .mobile-live-plaza-header__back {
     display: grid;
     place-items: center;

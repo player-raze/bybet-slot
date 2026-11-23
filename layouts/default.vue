@@ -53,6 +53,9 @@ const usesDesktopContentReferenceShell = computed(() => {
     || path === '/bonuses'
     || path.startsWith('/bonuses/')
     || path.startsWith('/bonus/')
+    || path === '/blogs'
+    || path.startsWith('/blogs/')
+    || path.startsWith('/blog/')
     || path.startsWith('/live-plaza/')
     || path === '/account/me'
     || path.startsWith('/account/')
@@ -81,6 +84,7 @@ const isLiveCasinoPage = computed(() => route.path.startsWith('/entertainment/li
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
 const isAffiliatePage = computed(() => route.path === '/affiliate')
 const isBonusesPage = computed(() => /^\/(?:explore\/)?bonuses?(?:\/|$)/.test(route.path))
+const isBlogsPage = computed(() => /^\/(?:explore\/)?blogs?(?:\/|$)/.test(route.path))
 const isLivePlazaPage = computed(() => route.path.startsWith('/live-plaza') || route.path.startsWith('/explore/live-plaza'))
 const isJackpotPage = computed(() => route.path.startsWith('/egames/jackpot') || route.path.startsWith('/explore/egames/jackpot'))
 const isAccountSettingsPage = computed(() => [
@@ -111,6 +115,8 @@ const isDedicatedMobileHeaderPage = computed(() => {
     '/account/timezone',
     '/bonuses',
     '/bonus',
+    '/blogs',
+    '/blog',
     '/explore/live-plaza',
     '/explore/account/language',
     '/explore/account/timezone',
@@ -130,6 +136,7 @@ const isMobileDevice = (): boolean => {
 const shouldExpandRailByDefault = (): boolean => {
   return isAffiliatePage.value
     || isBonusesPage.value
+    || isBlogsPage.value
     || isLivePlazaPage.value
     || isJackpotPage.value
     || usesDesktopReferenceShell.value
@@ -255,7 +262,7 @@ onBeforeUnmount(() => {
       'site-shell--sports-chat': isDockedChatPage && Boolean(commentContext),
       'site-shell--desktop-reference': usesDesktopReferenceShell,
       'site-shell--desktop-content-reference': usesDesktopContentReferenceShell,
-      'site-shell--bonuses': isBonusesPage,
+      'site-shell--bonuses': isBonusesPage || isBlogsPage,
       'site-shell--live-plaza': isLivePlazaPage,
       'site-shell--me': route.path === '/account/me' || route.path === '/explore/account/me',
       'site-shell--dedicated-header': isDedicatedMobileHeaderPage,

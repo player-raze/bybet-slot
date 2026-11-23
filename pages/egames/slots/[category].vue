@@ -37,6 +37,8 @@ import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
 import { sortRailGames } from '~/utils/gameSort'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
+import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
+import { trackEnvClick } from '~/utils/playnowTracker'
 
 const { effectiveTheme } = useSiteTheme()
 
@@ -219,15 +221,41 @@ const handleCardClick = (game: any): void => {
 
 const handleStartNow = (game: any): void => {
   addRecentGame(game)
+  const targetUrl = game.href || bybetRedirectUrl
+  trackEnvClick({
+    targetUrl,
+    buttonText: `Start Now - ${game?.title || 'Game'}`,
+    buttonId: game?.id,
+    section: 'SlotsCategoryGrid',
+    location: route.path,
+  })
   showDemoMessage(`Starting ${game.title} (${game.provider})...`)
   if (import.meta.client) {
-    window.open(game.href || bybetRedirectUrl, '_blank')
+    window.open(targetUrl, '_blank')
   }
 }
 
-const handleDemo = (game: any): void => {
+const handleDemo = (game: any, redirectUrl?: string): void => {
   addRecentGame(game)
-  showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
+  const targetUrl = redirectUrl || resolveDemoRedirectUrl(
+    route.path,
+    activeCategory.value,
+    rawRedirectUrl,
+    bybetRedirectCode,
+  )
+  trackEnvClick({
+    targetUrl,
+    buttonText: `Demo - ${game?.title || 'Game'}`,
+    buttonId: game?.id,
+    section: 'SlotsCategoryGrid',
+    location: route.path,
+  })
+  if (import.meta.client && targetUrl) {
+    const opened = window.open(targetUrl, '_blank')
+    if (!opened) {
+      window.location.href = targetUrl
+    }
+  }
 }
 
 const handleDocumentClick = (event: MouseEvent): void => {
@@ -437,9 +465,10 @@ watch([loadMoreTrigger, hasMoreGames], () => {
 
 <template>
   <div class="slots-page w-full min-w-0 pb-16">
+    <h1 class="sr-only">{{ categoryLabel }} Slots</h1>
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 bg-black -mx-1 px-1 pb-2 rounded-t-3xl">
-      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 bg-black -mx-1 px-1 pb-2 rounded-t-3xl light:bg-[#eef5f1]">
+      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm light:bg-white light:border light:border-black/10">
         <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
             v-for="cat in SLOT_CATEGORIES"
@@ -489,25 +518,25 @@ watch([loadMoreTrigger, hasMoreGames], () => {
       </header>
 
       <!-- Provider Filter Bar & Search / Filter Icons -->
-      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm bg-black">
+      <div v-if="!isSearchOpen" class="provider-filter-bar flex items-center justify-between gap-2 py-1.5 mb-1 shadow-sm bg-black light:bg-[#eef5f1]">
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
           <button
             v-for="prov in SLOT_PROVIDERS"
             :key="prov.key"
             type="button"
-            class="provider-pill px-3.5 py-1 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0 flex items-center justify-center min-h-[30px]"
-            :class="activeProviders.includes(prov.key) ? 'bg-[var(--main-color)] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] '"
+            class="provider-pill px-3.5 py-1 rounded-full text-[12px] whitespace-nowrap transition-all cursor-pointer select-none border border-white/5 shrink-0 flex items-center justify-center min-h-[30px] light:border-black/10"
+            :class="activeProviders.includes(prov.key) ? 'bg-[var(--main-color)] text-white font-bold shadow' : 'bg-[#242625] text-[#8e9491] light:bg-[#edf4f0] light:text-[#4d5b54]'"
             :aria-label="prov.label"
             @click="toggleProvider(prov.key)"
           >
-            <span >{{ prov.label }}</span>
+            <span>{{ prov.label }}</span>
           </button>
         </div>
 
         <div class="flex items-center gap-1 shrink-0">
           <button
             type="button"
-            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer light:bg-[#edf4f0] light:text-[#4d5b54] light:hover:text-[#14251d]"
             aria-label="Search games"
             @click="openSearch"
           >
@@ -515,7 +544,7 @@ watch([loadMoreTrigger, hasMoreGames], () => {
           </button>
           <button
             type="button"
-            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            class="h-8 w-8 rounded-full bg-[#242625] text-[#8e9491] hover:text-white flex items-center justify-center transition-colors cursor-pointer light:bg-[#edf4f0] light:text-[#4d5b54] light:hover:text-[#14251d]"
             aria-label="Filter games"
             @click="isFilterOpen = true"
           >
@@ -564,7 +593,7 @@ watch([loadMoreTrigger, hasMoreGames], () => {
       <!-- History Section -->
       <div v-if="searchHistory.length > 0" class="history-section mb-6">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-semibold text-white tracking-wide">History</h3>
+          <h2 class="text-sm font-semibold text-white tracking-wide">History</h2>
           <button
             type="button"
             class="text-[#7a807d] hover:text-white p-1 transition-colors cursor-pointer"
@@ -614,6 +643,7 @@ watch([loadMoreTrigger, hasMoreGames], () => {
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-[repeat(auto-fill,minmax(150px,165px))] gap-2.5 justify-start"
       >
         <GameCard
+          heading-tag="h2"
           v-for="game in displayedSearchResults"
           :key="game.id"
           :game="game"
@@ -650,6 +680,7 @@ watch([loadMoreTrigger, hasMoreGames], () => {
         class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-[repeat(auto-fill,minmax(150px,165px))] gap-2.5 justify-start"
       >
         <GameCard
+          heading-tag="h2"
           v-for="game in displayedGames"
           :key="game.id"
           :game="game"

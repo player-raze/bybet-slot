@@ -166,7 +166,9 @@ const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): v
 
 <template>
   <div class="expert-predictions-page">
+    <h1 class="sr-only">Expert Predictions</h1>
     <SeoHeader
+      heading-tag="p"
       sticky
       title="Predict"
       description="Follow expert sports predictions, winning streaks, and real-time forecasts on ByBet."
@@ -174,7 +176,7 @@ const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): v
       :show-flag="false"
     />
 
-    <section class="predictor-panel" aria-label="Prediction experts">
+    <section class="predictor-panel light:bg-white light:border light:border-black/10" aria-label="Prediction experts">
       <div class="predictor-rail">
         <NuxtLink
           to="/live-plaza/experts"
@@ -218,14 +220,14 @@ const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): v
     </section>
 
     <section class="predictions-block" aria-labelledby="expert-predictions-title">
-      <div class="predictions-toolbar">
+      <div class="predictions-toolbar light:bg-white light:border light:border-black/10">
         <div class="panel-heading">
           <h2 id="expert-predictions-title">Expert Predictions</h2>
           <div ref="sortControl" class="sort-control">
             <button
               ref="sortButton"
               type="button"
-              class="panel-action"
+              class="panel-action light:bg-[#edf4f0] light:text-[#14251d]"
               :class="{ 'panel-action--open': sortMenuOpen }"
               aria-haspopup="menu"
               :aria-expanded="sortMenuOpen"
@@ -240,7 +242,7 @@ const handleOddClick = (_prediction?: Prediction, _option?: PredictionOption): v
               <div
                 v-if="sortMenuOpen"
                 id="prediction-sort-menu"
-                class="sort-menu"
+                class="sort-menu light:bg-white light:border light:border-black/10"
                 role="menu"
                 aria-label="Sort predictions"
               >

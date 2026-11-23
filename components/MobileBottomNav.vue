@@ -734,7 +734,6 @@ const handleNavCell = (cell: NavCell): void => {
     font-weight: 700;
     line-height: 1;
     background: #00875e;
-    box-shadow: 0 0 0 2px #111111;
   }
 
   @media (max-width: 22rem) {

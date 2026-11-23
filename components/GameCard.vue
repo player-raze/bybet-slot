@@ -32,7 +32,7 @@ const emit = defineEmits<{
       <span class="play-control" aria-hidden="true"><Play :size="17" fill="currentColor" /></span>
     </button>
     <div class="game-meta">
-      <strong :title="game.title">{{ game.title }}</strong>
+      <h3 :title="game.title">{{ game.title }}</h3>
       <span>{{ game.provider }}</span>
     </div>
   </article>
@@ -169,7 +169,7 @@ const emit = defineEmits<{
   padding: 0.48rem 0.12rem 0;
 }
 
-.game-meta strong,
+.game-meta h3,
 .game-meta span {
   display: block;
   overflow: hidden;
@@ -177,7 +177,8 @@ const emit = defineEmits<{
   white-space: nowrap;
 }
 
-.game-meta strong {
+.game-meta h3 {
+  margin: 0;
   color: var(--text);
   font-size: 0.7rem;
   font-weight: 670;

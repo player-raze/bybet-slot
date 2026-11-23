@@ -31,6 +31,7 @@ import GameCard from '~/components/game-cards/GameCard.vue'
 import GameRail from '~/components/game-cards/GameRail.vue'
 import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
 import { sortRailGames } from '~/utils/gameSort'
+import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
 
 useAppSeo({
   title: 'Online Bingo Games — Fast Paced Fun & Wins | ByBet',
@@ -58,6 +59,7 @@ const categoryIcons: Record<string, Component> = {
 }
 
 const router = useRouter()
+const route = useRoute()
 const activeCategory = ref('home')
 const activeProvider = ref('all')
 const searchQuery = ref('')
@@ -186,9 +188,20 @@ const handleStartNow = (game: any): void => {
   }
 }
 
-const handleDemo = (game: any): void => {
+const handleDemo = (game: any, redirectUrl?: string): void => {
   addRecentGame(game)
-  showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
+  const targetUrl = redirectUrl || resolveDemoRedirectUrl(
+    route.path,
+    activeCategory.value !== 'home' ? activeCategory.value : undefined,
+    rawRedirectUrl,
+    bybetRedirectCode,
+  )
+  if (import.meta.client && targetUrl) {
+    const opened = window.open(targetUrl, '_blank')
+    if (!opened) {
+      window.location.href = targetUrl
+    }
+  }
 }
 
 const handleDocumentClick = (event: MouseEvent): void => {
@@ -324,9 +337,10 @@ const resetFilters = (): void => {
 
 <template>
   <div class="bingo-page w-full min-w-0 pb-16">
+    <h1 class="sr-only">Online Bingo Games</h1>
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-0.5 bg-black rounded-t-3xl">
-      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-0.5 bg-black rounded-t-3xl light:bg-[#eef5f1]">
+      <header class="top-nav-bar flex items-center justify-between gap-2 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm light:bg-white light:border light:border-black/10">
         <div class="category-nav-track flex items-center gap-1.5 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
             v-for="cat in BINGO_CATEGORIES"
@@ -450,7 +464,7 @@ const resetFilters = (): void => {
       <!-- History Section -->
       <div v-if="searchHistory.length > 0" class="history-section mb-6">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-semibold text-white tracking-wide">History</h3>
+          <h2 class="text-sm font-semibold text-white tracking-wide">History</h2>
           <button
             type="button"
             class="text-[#7a807d] hover:text-white p-1 transition-colors cursor-pointer"
@@ -495,6 +509,7 @@ const resetFilters = (): void => {
 
     <!-- Search Results View (Image 2) -->
     <div v-else-if="isSearchSubmitted" class="search-results-view mb-12">
+      <h2 class="sr-only">Search Results</h2>
       <div
         v-if="searchResults.length > 0"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-[repeat(auto-fill,minmax(150px,165px))] gap-2.5 justify-start"

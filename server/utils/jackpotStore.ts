@@ -31,13 +31,13 @@ export async function readJackpotFile(): Promise<JackpotData> {
     const raw = await fs.readFile(filePath, 'utf-8')
     const parsed = JSON.parse(raw) as Partial<JackpotData>
     return {
-      mega: typeof parsed.mega === 'number' && !Number.isNaN(parsed.mega) ? parsed.mega : DEFAULT_JACKPOTS.mega,
-      jdb: typeof parsed.jdb === 'number' && !Number.isNaN(parsed.jdb) ? parsed.jdb : DEFAULT_JACKPOTS.jdb,
-      jili: typeof parsed.jili === 'number' && !Number.isNaN(parsed.jili) ? parsed.jili : DEFAULT_JACKPOTS.jili,
-      cq9: typeof parsed.cq9 === 'number' && !Number.isNaN(parsed.cq9) ? parsed.cq9 : DEFAULT_JACKPOTS.cq9,
-      grand: typeof parsed.grand === 'number' ? parsed.grand : DEFAULT_JACKPOTS.grand,
-      major: typeof parsed.major === 'number' ? parsed.major : DEFAULT_JACKPOTS.major,
-      minor: typeof parsed.minor === 'number' ? parsed.minor : DEFAULT_JACKPOTS.minor,
+      mega: typeof parsed.mega === 'number' && !Number.isNaN(parsed.mega) && parsed.mega > 0 ? parsed.mega : DEFAULT_JACKPOTS.mega,
+      jdb: typeof parsed.jdb === 'number' && !Number.isNaN(parsed.jdb) && parsed.jdb > 0 ? parsed.jdb : DEFAULT_JACKPOTS.jdb,
+      jili: typeof parsed.jili === 'number' && !Number.isNaN(parsed.jili) && parsed.jili > 0 ? parsed.jili : DEFAULT_JACKPOTS.jili,
+      cq9: typeof parsed.cq9 === 'number' && !Number.isNaN(parsed.cq9) && parsed.cq9 > 0 ? parsed.cq9 : DEFAULT_JACKPOTS.cq9,
+      grand: typeof parsed.grand === 'number' && parsed.grand > 0 ? parsed.grand : DEFAULT_JACKPOTS.grand,
+      major: typeof parsed.major === 'number' && parsed.major > 0 ? parsed.major : DEFAULT_JACKPOTS.major,
+      minor: typeof parsed.minor === 'number' && parsed.minor > 0 ? parsed.minor : DEFAULT_JACKPOTS.minor,
       updatedAt: parsed.updatedAt || new Date().toISOString(),
     }
   } catch {

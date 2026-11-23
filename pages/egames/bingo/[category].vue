@@ -30,6 +30,7 @@ import {
 import GameCard from '~/components/game-cards/GameCard.vue'
 import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
 import { sortRailGames } from '~/utils/gameSort'
+import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
 
 const categoryIcons: Record<string, Component> = {
   House,
@@ -92,6 +93,7 @@ const filterState = ref({
 
 const { context: commentContext, openGameComments, closeComments } = useCommentPanel()
 const { showDemoMessage } = useDemoInteraction()
+const { addRecentGame } = useRecentGames()
 const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
 
@@ -188,8 +190,20 @@ const handleStartNow = (game: any): void => {
   }
 }
 
-const handleDemo = (game: any): void => {
-  showDemoMessage(`Launching Demo mode for ${game.title} (${game.provider})...`)
+const handleDemo = (game: any, redirectUrl?: string): void => {
+  addRecentGame(game)
+  const targetUrl = redirectUrl || resolveDemoRedirectUrl(
+    route.path,
+    activeCategory.value,
+    rawRedirectUrl,
+    bybetRedirectCode,
+  )
+  if (import.meta.client && targetUrl) {
+    const opened = window.open(targetUrl, '_blank')
+    if (!opened) {
+      window.location.href = targetUrl
+    }
+  }
 }
 
 const handleDocumentClick = (event: MouseEvent): void => {
@@ -279,9 +293,10 @@ const displayedGames = computed<BingoGame[]>(() => {
 
 <template>
   <div class="bingo-page w-full min-w-0 pb-16">
+    <h1 class="sr-only">{{ categoryLabel }} Bingo Games</h1>
     <!-- Top Bar: Category Tabs & Chat -->
-    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30  -mx-1 px-1 pb-2">
-      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm">
+    <div class="sticky-header sticky-header-seal sticky top-[var(--content-sticky-top)] z-30 -mx-1 px-1 pb-2 light:bg-[#eef5f1]">
+      <header class="top-nav-bar flex items-center justify-between gap-1.5 rounded-lg bg-[#171817] p-1 overflow-hidden shadow-sm light:bg-white light:border light:border-black/10">
         <div class="category-nav-track flex items-center gap-1 min-w-0 flex-1 overflow-x-auto no-scrollbar py-0.5">
           <button
             v-for="cat in BINGO_CATEGORIES"
@@ -460,6 +475,7 @@ const displayedGames = computed<BingoGame[]>(() => {
           class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-[repeat(auto-fill,minmax(150px,165px))] gap-2.5 justify-start"
         >
           <GameCard
+          heading-tag="h2"
             v-for="game in searchResults"
             :key="game.id"
             :game="game"
@@ -484,6 +500,7 @@ const displayedGames = computed<BingoGame[]>(() => {
         class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-[repeat(auto-fill,minmax(150px,165px))] gap-2.5 justify-start"
       >
         <GameCard
+          heading-tag="h2"
           v-for="game in displayedGames"
           :key="game.id"
           :game="game"
