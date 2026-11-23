@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
           <a 
             :href="bybetRedirectUrl"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             aria-label="Account Login"  
           >
             <button
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
             <a
               :href="bybetRedirectUrl"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               class="h-9 rounded-full bg-white/20 hover:bg-white/30 border border-white/20 text-white font-medium text-[14px] flex items-center justify-center transition-all shadow-sm"
             >
               Login
@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
             <a
               :href="bybetRedirectRegister"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               class="h-9 rounded-full bg-white/20 hover:bg-white/30 border border-white/20 text-white font-medium text-[14px] flex items-center justify-center transition-all shadow-sm"
             >
               Sign Up
@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
             <a
               :href="bybetRedirectUrl"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               class="h-8 rounded-full bg-white/20 hover:bg-white/30 border border-white/15 text-white text-[13px] font-normal flex items-center justify-center transition-all shadow-sm"
             >
               Deposit
@@ -156,7 +156,7 @@ onBeforeUnmount(() => {
             <a
               :href="bybetRedirectUrl"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               class="h-8 rounded-full bg-white/20 hover:bg-white/30 border border-white/15 text-white text-[13px] font-normal flex items-center justify-center transition-all shadow-sm"
             >
               Withdraw
@@ -164,7 +164,7 @@ onBeforeUnmount(() => {
             <a
               :href="bybetRedirectUrl"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               class="h-8 rounded-full bg-white/20 hover:bg-white/30 border border-white/15 text-white text-[13px] font-normal flex items-center justify-center transition-all shadow-sm"
             >
               VIP
@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
             <a
               :href="bybetRedirectUrl"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               class="h-8 rounded-full bg-white/20 hover:bg-white/30 border border-white/15 text-white text-[13px] font-normal flex items-center justify-center transition-all shadow-sm"
             >
               Bonus
@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
 
         <div v-show="openSections.general" class="space-y-4 pt-4">
           <!-- Betting History -->
-          <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+          <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
             <div class="flex items-center gap-3">
               <div class="w-6 h-6 shrink-0 flex items-center justify-center">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="#01AEF3"></rect><path d="M9.564 5C9.326 5 9.102 5.091 8.941 5.259L5.259 8.934C5.091 9.102 5 9.326 5 9.557V16.354C5 17.817 6.19 19 7.653 19H16.347C17.81 19 19 17.817 19 16.354V7.646C19 6.183 17.81 5 16.347 5H9.564ZM9.2 13.113H14.8C15.185 13.113 15.507 13.421 15.507 13.806C15.507 14.191 15.199 14.506 14.814 14.513H14.8H9.2C8.815 14.513 8.493 14.205 8.493 13.82C8.493 13.435 8.801 13.12 9.186 13.113H9.2ZM9.2 9.62H14.8C15.185 9.62 15.5 9.935 15.5 10.32C15.5 10.705 15.185 11.02 14.8 11.02H9.2C8.815 11.02 8.5 10.705 8.5 10.32C8.5 9.935 8.815 9.62 9.2 9.62Z" fill="white"></path></svg>
@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
           </NuxtLink>
 
           <!-- Coupon Center -->
-          <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+          <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
             <div class="flex items-center gap-3">
               <div class="w-6 h-6 shrink-0 flex items-center justify-center">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="#F5A46E"></rect><path d="M20 10.2V7.22C20 6.54 19.42 6 18.71 6H5.29C4.58 6 4 6.55 4 7.22V10.2C5.05 10.2 5.89 11.01 5.89 12C5.89 12.99 5.04 13.8 4 13.8V16.78C4 17.46 4.58 18 5.29 18H18.71C19.42 18 20 17.45 20 16.78V13.8C18.95 13.8 18.11 12.99 18.11 12C18.11 11.01 18.96 10.2 20 10.2ZM9.68 15C9.68 15.33 9.4 15.6 9.05 15.6C8.7 15.6 8.42 15.33 8.42 15V9C8.42 8.67 8.7 8.4 9.05 8.4C9.4 8.4 9.68 8.67 9.68 9V15Z" fill="white"></path></svg>
@@ -234,7 +234,7 @@ onBeforeUnmount(() => {
           </a>
 
           <!-- Referral Bonus -->
-          <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+          <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
             <div class="flex items-center gap-3">
               <div class="w-6 h-6 shrink-0 flex items-center justify-center">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="#428ACD"></rect><path d="M19.8866 11.4559C19.8866 11.6743 19.7729 11.6743 19.6592 11.7836L14.7841 16.3634C14.443 16.5819 13.8768 16.3634 13.6495 16.0357C13.5701 15.9038 13.5315 15.7513 13.5358 15.5988V13.0903C10.5845 11.4538 6.72605 12.3257 5.02307 15.0546C4.44826 15.9389 4.13512 16.9571 4.11367 18C4 17.5651 4 17.1281 4 16.5819C4.00214 12.2185 7.86279 8.7269 12.5149 8.7269H13.5358V6.76469C13.5251 6.35246 13.864 6.01031 14.2929 6C14.3058 6 14.3187 6 14.3315 6C14.5567 6 14.6704 6 14.7841 6.10924L19.552 10.3696C19.9531 10.5613 20.1139 11.0292 19.9144 11.4146C19.908 11.4291 19.8994 11.4414 19.8909 11.4559H19.8844H19.8866Z" fill="white"></path></svg>
@@ -354,7 +354,7 @@ onBeforeUnmount(() => {
           </div>
 
           <!-- Event Settings -->
-          <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+          <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
             <div class="flex items-center gap-3">
               <div class="w-6 h-6 shrink-0 flex items-center justify-center">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="#555555"></rect><path d="M7.00997 13.425V4.005H5.86997V13.425C4.87997 13.675 4.15997 14.535 4.15997 15.565C4.15997 16.595 4.88997 17.465 5.86997 17.705V19.995H7.00997V17.705C7.99997 17.455 8.71997 16.595 8.71997 15.565C8.71997 14.535 7.98997 13.665 7.00997 13.425ZM6.43997 16.675C5.80997 16.675 5.29997 16.175 5.29997 15.565C5.29997 14.955 5.80997 14.455 6.43997 14.455C7.06997 14.455 7.57997 14.955 7.57997 15.565C7.57997 16.175 7.06997 16.675 6.43997 16.675Z" fill="white"></path><path d="M12.57 5.74V4H11.43V5.74C10.44 5.99 9.71997 6.85 9.71997 7.88C9.71997 8.91 10.45 9.78 11.43 10.02V20H12.57V10.02C13.56 9.77 14.28 8.91 14.28 7.88C14.28 6.85 13.55 5.98 12.57 5.74ZM12 8.99C11.37 8.99 10.86 8.49 10.86 7.88C10.86 7.27 11.37 6.77 12 6.77C12.63 6.77 13.14 7.27 13.14 7.88C13.14 8.49 12.63 8.99 12 8.99Z" fill="white"></path><path d="M19.84 13.355C19.84 12.325 19.11 11.455 18.13 11.215V4.005H16.99V11.205C16 11.455 15.28 12.315 15.28 13.345C15.28 14.375 16.01 15.245 16.99 15.485V19.995H18.13V15.485C19.12 15.235 19.84 14.375 19.84 13.345V13.355ZM17.55 14.465C16.92 14.465 16.41 13.965 16.41 13.355C16.41 12.745 16.92 12.245 17.55 12.245C18.18 12.245 18.69 12.745 18.69 13.355C18.69 13.965 18.18 14.465 17.55 14.465Z" fill="white"></path></svg>
@@ -394,7 +394,7 @@ onBeforeUnmount(() => {
           </div>
 
           <!-- Market Display -->
-          <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+          <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
             <div class="flex items-center gap-3">
               <div class="w-6 h-6 shrink-0 flex items-center justify-center">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="#36C65D"></rect><rect x="4.29932" y="4.45911" width="9.21484" height="7.04085" rx="1.5" fill="white"></rect><rect width="9.21484" height="7.04085" rx="1.5" transform="matrix(-1 0 0 1 19.7007 12.5)" fill="white"></rect><rect x="14.4976" y="4.45911" width="5.20296" height="7.04085" rx="1.5" fill="white"></rect><rect width="5.20296" height="7.04085" rx="1.5" transform="matrix(-1 0 0 1 9.50244 12.5)" fill="white"></rect></svg>
@@ -630,7 +630,7 @@ onBeforeUnmount(() => {
           <a
             :href="bybetRedirectUrl"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             class="bg-[#2b2b2b] light:bg-[#edf4f0] rounded-lg border border-[#1fa779] px-4 py-1 text-[12px] font-semibold text-[#1fa779] hover:bg-[#252525] transition-colors"
           >
             Login
@@ -638,7 +638,7 @@ onBeforeUnmount(() => {
           <a
             :href="bybetRedirectRegister"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             class="rounded-lg bg-[var(--main-color)] px-4 py-1 text-[12px] font-bold text-white hover:bg-[#122F25] transition-colors"
           >
             Sign Up
@@ -654,7 +654,7 @@ onBeforeUnmount(() => {
         <a
           :href="bybetRedirectUrl"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c] py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           Deposit
@@ -662,7 +662,7 @@ onBeforeUnmount(() => {
         <a
           :href="bybetRedirectUrl"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c]  py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           Withdraw
@@ -670,7 +670,7 @@ onBeforeUnmount(() => {
         <a
           :href="bybetRedirectUrl"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c]  py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           VIP
@@ -678,7 +678,7 @@ onBeforeUnmount(() => {
         <a
           :href="bybetRedirectUrl"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           class="action-btn flex items-center justify-center rounded-lg bg-[#005a3c]  py-2 text-[14px] font-semibold text-white transition-colors shadow-sm"
         >
           Bonus
@@ -701,7 +701,7 @@ onBeforeUnmount(() => {
 
       <div v-show="openSections.general" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3.5 pt-1">
         <!-- Betting History -->
-        <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between ">
+        <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between ">
           <div class="flex items-center gap-2.5">
             <div class="grid h-4 w-4 place-items-center rounded  text-[#4ea8de]">
               <em class="relative min-h-6 min-w-6 mr-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="#01AEF3"></rect><path d="M9.564 5C9.326 5 9.102 5.091 8.941 5.259L5.259 8.934C5.091 9.102 5 9.326 5 9.557V16.354C5 17.817 6.19 19 7.653 19H16.347C17.81 19 19 17.817 19 16.354V7.646C19 6.183 17.81 5 16.347 5H9.564ZM9.2 13.113H14.8C15.185 13.113 15.507 13.421 15.507 13.806C15.507 14.191 15.199 14.506 14.814 14.513H14.8H9.2C8.815 14.513 8.493 14.205 8.493 13.82C8.493 13.435 8.801 13.12 9.186 13.113H9.2ZM9.2 9.62H14.8C15.185 9.62 15.5 9.935 15.5 10.32C15.5 10.705 15.185 11.02 14.8 11.02H9.2C8.815 11.02 8.5 10.705 8.5 10.32C8.5 9.935 8.815 9.62 9.2 9.62Z" fill="white"></path></svg></em>
@@ -723,7 +723,7 @@ onBeforeUnmount(() => {
         </NuxtLink>
 
         <!-- Coupon Center -->
-        <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+        <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
           <div class="flex items-center gap-2.5">
             <div class="grid h-4 w-4 place-items-center bg-[#F5A46E] rounded text-[#ff8042]">
               <em class="relative min-h-6 min-w-6 mr-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="none" class="fill-layer-46"></rect><path d="M20 10.2V7.22C20 6.54 19.42 6 18.71 6H5.29C4.58 6 4 6.55 4 7.22V10.2C5.05 10.2 5.89 11.01 5.89 12C5.89 12.99 5.04 13.8 4 13.8V16.78C4 17.46 4.58 18 5.29 18H18.71C19.42 18 20 17.45 20 16.78V13.8C18.95 13.8 18.11 12.99 18.11 12C18.11 11.01 18.96 10.2 20 10.2ZM9.68 15C9.68 15.33 9.4 15.6 9.05 15.6C8.7 15.6 8.42 15.33 8.42 15V9C8.42 8.67 8.7 8.4 9.05 8.4C9.4 8.4 9.68 8.67 9.68 9V15Z" fill="white"></path></svg></em>
@@ -734,7 +734,7 @@ onBeforeUnmount(() => {
         </a>
 
         <!-- Referral Bonus -->
-        <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+        <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
           <div class="flex items-center gap-2.5">
             <div class="grid h-4 w-4 place-items-center rounded  text-[#4ea8de]">
               <em class="relative min-h-6 min-w-6 mr-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="none" class="fill-[#428ACD]"></rect><path d="M19.8866 11.4559C19.8866 11.6743 19.7729 11.6743 19.6592 11.7836L14.7841 16.3634C14.443 16.5819 13.8768 16.3634 13.6495 16.0357C13.5701 15.9038 13.5315 15.7513 13.5358 15.5988V13.0903C10.5845 11.4538 6.72605 12.3257 5.02307 15.0546C4.44826 15.9389 4.13512 16.9571 4.11367 18C4 17.5651 4 17.1281 4 16.5819C4.00214 12.2185 7.86279 8.7269 12.5149 8.7269H13.5358V6.76469C13.5251 6.35246 13.864 6.01031 14.2929 6C14.3058 6 14.3187 6 14.3315 6C14.5567 6 14.6704 6 14.7841 6.10924L19.552 10.3696C19.9531 10.5613 20.1139 11.0292 19.9144 11.4146C19.908 11.4291 19.8994 11.4414 19.8909 11.4559H19.8844H19.8866Z" fill="white"></path></svg></em>
@@ -854,7 +854,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Event Settings -->
-        <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+        <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
           <div class="flex items-center gap-2.5">
             <div class="grid h-4 w-4 place-items-center rounded bg-[#242625] text-white/90">
               <em class="relative min-h-6 min-w-6 mr-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="8" fill="none" class="fill-[#666]"></rect><path d="M7.00997 13.425V4.005H5.86997V13.425C4.87997 13.675 4.15997 14.535 4.15997 15.565C4.15997 16.595 4.88997 17.465 5.86997 17.705V19.995H7.00997V17.705C7.99997 17.455 8.71997 16.595 8.71997 15.565C8.71997 14.535 7.98997 13.665 7.00997 13.425ZM6.43997 16.675C5.80997 16.675 5.29997 16.175 5.29997 15.565C5.29997 14.955 5.80997 14.455 6.43997 14.455C7.06997 14.455 7.57997 14.955 7.57997 15.565C7.57997 16.175 7.06997 16.675 6.43997 16.675Z" fill="white"></path><path d="M12.57 5.74V4H11.43V5.74C10.44 5.99 9.71997 6.85 9.71997 7.88C9.71997 8.91 10.45 9.78 11.43 10.02V20H12.57V10.02C13.56 9.77 14.28 8.91 14.28 7.88C14.28 6.85 13.55 5.98 12.57 5.74ZM12 8.99C11.37 8.99 10.86 8.49 10.86 7.88C10.86 7.27 11.37 6.77 12 6.77C12.63 6.77 13.14 7.27 13.14 7.88C13.14 8.49 12.63 8.99 12 8.99Z" fill="white"></path><path d="M19.84 13.355C19.84 12.325 19.11 11.455 18.13 11.215V4.005H16.99V11.205C16 11.455 15.28 12.315 15.28 13.345C15.28 14.375 16.01 15.245 16.99 15.485V19.995H18.13V15.485C19.12 15.235 19.84 14.375 19.84 13.345V13.355ZM17.55 14.465C16.92 14.465 16.41 13.965 16.41 13.355C16.41 12.745 16.92 12.245 17.55 12.245C18.18 12.245 18.69 12.745 18.69 13.355C18.69 13.965 18.18 14.465 17.55 14.465Z" fill="white"></path></svg></em>
@@ -894,7 +894,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Market Display -->
-        <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="menu-item flex items-center justify-between group">
+        <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="menu-item flex items-center justify-between group">
           <div class="flex items-center gap-2.5">
             <div class="grid h-4 w-4 place-items-center rounded bg-[#124d35] text-[#34d399]">
               <em class="relative min-h-6 min-w-6 mr-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><rect width="24" height="24" rx="8" fill="#36C65D"></rect><rect x="4.29932" y="4.45911" width="9.21484" height="7.04085" rx="1.5" fill="white"></rect><rect width="9.21484" height="7.04085" rx="1.5" transform="matrix(-1 0 0 1 19.7007 12.5)" fill="white"></rect><rect x="14.4976" y="4.45911" width="5.20296" height="7.04085" rx="1.5" fill="white"></rect><rect width="5.20296" height="7.04085" rx="1.5" transform="matrix(-1 0 0 1 9.50244 12.5)" fill="white"></rect></svg></em>

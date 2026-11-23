@@ -33,7 +33,7 @@ const emit = defineEmits<{
 
 const search = ref('')
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
+const isPopular = computed(() => sportsRouteBase.value === '/sports/popular')
 const localSortBy = ref<'league' | 'time'>(props.sortBy)
 const localCollapsed = ref<string[]>([])
 const earliestTimes = ref<Record<string, number>>({})
@@ -168,7 +168,7 @@ const sortedGroups = computed(() => {
 
 <template>
   <div class="league-tab">
-    <div v-if="!['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase)" class="toolbar">
+    <div v-if="sportsRouteBase !== '/sports/popular'" class="toolbar">
       <Ai
         v-if="aiTo"
         :to="aiTo"

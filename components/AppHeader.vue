@@ -19,7 +19,7 @@ const openPageComments = (): void => {
     return
   }
 
-  if (route.path.startsWith('/sports/') || route.path.startsWith('/explore/sports/')) {
+  if (route.path.startsWith('/sports/')) {
     openSportsComments()
     void nextTick(() => {
       document.getElementById('comment-panel')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })

@@ -243,9 +243,9 @@ onBeforeUnmount(() => {
 
         <!-- Links in Red -->
         <div class="text-[10px] font-bold text-[#c10001] tracking-wide mt-1">
-          <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
+          <a href="https://www.pagcor.ph/regulatory" target="_blank" rel="nofollow noopener noreferrer" class="hover:underline">WWW.PAGCOR.PH/REGULATORY</a>
           <span class="mx-2.5">•</span>
-          <a href="mailto:keepitfun@pagcor.ph" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
+          <a href="mailto:keepitfun@pagcor.ph" rel="nofollow" class="hover:underline">KEEPITFUN@PAGCOR.PH</a>
         </div>
 
         <!-- Warning in Blue -->

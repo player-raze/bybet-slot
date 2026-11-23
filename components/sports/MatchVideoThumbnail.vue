@@ -34,7 +34,7 @@ watch(thumbnailUrl, () => { imageFailed.value = false })
   <a
     :href="resolvedHref"
     target="_blank"
-    rel="noopener noreferrer"
+    rel="nofollow noopener noreferrer"
     :aria-label="`Watch ${label} on ByBet`"
     :title="`Watch ${label}`"
     class="group relative block h-[20px] w-[28px] shrink-0 overflow-hidden   bg-cover bg-center"

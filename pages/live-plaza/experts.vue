@@ -212,6 +212,7 @@ onBeforeUnmount(() => {
         class="expert-card light:bg-white light:border light:border-black/10"
         :to="bybetRedirectUrl"
         external
+        rel="nofollow noopener noreferrer"
       >
         <span class="expert-card__identity">
           <img

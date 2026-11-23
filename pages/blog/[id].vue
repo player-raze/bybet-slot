@@ -111,6 +111,9 @@ useAppSeo({
 })
 
 import { buildBloggeristSeoHead } from '~/utils/bloggeristSeoHead'
+import { addNofollowToExternalHtmlLinks } from '~/utils/externalLinkRel'
+
+const processedBlogContentHtml = computed(() => addNofollowToExternalHtmlLinks(blog.value?.content_html))
 
 useHead(() => buildBloggeristSeoHead({
   google_analytics_id: seoSettings.value?.google_analytics_id,
@@ -213,7 +216,7 @@ useHead(() => buildBloggeristSeoHead({
         <div
           v-if="blog.content_html"
           class="blog-article__body light:text-[#2d3748]"
-          v-html="blog.content_html"
+          v-html="processedBlogContentHtml"
         />
         <div
           v-else-if="blog.content"

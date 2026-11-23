@@ -198,7 +198,7 @@ onBeforeUnmount(restorePageScroll)
                   <a
                     href="https://osea.pagcor.ph"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="nofollow noopener noreferrer"
                   >https://osea.pagcor.ph</a>
                 </li>
                 <li>
@@ -206,7 +206,7 @@ onBeforeUnmount(restorePageScroll)
                   <a
                     href="https://www.pagcor.ph/regulatory/responsible-gaming.php"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="nofollow noopener noreferrer"
                   >www.pagcor.ph/regulatory/responsible-gaming.php</a>
                 </li>
               </ul>
@@ -256,9 +256,9 @@ onBeforeUnmount(restorePageScroll)
               <a
                 href="https://www.pagcor.ph/regulatory"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="nofollow noopener noreferrer"
               >WWW.PAGCOR.PH/REGULATORY</a>
-              <a href="mailto:keepitfun@pagcor.ph">KEEPITFUN@PAGCOR.PH</a>
+              <a href="mailto:keepitfun@pagcor.ph" rel="nofollow">KEEPITFUN@PAGCOR.PH</a>
             </div>
 
               <p class="responsible-gaming-warning">

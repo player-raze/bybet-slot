@@ -5,6 +5,7 @@ import MobileBonusHeader from '~/components/bonuses/MobileBonusHeader.vue'
 import PromotionComplianceFooter from '~/components/PromotionComplianceFooter.vue'
 import ReminderModal from '~/components/modals/ReminderModal.vue'
 import { trackEnvClick } from '~/utils/playnowTracker'
+import { addNofollowToExternalHtmlLinks } from '~/utils/externalLinkRel'
 import {
   PROMOTION_PLACEHOLDER_IMAGES,
   getBonusDetail,
@@ -24,6 +25,7 @@ const bonusId = computed(() => {
 })
 
 const bonus = computed<BonusDetail>(() => getBonusDetail(bonusId.value))
+const processedBonusContentHtml = computed(() => addNofollowToExternalHtmlLinks(bonus.value.contentHtml))
 const bannerImageError = ref(false)
 const isReminderOpen = ref(false)
 const reminderMessage = ref('Please login first to join this promotion.')
@@ -195,7 +197,7 @@ const handleContentClick = (event: MouseEvent): void => {
           v-if="bonus.contentHtml"
           class="promotion-custom-content"
           @click="handleContentClick"
-          v-html="bonus.contentHtml"
+          v-html="processedBonusContentHtml"
         />
 
         <template v-else>
@@ -302,7 +304,7 @@ const handleContentClick = (event: MouseEvent): void => {
             <div v-if="bonus.eventContent.linkedParagraphs?.length" class="reward-linked-paragraphs">
               <p v-for="(paragraph, paragraphIndex) in bonus.eventContent.linkedParagraphs" :key="paragraphIndex">
                 <template v-for="(part, partIndex) in paragraph.parts" :key="`${paragraphIndex}-${partIndex}`">
-                  <a v-if="part.href" :href="part.href" target="_blank" rel="noopener noreferrer">{{ part.text }}</a>
+                  <a v-if="part.href" :href="part.href" target="_blank" rel="nofollow noopener noreferrer">{{ part.text }}</a>
                   <span v-else>{{ part.text }}</span>
                 </template>
               </p>

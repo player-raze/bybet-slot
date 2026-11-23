@@ -113,7 +113,7 @@ const pageHeading = computed(() => {
 
 const activeSportKey = computed(() => {
   if (isPopular.value) return 'popular'
-  const match = sportsRouteBase.value.match(/\/explore\/sports\/([^/]+)/)
+  const match = sportsRouteBase.value.match(/\/sports\/([^/]+)/)
   if (match) return match[1]
   const param = String(route.params.sport || '')
   if (param) return param
@@ -385,6 +385,7 @@ onBeforeUnmount(() => {
           :key="tab.key"
           :to="getTabDestination(tab.key)"
           :external="redirectsToByBet(tab.key)"
+          :rel="redirectsToByBet(tab.key) ? 'nofollow noopener noreferrer' : undefined"
           :class="{ selected: activeTab === tab.key }"
           :aria-current="activeTab === tab.key ? 'page' : undefined"
         >

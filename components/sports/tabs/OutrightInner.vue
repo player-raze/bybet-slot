@@ -15,7 +15,7 @@ const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
+const isPopular = computed(() => sportsRouteBase.value === '/sports/popular')
 const search = ref('')
 
 const searchedSports = computed(() => {

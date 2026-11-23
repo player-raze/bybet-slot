@@ -41,9 +41,9 @@ const sports: MobileSportNavItem[] = [
   { key: 'bonuses', label: 'Bonuses', image: '/icons/sports/bonus.webp', to: '/bonuses' },
 ]
 
-const isLive = computed(() => route.path.startsWith('/sports/live') || route.path.startsWith('/explore/sports/live'))
+const isLive = computed(() => route.path.startsWith('/sports/live'))
 const selectedSport = computed(() => {
-  if (route.path.startsWith('/sports/popular') || route.path.startsWith('/explore/sports/popular')) return 'popular'
+  if (route.path.startsWith('/sports/popular')) return 'popular'
   const sportParam = String(route.params.sport || 'popular')
   return sportParam === 'football' ? 'soccer' : sportParam
 })
@@ -81,7 +81,8 @@ const destination = (sport: typeof sports[number]): string => {
       v-for="sport in sports"
       :key="sport.key"
       :to="destination(sport)"
-      :external="sport.external || Boolean(destination(sport).startsWith('http'))"
+      :external="Boolean(sport.external || destination(sport).startsWith('http'))"
+      :rel="(sport.external || destination(sport).startsWith('http')) ? 'nofollow noopener noreferrer' : undefined"
       class="mobile-sports-nav__item"
       :class="{ 'mobile-sports-nav__item--active': selectedSport === sport.key }"
       :aria-label="translate(sport.label)"
@@ -104,6 +105,7 @@ const destination = (sport: typeof sports[number]): string => {
     <NuxtLink
       :to="bybetRedirectSearch"
       external
+      rel="nofollow noopener noreferrer"
       class="mobile-sports-nav__item mobile-sports-nav__search light:text-[#14251d]"
       :aria-label="translate('Search sports')"
     >

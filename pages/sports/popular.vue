@@ -30,7 +30,7 @@ const selectedTournaments: Record<string, string[]> = {
 
 definePageMeta({
   middleware: (to) => {
-    if (to.path.replace(/\/$/, '') === '/sports/popular' || to.path.replace(/\/$/, '') === '/explore/sports/popular') {
+    if (to.path.replace(/\/$/, '') === '/sports/popular') {
       return navigateTo({
         path: '/sports/popular/upcoming',
         query: to.query,

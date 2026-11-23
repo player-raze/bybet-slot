@@ -305,8 +305,8 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="affiliate-actions">
-          <a :href="bybetRedirectUrl" target="_blank" rel="noopener noreferrer" class="affiliate-action affiliate-action--primary">Apply Now</a>
-          <a :href="affiliateSystemUrl" target="_blank" rel="noopener noreferrer" class="affiliate-action">Affiliate System</a>
+          <a :href="bybetRedirectUrl" target="_blank" rel="nofollow noopener noreferrer" class="affiliate-action affiliate-action--primary">Apply Now</a>
+          <a :href="affiliateSystemUrl" target="_blank" rel="nofollow noopener noreferrer" class="affiliate-action">Affiliate System</a>
         </div>
       </section>
 

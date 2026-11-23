@@ -45,7 +45,7 @@ definePageMeta({
   validate: route => ['basketball', 'baseball', 'soccer', 'football', 'tennis'].includes(String(route.params.sport)),
   middleware: to => {
     const base = `/sports/${to.params.sport}`
-    if (to.path.replace(/\/$/, '') !== base && to.path.replace(/\/$/, '') !== `/explore/sports/${to.params.sport}`) return
+    if (to.path.replace(/\/$/, '') !== base) return
     const requestedTab = to.query.tab === 'prematch' ? 'pre-match' : String(to.query.tab ?? 'inplay')
     const availableTabs = ['league', 'inplay', 'upcoming', 'pre-match', 'smart-pick', 'outright']
     if (['soccer', 'football'].includes(String(to.params.sport).toLowerCase())) availableTabs.push('replay')
