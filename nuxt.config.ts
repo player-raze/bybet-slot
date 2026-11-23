@@ -47,6 +47,9 @@ export default defineNuxtConfig({
   nitro: {
     hooks: {
       compiled: async (nitro) => {
+        // These generators rewrite public assets, which trigger browser reloads in dev.
+        if (nitro.options.dev) return
+
         try {
           const { generateSitemapFile } = await import('./scripts/generate-sitemap.mjs')
           await generateSitemapFile(nitro.options.runtimeConfig?.public?.siteUrl)
