@@ -189,6 +189,31 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
   const initialDelayRange = options.initialDelayMs ?? DEFAULT_INITIAL_DELAY_MS
   let frameId: number | null = null
 
+  // JDB must also match across browser tabs, each of which has its own Nuxt state.
+  const syncJdbFromStorage = (): boolean => {
+    if (options.key !== 'jdb') return false
+    try {
+      const cached = Number(localStorage.getItem('bybet-jackpot:jdb'))
+      if (Number.isFinite(cached) && cached > 0) {
+        amount.value = toCents(cached)
+        displayAmount.value = amount.value
+        return true
+      }
+    } catch {}
+    return false
+  }
+
+  const handleJdbStorage = (event: StorageEvent): void => {
+    if (event.key === 'bybet-jackpot:jdb' || event.key === null) {
+      // Read the latest value; a queued event can contain an older amount.
+      syncJdbFromStorage()
+    }
+  }
+
+  const handleJdbFocus = (): void => {
+    if (!document.hidden) syncJdbFromStorage()
+  }
+
   const stopTween = (): void => {
     if (frameId !== null) {
       window.cancelAnimationFrame(frameId)
@@ -207,6 +232,7 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
     const waitTime = delay ?? randomBetween(minDelay, maxDelay)
     ticker.timer = setTimeout(() => {
       if (!document.hidden) {
+        syncJdbFromStorage()
         const current = amount.value
         const minBound = options.min ?? 0
         const maxBound = options.max ?? Number.POSITIVE_INFINITY
@@ -237,11 +263,18 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
   watch(amount, animateTo)
 
   onMounted(() => {
+    const hasJdbCache = syncJdbFromStorage()
+    if (options.key === 'jdb') {
+      window.addEventListener('storage', handleJdbStorage)
+      window.addEventListener('focus', handleJdbFocus)
+      document.addEventListener('visibilitychange', handleJdbFocus)
+    }
+
     if (!initialSyncStarted.value) {
       initialSyncStarted.value = true
 
-      // 1. Hydrate from localStorage on the first JDB mount, or each mount for other tiers.
-      if (typeof localStorage !== 'undefined') {
+      // 1. Other tiers retain their existing per-mount hydration.
+      if (options.key !== 'jdb' && typeof localStorage !== 'undefined') {
         const cached = localStorage.getItem(`bybet-jackpot:${options.key}`)
         if (cached) {
           const parsed = Number(cached)
@@ -251,23 +284,25 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
         }
       }
 
-      // 2. A remount must not reapply the cached initial server snapshot to live JDB state.
+      // 2. Shared JDB cache is newer than the debounced server save. Only seed it when absent.
       const amountAtFetch = amount.value
-      fetchLatestJackpots().then((serverData) => {
-        if (options.key === 'jdb' && amount.value !== amountAtFetch) return
-        if (serverData && typeof serverData[options.key] === 'number') {
-          const serverVal = serverData[options.key]
-          if (serverVal > 0 && Math.abs(serverVal - amount.value) > 0.01) {
-            amount.value = serverVal
-            displayAmount.value = serverVal
-            if (typeof localStorage !== 'undefined') {
-              try {
-                localStorage.setItem(`bybet-jackpot:${options.key}`, String(serverVal))
-              } catch {}
+      if (!hasJdbCache) {
+        fetchLatestJackpots().then((serverData) => {
+          if (options.key === 'jdb' && (syncJdbFromStorage() || amount.value !== amountAtFetch)) return
+          if (serverData && typeof serverData[options.key] === 'number') {
+            const serverVal = serverData[options.key]
+            if (serverVal > 0 && Math.abs(serverVal - amount.value) > 0.01) {
+              amount.value = serverVal
+              displayAmount.value = serverVal
+              if (typeof localStorage !== 'undefined') {
+                try {
+                  localStorage.setItem(`bybet-jackpot:${options.key}`, String(serverVal))
+                } catch {}
+              }
             }
           }
-        }
-      })
+        })
+      }
     }
     displayAmount.value = amount.value
 
@@ -282,6 +317,11 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
 
   onBeforeUnmount(() => {
     stopTween()
+    if (options.key === 'jdb') {
+      window.removeEventListener('storage', handleJdbStorage)
+      window.removeEventListener('focus', handleJdbFocus)
+      document.removeEventListener('visibilitychange', handleJdbFocus)
+    }
 
     const ticker = activeTickers.get(options.key)
     if (!ticker) return

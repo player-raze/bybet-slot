@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { buildBloggeristSeoHead } from '~/utils/bloggeristSeoHead'
+
 const { locale, restoreLocale } = useSiteLocale()
 const { restoreTimeZone } = useTimeZonePreference()
 const {
@@ -7,6 +9,14 @@ const {
   themePreference,
 } = useSiteTheme()
 const { isLoading, loadingLabel, checkAssetsAndDismiss } = useByBetLoader()
+const { fetchBlogSeoSettings } = useBloggerist()
+
+const { data: bloggeristSeoSettings } = await useAsyncData(
+  'blog-seo-settings',
+  () => fetchBlogSeoSettings(),
+)
+
+useHead(() => buildBloggeristSeoHead(bloggeristSeoSettings.value))
 
 useHead(() => ({
   htmlAttrs: {

@@ -84,7 +84,7 @@ describe('Playnow Tracker & Env URL Click Counter Test Suite', () => {
 
     const pluginContent = fs.readFileSync(pluginPath, 'utf-8')
     assert.match(pluginContent, /document\.addEventListener\('click'/, 'Must register global click listener')
-    assert.match(pluginContent, /isEnvRedirectUrl\(destinationUrl\)/, 'Must verify target matches env_url')
+    assert.match(pluginContent, /isEnvRedirectUrl\(destinationUrl(?:,\s*envRedirectUrl)?\)/, 'Must verify target matches env_url')
     assert.match(pluginContent, /trackEnvClick\(/, 'Must fire trackEnvClick')
   })
 
@@ -111,5 +111,47 @@ describe('Playnow Tracker & Env URL Click Counter Test Suite', () => {
 
     // /playnow (2) + https://bybet.com (4) + https://bybet.com/slotMachine/main?p=xjSD (5) = 11
     assert.equal(envUrlClicks, 11, 'Total env_url clicks must sum to 11')
+  })
+
+  test('Case 8: isEnvRedirectUrl matches custom env_redirect domains and plugin/proxy/programmatic gaps are closed', async () => {
+    const { isEnvRedirectUrl } = await import('../utils/playnowTracker.ts')
+
+    assert.equal(
+      isEnvRedirectUrl('https://custom-env.example.com/sportEvents/hotGame/incoming?p=TEST', 'https://custom-env.example.com'),
+      true,
+      'Custom env_redirect origin must be recognized when customEnvUrl is passed',
+    )
+    assert.equal(
+      isEnvRedirectUrl('https://unrelated.example.com/path', 'https://custom-env.example.com'),
+      false,
+      'Unrelated domain must not match custom env_redirect origin',
+    )
+
+    const pluginContent = fs.readFileSync(path.join(rootDir, 'plugins/playnow-tracker.client.ts'), 'utf8')
+    assert.match(pluginContent, /useRuntimeConfig\(\)/, 'Plugin must read useRuntimeConfig() inside setup')
+    assert.match(pluginContent, /isEnvRedirectUrl\(destinationUrl,\s*envRedirectUrl\)/, 'Plugin must pass envRedirectUrl into isEnvRedirectUrl')
+
+    const postContent = fs.readFileSync(path.join(rootDir, 'server/api/playnow/click.post.ts'), 'utf8')
+    assert.match(postContent, /X-Forwarded-For/, 'click.post.ts must forward client IP header')
+    assert.match(postContent, /User-Agent/, 'click.post.ts must forward client User-Agent header')
+
+    const getsContent = fs.readFileSync(path.join(rootDir, 'server/api/playnow/clicks.get.ts'), 'utf8')
+    assert.match(getsContent, /useRuntimeConfig\(event\)/, 'clicks.get.ts must resolve bybetRedirectUrl from runtimeConfig')
+
+    for (const rel of [
+      'components/sports/tabs/OutrightInner.vue',
+      'components/live-plaza/LivePlazaPredictionCard.vue',
+      'pages/live-plaza/home.vue',
+      'pages/live-plaza/expert-predictions.vue',
+    ]) {
+      const content = fs.readFileSync(path.join(rootDir, rel), 'utf8')
+      assert.match(content, /:data-redirect-url="bybetRedirectUrl"/, `${rel} must expose data-redirect-url on env_redirect buttons/cards`)
+    }
+
+    const bonusPage = fs.readFileSync(path.join(rootDir, 'pages/bonus/[id].vue'), 'utf8')
+    assert.match(bonusPage, /trackEnvClick\(/, 'pages/bonus/[id].vue must call trackEnvClick on Join Now OK')
+
+    const liveCasinoPage = fs.readFileSync(path.join(rootDir, 'pages/entertainment/live-casino/[category].vue'), 'utf8')
+    assert.match(liveCasinoPage, /trackEnvClick\(/, 'live-casino/[category].vue must call trackEnvClick on OK redirect')
   })
 })

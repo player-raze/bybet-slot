@@ -51,7 +51,7 @@ export const useBloggerist = () => {
   const fetchBlogSeoSettings = async (): Promise<BlogSeoSettings> => {
     try {
       // First try internal server route proxy
-      const res = await $fetch<BlogSeoSettingsResponse>('/api/blogs/seo')
+      const res = await $fetch<BlogSeoSettingsResponse>('/api/blogs/seo', { timeout: 3000 })
       if (res?.ok && res.settings) {
         return res.settings
       }
@@ -60,7 +60,7 @@ export const useBloggerist = () => {
     }
 
     try {
-      const res = await $fetch<BlogSeoSettingsResponse>(`${bloggeristUrl.value}/api/settings/seo.php`)
+      const res = await $fetch<BlogSeoSettingsResponse>(`${bloggeristUrl.value}/api/settings/seo.php`, { timeout: 3000 })
       if (res?.ok && res.settings) {
         return res.settings
       }
@@ -71,6 +71,7 @@ export const useBloggerist = () => {
     return {
       website_name: 'Blog',
       google_analytics_id: '',
+      google_tag_id: '',
       google_search_console_verification: '',
     }
   }

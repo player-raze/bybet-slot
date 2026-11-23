@@ -28,6 +28,18 @@ useAppSeo({
 const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
 const externalSiteUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
 const liveEsportsRedirectUrl = computed(() =>
+  buildBybetRedirectUrl('sportEvents/liveGame/eSportGameGroup', rawRedirectUrl, bybetRedirectCode)
+)
+const liveTennisRedirectUrl = computed(() =>
+  buildBybetRedirectUrl('sportEvents/liveGame/tennis', rawRedirectUrl, bybetRedirectCode)
+)
+const liveBaseballRedirectUrl = computed(() =>
+  buildBybetRedirectUrl('sportEvents/liveGame/baseball', rawRedirectUrl, bybetRedirectCode)
+)
+const liveTableTennisRedirectUrl = computed(() =>
+  buildBybetRedirectUrl('sportEvents/liveGame/tableTennis', rawRedirectUrl, bybetRedirectCode)
+)
+const liveAllSportsRedirectUrl = computed(() =>
   buildBybetRedirectUrl('sportEvents/liveGame/eSportBallGroup', rawRedirectUrl, bybetRedirectCode)
 )
 
@@ -35,20 +47,21 @@ const liveTabs = computed(() => [
   { key: 'all', label: 'All', icon: '', to: '/sports/live' },
   { key: 'basketball', label: '', icon: '/icons/sports/basketball.webp', to: '/sports/live/basketball' },
   { key: 'soccer', label: '', icon: '/icons/sports/soccer.webp', to: '/sports/live/soccer' },
-  { key: 'tennis', label: '', icon: '/icons/sports/tennis.webp', to: '/sports/live/tennis' },
-  { key: 'baseball', label: '', icon: '/icons/sports/baseball.webp', to: '/sports/live/baseball' },
+  { key: 'tennis', label: '', icon: '/icons/sports/tennis.webp', to: liveTennisRedirectUrl.value },
+  { key: 'table-tennis', label: '', icon: '/icons/sports/table-tennis.webp', to: liveTableTennisRedirectUrl.value },
   {
     key: 'esports',
-    label: 'All eSports',
+    label: '',
     icon: '/icons/sports/egame.webp',
     to: liveEsportsRedirectUrl.value,
     external: true,
   },
+  { key: 'all-sports', label: '', icon: '/icons/sports/esports.webp', to: liveAllSportsRedirectUrl.value },
 ])
 
 const currentSport = computed(() => {
   const sportParam = String(route.params.sport || '').toLowerCase()
-  if (sportParam && ['basketball', 'soccer', 'tennis', 'baseball'].includes(sportParam)) {
+  if (sportParam && ['basketball', 'soccer', 'tennis', 'table-tennis', 'esports'].includes(sportParam)) {
     return sportParam
   }
   return 'all'

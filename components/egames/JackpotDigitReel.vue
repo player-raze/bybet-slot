@@ -23,6 +23,20 @@ const stripStyle = ref<{ transform: string; transition: string }>({
 })
 
 let timer: ReturnType<typeof setTimeout> | null = null
+let frameId: number | null = null
+let animationVersion = 0
+
+const stopAnimation = (): void => {
+  animationVersion += 1
+  if (timer !== null) {
+    clearTimeout(timer)
+    timer = null
+  }
+  if (frameId !== null) {
+    cancelAnimationFrame(frameId)
+    frameId = null
+  }
+}
 
 const getDigitImage = (d: number | string): string => {
   return `/images/jackpot/${d}.webp`
@@ -55,16 +69,9 @@ watch(() => props.digit, (newVal) => {
   const target = parseDigit(newVal)
   const from = currentDigit.value
 
-  if (from === target) {
-    return
-  }
+  stopAnimation()
 
-  if (timer) {
-    clearTimeout(timer)
-    timer = null
-  }
-
-  if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (from === target || typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     currentDigit.value = target
     reelDigits.value = [target]
     stripStyle.value = { transform: 'translateY(0%)', transition: 'none' }
@@ -75,70 +82,40 @@ watch(() => props.digit, (newVal) => {
   const sequence = buildSequence(from, target, isInc)
   const steps = sequence.length - 1
   const delay = Math.max(0, props.staggerDelay || 0)
+  const version = animationVersion
 
-  if (isInc) {
-    // Scrolling UP: sequence is [from, ..., target]
-    // Start at index 0 (0%), slide up to index `steps` (-steps * 100%)
-    reelDigits.value = sequence
-    stripStyle.value = {
-      transform: 'translateY(0%)',
-      transition: 'none',
-    }
+  // Ascending strips start at `from`; descending strips end at `from`.
+  reelDigits.value = isInc ? sequence : sequence.slice().reverse()
+  stripStyle.value = {
+    transform: isInc ? 'translateY(0%)' : `translateY(-${steps * 100}%)`,
+    transition: 'none',
+  }
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        stripStyle.value = {
-          transform: `translateY(-${steps * 100}%)`,
-          transition: `transform 850ms cubic-bezier(0.25, 1, 0.5, 1) ${delay}ms`,
-        }
+  frameId = requestAnimationFrame(() => {
+    if (version !== animationVersion) return
+    frameId = requestAnimationFrame(() => {
+      if (version !== animationVersion) return
+      frameId = null
+      stripStyle.value = {
+        transform: isInc ? `translateY(-${steps * 100}%)` : 'translateY(0%)',
+        transition: `transform 850ms cubic-bezier(0.25, 1, 0.5, 1) ${delay}ms`,
+      }
 
-        timer = setTimeout(() => {
-          currentDigit.value = target
-          reelDigits.value = [target]
-          stripStyle.value = {
-            transform: 'translateY(0%)',
-            transition: 'none',
-          }
-        }, 850 + delay + 40)
-      })
-    })
-  } else {
-    // Scrolling DOWN: sequence is [from, ..., target]
-    // Reverse sequence so `target` is at 0 and `from` is at `steps`.
-    // Start at index `steps` (-steps * 100%), slide down to index 0 (0%)
-    const reverseSeq = sequence.slice().reverse()
-    reelDigits.value = reverseSeq
-    stripStyle.value = {
-      transform: `translateY(-${steps * 100}%)`,
-      transition: 'none',
-    }
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+      timer = setTimeout(() => {
+        if (version !== animationVersion) return
+        timer = null
+        currentDigit.value = target
+        reelDigits.value = [target]
         stripStyle.value = {
           transform: 'translateY(0%)',
-          transition: `transform 850ms cubic-bezier(0.25, 1, 0.5, 1) ${delay}ms`,
+          transition: 'none',
         }
-
-        timer = setTimeout(() => {
-          currentDigit.value = target
-          reelDigits.value = [target]
-          stripStyle.value = {
-            transform: 'translateY(0%)',
-            transition: 'none',
-          }
-        }, 850 + delay + 40)
-      })
+      }, 850 + delay + 40)
     })
-  }
+  })
 })
 
-onBeforeUnmount(() => {
-  if (timer) {
-    clearTimeout(timer)
-    timer = null
-  }
-})
+onBeforeUnmount(stopAnimation)
 </script>
 
 <template>

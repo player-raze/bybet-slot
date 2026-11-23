@@ -290,6 +290,8 @@ onBeforeUnmount(() => {
             :key="game.id"
             type="button"
             class="popular-game light:bg-[#edf4f0] light:text-[#14251d]"
+            :data-redirect-url="bybetRedirectUrl"
+            data-section="LivePlaza"
             @click="handleGameClick(game)"
           >
             <span class="popular-game__topline">

@@ -3,6 +3,7 @@ import { MessageCircle, Play } from 'lucide-vue-next'
 import { User } from 'lucide-vue-next'
 import ReminderModal from '~/components/modals/ReminderModal.vue'
 import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
+import { trackEnvClick } from '~/utils/playnowTracker'
 import {
   LIVE_CASINO_CATEGORIES,
   LIVE_CASINO_TABLES,
@@ -80,6 +81,12 @@ const handleTableClick = (event: MouseEvent): void => {
 
 const handleOkClick = (): void => {
   isReminderOpen.value = false
+  trackEnvClick({
+    targetUrl: bybetRedirectUrl,
+    buttonText: 'Live Casino - OK',
+    section: 'LiveCasino',
+    location: route.path,
+  })
   window.location.href = bybetRedirectUrl
 }
 

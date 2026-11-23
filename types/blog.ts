@@ -79,6 +79,7 @@ export interface BlogSeoSettings {
   website_name: string
   website_url?: string
   google_analytics_id?: string
+  google_tag_id?: string
   google_search_console_verification?: string
   default_seo_title?: string
   default_meta_description?: string

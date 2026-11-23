@@ -4,6 +4,7 @@ import SeoHeader from '~/components/SeoHeader.vue'
 import MobileBonusHeader from '~/components/bonuses/MobileBonusHeader.vue'
 import PromotionComplianceFooter from '~/components/PromotionComplianceFooter.vue'
 import ReminderModal from '~/components/modals/ReminderModal.vue'
+import { trackEnvClick } from '~/utils/playnowTracker'
 import {
   PROMOTION_PLACEHOLDER_IMAGES,
   getBonusDetail,
@@ -124,6 +125,12 @@ const handleProgressClick = (): void => {
 
 const handleModalOk = (): void => {
   isReminderOpen.value = false
+  trackEnvClick({
+    targetUrl: bybetRedirectUrl,
+    buttonText: 'Join Now - OK',
+    section: 'Bonuses',
+    location: route.path,
+  })
   if (import.meta.client) {
     window.location.href = bybetRedirectUrl
   }

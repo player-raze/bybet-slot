@@ -131,7 +131,9 @@ const handleStartNowClick = () => {
 
 const handleReminderOk = () => {
   showReminderModal.value = false
-  const targetUrl = props.game.href || runtimeConfig.public?.bybetRedirectUrl || 'https://bybet.com'
+  const rawBase = String(runtimeConfig.public?.bybetRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')
+  const redirectCode = String(runtimeConfig.public?.bybetRedirectCode || 'xjSD')
+  const targetUrl = props.game.href || `${rawBase}/login?p=${redirectCode}`
   trackEnvClick({
     targetUrl,
     buttonText: 'Start Now',
