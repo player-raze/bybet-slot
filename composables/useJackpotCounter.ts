@@ -181,6 +181,10 @@ export const MINOR_JACKPOT_COUNTER: JackpotCounterOptions = {
 export const useJackpotCounter = (options: JackpotCounterOptions) => {
   const amount = useState<number>(`jackpot-counter:${options.key}`, () => toCents(options.initial()))
   const displayAmount = ref(amount.value)
+  // Preserve the live JDB amount when moving between the homepage and jackpot pages.
+  const initialSyncStarted = options.key === 'jdb'
+    ? useState<boolean>('jackpot-counter:jdb:initial-sync-started', () => false)
+    : ref(false)
   const [minDelay, maxDelay] = options.delayMs ?? DEFAULT_DELAY_MS
   const initialDelayRange = options.initialDelayMs ?? DEFAULT_INITIAL_DELAY_MS
   let frameId: number | null = null
@@ -233,33 +237,39 @@ export const useJackpotCounter = (options: JackpotCounterOptions) => {
   watch(amount, animateTo)
 
   onMounted(() => {
-    // 1. Immediately hydrate from localStorage if available to preserve value across refreshes
-    if (typeof localStorage !== 'undefined') {
-      const cached = localStorage.getItem(`bybet-jackpot:${options.key}`)
-      if (cached) {
-        const parsed = Number(cached)
-        if (!Number.isNaN(parsed) && parsed > 0) {
-          amount.value = parsed
-        }
-      }
-    }
-    displayAmount.value = amount.value
+    if (!initialSyncStarted.value) {
+      initialSyncStarted.value = true
 
-    // 2. Sync with server data/jackpots.json in background
-    fetchLatestJackpots().then((serverData) => {
-      if (serverData && typeof serverData[options.key] === 'number') {
-        const serverVal = serverData[options.key]
-        if (serverVal > 0 && Math.abs(serverVal - amount.value) > 0.01) {
-          amount.value = serverVal
-          displayAmount.value = serverVal
-          if (typeof localStorage !== 'undefined') {
-            try {
-              localStorage.setItem(`bybet-jackpot:${options.key}`, String(serverVal))
-            } catch {}
+      // 1. Hydrate from localStorage on the first JDB mount, or each mount for other tiers.
+      if (typeof localStorage !== 'undefined') {
+        const cached = localStorage.getItem(`bybet-jackpot:${options.key}`)
+        if (cached) {
+          const parsed = Number(cached)
+          if (!Number.isNaN(parsed) && parsed > 0) {
+            amount.value = parsed
           }
         }
       }
-    })
+
+      // 2. A remount must not reapply the cached initial server snapshot to live JDB state.
+      const amountAtFetch = amount.value
+      fetchLatestJackpots().then((serverData) => {
+        if (options.key === 'jdb' && amount.value !== amountAtFetch) return
+        if (serverData && typeof serverData[options.key] === 'number') {
+          const serverVal = serverData[options.key]
+          if (serverVal > 0 && Math.abs(serverVal - amount.value) > 0.01) {
+            amount.value = serverVal
+            displayAmount.value = serverVal
+            if (typeof localStorage !== 'undefined') {
+              try {
+                localStorage.setItem(`bybet-jackpot:${options.key}`, String(serverVal))
+              } catch {}
+            }
+          }
+        }
+      })
+    }
+    displayAmount.value = amount.value
 
     // 3. Register ticker subscriber
     const ticker = activeTickers.get(options.key) ?? { subscribers: 0, timer: null }

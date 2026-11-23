@@ -1,0 +1,16 @@
+# Runtime data changes must not regenerate the app or reload the browser.
+data/jackpots.json
+data/daily-predictions.json
+data/sitemap-dates.json
+data/predictions-cache/**
+data/*.sqlite*
+data/*.db*
+data/*.log
+
+# SEO build outputs are generated files, not application source.
+public/sitemap*.xml
+public/sitemaps/**
+public/llms*.txt
+sitemap*.xml
+sitemaps/**
+llms*.txt
