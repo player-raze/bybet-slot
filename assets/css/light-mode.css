@@ -10,9 +10,9 @@
 html[data-theme='light']:not(#_) .rail-pill,
 html[data-theme='light']:not(#_) .sidebar--collapsed .rail-pill {
   border-color: var(--border);
-  background:
+  /* background:
     radial-gradient(120% 16% at 8% 0%, rgba(255, 255, 255, 0.95), transparent 60%),
-    linear-gradient(165deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 243, 0.92));
+    linear-gradient(165deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 243, 0.92)); */
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.9),
     0 0.35rem 1rem rgba(24, 72, 50, 0.08);
@@ -215,68 +215,68 @@ html[data-theme='light']:not(#_) .demo-label {
    -------------------------------------------------------------------------- */
 
 /* Page & Sticky Header Wrappers */
-html[data-theme='light']:not(#_) .bg-\[\#000000\],
-html[data-theme='light']:not(#_) .sticky.bg-black,
-html[data-theme='light']:not(#_) .seo-header-sticky-wrapper,
-html[data-theme='light']:not(#_) .sticky-header {
+html[data-theme='light']:not(#_) .bg-\[\#000000\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .sticky.bg-black:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .seo-header-sticky-wrapper:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .sticky-header:not([class*='light:bg-']) {
   background-color: var(--page);
 }
 
 /* Inline black controls (search bars, pills, segmented toggles) */
-html[data-theme='light']:not(#_) .bg-black:not(.brand-logo):not(.w-\[3px\]) {
+html[data-theme='light']:not(#_) .bg-black:not(.brand-logo):not(.w-\[3px\]):not([class*='light:bg-']) {
   background-color: #edf4f0;
 }
 
 /* Primary Card & Panel Surfaces */
-html[data-theme='light']:not(#_) .bg-\[\#121212\],
-html[data-theme='light']:not(#_) .bg-\[\#131313\],
-html[data-theme='light']:not(#_) .bg-\[\#141414\],
-html[data-theme='light']:not(#_) .bg-\[\#151515\],
-html[data-theme='light']:not(#_) .bg-\[\#161616\],
-html[data-theme='light']:not(#_) .bg-\[\#171717\],
-html[data-theme='light']:not(#_) .bg-\[\#171817\],
-html[data-theme='light']:not(#_) .bg-\[\#181818\],
-html[data-theme='light']:not(#_) .bg-\[\#181a19\],
-html[data-theme='light']:not(#_) .bg-\[\#1a1a1a\],
-html[data-theme='light']:not(#_) .bg-\[\#1b1b1b\],
-html[data-theme='light']:not(#_) .bg-\[\#1b1c1b\],
-html[data-theme='light']:not(#_) .bg-\[\#1c1c1c\],
-html[data-theme='light']:not(#_) .bg-\[\#1c1d1c\],
-html[data-theme='light']:not(#_) .bg-\[\#1d1d1d\],
-html[data-theme='light']:not(#_) .bg-\[\#1e1e1e\],
-html[data-theme='light']:not(#_) .bg-\[\#1e201f\],
-html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\],
-html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]\/80,
-html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]\/90 {
+html[data-theme='light']:not(#_) .bg-\[\#121212\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#131313\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#141414\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#151515\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#161616\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#171717\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#171817\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#181818\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#181a19\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1a1a1a\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1b1b1b\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1b1c1b\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1c1c1c\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1c1d1c\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1d1d1d\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1e1e1e\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1e201f\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]\/80:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#1f1f1f\]\/90:not([class*='light:bg-']) {
   background-color: var(--surface);
   border-color: var(--border);
   box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
 }
 
 /* Secondary / Control / Pill / Nested Surfaces */
-html[data-theme='light']:not(#_) .bg-\[\#202020\],
-html[data-theme='light']:not(#_) .bg-\[\#202220\],
-html[data-theme='light']:not(#_) .bg-\[\#222222\],
-html[data-theme='light']:not(#_) .bg-\[\#222423\],
-html[data-theme='light']:not(#_) .bg-\[\#232323\],
-html[data-theme='light']:not(#_) .bg-\[\#242424\],
-html[data-theme='light']:not(#_) .bg-\[\#242523\],
-html[data-theme='light']:not(#_) .bg-\[\#242624\],
-html[data-theme='light']:not(#_) .bg-\[\#242625\],
-html[data-theme='light']:not(#_) .bg-\[\#252525\],
-html[data-theme='light']:not(#_) .bg-\[\#252827\],
-html[data-theme='light']:not(#_) .bg-\[\#262626\],
-html[data-theme='light']:not(#_) .bg-\[\#272827\],
-html[data-theme='light']:not(#_) .bg-\[\#282828\],
-html[data-theme='light']:not(#_) .bg-\[\#282a29\],
-html[data-theme='light']:not(#_) .bg-\[\#292929\],
-html[data-theme='light']:not(#_) .bg-\[\#2a2a2a\],
-html[data-theme='light']:not(#_) .bg-\[\#2b2b2b\],
-html[data-theme='light']:not(#_) .bg-\[\#2c2c2c\],
-html[data-theme='light']:not(#_) .bg-\[\#2e3230\],
-html[data-theme='light']:not(#_) .bg-\[\#303030\],
-html[data-theme='light']:not(#_) .bg-\[\#333333\],
-html[data-theme='light']:not(#_) .bg-\[\#343635\] {
+html[data-theme='light']:not(#_) .bg-\[\#202020\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#202220\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#222222\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#222423\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#232323\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#242424\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#242523\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#242624\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#242625\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#252525\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#252827\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#262626\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#272827\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#282828\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#282a29\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#292929\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#2a2a2a\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#2b2b2b\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#2c2c2c\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#2e3230\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#303030\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#333333\]:not([class*='light:bg-']),
+html[data-theme='light']:not(#_) .bg-\[\#343635\]:not([class*='light:bg-']) {
   background-color: #edf4f0;
   color: var(--text);
 }
@@ -431,17 +431,20 @@ html[data-theme='light']:not(#_) .text-white\/30 {
 /* --------------------------------------------------------------------------
    4. Sportsbook (sports.css & Sports Components)
    -------------------------------------------------------------------------- */
-html[data-theme='light']:not(#_) .sports-page .sports-tabs {
+html[data-theme='light']:not(#_) .sports-page .sports-tabs,
+html[data-theme='light']:not(#_) .sports-page--popular .sports-tabs {
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
 }
 
-html[data-theme='light']:not(#_) .sports-page .sports-tabs a {
+html[data-theme='light']:not(#_) .sports-page .sports-tabs a,
+html[data-theme='light']:not(#_) .sports-page--popular .sports-tabs a {
   color: var(--text);
 }
 
-html[data-theme='light']:not(#_) .sports-page .sports-tabs a.selected {
+html[data-theme='light']:not(#_) .sports-page .sports-tabs a.selected,
+html[data-theme='light']:not(#_) .sports-page--popular .sports-tabs a.selected {
   color: #ffffff;
   background: var(--main-highlight);
 }
@@ -453,41 +456,111 @@ html[data-theme='light']:not(#_) .sports-page .toolbar-circle-btn,
 html[data-theme='light']:not(#_) .sports-page .league-card,
 html[data-theme='light']:not(#_) .sports-page .event-card,
 html[data-theme='light']:not(#_) .sports-page .outright-accordion,
-html[data-theme='light']:not(#_) .league-preview {
+html[data-theme='light']:not(#_) .league-preview,
+html[data-theme='light']:not(#_) .sports-page--popular .league-preview {
   border: 1px solid var(--border);
+  background: var(--surface);
   box-shadow: 0 1px 3px rgba(16, 38, 28, 0.04);
 }
 
 html[data-theme='light']:not(#_) .sports-page .league-preview .league-card,
-html[data-theme='light']:not(#_) .sports-page .outright-accordion .league-card {
+html[data-theme='light']:not(#_) .sports-page .outright-accordion .league-card,
+html[data-theme='light']:not(#_) .sports-page--popular .league-preview-heading {
   border: 0;
   box-shadow: none;
+  background: var(--surface);
+  color: var(--text);
 }
 
+html[data-theme='light']:not(#_) .sports-page--popular .league-preview-heading .league-name,
+html[data-theme='light']:not(#_) .league-preview-heading .league-name {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .sports-page--popular .time-filter,
+html[data-theme='light']:not(#_) .sports-time-filters .time-filter,
+html[data-theme='light']:not(#_) .sports-date-filters .time-filter {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .sports-page--popular .time-filter[aria-pressed='true'],
+html[data-theme='light']:not(#_) .sports-page--popular .sports-tabs a.selected,
+html[data-theme='light']:not(#_) .sports-time-filters .time-filter[aria-pressed='true'],
+html[data-theme='light']:not(#_) .sports-date-filters .time-filter[aria-pressed='true'] {
+  border-color: var(--main-color)!important;
+  color: #ffffff;
+  background: var(--main-color)!important;
+}
+
+html[data-theme='light']:not(#_) .winner-match,
+html[data-theme='light']:not(#_) .winner-match--compact {
+  color: var(--text);
+  background: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .winner-match:hover,
+html[data-theme='light']:not(#_) .winner-match--compact:hover {
+  background: rgba(3, 98, 66, 0.04);
+}
+
+html[data-theme='light']:not(#_) .winner-teams {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .winner-date {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .market-team-name {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .sports-category-section--compact .sports-category-banner::after {
+  background: linear-gradient(to bottom, transparent 20%, rgba(238, 245, 241, 0.4) 60%, rgba(238, 245, 241, 0.95) 100%);
+}
+
+html[data-theme='light']:not(#_) .mobile-sports-nav {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.04);
+}
+
+html[data-theme='light']:not(#_) .mobile-sports-nav__search {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .sort-menu,
 html[data-theme='light']:not(#_) .sports-page .sort-menu {
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: 0 10px 30px rgba(16, 38, 28, 0.14);
 }
 
+html[data-theme='light']:not(#_) .sort-menu::before,
 html[data-theme='light']:not(#_) .sports-page .sort-menu::before {
   border-top: 1px solid var(--border);
   border-left: 1px solid var(--border);
   background: var(--surface);
 }
 
+html[data-theme='light']:not(#_) .sort-menu-title,
 html[data-theme='light']:not(#_) .sports-page .sort-menu-title {
   color: var(--heading);
 }
 
+html[data-theme='light']:not(#_) .sort-menu-item,
 html[data-theme='light']:not(#_) .sports-page .sort-menu-item {
   color: var(--text);
 }
 
+html[data-theme='light']:not(#_) .sort-menu-item:hover,
 html[data-theme='light']:not(#_) .sports-page .sort-menu-item:hover {
   background: rgba(3, 98, 66, 0.08);
 }
 
+html[data-theme='light']:not(#_) .sort-menu-item--active,
 html[data-theme='light']:not(#_) .sports-page .sort-menu-item--active {
   color: #ffffff;
   background: var(--main-color);
@@ -622,7 +695,7 @@ html[data-theme='light']:not(#_) .affiliate-action--primary {
   background: #007554;
 }
 
-html[data-theme='light']:not(#_) .product-card span {
+html[data-theme='light']:not(#_) .product-card .product-card__title {
   color: #ffffff;
 }
 
@@ -721,7 +794,7 @@ html[data-theme='light']:not(#_) .promotion-row__thumbnail {
   background: #edf4f0;
 }
 
-html[data-theme='light']:not(#_) .promotion-row__copy strong {
+html[data-theme='light']:not(#_) .promotion-row__copy .promotion-card-title {
   color: var(--heading);
 }
 
@@ -1036,7 +1109,7 @@ html[data-theme='light']:not(#_) .transaction-step {
   border-bottom-color: var(--border);
 }
 
-html[data-theme='light']:not(#_) .outright-heading h1,
+html[data-theme='light']:not(#_) .outright-heading h2,
 html[data-theme='light']:not(#_) .market-panel-title,
 html[data-theme='light']:not(#_) .betting-result-copy h2,
 html[data-theme='light']:not(#_) .tutorial-section-title,
@@ -1179,3 +1252,601 @@ html[data-theme='light']:not(#_) .me-page svg rect[fill='#ffff'] {
   fill: #e4eee8;
 }
 
+/* --------------------------------------------------------------------------
+   11. Blogs & Articles (Listing, Categories, Detail & Mobile Views)
+   -------------------------------------------------------------------------- */
+html[data-theme='light']:not(#_) .blogs-page,
+html[data-theme='light']:not(#_) .blog-category-page,
+html[data-theme='light']:not(#_) .blog-detail-page,
+html[data-theme='light']:not(#_) .mobile-blogs {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .blogs-sticky,
+html[data-theme='light']:not(#_) .blog-category-sticky,
+html[data-theme='light']:not(#_) .mobile-blogs,
+html[data-theme='light']:not(#_) .mobile-blogs__sticky {
+  background: var(--page);
+}
+
+html[data-theme='light']:not(#_) .blog-page-header,
+html[data-theme='light']:not(#_) .blog-category-header,
+html[data-theme='light']:not(#_) .blog-detail-header,
+html[data-theme='light']:not(#_) .category-nav,
+html[data-theme='light']:not(#_) .blog-group,
+html[data-theme='light']:not(#_) .blog-article,
+html[data-theme='light']:not(#_) .blog-not-found,
+html[data-theme='light']:not(#_) .category-empty,
+html[data-theme='light']:not(#_) .mobile-blogs__categories,
+html[data-theme='light']:not(#_) .mobile-blogs__group {
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .category-nav a {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .category-nav a:hover {
+  color: var(--heading);
+  background: rgba(3, 98, 66, 0.07);
+}
+
+html[data-theme='light']:not(#_) .category-nav a.category-nav__button--active,
+html[data-theme='light']:not(#_) .category-nav a[aria-current='page'],
+html[data-theme='light']:not(#_) .mobile-blogs__categories a[aria-current='page'] {
+  color: #ffffff;
+  background: #07835c;
+}
+
+html[data-theme='light']:not(#_) .mobile-blogs__categories a {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .mobile-blogs__categories a:hover {
+  color: var(--heading);
+  background: rgba(3, 98, 66, 0.07);
+}
+
+html[data-theme='light']:not(#_) .featured-blogs__arrow {
+  border: 1px solid var(--border);
+  color: var(--heading);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(16, 38, 28, 0.12);
+}
+
+html[data-theme='light']:not(#_) .featured-blogs__arrow:hover {
+  color: var(--main-color);
+  background: #ffffff;
+}
+
+html[data-theme='light']:not(#_) .blog-group__heading {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .blog-group__heading svg,
+html[data-theme='light']:not(#_) .mobile-blogs__heading svg {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .blog-card {
+  border-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .blog-card--row:hover,
+html[data-theme='light']:not(#_) .mobile-blog-row:hover {
+  background: rgba(3, 98, 66, 0.05);
+}
+
+html[data-theme='light']:not(#_) .blog-card--row .blog-card__media {
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .blog-card--row .blog-card__copy .blog-card__title,
+html[data-theme='light']:not(#_) .mobile-blog-row__copy .mobile-blog-title,
+html[data-theme='light']:not(#_) .mobile-blogs__heading h2 {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .blog-card--row .blog-card__copy span,
+html[data-theme='light']:not(#_) .blog-card__excerpt,
+html[data-theme='light']:not(#_) .mobile-blog-row__copy small {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .blog-card--row .blog-card__action,
+html[data-theme='light']:not(#_) .mobile-blog-row__details {
+  border: 1px solid rgba(3, 98, 66, 0.15);
+  color: #3b5247;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .blog-card--row .blog-card__action:hover,
+html[data-theme='light']:not(#_) .mobile-blog-row__details:hover {
+  color: var(--main-color);
+  background: rgba(3, 98, 66, 0.12);
+}
+
+html[data-theme='light']:not(#_) .blog-card--grid,
+html[data-theme='light']:not(#_) .blog-card--featured,
+html[data-theme='light']:not(#_) .mobile-blog-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .blog-card--grid:hover,
+html[data-theme='light']:not(#_) .blog-card--featured:hover,
+html[data-theme='light']:not(#_) .mobile-blog-card:hover {
+  border-color: rgba(3, 98, 66, 0.35);
+  box-shadow: 0 4px 12px rgba(16, 38, 28, 0.08);
+}
+
+html[data-theme='light']:not(#_) .blog-card--grid .blog-card__media,
+html[data-theme='light']:not(#_) .blog-card--featured .blog-card__media,
+html[data-theme='light']:not(#_) .mobile-blog-card__image {
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .blog-card--grid .blog-card__copy,
+html[data-theme='light']:not(#_) .blog-card--featured .blog-card__copy,
+html[data-theme='light']:not(#_) .mobile-blog-card__copy {
+  background: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .blog-card--grid .blog-card__title,
+html[data-theme='light']:not(#_) .blog-card--featured .blog-card__title,
+html[data-theme='light']:not(#_) .mobile-blog-card__copy .mobile-blog-title {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .blog-card--grid .blog-card__copy span,
+html[data-theme='light']:not(#_) .blog-card--featured .blog-card__copy span,
+html[data-theme='light']:not(#_) .mobile-blog-card__copy span {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .mobile-blogs__next {
+  border: 1px solid var(--border);
+  color: var(--heading);
+  background: var(--surface);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme='light']:not(#_) .mobile-blogs__dots button {
+  background: #cbd9d1;
+}
+
+html[data-theme='light']:not(#_) .mobile-blogs__dots button[aria-pressed="true"] {
+  background: #07835c;
+}
+
+html[data-theme='light']:not(#_) .mobile-blog-row {
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .blog-banner {
+  border-color: var(--border);
+  background: #edf4f0;
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .blog-article__header {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .blog-article__breadcrumbs {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .blog-article__breadcrumbs a {
+  color: var(--main-color);
+}
+
+html[data-theme='light']:not(#_) .blog-article__breadcrumbs a:hover {
+  color: #065f46;
+  text-decoration: underline;
+}
+
+html[data-theme='light']:not(#_) .blog-article__title {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .blog-article__meta {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body h1,
+html[data-theme='light']:not(#_) .blog-article__body h2,
+html[data-theme='light']:not(#_) .blog-article__body h3,
+html[data-theme='light']:not(#_) .blog-article__body h4,
+html[data-theme='light']:not(#_) .blog-article__body strong,
+html[data-theme='light']:not(#_) .blog-article__body b {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body p,
+html[data-theme='light']:not(#_) .blog-article__body li {
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body a {
+  color: var(--main-color);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body blockquote {
+  border-left-color: var(--main-color);
+  background: #f0fdf4;
+  color: #374151;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body hr {
+  border-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body code {
+  color: #047857;
+  background: #edf4f0;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body pre {
+  border: 1px solid var(--border);
+  color: #1e293b;
+  background: #f8fafc;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-table-block table {
+  border-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-table-block th {
+  border-color: var(--border);
+  color: var(--heading);
+  background: #f0fdf4;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-table-block td {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-faq-block,
+html[data-theme='light']:not(#_) .blog-article__body .blog-faqs {
+  background: #f0fdf4 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-faq-item {
+  background: #ffffff !important;
+  border-color: rgba(16, 185, 129, 0.22) !important;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-faq-item summary {
+  color: #047857 !important;
+}
+
+html[data-theme='light']:not(#_) .blog-article__body .blog-faq-item p {
+  color: #1f2937 !important;
+}
+
+html[data-theme='light']:not(#_) .blog-article__footer {
+  border-top-color: var(--border);
+}
+
+html[data-theme='light']:not(#_) .back-link {
+  color: var(--main-color);
+}
+
+html[data-theme='light']:not(#_) .blog-not-found {
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(16, 38, 28, 0.05);
+}
+
+html[data-theme='light']:not(#_) .blog-not-found h1 {
+  color: var(--heading);
+}
+
+html[data-theme='light']:not(#_) .blog-not-found p {
+  color: var(--secondary);
+}
+
+html[data-theme='light']:not(#_) .category-empty {
+  border: 1px solid var(--border);
+  color: var(--secondary);
+  background: var(--surface);
+}
+
+html[data-theme='light']:not(#_) .category-empty__link {
+  color: var(--main-color);
+}
+
+html[data-theme='light']  .subpage-header{
+    background: rgb(255, 255, 255, 0.95);
+    color: #000;
+}
+html[data-theme='light'] .subpage-header__back-btn {
+    background: #fff;
+}
+html[data-theme='light']  .subpage-header__title {
+    color: #000;
+}
+
+/* Jackpot reference design: desktop light mode only. */
+@media (min-width: 64rem) {
+  html[data-theme='light']:not(#_) .jackpot-page {
+    background: #f3f4f6;
+    color: #333333;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page > .sticky-header {
+    margin-inline: 0;
+    padding: 0 0 8px;
+    background: #f3f4f6;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .top-nav-bar {
+    min-height: 62px;
+    padding: 8px;
+    border: 0;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 6px 14px rgb(25 36 46 / 7%);
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .provider-nav-track {
+    gap: 8px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .provider-nav-track .nav-tab {
+    width: 44px;
+    min-width: 44px;
+    height: 36px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .provider-nav-track .nav-tab[aria-current='page'] {
+    background: #006347;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .provider-nav-track .nav-tab:not([aria-current='page']):hover {
+    background: #f3f4f6;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .provider-nav-track .nav-tab img {
+    width: 28px;
+    max-width: 28px;
+    height: 28px;
+    opacity: 1;
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .nav-tab--chat {
+    min-width: 48px;
+    padding: 0 8px;
+    color: #96989a;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .nav-tab--chat svg {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 2px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .nav-tab--chat span {
+    font-size: 10px;
+    line-height: 14px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-provider-section {
+    margin-bottom: 20px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-provider-header {
+    margin-bottom: 10px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-provider-identity,
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-provider-count {
+    top: 16px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-provider-identity {
+    left: 14px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-provider-logo {
+    width: 44px;
+    max-width: 44px;
+    height: 38px;
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .count-badge {
+    gap: 5px;
+    min-height: 28px;
+    padding: 2px 8px;
+    color: #999999;
+    background: #ffffff;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .count-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-brand-stage {
+    height: 104px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-wordmark {
+    bottom: 0;
+    width: 180px;
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-character {
+    bottom: 0;
+    left: calc(50% + 64px);
+    width: 120px;
+    max-height: 90px;
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-character--dragon {
+    width: 136px;
+    max-height: 101px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-character--genie {
+    width: 108px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-counter-track {
+    height: 64px;
+    border-radius: 8px;
+    background: #e6e6e6;
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-counter {
+    gap: 2px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-counter-character {
+    position: relative;
+    width: 41px;
+    height: 57px;
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 6px;
+    background: linear-gradient(180deg, #eeeeee, #fafafa 49%, #ededed 51%, #f3f3f3);
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-counter-character::after {
+    position: absolute;
+    z-index: 1;
+    top: calc(50% - 2px);
+    right: 0;
+    left: 0;
+    height: 4px;
+    border-block: 1px solid rgb(170 170 170 / 35%);
+    background: linear-gradient(180deg, rgb(255 255 255 / 75%), rgb(160 160 160 / 25%), rgb(255 255 255 / 75%));
+    content: '';
+    pointer-events: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-digit-image {
+    position: relative;
+    z-index: 2;
+    width: 34px;
+    max-height: 45px;
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .jackpot-separator-image {
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-rail {
+    grid-auto-columns: 146px;
+    gap: 8px;
+    padding-block: 2px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-rail--grid {
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(auto-fill, 146px);
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card {
+    overflow: hidden;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card > div:first-child {
+    border-radius: 8px 8px 0 0;
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card > div:nth-child(2) {
+    min-height: 28px;
+    gap: 4px;
+    margin: 0;
+    padding: 3px 4px;
+    background: #ffffff;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card > div:nth-child(2) :is(h2, h3) {
+    min-width: 0;
+    color: #333333;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card > div:nth-child(2) img {
+    width: 20px;
+    max-width: 20px;
+    height: 20px;
+    opacity: 1;
+    filter: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card [class~='top-1'][class~='right-0.5'] {
+    top: 4px;
+    right: 4px;
+    font-size: 12px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card [class~='top-1'][class~='right-0.5'] > span:first-child {
+    color: #ffffff;
+    background: #006347;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card [class~='top-1'][class~='right-0.5'] > span:last-child {
+    color: #333333;
+    background: #eeeeee;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card [class~='bottom-1'][class~='left-2'] {
+    bottom: 7px;
+    left: 5px;
+    padding-inline: 3px;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 14px;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .game-card button[aria-label='Game info'],
+  html[data-theme='light']:not(#_) .jackpot-page .game-card button[aria-label='Game info'] svg {
+    width: 12px;
+    height: 12px;
+    color: #eeeeee;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .winners-card {
+    color: #333333;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  html[data-theme='light']:not(#_) .jackpot-page .winner-item:nth-child(even) {
+    background: #f3f4f6;
+  }
+}

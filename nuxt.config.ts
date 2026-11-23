@@ -14,6 +14,7 @@ const environment = (
         SITE_NAME?: string
         SITE_URL?: string
         INDEX_FOLLOW?: string
+        BLOGGERIST_URL?: string
       }
     }
   }
@@ -26,10 +27,12 @@ export default defineNuxtConfig({
   buildDir: environment?.NODE_ENV === 'production' ? 'node_modules/.cache/bybet-nuxt-build' : '.nuxt',
   devtools: { enabled: false },
   runtimeConfig: {
+    bloggeristUrl: environment?.BLOGGERIST_URL || 'http://localhost:8082',
     oddsApi: environment?.SPORTS_API || 'https://api.the-odds-api.com/v4',
     oddsApiKey: environment?.SPORTS_API_KEY || '',
     useOddsApi: environment?.USE_ODDS_API === 'true',
     public: {
+      bloggeristUrl: environment?.BLOGGERIST_URL || 'http://localhost:8082',
       useOddsApi: environment?.USE_ODDS_API === 'true',
       bybetRedirectUrl: environment?.BYBET_REDIRECT_URL || 'https://bybet.com',
       bybetRedirectCode: environment?.BYBET_REDIRECT_CODE || 'xjSD',
@@ -49,6 +52,12 @@ export default defineNuxtConfig({
           await generateSitemapFile(nitro.options.runtimeConfig?.public?.siteUrl)
         } catch (e) {
           console.warn('[sitemap] Build hook warning:', e)
+        }
+        try {
+          const { generateLlmsFile } = await import('./scripts/generate-llms.mjs')
+          await generateLlmsFile(nitro.options.runtimeConfig?.public?.siteUrl)
+        } catch (e) {
+          console.warn('[llms] Build hook warning:', e)
         }
       },
     },

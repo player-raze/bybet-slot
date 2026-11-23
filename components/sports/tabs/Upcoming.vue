@@ -27,7 +27,7 @@ const earliestTimes = ref<Record<string, number>>({})
 const timeFilters = ['1hours', '3hours', '6hours', '12hours', '24hours'] as const
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => sportsRouteBase.value === '/explore/sports/popular')
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 const oddsCols = computed<2 | 3>(() => route.params.sport === 'soccer' ? 3 : 2)
 const selectedTimeFilter = ref<(typeof timeFilters)[number] | null>(null)
 const sortBy = ref<'league' | 'time'>('time')
@@ -308,8 +308,8 @@ const toggleCollapseAll = (): void => {
         v-for="filter in displayedTimeFilters"
         :key="filter"
         type="button"
-        class="time-filter rounded-md  px-3 py-1 text-[12px] font-medium text-white"
-        :class="selectedTimeFilter === filter ? 'bg-[var(--main-highlight)]' : 'bg-[#1a1a1a]'"
+        class="time-filter light:bg-white rounded-md  px-3 py-1 text-[12px] font-medium text-white"
+        :class="selectedTimeFilter === filter ? 'bg-[var(--main-highlight)]' : 'bg-[#1a1a1a] light:bg-[#edf4f0] light:text-[#14251d] light:border light:border-black/5'"
         :aria-pressed="selectedTimeFilter === filter"
         @click="selectTimeFilter(filter)"
       >
@@ -329,8 +329,9 @@ const toggleCollapseAll = (): void => {
           <article
             v-for="sport in category.sports"
             :key="sport.key"
-            class="league-preview"
+            class="league-preview light:bg-white light:border light:border-black/10 light:shadow-sm"
           >
+            <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ sport.title }} {{ sport.description }}</component>
             <button
               :id="`league-trigger-${sport.key}`"
               class="league-card league-preview-heading"
@@ -339,7 +340,7 @@ const toggleCollapseAll = (): void => {
               :aria-controls="`league-panel-${sport.key}`"
               @click="toggleTournament(sport.key)"
             >
-              <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
+              <span class="league-name text-[12px] text-[#999] light:text-[#4d5f56] truncate" :title="sport.title">
                 {{ sport.title }} {{ sport.description }}
               </span>
               <CollapseIcon :expanded="isExpanded(sport.key)" />

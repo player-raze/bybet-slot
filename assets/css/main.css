@@ -115,11 +115,11 @@ body {
 html[data-theme='light'] .sidebar {
   border-color: rgba(3, 98, 66, 0.16);
   color: var(--text);
-  background: var(--sidebar);
+  /* background: var(--sidebar); */
   box-shadow: 0.4rem 0 1.2rem rgba(24, 72, 50, 0.08);
 }
 
-html[data-theme='light'] .rail-pill,
+
 html[data-theme='light'] .rail-submenu--panel {
   border-color: var(--border);
   background: rgba(255, 255, 255, 0.82);

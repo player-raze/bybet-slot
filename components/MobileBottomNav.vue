@@ -12,27 +12,27 @@ const { context: chatContext } = useCommentPanel()
 const isMaintenanceOpen = ref(false)
 
 const casinoItems = [
-  { label: 'Live Casino', icon: '/icons/entertainment/live-casino.webp', to: '/explore/entertainment/live-casino/baccarat' },
+  { label: 'Live Casino', icon: '/icons/entertainment/live-casino.webp', to: '/entertainment/live-casino/baccarat' },
   { label: 'Gaming', icon: '/icons/entertainment/gaming.webp', to: `${(bybetRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/sportEvents/eSport?p=${bybetRedirectCode || 'xjSD'}` },
-  { label: 'Poker', icon: '/icons/entertainment/poker.webp', to: '/explore/entertainment/live-casino/poker' },
-  { label: 'Lottery', icon: '/icons/entertainment/lottery.webp', to: '/explore/entertainment/lottery' },
+  { label: 'Poker', icon: '/icons/entertainment/poker.webp', to: '/entertainment/live-casino/poker' },
+  { label: 'Lottery', icon: '/icons/entertainment/lottery.webp', to: '/entertainment/lottery' },
 ]
 
 const eGamesItems = [
-  { label: 'Slots', icon: '/icons/egames/slots.webp', to: '/explore/egames/slots' },
-  { label: 'Bingo', icon: '/icons/egames/bingo.webp', to: '/explore/egames/bingo' },
-  { label: 'Jackpot', icon: '/icons/egames/jackpot.webp', to: '/explore/egames/jackpot' },
+  { label: 'Slots', icon: '/icons/egames/slots.webp', to: '/egames/slots' },
+  { label: 'Bingo', icon: '/icons/egames/bingo.webp', to: '/egames/bingo' },
+  { label: 'Jackpot', icon: '/icons/egames/jackpot.webp', to: '/egames/jackpot' },
   { label: 'History', icon: '/icons/egames/history.webp', to: `${(bybetRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}` },
 ]
 
 const getNavModeForPath = (path: string): NavMode => {
-  if (path.startsWith('/explore/live-plaza/')) {
+  if (path.startsWith('/live-plaza/') || path.startsWith('/explore/live-plaza/')) {
     return 'live-plaza'
   }
-  if (path.startsWith('/explore/entertainment/')) {
+  if (path.startsWith('/entertainment/') || path.startsWith('/explore/entertainment/')) {
     return 'casino'
   }
-  if (path.startsWith('/explore/egames/')) {
+  if (path.startsWith('/egames/') || path.startsWith('/explore/egames/')) {
     return 'egames'
   }
   return 'primary'
@@ -48,18 +48,22 @@ const isMobileViewport = ref(false)
 const isPageFooterVisible = ref(false)
 let pageFooterObserver: IntersectionObserver | null = null
 const isCustomerServicePage = computed(() => (
-  route.path === '/explore/egames/customer-service'
+  route.path === '/egames/customer-service'
+  || route.path.startsWith('/egames/customer-service/')
+  || route.path === '/explore/egames/customer-service'
   || route.path.startsWith('/explore/egames/customer-service/')
 ))
 const hasChatRoom = computed(() => (
-  (route.path.startsWith('/explore/egames/')
+  ((route.path.startsWith('/egames/') || route.path.startsWith('/explore/egames/'))
   && !isCustomerServicePage.value)
+  || route.path.startsWith('/entertainment/live-casino')
   || route.path.startsWith('/explore/entertainment/live-casino')
+  || route.path.startsWith('/sports/')
   || route.path.startsWith('/explore/sports/')
 ))
 const isChatExpanded = computed(() => isMobileViewport.value && hasChatRoom.value && chatContext.value !== null)
-const isBonusDetailPage = computed(() => route.path.startsWith('/explore/bonus/'))
-const isCustomerServiceChatPage = computed(() => /^\/explore\/egames\/customer-service\/[12]\/?$/.test(route.path))
+const isBonusDetailPage = computed(() => route.path.startsWith('/bonus/') || route.path.startsWith('/explore/bonus/'))
+const isCustomerServiceChatPage = computed(() => /^\/(?:explore\/)?egames\/customer-service\/[12]\/?$/.test(route.path))
 const showNavigation = computed(() => !isBonusDetailPage.value && (isDoorAnimating.value || isChatExpanded.value || isNavVisible.value || (hasChatRoom.value && !isPageFooterVisible.value)))
 const updateViewport = (): void => { isMobileViewport.value = window.innerWidth < 1024 }
 
@@ -138,14 +142,19 @@ const isPathActive = (destination: string): boolean => {
 const isCasinoItemActive = (item: { label: string; to: string }): boolean => {
   if (item.label === 'Poker') {
     return (
-      route.path === '/explore/entertainment/live-casino/poker'
+      route.path === '/entertainment/live-casino/poker'
+      || route.path.startsWith('/entertainment/live-casino/poker/')
+      || route.path === '/explore/entertainment/live-casino/poker'
       || route.path.startsWith('/explore/entertainment/live-casino/poker/')
     )
   }
   if (item.label === 'Live Casino') {
     return (
-      (route.path.startsWith('/explore/entertainment/live-casino')
+      (route.path.startsWith('/entertainment/live-casino')
+      || route.path === '/entertainment'
+      || route.path.startsWith('/explore/entertainment/live-casino')
       || route.path === '/explore/entertainment')
+      && !route.path.startsWith('/entertainment/live-casino/poker')
       && !route.path.startsWith('/explore/entertainment/live-casino/poker')
     )
   }
@@ -157,13 +166,14 @@ const isEGamesItemActive = (item: { label: string; to: string }): boolean => {
 }
 
 const isSportsActive = computed(() => (
-  route.path.startsWith('/explore/sports/')
+  (route.path.startsWith('/sports/') || route.path.startsWith('/explore/sports/'))
+  && !route.path.startsWith('/sports/live')
   && !route.path.startsWith('/explore/sports/live')
 ))
 
-const isInPlayActive = computed(() => route.path.startsWith('/explore/sports/live'))
-const isEGamesActive = computed(() => route.path.startsWith('/explore/egames/'))
-const isAccountActive = computed(() => route.path.startsWith('/explore/account/'))
+const isInPlayActive = computed(() => route.path.startsWith('/sports/live') || route.path.startsWith('/explore/sports/live'))
+const isEGamesActive = computed(() => route.path.startsWith('/egames/') || route.path.startsWith('/explore/egames/'))
+const isAccountActive = computed(() => route.path.startsWith('/account/') || route.path.startsWith('/explore/account/'))
 
 interface NavCell {
   key: string
@@ -180,10 +190,10 @@ const nuxtLinkComponent = resolveComponent('NuxtLink')
 const navRow = ref<HTMLElement | null>(null)
 const movingDoorRadius = ref<string>()
 const livePlazaItems = [
-  { label: 'Plaza', icon: 'plaza', to: '/explore/live-plaza/home' },
-  { label: 'Streamer', icon: 'streamer', to: '/explore/live-plaza/streamer' },
-  { label: 'Predict', icon: 'predict', to: '/explore/live-plaza/expert-predictions' },
-  { label: 'Funds', icon: 'funds', to: '/explore/live-plaza/funds' },
+  { label: 'Plaza', icon: 'plaza', to: '/live-plaza/home' },
+  { label: 'Streamer', icon: 'streamer', to: '/live-plaza/streamer' },
+  { label: 'Predict', icon: 'predict', to: '/live-plaza/expert-predictions' },
+  { label: 'Funds', icon: 'funds', to: '/live-plaza/funds' },
 ]
 const isPlazaItemActive = (label: string, to: string): boolean => {
   const path = route.path.replace(/\/$/, '')
@@ -194,10 +204,10 @@ const isPlazaItemActive = (label: string, to: string): boolean => {
 // Semantic keys identify real menu items, never interchangeable slot numbers.
 // Every group stays mounted; only visibility changes after the slide settles.
 const regularCells = computed<NavCell[]>(() => [
-  { key: 'primary-sports', group: 'primary', label: 'Sports', icon: 'Sports', to: '/explore/sports/popular', active: isSportsActive.value },
-  { key: 'primary-inplay', group: 'primary', label: 'In-Play', icon: 'In-Play', to: '/explore/sports/live', active: isInPlayActive.value },
-  { key: 'primary-egames', group: 'primary', label: 'eGames', icon: 'eGames', to: '/explore/egames/slots', mode: 'egames', active: isEGamesActive.value },
-  { key: 'primary-me', group: 'primary', label: 'Me', icon: 'Me', to: '/explore/account/me', active: isAccountActive.value },
+  { key: 'primary-sports', group: 'primary', label: 'Sports', icon: 'Sports', to: '/sports/popular', active: isSportsActive.value },
+  { key: 'primary-inplay', group: 'primary', label: 'In-Play', icon: 'In-Play', to: '/sports/live', active: isInPlayActive.value },
+  { key: 'primary-egames', group: 'primary', label: 'eGames', icon: 'eGames', to: '/egames/slots', mode: 'egames', active: isEGamesActive.value },
+  { key: 'primary-me', group: 'primary', label: 'Me', icon: 'Me', to: '/account/me', active: isAccountActive.value },
   ...casinoItems.map(item => ({
     key: 'casino-' + item.label, group: 'casino' as NavMode,
     label: item.label, icon: item.label,
@@ -219,7 +229,7 @@ const allNavCells = computed<NavCell[]>(() => [
     key: 'door',
     label: activeNavMode.value === 'primary' ? 'To casino games' : 'Back to main navigation',
     icon: 'primary-door',
-    to: activeNavMode.value === 'primary' ? '/explore/entertainment/live-casino/baccarat' : '/explore/sports/popular/league',
+    to: activeNavMode.value === 'primary' ? '/entertainment/live-casino/baccarat' : '/sports/popular/league',
     mode: activeNavMode.value === 'primary' ? 'casino' : 'primary',
   },
   ...regularCells.value,
@@ -724,7 +734,6 @@ const handleNavCell = (cell: NavCell): void => {
     font-weight: 700;
     line-height: 1;
     background: #00875e;
-    box-shadow: 0 0 0 2px #111111;
   }
 
   @media (max-width: 22rem) {

@@ -108,7 +108,8 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
 
 <template>
   <section class="transaction-tutorial" :class="`transaction-tutorial--${mode}`">
-    <SubpageHeader mobile-tabs back-to="/explore/account/me" class="mb-2 sm:mb-3">
+    <h1 class="sr-only">{{ mode === 'deposit' ? 'How to Deposit on ByBet' : 'How to Withdraw from ByBet' }}</h1>
+    <SubpageHeader mobile-tabs back-to="/account/me" class="mb-2 sm:mb-3">
       <template #center>
         <div class="transaction-pill-group" role="tablist">
           <NuxtLink
@@ -134,14 +135,14 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
     </SubpageHeader>
 
     <div class="transaction-board-wrapper px-2.5 sm:px-0">
-      <div class="transaction-board">
+      <div class="transaction-board light:bg-white light:border light:border-black/10 light:text-[#14251d]">
         <article
-          v-for="(step, index) in steps"
+          v-for="step in steps"
           :key="step.title"
           class="transaction-step"
         >
           <div class="transaction-copy">
-            <component :is="index === 0 ? 'h2' : 'h2'">{{ step.title }}</component>
+            <h2>{{ step.title }}</h2>
             <p>{{ step.description }}</p>
           </div>
           <TransactionTutorialVisual
@@ -265,7 +266,6 @@ const steps = computed(() => (props.mode === 'deposit' ? depositSteps : withdraw
   text-align: center;
 }
 
-.transaction-copy h1,
 .transaction-copy h2 {
   margin: 0 0 3px;
   color: #f5f5f5;

@@ -19,7 +19,7 @@ const openPageComments = (): void => {
     return
   }
 
-  if (route.path.startsWith('/explore/sports/')) {
+  if (route.path.startsWith('/sports/') || route.path.startsWith('/explore/sports/')) {
     openSportsComments()
     void nextTick(() => {
       document.getElementById('comment-panel')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
@@ -70,7 +70,7 @@ const externalSiteUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$
         <Bell :size="20" :stroke-width="2" />
       </a>
       <NuxtLink
-        to="/explore/egames/customer-service"
+        to="/egames/customer-service"
         class="header-glass-icon header-glass-icon--utility"
         aria-label="Customer service"
       >
@@ -93,7 +93,7 @@ const externalSiteUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$
         {{ translate('Sign Up') }}
       </a>
       <NuxtLink
-        to="/explore/account/me"
+        to="/account/me"
         class="header-glass-icon header-glass-icon--profile"
         aria-label="Open profile"
       >

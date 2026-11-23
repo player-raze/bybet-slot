@@ -1,14 +1,13 @@
 <script setup lang="ts">
-useAppSeo({
-  title: 'Explore Games, Sports & Casino Entertainment | ByBet',
-  description: 'Explore premier sports betting, live dealer casino tables, slots, and exclusive player bonuses on the official ByBet Philippines gaming platform.',
-  breadcrumbs: [
-    { name: 'Home', path: '/' },
-    { name: 'Explore', path: '/explore' },
-  ],
-})
+const route = useRoute()
+const cleanPath = route.path.replace(/^\/explore\/?/, '')
+await navigateTo({
+  path: `/${cleanPath}`,
+  query: route.query,
+  hash: route.hash,
+}, { redirectCode: 301, replace: true })
 </script>
 
 <template>
-  <ComingSoonFallback :disable-seo="true" />
+  <div />
 </template>

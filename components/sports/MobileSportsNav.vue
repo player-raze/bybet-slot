@@ -36,14 +36,14 @@ const sports: MobileSportNavItem[] = [
   { key: 'table-tennis', label: 'Table Tennis', image: '/icons/sports/table-tennis.webp', external: true, url: 'sportEvents/incoming/tableTennis' },
   { key: 'esports', label: 'eSports', image: '/icons/sports/egame.webp', external: true, url: 'sportEvents/eSportGame' },
   { key: 'all', label: 'All Sports', image: '/icons/sports/esports.webp', external: true, url: 'sportEvents/eSportBall' },
-  { key: 'live', label: 'Live', image: '/icons/sports/live.webp', to: '/explore/sports/live' },
-  { key: 'live-plaza', label: 'Live Plaza', image: '/icons/sports/live-plaza.webp', to: '/explore/live-plaza/home' },
-  { key: 'bonuses', label: 'Bonuses', image: '/icons/sports/bonus.webp', to: '/explore/bonuses' },
+  { key: 'live', label: 'Live', image: '/icons/sports/live.webp', to: '/sports/live' },
+  { key: 'live-plaza', label: 'Live Plaza', image: '/icons/sports/live-plaza.webp', to: '/live-plaza/home' },
+  { key: 'bonuses', label: 'Bonuses', image: '/icons/sports/bonus.webp', to: '/bonuses' },
 ]
 
-const isLive = computed(() => route.path.startsWith('/explore/sports/live'))
+const isLive = computed(() => route.path.startsWith('/sports/live') || route.path.startsWith('/explore/sports/live'))
 const selectedSport = computed(() => {
-  if (route.path.startsWith('/explore/sports/popular')) return 'popular'
+  if (route.path.startsWith('/sports/popular') || route.path.startsWith('/explore/sports/popular')) return 'popular'
   const sportParam = String(route.params.sport || 'popular')
   return sportParam === 'football' ? 'soccer' : sportParam
 })
@@ -65,18 +65,18 @@ const destination = (sport: typeof sports[number]): string => {
     return resolveExternalSportUrl()
   }
   const key = sport.key === 'all' ? 'popular' : sport.key
-  if (isLive.value) return key === 'popular' ? '/explore/sports/live' : `/explore/sports/live/${key}`
+  if (isLive.value) return key === 'popular' ? '/sports/live' : `/sports/live/${key}`
 
   const currentTab = String(route.params.tab || 'league')
   const availableTabs = ['league', 'inplay', 'upcoming', 'pre-match', 'smart-pick', 'outright']
   if (key === 'soccer') availableTabs.push('replay')
   const tab = availableTabs.includes(currentTab) ? currentTab : 'league'
-  return `/explore/sports/${key}/${tab}`
+  return `/sports/${key}/${tab}`
 }
 </script>
 
 <template>
-  <nav class="mobile-sports-nav" :aria-label="translate('Sports')">
+  <nav class="mobile-sports-nav light:bg-[#edf4f0] light:border light:border-black/10" :aria-label="translate('Sports')">
     <NuxtLink
       v-for="sport in sports"
       :key="sport.key"
@@ -104,7 +104,7 @@ const destination = (sport: typeof sports[number]): string => {
     <NuxtLink
       :to="bybetRedirectSearch"
       external
-      class="mobile-sports-nav__item mobile-sports-nav__search"
+      class="mobile-sports-nav__item mobile-sports-nav__search light:text-[#14251d]"
       :aria-label="translate('Search sports')"
     >
       <Search :size="24" :stroke-width="1.5" aria-hidden="true" />

@@ -25,7 +25,7 @@ useAppSeo({
       url: `${siteUrl.value}/`,
       potentialAction: {
         '@type': 'SearchAction',
-        target: `${siteUrl.value}/explore/egames/slots?q={search_term_string}`,
+        target: `${siteUrl.value}/egames/slots?q={search_term_string}`,
         'query-input': 'required name=search_term_string',
       },
     },
@@ -59,7 +59,7 @@ useAppSeo({
 </script>
 
 <template>
-  <div class="home-page">
+  <div class="home-page ">
     <ReferenceHero />
     <ReferenceCategoryTabs />
     <ReferenceGameSection
@@ -67,21 +67,21 @@ useAppSeo({
       title="Popular Slots"
       variant="popular"
       :games="popularGames"
-      to="/explore/egames/slots"
+      to="/egames/slots"
     />
     <ReferenceGameSection
       id="new-releases"
       title="New Releases"
       variant="new"
       :games="newGames"
-      to="/explore/egames/slots"
+      to="/egames/slots"
     />
     <ReferenceGameSection
       id="recommended"
       title="Recommended For You"
       variant="recommended"
       :games="recommendedGames"
-      to="/explore/egames/slots"
+      to="/egames/slots"
     />
     <ReferenceJackpots />
     <ReferenceProviders :providers="providers" />

@@ -123,7 +123,7 @@ onBeforeUnmount(() => {
     <header class="player-winners__header">
       <h3 id="player-winners-title">Player Winners</h3>
       <div class="player-winners__actions">
-        <NuxtLink to="/explore/egames/jackpot/all">View All</NuxtLink>
+        <NuxtLink to="/egames/jackpot/all">View All</NuxtLink>
         <button
           type="button"
           class="winner-motion-toggle"

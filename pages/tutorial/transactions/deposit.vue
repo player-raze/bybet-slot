@@ -19,6 +19,5 @@ useAppSeo({
 </script>
 
 <template>
-  <h1 class="hidden">How to Deposit in Bybet </h1>
   <TransactionTutorialPage mode="deposit" />
 </template>

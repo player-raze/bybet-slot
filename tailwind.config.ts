@@ -10,6 +10,14 @@ export default {
         'main-highlight': 'var(--main-highlight)',
         'header-text': 'var(--header-text)',
         'theme-header-text': 'var(--header-text)',
+        'theme-page': 'var(--page)',
+        'theme-surface': 'var(--surface)',
+        'theme-elevated': 'var(--elevated)',
+        'theme-panel': 'var(--panel)',
+        'theme-sidebar': 'var(--sidebar)',
+        'theme-border': 'var(--border)',
+        'theme-text': 'var(--text)',
+        'theme-heading': 'var(--heading)',
       },
       fontFamily: {
         sans: [
@@ -29,7 +37,15 @@ export default {
   },
   plugins: [
     plugin(({ addVariant }) => {
-      addVariant('light', ['[data-theme="light"] &', '&[data-theme="light"]'])
+      addVariant('light', [
+        'html[data-theme="light"]:not(#_):not(#__) &',
+        'html[data-theme="light"]:not(#_) &',
+        'html[data-theme="light"] &',
+        '[data-theme="light"] &',
+        '&[data-theme="light"]',
+        '.light &',
+        '&.light',
+      ])
     }),
   ],
 } satisfies Config

@@ -19,6 +19,5 @@ useAppSeo({
 </script>
 
 <template>
-  <h1 class="hidden">How to Withdraw in Bybet </h1>
   <TransactionTutorialPage mode="withdraw" />
 </template>

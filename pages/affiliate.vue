@@ -218,7 +218,7 @@ const handleBack = (): void => {
     return
   }
 
-  router.push('/explore/account/me')
+  router.push('/account/me')
 }
 
 const toggleAdvantage = (id: string): void => {
@@ -252,15 +252,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="affiliate-page">
+  <div class="affiliate-page light:bg-[#eef5f1] light:text-[#14251d]">
     <SubpageHeader
       title="Affiliate"
-      back-to="/explore/account/me"
+      back-to="/account/me"
       class="mb-1.5 sm:mb-2.5"
     />
 
     <div class="affiliate-content-container px-2 sm:px-0">
-      <nav class="affiliate-tabs" aria-label="Affiliate sections" role="tablist">
+      <nav class="affiliate-tabs light:bg-white light:border light:border-black/10" aria-label="Affiliate sections" role="tablist">
         <button
           v-for="tab in affiliateTabs"
           :key="tab.id"
@@ -276,16 +276,17 @@ onBeforeUnmount(() => {
 
       <main class="affiliate-main">
       <section v-if="activeTab === 'cooperation'" class="affiliate-panel affiliate-cooperation">
+        <h2 class="sr-only">Cooperation Methods</h2>
         <div class="affiliate-hero">
           <div class="affiliate-hero-copy">
-            <h2>Provide highest commission rate<br>to make big money easily!</h2>
+            <h3>Provide highest commission rate<br>to make big money easily!</h3>
             <p>Get up to 50% commission every month</p>
           </div>
           <div class="affiliate-hero-rate"><strong>50</strong><span>%</span></div>
         </div>
 
-        <div class="cooperation-card">
-          <h2>「Earn for life」 on your 「player bets」!</h2>
+        <div class="cooperation-card light:bg-white light:border light:border-black/10">
+          <h3>「Earn for life」 on your 「player bets」!</h3>
           <ol class="cooperation-steps">
             <li v-for="step in cooperationSteps" :key="step.step">
               <span class="step-icon" :class="`step-icon--${step.tone}`">
@@ -310,11 +311,12 @@ onBeforeUnmount(() => {
       </section>
 
       <section v-else-if="activeTab === 'products'" class="affiliate-panel products-panel">
-        <div class="affiliate-surface">
-          <h2 class="section-label">Games</h2>
+        <h2 class="sr-only">Our Products</h2>
+        <div class="affiliate-surface light:bg-white light:border light:border-black/10">
+          <h3 class="section-label">Games</h3>
           <div class="product-grid">
             <article v-for="product in products" :key="product.label" class="product-card">
-              <span>{{ product.label }}</span>
+              <h4 class="product-card__title">{{ product.label }}</h4>
               <img :src="product.image" :alt="product.label" loading="lazy">
             </article>
           </div>
@@ -326,12 +328,13 @@ onBeforeUnmount(() => {
       </section>
 
       <section v-else-if="activeTab === 'advantages'" class="affiliate-panel advantages-panel">
-        <article v-for="advantage in advantages" :key="advantage.id" class="advantage-card">
-          <button type="button" :aria-expanded="expandedAdvantages.has(advantage.id)" @click="toggleAdvantage(advantage.id)">
+        <h2 class="sr-only">Service Advantages</h2>
+        <article v-for="advantage in advantages" :key="advantage.id" class="advantage-card light:bg-white light:border light:border-black/10">
+          <h3><button type="button" :aria-expanded="expandedAdvantages.has(advantage.id)" @click="toggleAdvantage(advantage.id)">
             <strong>{{ advantage.title }}</strong>
             <ChevronUp v-if="expandedAdvantages.has(advantage.id)" :size="16" />
             <ChevronDown v-else :size="16" />
-          </button>
+          </button></h3>
           <ul v-if="expandedAdvantages.has(advantage.id)">
             <li v-for="point in advantage.points" :key="point">{{ point }}</li>
           </ul>
@@ -340,7 +343,7 @@ onBeforeUnmount(() => {
       </section>
 
       <section v-else-if="activeTab === 'commission'" class="affiliate-panel">
-        <div class="affiliate-surface commission-panel">
+        <div class="affiliate-surface commission-panel light:bg-white light:border light:border-black/10">
           <span class="commission-flag" aria-label="Philippines"><img
                 src="/icons/PHP.webp"
                 alt="ByBet"
@@ -375,7 +378,8 @@ onBeforeUnmount(() => {
       </section>
 
       <section v-else-if="activeTab === 'questions'" class="affiliate-panel questions-panel">
-        <nav class="question-tabs" aria-label="Affiliate question categories" role="tablist">
+        <h2 class="sr-only">Affiliate Questions</h2>
+        <nav class="question-tabs light:bg-white light:border light:border-black/10" aria-label="Affiliate question categories" role="tablist">
           <button
             v-for="category in questionCategories"
             :key="category.id"
@@ -388,17 +392,17 @@ onBeforeUnmount(() => {
             {{ category.label }}
           </button>
         </nav>
-        <div class="affiliate-surface questions-content">
-          <h2>{{ activeQuestionCategory.title }}</h2>
+        <div class="affiliate-surface questions-content light:bg-white light:border light:border-black/10">
+          <h3>{{ activeQuestionCategory.title }}</h3>
           <article v-for="item in activeQuestionCategory.items" :key="item.question">
-            <h3>{{ item.question }}</h3>
+            <h4>{{ item.question }}</h4>
             <p>{{ item.answer }}</p>
           </article>
         </div>
       </section>
 
       <section v-else class="affiliate-panel">
-        <div class="affiliate-surface contact-panel">
+        <div class="affiliate-surface contact-panel light:bg-white light:border light:border-black/10">
           <h2>Contact Us</h2>
           <p class="contact-intro">Let’s shape a great future together, beginning now. Have questions? Just get in touch!</p>
           <div class="contact-row">
@@ -554,7 +558,7 @@ onBeforeUnmount(() => {
   z-index: 1;
 }
 
-.affiliate-hero h2 {
+.affiliate-hero h3 {
   margin: 0;
   font-size: 19px;
   font-weight: 800;
@@ -588,7 +592,7 @@ onBeforeUnmount(() => {
   padding: 12px;
 }
 
-.cooperation-card > h2 {
+.cooperation-card > h3 {
   margin: 0 0 17px;
   text-align: center;
   font-size: 17px;
@@ -724,7 +728,7 @@ onBeforeUnmount(() => {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.34), transparent 34%, rgba(0, 0, 0, 0.18));
 }
 
-.product-card span {
+.product-card .product-card__title {
   position: absolute;
   z-index: 2;
   top: 14px;
@@ -752,7 +756,12 @@ onBeforeUnmount(() => {
   border-radius: 12px;
 }
 
+.advantage-card h3 {
+  margin: 0;
+}
+
 .advantage-card button {
+  width: 100%;
   display: flex;
   width: 100%;
   min-height: 38px;
@@ -793,7 +802,7 @@ onBeforeUnmount(() => {
 }
 
 .commission-panel > h2,
-.questions-content > h2,
+.questions-content > h3,
 .contact-panel > h2 {
   margin: 0;
   text-align: center;
@@ -910,7 +919,7 @@ onBeforeUnmount(() => {
   margin-top: 15px;
 }
 
-.questions-content h3 {
+.questions-content h4 {
   margin: 0 0 6px;
   font-size: 14px;
 }
@@ -1085,7 +1094,7 @@ onBeforeUnmount(() => {
     padding: 18px;
   }
 
-  .affiliate-hero h2 {
+  .affiliate-hero h3 {
     font-size: 16px;
   }
 
@@ -1155,7 +1164,7 @@ onBeforeUnmount(() => {
     font-size: 42px;
   }
 
-  .cooperation-card > h2 {
+  .cooperation-card > h3 {
     font-size: 14px;
   }
 

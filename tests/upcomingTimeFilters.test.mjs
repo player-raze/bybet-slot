@@ -157,10 +157,10 @@ describe('Upcoming Time Filter Pills Suite', () => {
     assert.ok(popularSource.includes('await useFetch(\'/api/sports\''), 'SportsPopular must await useFetch for SSR rendering')
     assert.ok(popularSource.includes('effectiveSelectedSports'), 'SportsPopular must compute effectiveSelectedSports fallback')
 
-    const popularHoursSource = fs.readFileSync(path.resolve('pages/explore/sports/popular/upcoming/[hours].vue'), 'utf-8')
+    const popularHoursSource = fs.readFileSync(path.resolve('pages/sports/popular/upcoming/[hours].vue'), 'utf-8')
     assert.ok(popularHoursSource.includes('selectedSports?: string[]'), 'popular upcoming [hours].vue must support optional selectedSports')
 
-    const sportHoursSource = fs.readFileSync(path.resolve('pages/explore/sports/[sport]/upcoming/[hours].vue'), 'utf-8')
+    const sportHoursSource = fs.readFileSync(path.resolve('pages/sports/[sport]/upcoming/[hours].vue'), 'utf-8')
     assert.ok(sportHoursSource.includes('effectiveSports'), 'sport upcoming [hours].vue must compute effectiveSports')
   })
 })

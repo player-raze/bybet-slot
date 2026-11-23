@@ -135,9 +135,9 @@ describe('Sports In-Play Matching & Football Route Suite', () => {
     assert.match(routeBaseSource, /football/)
   })
 
-  test('Case 11: pages/explore/sports/[sport].vue includes football in validation, names, and popularLeagues', () => {
+  test('Case 11: pages/sports/[sport].vue includes football in validation, names, and popularLeagues', () => {
     const pageSource = fs.readFileSync(
-      path.resolve(process.cwd(), 'pages/explore/sports/[sport].vue'),
+      path.resolve(process.cwd(), 'pages/sports/[sport].vue'),
       'utf-8',
     )
     assert.match(pageSource, /football:\s*['"]Soccer['"]/)

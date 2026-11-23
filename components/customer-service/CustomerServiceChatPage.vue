@@ -1,29 +1,46 @@
 <script setup lang="ts">
+import { buildCustomerServiceChatUrl, getChatSessionDeviceId } from '~/utils/customerServiceChat'
+
 const props = defineProps<{
   serviceNumber: 1 | 2
 }>()
 
 const { closeComments } = useCommentPanel()
-const chatUrl = 'https://cs14.fkldcs601.com/#/index?source=ByBet&needNav=1&lang=en&vipType=0&isPC=1&darkMode=1&deviceCode=8437786d-b221-41e6-aaa2-7d51b11ad429&deviceId=8437786d-b221-41e6-aaa2-7d51b11ad429'
+const { effectiveTheme, applyTheme } = useSiteTheme()
+const deviceId = useState<string>('bybet-customer-service-device-id', () => '')
+const chatUrl = computed(() => deviceId.value
+  ? buildCustomerServiceChatUrl(effectiveTheme.value, deviceId.value)
+  : undefined,
+)
 
 useAppSeo({
   title: `24/7 Services ${props.serviceNumber} | ByBet Philippines`,
   description: `Chat with ByBet 24/7 Customer Service ${props.serviceNumber} for account, deposit, withdrawal, promotion, and verification assistance.`,
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: 'Customer Service', path: '/explore/egames/customer-service' },
-    { name: `24/7 Services ${props.serviceNumber}`, path: `/explore/egames/customer-service/${props.serviceNumber}` },
+    { name: 'Customer Service', path: '/egames/customer-service' },
+    { name: `24/7 Services ${props.serviceNumber}`, path: `/egames/customer-service/${props.serviceNumber}` },
   ],
   schema: {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
     name: `ByBet 24/7 Customer Service ${props.serviceNumber}`,
-    url: `https://bybet.com/explore/egames/customer-service/${props.serviceNumber}`,
+    url: `https://bybet.com/egames/customer-service/${props.serviceNumber}`,
   },
 })
 
 onMounted(() => {
   closeComments()
+  applyTheme()
+  if (!deviceId.value) {
+    let storage: Storage | undefined
+    try {
+      storage = window.sessionStorage
+    } catch {
+      // A client-state ID still keeps navigation between service channels stable.
+    }
+    deviceId.value = getChatSessionDeviceId(storage)
+  }
 })
 </script>
 
@@ -34,11 +51,12 @@ onMounted(() => {
       title="24/7 Services"
       :meta-title="`24/7 Services ${serviceNumber} | ByBet Philippines`"
       :description="`Chat with ByBet 24/7 Customer Service ${serviceNumber} for fast assistance.`"
-      back-to="/explore/egames/customer-service"
+      back-to="/egames/customer-service"
     />
 
-    <section class="customer-service-chat-stage" :aria-label="`24/7 Services ${serviceNumber} chat`">
+    <section class="customer-service-chat-stage light:bg-white" :aria-label="`24/7 Services ${serviceNumber} chat`">
       <iframe
+        v-if="chatUrl"
         title="customerService"
         allow="microphone"
         sandbox="allow-scripts allow-forms allow-pointer-lock allow-popups allow-same-origin allow-top-navigation"

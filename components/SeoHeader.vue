@@ -4,6 +4,7 @@ import { formatSeoTitle, formatSeoDescription, isHomepageRoute } from '~/composa
 
 interface Props {
   title: string
+  headingTag?: 'h1' | 'h2' | 'p'
   metaTitle?: string
   description?: string
   keywords?: string
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  headingTag: 'h1',
   description: 'ByBet — Premier Online Gaming, Live Casino, Sports Betting, and Slots in the Philippines.',
   keywords: 'ByBet, sports betting, online casino, slots, live casino, Philippines gaming',
   ogImage: '/brand/bybet-logo.webp',
@@ -141,12 +143,12 @@ const handleBack = (): void => {
           <ChevronLeft class="h-3 w-3" />
         </button>
 
-        <!-- Page Title (SEO H1) -->
-        <h1 class="text-[16px] font-bold text-white tracking-tight truncate leading-tight">
+        <!-- Page title, or a navigation label when the content owns its heading -->
+        <component :is="headingTag" class="text-[16px] font-bold text-white tracking-tight truncate leading-tight">
           <slot name="title">
             {{ title }}
           </slot>
-        </h1>
+        </component>
       </div>
 
       <slot name="actions" />
@@ -170,12 +172,12 @@ const handleBack = (): void => {
         <ChevronLeft class="h-3 w-3" />
       </button>
 
-      <!-- Page Title (SEO H1) -->
-      <h1 class="text-[15px] font-bold text-white tracking-tight truncate leading-tight">
+      <!-- Page title, or a navigation label when the content owns its heading -->
+      <component :is="headingTag" class="text-[15px] font-bold text-white tracking-tight truncate leading-tight">
         <slot name="title">
           {{ title }}
         </slot>
-      </h1>
+      </component>
     </div>
 
     <slot name="actions" />

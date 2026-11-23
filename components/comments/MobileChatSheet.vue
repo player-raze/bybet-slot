@@ -29,7 +29,7 @@ onBeforeUnmount(restorePageScroll)
 
 const expand = (): void => {
   if (expanded.value) return
-  if (route.path.startsWith('/explore/sports/')) openSportsComments()
+  if (route.path.startsWith('/sports/') || route.path.startsWith('/explore/sports/')) openSportsComments()
   else openGameComments()
 }
 

@@ -93,6 +93,13 @@ const lightSrc = computed(() => {
 const altText = computed(() => props.options
   ?.map(option => `${option.label}${option.value ? ` ${option.value}` : ''}: ${statusLabels[option.status] || option.status}`)
   .join(', ') || 'Tutorial outcome')
+
+const handleImgError = (event: Event): void => {
+  const target = event.target as HTMLImageElement | null
+  if (target) {
+    target.style.display = 'none'
+  }
+}
 </script>
 
 <template>
@@ -103,6 +110,7 @@ const altText = computed(() => props.options
       :alt="altText"
       loading="lazy"
       decoding="async"
+      @error="handleImgError"
     >
     <img
       class="outcome-graphic outcome-graphic--light"
@@ -110,6 +118,7 @@ const altText = computed(() => props.options
       :alt="altText"
       loading="lazy"
       decoding="async"
+      @error="handleImgError"
     >
   </div>
 </template>

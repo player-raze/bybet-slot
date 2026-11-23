@@ -24,7 +24,7 @@ const emit = defineEmits<{
 const search = ref('')
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => sportsRouteBase.value === '/explore/sports/popular')
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 const oddsCols = computed<2 | 3>(() => route.params.sport === 'soccer' ? 3 : 2)
 const selectedDate = ref('all')
 watch(() => route.params.date, value => {
@@ -217,8 +217,8 @@ const toggleCollapseAll = (): void => {
     <div class="sports-date-filters flex flex-wrap gap-1" :class="{ 'mb-4': !isPopular }" role="group" aria-label="Filter upcoming matches by date, Philippine time">
       <button
         type="button"
-        class="time-filter min-h-[44px] min-w-[64px] rounded-md px-3 py-1 text-[12px] font-medium text-white"
-        :class="selectedDate === 'all' ? 'bg-[var(--main-highlight)]' : 'bg-[#1a1a1a]'"
+        class="time-filter min-h-[44px] min-w-[64px] rounded-md px-3 py-1 text-[12px] font-medium text-white light:bg-white"
+        :class="selectedDate === 'all' ? 'bg-[var(--main-highlight)]' : 'bg-[#1a1a1a] light:bg-[#edf4f0] light:text-[#14251d] light:border light:border-black/5'"
         :aria-pressed="selectedDate === 'all'"
         @click="selectDate('all')"
       >All</button>
@@ -226,8 +226,8 @@ const toggleCollapseAll = (): void => {
         v-for="filter in dateFilters"
         :key="filter.key"
         type="button"
-        class="time-filter flex min-h-[44px] min-w-[64px] flex-col items-center justify-center rounded-md px-3 py-1 text-[12px] font-medium text-white"
-        :class="selectedDate === filter.key ? 'bg-[var(--main-highlight)]' : 'bg-[#1a1a1a]'"
+        class="time-filter light:bg-white flex min-h-[44px] min-w-[64px] flex-col items-center justify-center rounded-md px-3 py-1 text-[12px] font-medium text-white "
+        :class="selectedDate === filter.key ? 'bg-[var(--main-highlight)]' : 'bg-[#1a1a1a] light:bg-[#edf4f0] light:text-[#14251d] light:border light:border-black/5'"
         :aria-pressed="selectedDate === filter.key"
         :aria-label="`${filter.date}, ${filter.label}`"
         @click="selectDate(filter.key)"
@@ -250,8 +250,9 @@ const toggleCollapseAll = (): void => {
           <article
             v-for="sport in category.sports"
             :key="sport.key"
-            class="league-preview"
+            class="league-preview light:bg-white light:border light:border-black/10 light:shadow-sm"
           >
+            <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ sport.title }} {{ sport.description }}</component>
             <button
               :id="`league-trigger-${sport.key}`"
               class="league-card league-preview-heading"
@@ -260,7 +261,7 @@ const toggleCollapseAll = (): void => {
               :aria-controls="`league-panel-${sport.key}`"
               @click="toggleTournament(sport.key)"
             >
-              <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
+              <span class="league-name text-[12px] text-[#999] light:text-[#4d5f56] truncate" :title="sport.title">
                 {{ sport.title }} {{ sport.description }}
               </span>
               <CollapseIcon :expanded="isExpanded(sport.key)" />

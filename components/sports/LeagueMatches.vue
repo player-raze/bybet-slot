@@ -74,14 +74,14 @@ const selectOutcome = (eventId: string, market: string, name: string): void => {
       <div v-for="i in 2" :key="i" class="flex flex-col gap-2.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="h-3.5 w-8 rounded bg-[#2e3230] animate-pulse" />
-            <div class="h-3.5 w-24 rounded bg-[#2e3230] animate-pulse" />
+            <div class="h-3.5 w-8 rounded bg-[#2e3230] light:bg-[#d6e2dc] animate-pulse" />
+            <div class="h-3.5 w-24 rounded bg-[#2e3230] light:bg-[#d6e2dc] animate-pulse" />
           </div>
-          <div class="h-3.5 w-12 rounded bg-[#2e3230] animate-pulse" />
+          <div class="h-3.5 w-12 rounded bg-[#2e3230] light:bg-[#d6e2dc] animate-pulse" />
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <div class="h-9 rounded-md bg-[#252827] animate-pulse" />
-          <div class="h-9 rounded-md bg-[#252827] animate-pulse" />
+          <div class="h-9 rounded-md bg-[#252827] light:bg-[#edf4f0] light:border light:border-black/5 animate-pulse" />
+          <div class="h-9 rounded-md bg-[#252827] light:bg-[#edf4f0] light:border light:border-black/5 animate-pulse" />
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@ const selectOutcome = (eventId: string, market: string, name: string): void => {
         :soccer="isSoccer"
         :full-markets="showFullMarkets"
         :selected-outcome="selectedOutcomes[`${match.id}:h2h`]"
-        :compact="sportsRouteBase === '/explore/sports/popular'"
+        :compact="['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase)"
         @select="selectOutcome(match.id, 'h2h', $event)"
       />
     </template>

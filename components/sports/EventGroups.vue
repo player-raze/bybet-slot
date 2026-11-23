@@ -34,10 +34,18 @@ const groups = computed(() => {
 <template>
   <div class="min-w-0">
     <section v-for="group in groups" :key="group.name" class="league-group" :aria-label="group.name">
-      <h3>{{ group.name }}</h3>
+      <h2 class="sport-group-title">{{ group.name }}</h2>
       <div class="event-grid">
         <EventCard v-for="event in group.events" :key="event.id" :event="event" />
       </div>
     </section>
   </div>
 </template>
+
+<style scoped>
+.sport-group-title {
+  margin: 0 0 12px;
+  color: var(--secondary);
+  font-size: 13px;
+}
+</style>

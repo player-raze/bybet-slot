@@ -23,7 +23,7 @@ defineProps<{
 </script>
 
 <template>
-  <article class="tutorial-scenario-card">
+  <article class="tutorial-scenario-card light:bg-white light:border light:border-black/10 light:text-[#14251d]">
     <h3>{{ scenario.score }}</h3>
     <p v-if="scenario.subtitle" class="tutorial-scenario-subtitle">{{ scenario.subtitle }}</p>
     <p class="tutorial-scenario-description">{{ scenario.description }}</p>

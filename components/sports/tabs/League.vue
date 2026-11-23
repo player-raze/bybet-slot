@@ -33,6 +33,7 @@ const emit = defineEmits<{
 
 const search = ref('')
 const sportsRouteBase = useSportsRouteBase()
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 const localSortBy = ref<'league' | 'time'>(props.sortBy)
 const localCollapsed = ref<string[]>([])
 const earliestTimes = ref<Record<string, number>>({})
@@ -167,7 +168,7 @@ const sortedGroups = computed(() => {
 
 <template>
   <div class="league-tab">
-    <div v-if="sportsRouteBase !== '/explore/sports/popular'" class="toolbar">
+    <div v-if="!['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase)" class="toolbar">
       <Ai
         v-if="aiTo"
         :to="aiTo"
@@ -209,8 +210,9 @@ const sortedGroups = computed(() => {
             v-for="sport in getGroupTournaments(group)"
             v-show="matchCounts[sport.key] !== 0 && matchLimit(sport) > 0"
             :key="sport.key"
-            class="league-preview"
+            class="league-preview light:bg-white light:border light:border-black/10 light:shadow-sm"
           >
+            <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ sport.title }} {{ sport.description || sport.group }}</component>
             <button
               :id="`league-trigger-${sport.key}`"
               class="league-card league-preview-heading"
@@ -219,7 +221,7 @@ const sortedGroups = computed(() => {
               :aria-controls="`league-panel-${sport.key}`"
               @click="toggleTournament(sport.key)"
             >
-              <span class="league-name text-[12px] text-[#999] truncate" :title="sport.title">
+              <span class="league-name text-[12px] text-[#999] light:text-[#4d5f56] truncate" :title="sport.title">
                 {{ sport.title }} {{ sport.description || sport.group }}
               </span>
               <CollapseIcon :expanded="isExpanded(sport.key)" />

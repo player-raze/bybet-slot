@@ -4,6 +4,7 @@ import { ChevronLeft } from 'lucide-vue-next'
 const props = withDefaults(
   defineProps<{
     title?: string
+    headingTag?: 'h1' | 'h2' | 'p'
     backTo?: string
     showBack?: boolean
     sticky?: boolean
@@ -12,7 +13,8 @@ const props = withDefaults(
   }>(),
   {
     title: '',
-    backTo: '/explore/account/me',
+    headingTag: 'h1',
+    backTo: '/account/me',
     showBack: true,
     sticky: true,
     customClass: '',
@@ -66,9 +68,9 @@ const handleBack = (): void => {
     <!-- Center: Title or custom content (e.g. segmented tabs) -->
     <div class="subpage-header__center">
       <slot name="center">
-        <h1 v-if="title" class="subpage-header__title">
+        <component :is="headingTag" v-if="title" class="subpage-header__title">
           {{ title }}
-        </h1>
+        </component>
       </slot>
     </div>
 

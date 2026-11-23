@@ -1,0 +1,81 @@
+<script setup lang="ts">
+import { ChevronRight } from 'lucide-vue-next'
+
+useAppSeo({
+  title: 'Live Streamers & Match Broadcasts | ByBet Live Plaza',
+  description: 'Watch live sports broadcasts and interactive game streams on ByBet Live Plaza. Follow your favorite streamers and view real-time match betting tips.',
+  breadcrumbs: [
+    { name: 'Home', path: '/' },
+    { name: 'Live Plaza', path: '/live-plaza/home' },
+    { name: 'Streamers', path: '/live-plaza/streamer' },
+  ],
+  schema: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'ByBet Live Streamers',
+    url: 'https://bybet.com/live-plaza/streamer',
+  },
+})
+
+const router = useRouter()
+const { translate } = useSiteLocale()
+
+const handleAllStreamersClick = (): void => {
+  router.push('/live-plaza/streamer/all')
+}
+</script>
+
+<template>
+  <div class="live-plaza-streamer-page w-full min-w-0 pb-16 text-white light:text-[#14251d]">
+    <h1 class="sr-only">Live Streamers</h1>
+    <!-- Reusable Top SEO Header Bar -->
+    <SeoHeader
+      heading-tag="p"
+      sticky
+      :title="translate('Streamer')"
+      description="Live streaming channels, interactive hosts, and gaming influencers on ByBet Philippines."
+      :show-back="false"
+    />
+
+    <!-- Section 1: You may be interested -->
+    <section class="streamer-card rounded-xl bg-[#141414] px-2.5 sm:px-2.5 pt-1.5 mb-2 shadow-sm light:bg-white light:border light:border-black/10">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm sm:text-[18px] font-bold text-white tracking-tight light:text-[#14251d]">
+          {{ translate('You may be interested') }}
+        </h2>
+        <button
+          type="button"
+          class="all-streamers-btn flex items-center gap-0.5 sm:gap-1 text-[13px] text-white transition-colors cursor-pointer select-none light:text-[#14251d]"
+          @click="handleAllStreamersClick"
+        >
+          <span>{{ translate('All Streamers') }}</span>
+          <ChevronRight class="w-3.5 h-3.5 bg-[#232323] rounded-full light:bg-[#edf4f0] light:text-[#14251d]" />
+        </button>
+      </div>
+
+      <div class="empty-state-box flex items-center justify-center min-h-[90px] sm:min-h-[110px] text-[18px] text-[#666] select-none light:text-[#8c918f]">
+        {{ translate('No related streamer') }}
+      </div>
+    </section>
+
+    <!-- Section 2: Streaming -->
+    <section class="streamer-card rounded-xl bg-[#141414] px-2.5 sm:px-2.5 pt-1.5 mb-2 shadow-sm light:bg-white light:border light:border-black/10">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm sm:text-[18px] font-bold text-white tracking-tight light:text-[#14251d]">
+          {{ translate('Streaming') }}
+        </h2>
+      </div>
+
+      <div class="empty-state-box flex items-center justify-center min-h-[220px] sm:min-h-[300px] text-[18px] text-[#666] select-none light:text-[#8c918f]">
+        {{ translate('No related streamer') }}
+      </div>
+    </section>
+  </div>
+</template>
+
+<style scoped>
+.live-plaza-streamer-page {
+  max-width: 100%;
+}
+</style>
+

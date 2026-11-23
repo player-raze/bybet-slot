@@ -3,4 +3,62 @@ node_modules
 .nuxt-build
 .output
 .env
-graphify-out
+.htaccess
+yarn.lock
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.apdisk
+
+# macOS archive folders
+__MACOSX/
+
+# Graphify knowledge graph
+graphify-out/
+**/graphify-out/
+
+# SQLite databases & storage
+data/*.sqlite*
+data/*.db*
+*.sqlite*
+*.db*
+
+# Runtime data caches & dynamic storage
+data/daily-predictions.json
+data/sitemap-dates.json
+data/jackpots.json
+data/predictions-cache/
+
+# Build-generated sitemap & LLM files
+sitemap.xml
+sitemap*.xml
+public/sitemap.xml
+public/sitemap*.xml
+public/sitemaps/
+sitemaps/
+llms.txt
+llms-full.txt
+llms*.txt
+public/llms.txt
+public/llms-full.txt
+public/llms*.txt
+
+# Logs
+data/*.log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local environment & IDE
+.env*.local
+.vscode/
+.idea/

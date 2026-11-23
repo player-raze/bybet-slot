@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const search = ref('')
 const sportsRouteBase = useSportsRouteBase()
+const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
 
 const searchedSports = computed(() => {
   const q = search.value.toLowerCase().trim()
@@ -32,7 +33,7 @@ const searchedGroups = computed(() => {
 
 const tournamentPath = (key: string): string => {
   const [sport, ...tournament] = key.split('_')
-  const base = sportsRouteBase.value || '/explore/sports/popular'
+  const base = sportsRouteBase.value || '/sports/popular'
   const sportPath = base.endsWith('/popular') ? `/${sport}` : ''
   return `${base}${sportPath}/${tournament.join('-')}`
 }
@@ -41,7 +42,7 @@ const tournamentPath = (key: string): string => {
 
 <template>
   <div class="outright-tab">
-    <div v-if="sportsRouteBase !== '/explore/sports/popular'" class="toolbar">
+    <div v-if="!['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase)" class="toolbar">
       <Ai
         v-if="aiTo"
         :to="aiTo"
@@ -76,6 +77,7 @@ const tournamentPath = (key: string): string => {
           :to="tournamentPath(sport.key)"
           class="league-card"
         >
+          <component :is="isPopular ? 'h3' : 'h2'" class="sr-only">{{ sport.title }}</component>
           <span class="league-icon">
             <Trophy :size="19" aria-hidden="true" />
           </span>

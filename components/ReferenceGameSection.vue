@@ -154,6 +154,7 @@ watch(
         rel="nofollow noopener noreferrer"
         :aria-label="`${translate('Play Real')} — ${game.title} by ${game.provider} on ByBet`"
       >
+        <h3 class="sr-only">{{ game.title }}</h3>
         <picture>
           <source
             v-if="game.image === '/brand/bybet-logo.webp'"

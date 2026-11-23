@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<{
 
 const route = useRoute()
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => sportsRouteBase.value === '/explore/sports/popular')
+const isPopular = computed(() => sportsRouteBase.value === '/sports/popular')
 
 const tabs = [
   { key: 'league', label: 'League', icon: Trophy },
@@ -58,11 +58,11 @@ const tabs = [
 
 const visibleTabs = computed(() => tabs.filter(tab => {
   if (isPopular.value) return !['inplay', 'replay'].includes(tab.key)
-  return ['/explore/sports/soccer', '/explore/sports/football'].includes(sportsRouteBase.value) || tab.key !== 'replay'
+  return ['/sports/soccer', '/sports/football'].includes(sportsRouteBase.value) || tab.key !== 'replay'
 }))
 
 const tabLabel = (tab: typeof tabs[number]): string => {
-  if (tab.key === 'smart-pick' && sportsRouteBase.value !== '/explore/sports/popular') {
+  if (tab.key === 'smart-pick' && sportsRouteBase.value !== '/sports/popular') {
     return 'Parlay'
   }
 
@@ -97,6 +97,18 @@ const activeTab = computed(() => {
   }
 
   return props.initialTab ?? 'league'
+})
+
+const pageHeading = computed(() => {
+  const sport = isPopular.value
+    ? 'Popular Sports'
+    : String(route.params.sport || 'Sports').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  const tournament = String(route.params.leagueTournament || tournamentSlug.value || '')
+    .split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  const tab = tabs.find(item => item.key === activeTab.value)?.label || 'Betting'
+  const time = route.params.hours ? ` — Next ${String(route.params.hours).replace('hours', ' Hours')}` : ''
+  const date = route.params.date ? ` — ${route.params.date}` : ''
+  return `${sport} ${tournament ? `${tournament} Betting Odds` : `${tab} Betting`}${time}${date}`
 })
 
 const activeSportKey = computed(() => {
@@ -361,10 +373,11 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="sports-page" :class="{ 'sports-page--popular': isPopular }">
+    <h1 class="sr-only">{{ pageHeading }}</h1>
     <div class="sports-navigation">
       <MobileSportsNav />
       <nav
-        class="sports-tabs bg-[#1f1f1f]/95"
+        class="sports-tabs bg-[#1f1f1f]/95 light:bg-[#edf4f0] light:border light:border-black/10"
         aria-label="Sports categories"
       >
         <NuxtLink
@@ -404,7 +417,7 @@ onBeforeUnmount(() => {
         </button>
       </div>
       <LeagueDirectory
-        v-else-if="activeTab === 'league' && sportsRouteBase !== '/explore/sports/popular'"
+        v-else-if="activeTab === 'league' && sportsRouteBase !== '/sports/popular'"
         :sports="availableSports"
         :popular-leagues="popularLeagues"
         :ai-to="aiRedirectUrl"
@@ -415,7 +428,7 @@ onBeforeUnmount(() => {
         :sports="availableSports"
         :filtered-sports="filteredSports"
         :groups="groups"
-        :max-matches-per-group="sportsRouteBase === '/explore/sports/popular' ? 2 : undefined"
+        :max-matches-per-group="sportsRouteBase === '/sports/popular' ? 2 : undefined"
         :ai-to="aiRedirectUrl"
         :loading="loading"
       />
