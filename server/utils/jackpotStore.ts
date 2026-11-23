@@ -41,14 +41,21 @@ export async function readJackpotFile(): Promise<JackpotData> {
       updatedAt: parsed.updatedAt || new Date().toISOString(),
     }
   } catch {
-    await writeJackpotFile(DEFAULT_JACKPOTS).catch(() => {})
+    await fs.mkdir(path.dirname(filePath), { recursive: true }).catch(() => {})
+    await fs.writeFile(filePath, `${JSON.stringify(DEFAULT_JACKPOTS, null, 2)}\n`, 'utf-8').catch(() => {})
     return { ...DEFAULT_JACKPOTS }
   }
 }
 
 export async function writeJackpotFile(data: Partial<JackpotData>): Promise<JackpotData> {
   const filePath = getJackpotFilePath()
-  const current = await readJackpotFile().catch(() => ({ ...DEFAULT_JACKPOTS }))
+  let current: JackpotData
+  try {
+    const raw = await fs.readFile(filePath, 'utf-8')
+    current = { ...DEFAULT_JACKPOTS, ...JSON.parse(raw) }
+  } catch {
+    current = { ...DEFAULT_JACKPOTS }
+  }
   const round2 = (val: number) => Math.round(val * 100) / 100
 
   const updated: JackpotData = {
@@ -63,7 +70,7 @@ export async function writeJackpotFile(data: Partial<JackpotData>): Promise<Jack
     updatedAt: new Date().toISOString(),
   }
 
-  await fs.mkdir(path.dirname(filePath), { recursive: true })
+  await fs.mkdir(path.dirname(filePath), { recursive: true }).catch(() => {})
   await fs.writeFile(filePath, `${JSON.stringify(updated, null, 2)}\n`, 'utf-8')
   return updated
 }
