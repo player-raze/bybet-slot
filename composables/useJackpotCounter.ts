@@ -1,5 +1,3 @@
-import defaultJackpots from '~/data/jackpots.json'
-
 export type JackpotTierKey = 'mega' | 'jdb' | 'jili' | 'cq9' | 'grand' | 'major' | 'minor'
 
 export interface JackpotCounterOptions {
@@ -81,9 +79,18 @@ const jackpotAmountFormatter = new Intl.NumberFormat('en-US', {
 
 export const formatJackpotAmount = (value: number): string => jackpotAmountFormatter.format(value)
 
+export const DEFAULT_INITIAL_JACKPOTS: Record<string, number> = {
+  mega: 1_008_450.25,
+  jdb: 3_015.46,
+  jili: 7_854.20,
+  cq9: 6_328.50,
+  grand: 354_120.50,
+  major: 86_410.20,
+  minor: 12_740.10,
+}
+
 const getInitialJackpotAmount = (key: string, fallback: number): number => {
-  const record = defaultJackpots as Record<string, unknown>
-  const value = record[key]
+  const value = DEFAULT_INITIAL_JACKPOTS[key]
   return typeof value === 'number' && !Number.isNaN(value) && value > 0 ? value : fallback
 }
 
