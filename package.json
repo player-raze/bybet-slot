@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build && node scripts/generate-sitemap.mjs && node scripts/generate-llms.mjs",
+    "start": "node scripts/start-server.mjs",
+    "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
     "predictions:refresh": "node scripts/refresh-daily-predictions.mjs",
     "llms:generate": "node scripts/generate-llms.mjs",

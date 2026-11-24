@@ -9,7 +9,7 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
 const cleanPath = computed(() => route.path.split('?')[0].split('#')[0].replace(/\/+$/, '').toLowerCase() || '/')
-const { fetchBlogPost, fetchBlogSeoSettings, resolveImage } = useBloggerist()
+const { fetchBlogPost, fetchBlogSeoSettings, resolveImage, resolveContentImages } = useBloggerist()
 
 const slug = computed(() => {
   const id = route.params.id
@@ -126,7 +126,9 @@ useAppSeo({
 import { buildBloggeristSeoHead } from '~/utils/bloggeristSeoHead'
 import { addNofollowToExternalHtmlLinks } from '~/utils/externalLinkRel'
 
-const processedBlogContentHtml = computed(() => addNofollowToExternalHtmlLinks(blog.value?.content_html))
+const processedBlogContentHtml = computed(() =>
+  resolveContentImages(addNofollowToExternalHtmlLinks(blog.value?.content_html)),
+)
 
 useHead(() => buildBloggeristSeoHead({
   google_analytics_id: seoSettings.value?.google_analytics_id,
@@ -353,6 +355,7 @@ useHead(() => buildBloggeristSeoHead({
 :deep(.blog-countdown-banner) {
   margin-top: 0 !important;
   margin-bottom: 0.5rem !important;
+  border-color: rgba(49, 214, 154, 0.45) !important;
 }
 
 .blog-countdown__title,
@@ -382,8 +385,8 @@ useHead(() => buildBloggeristSeoHead({
   min-width: 2.2rem !important;
   padding: 0.22rem 0.35rem !important;
   border-radius: 0.32rem !important;
-  background: rgba(0, 0, 0, 0.55) !important;
-  border: 1px solid rgba(49, 214, 154, 0.25) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(49, 214, 154, 0.3) !important;
 }
 
 :deep(.cd-num) {
@@ -427,7 +430,10 @@ useHead(() => buildBloggeristSeoHead({
 }
 
 :deep(.blog-button-link),
-:deep(.blog-slot-demo-link) {
+:deep(.blog-slot-demo-link),
+.blog-article__body :deep(.blog-button-link),
+.blog-article__body :deep(.blog-slot-demo-link),
+.blog-article__body :deep(.blog-slot-demo-actions .blog-slot-demo-link) {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -438,6 +444,14 @@ useHead(() => buildBloggeristSeoHead({
   padding: 0.32rem 0.75rem !important;
   font-size: 0.55rem !important;
   text-decoration: none !important;
+}
+
+:deep(.blog-slot-demo-link:focus-visible),
+:deep(.blog-button-link:focus-visible),
+.blog-article__body :deep(.blog-slot-demo-link:focus-visible),
+.blog-article__body :deep(.blog-button-link:focus-visible) {
+  outline: 2px solid #31d69a !important;
+  outline-offset: 3px !important;
 }
 
 /* Article Container (Matches bonuses/{bonus-slug} .promotion-sheet) */
@@ -618,14 +632,14 @@ useHead(() => buildBloggeristSeoHead({
   gap: 0.45rem !important;
   margin: 0.8rem 0 !important;
   padding: 0.65rem 0.75rem !important;
-  border: 1px solid rgba(49, 214, 154, 0.3) !important;
+  border: 1px solid rgba(49, 214, 154, 0.35) !important;
   border-radius: 0.48rem !important;
   background: rgba(10, 30, 20, 0.72) !important;
 }
 
 .blog-article__body :deep(.blog-faq-item) {
   padding: 0.45rem 0.6rem !important;
-  border: 1px solid rgba(19, 122, 91, 0.5) !important;
+  border: 1px solid rgba(19, 122, 91, 0.6) !important;
   border-radius: 0.38rem !important;
   background: rgba(14, 43, 29, 0.75) !important;
 }
@@ -652,7 +666,7 @@ useHead(() => buildBloggeristSeoHead({
 
 .blog-article__body :deep(.blog-faq-item summary:focus-visible) {
   outline: 2px solid #31d69a !important;
-  outline-offset: 2px !important;
+  outline-offset: 3px !important;
 }
 
 /* Slot demo frame in blog */

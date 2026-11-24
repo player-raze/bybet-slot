@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import { loadEnvIntoProcess } from './env-loader.mjs'
+
+loadEnvIntoProcess({
+  candidateDirs: [process.cwd(), path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')],
+})
 
 /**
  * Standalone Daily Sports Prediction Refresh & Diagnostic Script for aaPanel Cron / Linux Crontab.

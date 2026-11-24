@@ -1,5 +1,6 @@
 import type { H3Event } from 'h3'
 import type { BlogDetailResponse } from '~/types/blog'
+import { normalizeBlogDetailResponse } from '~/composables/useBloggerist'
 
 export default defineEventHandler(async (event: H3Event): Promise<BlogDetailResponse> => {
   const query = getQuery(event)
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event: H3Event): Promise<BlogDetailResp
 
   try {
     const res = await $fetch<BlogDetailResponse>(`${bloggeristUrl}/api/blog.php?slug=${encodeURIComponent(slug)}`)
-    return res
+    return normalizeBlogDetailResponse(res, bloggeristUrl)
   } catch (err: any) {
     return {
       ok: false,
