@@ -111,7 +111,7 @@ test('Blogs Page & Bloggerist Integration Test Suite', async (t) => {
   await t.test('Case 6: Single blog post page supports content HTML, countdown, and SEO schema', () => {
     const blogDetail = fs.readFileSync(path.join(rootDir, 'pages/blog/[id].vue'), 'utf8')
 
-    assert.ok(blogDetail.includes('v-html="blog.content_html"'), 'Blog detail must render content_html')
+    assert.ok(blogDetail.includes('v-html="processedBlogContentHtml"') && blogDetail.includes('blog.value?.content_html'), 'Blog detail must render processed content_html')
     assert.ok(blogDetail.includes('blog-countdown'), 'Blog detail must render countdown section')
     assert.ok(blogDetail.includes('useAppSeo'), 'Blog detail must register SEO')
     assert.ok(blogDetail.includes('breadcrumbs'), 'Blog detail must provide breadcrumbs')

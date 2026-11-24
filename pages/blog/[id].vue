@@ -2,9 +2,13 @@
 import { ChevronRight, Calendar, Clock, User, ArrowLeft } from 'lucide-vue-next'
 import SeoHeader from '~/components/SeoHeader.vue'
 import MobileBlogHeader from '~/components/blogs/MobileBlogHeader.vue'
+import { OG_IMAGE_MANIFEST, resolveOgImageForRoute } from '~/utils/ogImageManifest'
 import type { BlogDetailResponse, BlogSeoSettings } from '~/types/blog'
 
 const route = useRoute()
+const config = useRuntimeConfig()
+const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
+const cleanPath = computed(() => route.path.split('?')[0].split('#')[0].replace(/\/+$/, '').toLowerCase() || '/')
 const { fetchBlogPost, fetchBlogSeoSettings, resolveImage } = useBloggerist()
 
 const slug = computed(() => {
@@ -30,7 +34,16 @@ const bannerImageSrc = computed(() => resolveImage(blog.value?.featuredImage))
 const websiteName = computed(() => seoSettings.value?.website_name || 'Blog')
 const seoTitle = computed(() => blog.value?.seoTitle || `${blog.value?.title || 'Blog Post'} | ByBet ${websiteName.value}`)
 const seoDescription = computed(() => blog.value?.excerpt || `Read ${blog.value?.title || 'this article'} on ByBet.`)
-const seoImage = computed(() => bannerImageSrc.value)
+const seoImage = computed(() => {
+  const manifestImg = OG_IMAGE_MANIFEST[cleanPath.value]
+  if (manifestImg) {
+    return `${siteUrl.value}${manifestImg}`
+  }
+  if (bannerImageSrc.value && bannerImageSrc.value !== '/brand/bybet-logo.webp') {
+    return bannerImageSrc.value
+  }
+  return `${siteUrl.value}${resolveOgImageForRoute('/blogs')}`
+})
 
 // Countdown timer handling
 const targetTime = computed(() => {
@@ -133,6 +146,7 @@ useHead(() => buildBloggeristSeoHead({
       title="Blogs"
       :meta-title="seoTitle"
       :description="seoDescription"
+      :og-image="seoImage"
       back-to="/blogs"
       custom-class="blog-detail-header light:bg-white light:border light:border-black/10"
     >

@@ -1,4 +1,5 @@
 import { computed, type ComputedRef } from 'vue'
+import { resolveOgImageForRoute } from '~/utils/ogImageManifest'
 
 export interface BreadcrumbItem {
   name: string
@@ -203,8 +204,17 @@ export const useAppSeo = (options: AppSeoOptions) => {
   })
 
   const image = computed(() => {
-    return resolveVal(options.image) || '/brand/bybet-logo.webp'
+    const raw = (resolveVal(options.image) || '').trim()
+    const pathOrUrl = raw && raw !== '/brand/bybet-logo.webp'
+      ? raw
+      : resolveOgImageForRoute(route.path)
+    if (/^https?:\/\//i.test(pathOrUrl)) {
+      return pathOrUrl
+    }
+    return `${siteUrl.value}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`
   })
+
+  const isJpgImage = computed(() => /\.jpe?g(?:[?#]|$)/i.test(image.value))
 
   const canonicalUrl = computed(() => {
     const p = route.path || '/'
@@ -233,6 +243,9 @@ export const useAppSeo = (options: AppSeoOptions) => {
     twitterDescription: description,
     keywords,
     ogImage: image,
+    ogImageWidth: () => (isJpgImage.value ? 1200 : undefined),
+    ogImageHeight: () => (isJpgImage.value ? 630 : undefined),
+    ogImageType: () => (isJpgImage.value ? 'image/jpeg' : undefined),
     twitterImage: image,
     twitterCard: 'summary_large_image',
     ogType: options.type || 'website',

@@ -8,6 +8,7 @@
     "typecheck": "nuxt typecheck",
     "predictions:refresh": "node scripts/refresh-daily-predictions.mjs",
     "llms:generate": "node scripts/generate-llms.mjs",
+    "og:generate": "node scripts/generate-og-images.mjs",
     "test": "node --test tests/**/*.test.mjs"
   },
   "dependencies": {

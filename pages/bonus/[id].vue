@@ -6,6 +6,7 @@ import PromotionComplianceFooter from '~/components/PromotionComplianceFooter.vu
 import ReminderModal from '~/components/modals/ReminderModal.vue'
 import { trackEnvClick } from '~/utils/playnowTracker'
 import { addNofollowToExternalHtmlLinks } from '~/utils/externalLinkRel'
+import { OG_IMAGE_MANIFEST } from '~/utils/ogImageManifest'
 import {
   PROMOTION_PLACEHOLDER_IMAGES,
   getBonusDetail,
@@ -15,8 +16,10 @@ import {
 } from '~/data/promotions'
 
 const route = useRoute()
-const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
+const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode, siteUrl: rawSiteUrl } = useRuntimeConfig().public
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
+const siteUrl = String(rawSiteUrl || 'https://bybet.com').replace(/\/+$/, '')
+const cleanPath = computed(() => route.path.split('?')[0].split('#')[0].replace(/\/+$/, '').toLowerCase() || '/')
 const { markAsViewed } = useViewedPromotions()
 
 const bonusId = computed(() => {
@@ -66,11 +69,15 @@ const seoKeywords = computed(() => {
 })
 
 const seoImage = computed(() => {
+  const manifestImg = OG_IMAGE_MANIFEST[cleanPath.value]
+  if (manifestImg) {
+    return `${siteUrl}${manifestImg}`
+  }
   const raw = bonusHeaderImageSrc.value || (typeof bonus.value.bannerImage === 'string' ? bonus.value.bannerImage : bonus.value.bannerImage?.banner) || bonus.value.thumbnailImage || '/brand/bybet-logo.webp'
-  return raw.startsWith('http') ? raw : `https://bybet.com${raw}`
+  return raw.startsWith('http') ? raw : `${siteUrl}${raw}`
 })
 
-const canonicalUrl = computed(() => `https://bybet.com/bonus/${bonus.value.slug}`)
+const canonicalUrl = computed(() => `${siteUrl}/bonus/${bonus.value.slug}`)
 
 useAppSeo({
   title: seoTitle,

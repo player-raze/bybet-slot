@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ArrowLeft, Clock3, Home, Sparkles } from 'lucide-vue-next'
 import { formatSeoDescription, isHomepageRoute } from '~/composables/useAppSeo'
+import { resolveOgImageForRoute } from '~/utils/ogImageManifest'
 
 const route = useRoute()
 const router = useRouter()
@@ -49,6 +50,8 @@ if (!props.disableSeo) {
   const siteName = String(config.public.siteName || 'ByBet Slots')
     .trim()
     .replace(/^['"]+|['"]+$/g, '')
+  const siteUrl = String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, '')
+  const ogImage = computed(() => `${siteUrl}${resolveOgImageForRoute(route.path)}`)
   const description = computed(() => {
     const raw = `${pageTitle.value} in ${sectionTitle.value} is coming soon to ByBet.`
     return formatSeoDescription(raw, siteName, isHomepageRoute(route.path))
@@ -59,6 +62,12 @@ if (!props.disableSeo) {
     description,
     ogDescription: description,
     twitterDescription: description,
+    ogImage,
+    ogImageWidth: 1200,
+    ogImageHeight: 630,
+    ogImageType: 'image/jpeg',
+    twitterImage: ogImage,
+    twitterCard: 'summary_large_image',
     robots: 'noindex, follow',
   })
 }
