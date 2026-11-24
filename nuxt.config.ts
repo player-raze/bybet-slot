@@ -15,17 +15,34 @@ const environment = (
         SITE_URL?: string
         INDEX_FOLLOW?: string
         BLOGGERIST_URL?: string
+        PORT?: string
+        NITRO_PORT?: string
+        NUXT_PORT?: string
+        HOST?: string
+        NITRO_HOST?: string
+        NUXT_HOST?: string
       }
     }
   }
 ).process?.env
 
 const isIndexFollow = environment?.INDEX_FOLLOW === 'true'
+const rawDevPort = environment?.NUXT_PORT || environment?.NITRO_PORT || environment?.PORT
+const parsedDevPort = rawDevPort ? Number.parseInt(rawDevPort, 10) : NaN
+const devHost = (environment?.NUXT_HOST || environment?.NITRO_HOST || environment?.HOST || '').trim()
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   buildDir: environment?.NODE_ENV === 'production' ? 'node_modules/.cache/bybet-nuxt-build' : '.nuxt',
   devtools: { enabled: false },
+  ...((Number.isInteger(parsedDevPort) && parsedDevPort > 0) || devHost
+    ? {
+        devServer: {
+          ...(Number.isInteger(parsedDevPort) && parsedDevPort > 0 ? { port: parsedDevPort } : {}),
+          ...(devHost ? { host: devHost } : {}),
+        },
+      }
+    : {}),
   runtimeConfig: {
     bloggeristUrl: environment?.BLOGGERIST_URL || 'http://localhost:8082',
     oddsApi: environment?.SPORTS_API || 'https://api.the-odds-api.com/v4',
@@ -102,5 +119,10 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: true,
+    tsConfig: {
+      compilerOptions: {
+        allowImportingTsExtensions: true,
+      },
+    },
   },
 })

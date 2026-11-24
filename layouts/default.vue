@@ -11,34 +11,27 @@ const normalizedPath = computed(() => route.path.replace(/\/+$/, '') || '/')
 const isCustomerServicePage = computed(() => (
   normalizedPath.value === '/egames/customer-service'
   || normalizedPath.value.startsWith('/egames/customer-service/')
-  || normalizedPath.value === '/explore/egames/customer-service'
-  || normalizedPath.value.startsWith('/explore/egames/customer-service/')
 ))
 const isCustomerServiceChatPage = computed(() => (
-  /^\/(?:explore\/)?egames\/customer-service\/[12]$/.test(normalizedPath.value)
+  /^\/egames\/customer-service\/[12]$/.test(normalizedPath.value)
 ))
 const desktopShellKind = computed<'sports' | 'games' | null>(() => {
   const path = normalizedPath.value
 
   if (
     path === '/sports/live'
-    || path === '/explore/sports/live'
-    || /^\/(?:explore\/)?sports\/[^/]+\/[^/]+(?:\/.*)?$/.test(path)
+    || /^\/sports\/[^/]+\/[^/]+(?:\/.*)?$/.test(path)
   ) {
     return 'sports'
   }
 
   if (
-    /^\/(?:explore\/)?entertainment\/live-casino\/[^/]+(?:\/.*)?$/.test(path)
+    /^\/entertainment\/live-casino\/[^/]+(?:\/.*)?$/.test(path)
     || path === '/egames/slots'
     || path.startsWith('/egames/slots/')
     || path === '/egames/bingo'
     || path.startsWith('/egames/bingo/')
-    || /^\/(?:explore\/)?egames\/jackpot\/[^/]+(?:\/.*)?$/.test(path)
-    || path === '/explore/egames/slots'
-    || path.startsWith('/explore/egames/slots/')
-    || path === '/explore/egames/bingo'
-    || path.startsWith('/explore/egames/bingo/')
+    || /^\/egames\/jackpot\/[^/]+(?:\/.*)?$/.test(path)
   ) {
     return 'games'
   }
@@ -59,12 +52,6 @@ const usesDesktopContentReferenceShell = computed(() => {
     || path.startsWith('/live-plaza/')
     || path === '/account/me'
     || path.startsWith('/account/')
-    || path === '/explore/bonuses'
-    || path.startsWith('/explore/bonuses/')
-    || path.startsWith('/explore/bonus/')
-    || path.startsWith('/explore/live-plaza/')
-    || path === '/explore/account/me'
-    || path.startsWith('/explore/account/')
     || path.startsWith('/tutorial/transactions/')
     || path.startsWith('/game-rules/')
     || path === '/tutorial/mock-betting'
@@ -78,22 +65,19 @@ const usesDesktopContentReferenceShell = computed(() => {
       '/terms-of-use',
     ].includes(path)
 })
-const isSportsPage = computed(() => route.path.startsWith('/sports/') || route.path.startsWith('/explore/sports/'))
-const isEgamesPage = computed(() => (route.path.startsWith('/egames/') || route.path.startsWith('/explore/egames/')) && !isCustomerServicePage.value)
-const isLiveCasinoPage = computed(() => route.path.startsWith('/entertainment/live-casino') || route.path.startsWith('/explore/entertainment/live-casino'))
+const isSportsPage = computed(() => route.path.startsWith('/sports/'))
+const isEgamesPage = computed(() => route.path.startsWith('/egames/') && !isCustomerServicePage.value)
+const isLiveCasinoPage = computed(() => route.path.startsWith('/entertainment/live-casino'))
 const isGameChatPage = computed(() => isEgamesPage.value || isLiveCasinoPage.value)
 const isAffiliatePage = computed(() => route.path === '/affiliate')
-const isBonusesPage = computed(() => /^\/(?:explore\/)?bonuses?(?:\/|$)/.test(route.path))
-const isBlogsPage = computed(() => /^\/(?:explore\/)?blogs?(?:\/|$)/.test(route.path))
-const isLivePlazaPage = computed(() => route.path.startsWith('/live-plaza') || route.path.startsWith('/explore/live-plaza'))
-const isJackpotPage = computed(() => route.path.startsWith('/egames/jackpot') || route.path.startsWith('/explore/egames/jackpot'))
+const isBonusesPage = computed(() => /^\/bonuses?(?:\/|$)/.test(route.path))
+const isBlogsPage = computed(() => /^\/blogs?(?:\/|$)/.test(route.path))
+const isLivePlazaPage = computed(() => route.path.startsWith('/live-plaza'))
+const isJackpotPage = computed(() => route.path.startsWith('/egames/jackpot'))
 const isAccountSettingsPage = computed(() => [
   '/account/me',
   '/account/language',
   '/account/timezone',
-  '/explore/account/me',
-  '/explore/account/language',
-  '/explore/account/timezone',
   '/tutorial',
   '/affiliate',
 ].some(path => route.path.startsWith(path)))
@@ -117,11 +101,6 @@ const isDedicatedMobileHeaderPage = computed(() => {
     '/bonus',
     '/blogs',
     '/blog',
-    '/explore/live-plaza',
-    '/explore/account/language',
-    '/explore/account/timezone',
-    '/explore/bonuses',
-    '/explore/bonus',
   ].some(prefix => path === prefix || path.startsWith(prefix + '/'))
 })
 const isMobileDevice = (): boolean => {
@@ -264,9 +243,9 @@ onBeforeUnmount(() => {
       'site-shell--desktop-content-reference': usesDesktopContentReferenceShell,
       'site-shell--bonuses': isBonusesPage || isBlogsPage,
       'site-shell--live-plaza': isLivePlazaPage,
-      'site-shell--me': route.path === '/account/me' || route.path === '/explore/account/me',
+      'site-shell--me': route.path === '/account/me',
       'site-shell--dedicated-header': isDedicatedMobileHeaderPage,
-      'site-shell--green-header': isSportsPage || isEgamesPage || route.path.startsWith('/entertainment/') || route.path.startsWith('/explore/entertainment/'),
+      'site-shell--green-header': isSportsPage || isEgamesPage || route.path.startsWith('/entertainment/'),
     }"
   >
     <div class="app-header-underlay" aria-hidden="true" />
@@ -286,7 +265,7 @@ onBeforeUnmount(() => {
     <div class="content-layout">
       <div class="content-main-area">
         <main ref="pageContentElement" class="page-content pt-0">
-          <MobileLivePlazaHeader v-if="isLivePlazaPage && normalizedPath !== '/live-plaza/experts' && normalizedPath !== '/explore/live-plaza/experts'" />
+          <MobileLivePlazaHeader v-if="isLivePlazaPage && normalizedPath !== '/live-plaza/experts'" />
           <slot />
         </main>
 

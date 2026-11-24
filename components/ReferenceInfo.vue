@@ -57,7 +57,7 @@ const toggleFaq = (index: number): void => {
         <h2>{{ translate('Discover ByBet Slots') }}</h2>
         <p>{{ translate('At ByBet, we bring you an exceptional slots experience with thousands of games from the world’s top providers. From classic fruit machines to the latest video slots with blockbuster features, there’s always something new to explore.') }}</p>
         <p>{{ translate('Enjoy exciting jackpots, innovative gameplay and generous rewards — all in one place. Whether you’re a casual player or a high roller, ByBet is your home for bigger wins.') }}</p>
-        <a class="about-panel-cta" :href="externalSiteUrl" rel="noopener noreferrer">
+        <a class="about-panel-cta" :href="externalSiteUrl" rel="nofollow noopener noreferrer">
           {{ translate('Play Now') }}
           <ChevronRight :size="12" aria-hidden="true" />
         </a>

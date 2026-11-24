@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Sparkles } from 'lucide-vue-next'
+import { EXTERNAL_LINK_REL, isExternalHref } from '~/utils/externalLinkRel'
 
 const props = withDefaults(defineProps<{
   active?: boolean
@@ -9,6 +10,8 @@ const props = withDefaults(defineProps<{
   active: false,
   title: 'Smart Pick AI',
 })
+
+const isExternal = computed(() => isExternalHref(props.to))
 
 const emit = defineEmits<{
   click: [event: MouseEvent]
@@ -23,6 +26,8 @@ const handleClick = (event: MouseEvent): void => {
   <NuxtLink
     v-if="to"
     :to="to"
+    :external="isExternal"
+    :rel="isExternal ? EXTERNAL_LINK_REL : undefined"
     class="toolbar-circle-btn ai-button"
     :class="{ 'ai-button--active': active }"
     :title="title"

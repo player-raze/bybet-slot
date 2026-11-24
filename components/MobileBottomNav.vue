@@ -2,6 +2,7 @@
 import UnderMaintenance from '~/components/modals/UnderMaintenance.vue'
 import MobileChatSheet from '~/components/comments/MobileChatSheet.vue'
 import MobileBottomNavIcon from '~/components/MobileBottomNavIcon.vue'
+import { EXTERNAL_LINK_REL, isExternalHref } from '~/utils/externalLinkRel'
 const { bybetRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
 
 type NavMode = 'primary' | 'casino' | 'egames' | 'live-plaza'
@@ -26,13 +27,13 @@ const eGamesItems = [
 ]
 
 const getNavModeForPath = (path: string): NavMode => {
-  if (path.startsWith('/live-plaza/') || path.startsWith('/explore/live-plaza/')) {
+  if (path.startsWith('/live-plaza/')) {
     return 'live-plaza'
   }
-  if (path.startsWith('/entertainment/') || path.startsWith('/explore/entertainment/')) {
+  if (path.startsWith('/entertainment/')) {
     return 'casino'
   }
-  if (path.startsWith('/egames/') || path.startsWith('/explore/egames/')) {
+  if (path.startsWith('/egames/')) {
     return 'egames'
   }
   return 'primary'
@@ -50,20 +51,15 @@ let pageFooterObserver: IntersectionObserver | null = null
 const isCustomerServicePage = computed(() => (
   route.path === '/egames/customer-service'
   || route.path.startsWith('/egames/customer-service/')
-  || route.path === '/explore/egames/customer-service'
-  || route.path.startsWith('/explore/egames/customer-service/')
 ))
 const hasChatRoom = computed(() => (
-  ((route.path.startsWith('/egames/') || route.path.startsWith('/explore/egames/'))
-  && !isCustomerServicePage.value)
+  (route.path.startsWith('/egames/') && !isCustomerServicePage.value)
   || route.path.startsWith('/entertainment/live-casino')
-  || route.path.startsWith('/explore/entertainment/live-casino')
   || route.path.startsWith('/sports/')
-  || route.path.startsWith('/explore/sports/')
 ))
 const isChatExpanded = computed(() => isMobileViewport.value && hasChatRoom.value && chatContext.value !== null)
-const isBonusDetailPage = computed(() => route.path.startsWith('/bonus/') || route.path.startsWith('/explore/bonus/'))
-const isCustomerServiceChatPage = computed(() => /^\/(?:explore\/)?egames\/customer-service\/[12]\/?$/.test(route.path))
+const isBonusDetailPage = computed(() => route.path.startsWith('/bonus/'))
+const isCustomerServiceChatPage = computed(() => /^\/egames\/customer-service\/[12]\/?$/.test(route.path))
 const showNavigation = computed(() => !isBonusDetailPage.value && (isDoorAnimating.value || isChatExpanded.value || isNavVisible.value || (hasChatRoom.value && !isPageFooterVisible.value)))
 const updateViewport = (): void => { isMobileViewport.value = window.innerWidth < 1024 }
 
@@ -144,18 +140,13 @@ const isCasinoItemActive = (item: { label: string; to: string }): boolean => {
     return (
       route.path === '/entertainment/live-casino/poker'
       || route.path.startsWith('/entertainment/live-casino/poker/')
-      || route.path === '/explore/entertainment/live-casino/poker'
-      || route.path.startsWith('/explore/entertainment/live-casino/poker/')
     )
   }
   if (item.label === 'Live Casino') {
     return (
       (route.path.startsWith('/entertainment/live-casino')
-      || route.path === '/entertainment'
-      || route.path.startsWith('/explore/entertainment/live-casino')
-      || route.path === '/explore/entertainment')
+      || route.path === '/entertainment')
       && !route.path.startsWith('/entertainment/live-casino/poker')
-      && !route.path.startsWith('/explore/entertainment/live-casino/poker')
     )
   }
   return isPathActive(item.to)
@@ -166,14 +157,13 @@ const isEGamesItemActive = (item: { label: string; to: string }): boolean => {
 }
 
 const isSportsActive = computed(() => (
-  (route.path.startsWith('/sports/') || route.path.startsWith('/explore/sports/'))
+  route.path.startsWith('/sports/')
   && !route.path.startsWith('/sports/live')
-  && !route.path.startsWith('/explore/sports/live')
 ))
 
-const isInPlayActive = computed(() => route.path.startsWith('/sports/live') || route.path.startsWith('/explore/sports/live'))
-const isEGamesActive = computed(() => route.path.startsWith('/egames/') || route.path.startsWith('/explore/egames/'))
-const isAccountActive = computed(() => route.path.startsWith('/account/') || route.path.startsWith('/explore/account/'))
+const isInPlayActive = computed(() => route.path.startsWith('/sports/live'))
+const isEGamesActive = computed(() => route.path.startsWith('/egames/'))
+const isAccountActive = computed(() => route.path.startsWith('/account/'))
 
 interface NavCell {
   key: string
@@ -416,7 +406,7 @@ const handleNavCell = (cell: NavCell): void => {
       >
         <component
           :is="cell.to ? nuxtLinkComponent : 'button'"
-          v-bind="cell.to ? { to: cell.to } : { type: 'button' }"
+          v-bind="cell.to ? (isExternalHref(cell.to) ? { to: cell.to, external: true, rel: EXTERNAL_LINK_REL } : { to: cell.to }) : { type: 'button' }"
           class="mobile-bottom-nav__control"
           :class="[
             cell.key === 'door'

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ChevronLeft } from 'lucide-vue-next'
 import { formatSeoTitle, formatSeoDescription, isHomepageRoute } from '~/composables/useAppSeo'
+import { resolveOgImageForRoute } from '~/utils/ogImageManifest'
 
 interface Props {
   title: string
@@ -24,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   headingTag: 'h1',
   description: 'ByBet — Premier Online Gaming, Live Casino, Sports Betting, and Slots in the Philippines.',
   keywords: 'ByBet, sports betting, online casino, slots, live casino, Philippines gaming',
-  ogImage: '/brand/bybet-logo.webp',
+  ogImage: undefined,
   showBack: true,
   showFlag: true,
   sticky: false,
@@ -82,6 +83,19 @@ const robots = computed(() => {
   return config.public.indexFollow ? 'index, follow' : 'noindex, nofollow'
 })
 
+const resolvedOgImage = computed(() => {
+  const raw = (props.ogImage || '').trim()
+  const pathOrUrl = raw && raw !== '/brand/bybet-logo.webp'
+    ? raw
+    : resolveOgImageForRoute(route.path)
+  if (/^https?:\/\//i.test(pathOrUrl)) {
+    return pathOrUrl
+  }
+  return `${siteUrl.value}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`
+})
+
+const isJpgOgImage = computed(() => /\.jpe?g(?:[?#]|$)/i.test(resolvedOgImage.value))
+
 // Set reactive SEO metadata
 useSeoMeta({
   title: fullTitle,
@@ -90,11 +104,14 @@ useSeoMeta({
   description: fullDescription,
   ogDescription: fullDescription,
   keywords: () => props.keywords,
-  ogImage: () => props.ogImage,
+  ogImage: resolvedOgImage,
+  ogImageWidth: () => (isJpgOgImage.value ? 1200 : undefined),
+  ogImageHeight: () => (isJpgOgImage.value ? 630 : undefined),
+  ogImageType: () => (isJpgOgImage.value ? 'image/jpeg' : undefined),
   ogType: () => props.ogType || 'website',
   twitterTitle: fullTitle,
   twitterDescription: fullDescription,
-  twitterImage: () => props.ogImage,
+  twitterImage: resolvedOgImage,
   twitterCard: 'summary_large_image',
   robots,
 })

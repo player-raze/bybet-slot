@@ -68,7 +68,7 @@ const getItemAttributes = (item: RailItem): Record<string, string | boolean> => 
     const isExt = Boolean(item.external || item.to.startsWith('http://') || item.to.startsWith('https://'))
     return {
       to: item.to,
-      ...(isExt ? { external: true } : {}),
+      ...(isExt ? { external: true, rel: 'nofollow noopener noreferrer' } : {}),
     }
   }
 
@@ -87,7 +87,7 @@ const getSubmenuItemAttributes = (childItem: RailSubItem): Record<string, string
   const isExt = Boolean(childItem.external || childItem.to.startsWith('http://') || childItem.to.startsWith('https://'))
   return {
     to: childItem.to,
-    ...(isExt ? { external: true } : {}),
+    ...(isExt ? { external: true, rel: 'nofollow noopener noreferrer' } : {}),
   }
 }
 

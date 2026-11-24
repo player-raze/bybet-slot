@@ -112,4 +112,38 @@ describe('Egames Demo Button Redirect Test Suite', () => {
       assert.doesNotMatch(pageContent, /showDemoMessage\(`Launching Demo mode/, `${pageRel} must not use demo message popup`)
     }
   })
+
+  test('Case 6: utils/egamesRedirect.ts does not duplicate sportsRedirect exports or auto-imports', async () => {
+    const egamesModule = await import('../utils/egamesRedirect.ts')
+    for (const symbol of [
+      'DEFAULT_BYBET_REDIRECT_URL',
+      'DEFAULT_BYBET_REDIRECT_CODE',
+      'getEnvRedirectUrl',
+      'getEnvRedirectCode',
+      'buildBybetRedirectUrl',
+    ]) {
+      assert.equal(symbol in egamesModule, false, `utils/egamesRedirect.ts must not export duplicate symbol ${symbol}`)
+    }
+
+    const rootDir = process.cwd()
+    const seenExports = new Map()
+    for (const dir of ['utils', 'composables']) {
+      const fullDir = path.join(rootDir, dir)
+      for (const file of fs.readdirSync(fullDir).filter(name => name.endsWith('.ts'))) {
+        const src = fs.readFileSync(path.join(fullDir, file), 'utf-8')
+        for (const match of src.matchAll(/^export\s+(?:const|let|var|function|async\s+function|class)\s+([A-Za-z0-9_$]+)/gm)) {
+          const exportName = match[1]
+          if (!seenExports.has(exportName)) seenExports.set(exportName, [])
+          seenExports.get(exportName).push(`${dir}/${file}`)
+        }
+      }
+    }
+
+    const duplicates = [...seenExports.entries()].filter(([, files]) => files.length > 1)
+    assert.deepEqual(
+      duplicates,
+      [],
+      `Duplicate auto-import exports found across utils/ and composables/: ${JSON.stringify(duplicates)}`,
+    )
+  })
 })

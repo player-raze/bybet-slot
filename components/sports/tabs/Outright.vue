@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const search = ref('')
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
+const isPopular = computed(() => sportsRouteBase.value === '/sports/popular')
 
 const searchedSports = computed(() => {
   const q = search.value.toLowerCase().trim()
@@ -42,7 +42,7 @@ const tournamentPath = (key: string): string => {
 
 <template>
   <div class="outright-tab">
-    <div v-if="!['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase)" class="toolbar">
+    <div v-if="sportsRouteBase !== '/sports/popular'" class="toolbar">
       <Ai
         v-if="aiTo"
         :to="aiTo"

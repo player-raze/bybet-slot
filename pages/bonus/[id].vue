@@ -5,6 +5,8 @@ import MobileBonusHeader from '~/components/bonuses/MobileBonusHeader.vue'
 import PromotionComplianceFooter from '~/components/PromotionComplianceFooter.vue'
 import ReminderModal from '~/components/modals/ReminderModal.vue'
 import { trackEnvClick } from '~/utils/playnowTracker'
+import { addNofollowToExternalHtmlLinks } from '~/utils/externalLinkRel'
+import { OG_IMAGE_MANIFEST } from '~/utils/ogImageManifest'
 import {
   PROMOTION_PLACEHOLDER_IMAGES,
   getBonusDetail,
@@ -14,8 +16,10 @@ import {
 } from '~/data/promotions'
 
 const route = useRoute()
-const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode } = useRuntimeConfig().public
+const { bybetRedirectUrl: rawRedirectUrl, bybetRedirectCode, siteUrl: rawSiteUrl } = useRuntimeConfig().public
 const bybetRedirectUrl = `${(rawRedirectUrl || 'https://bybet.com').replace(/\/+$/, '')}/login?p=${bybetRedirectCode || 'xjSD'}`
+const siteUrl = String(rawSiteUrl || 'https://bybet.com').replace(/\/+$/, '')
+const cleanPath = computed(() => route.path.split('?')[0].split('#')[0].replace(/\/+$/, '').toLowerCase() || '/')
 const { markAsViewed } = useViewedPromotions()
 
 const bonusId = computed(() => {
@@ -24,6 +28,7 @@ const bonusId = computed(() => {
 })
 
 const bonus = computed<BonusDetail>(() => getBonusDetail(bonusId.value))
+const processedBonusContentHtml = computed(() => addNofollowToExternalHtmlLinks(bonus.value.contentHtml))
 const bannerImageError = ref(false)
 const isReminderOpen = ref(false)
 const reminderMessage = ref('Please login first to join this promotion.')
@@ -64,11 +69,15 @@ const seoKeywords = computed(() => {
 })
 
 const seoImage = computed(() => {
+  const manifestImg = OG_IMAGE_MANIFEST[cleanPath.value]
+  if (manifestImg) {
+    return `${siteUrl}${manifestImg}`
+  }
   const raw = bonusHeaderImageSrc.value || (typeof bonus.value.bannerImage === 'string' ? bonus.value.bannerImage : bonus.value.bannerImage?.banner) || bonus.value.thumbnailImage || '/brand/bybet-logo.webp'
-  return raw.startsWith('http') ? raw : `https://bybet.com${raw}`
+  return raw.startsWith('http') ? raw : `${siteUrl}${raw}`
 })
 
-const canonicalUrl = computed(() => `https://bybet.com/bonus/${bonus.value.slug}`)
+const canonicalUrl = computed(() => `${siteUrl}/bonus/${bonus.value.slug}`)
 
 useAppSeo({
   title: seoTitle,
@@ -195,7 +204,7 @@ const handleContentClick = (event: MouseEvent): void => {
           v-if="bonus.contentHtml"
           class="promotion-custom-content"
           @click="handleContentClick"
-          v-html="bonus.contentHtml"
+          v-html="processedBonusContentHtml"
         />
 
         <template v-else>
@@ -302,7 +311,7 @@ const handleContentClick = (event: MouseEvent): void => {
             <div v-if="bonus.eventContent.linkedParagraphs?.length" class="reward-linked-paragraphs">
               <p v-for="(paragraph, paragraphIndex) in bonus.eventContent.linkedParagraphs" :key="paragraphIndex">
                 <template v-for="(part, partIndex) in paragraph.parts" :key="`${paragraphIndex}-${partIndex}`">
-                  <a v-if="part.href" :href="part.href" target="_blank" rel="noopener noreferrer">{{ part.text }}</a>
+                  <a v-if="part.href" :href="part.href" target="_blank" rel="nofollow noopener noreferrer">{{ part.text }}</a>
                   <span v-else>{{ part.text }}</span>
                 </template>
               </p>

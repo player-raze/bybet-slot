@@ -36,6 +36,55 @@ test('Blogs Page & Bloggerist Integration Test Suite', async (t) => {
     assert.equal(fallback, '/brand/bybet-logo.webp')
   })
 
+  await t.test('Case 2b: Inner blog content images resolve relative upload paths to BLOGGERIST_URL', async () => {
+    const { normalizeBlogDetailResponse, resolveBlogContentImageUrls } = await import('../composables/useBloggerist.ts')
+
+    const inputHtml = [
+      '<style>.hero{background-image:url(\'/uploads/blogs/hero-bg.webp\');}</style>',
+      '<p><img src="/uploads/blogs/65fc9a581640286a821e59a448ce1381.webp" alt="Banner" width="1200" height="675"></p>',
+      '<p><img src="uploads/blogs/no-slash.png" data-src="./uploads/blogs/lazy.webp" srcset="/uploads/blogs/sm.webp 480w, uploads/blogs/lg.webp 1200w"></p>',
+      '<picture><source srcset="/uploads/blogs/pic.avif 1x, https://cdn.example.com/pic.avif 2x"></picture>',
+      '<video poster="/uploads/blogs/poster.jpg" src="/uploads/blogs/clip.mp4"></video>',
+      '<div style="background-image: url(\'uploads/blogs/inline-bg.webp\')"></div>',
+      '<p><img src="https://cdn.example.com/external.webp" alt="Ext"><img src="data:image/png;base64,iVBORw0KGgo=" alt="Data"></p>',
+      '<p><img alt="Use src=\'/uploads/not-real.webp\'" src="/uploads/blogs/real.webp" width="1200" height="675"></p>',
+      '<script>const tmpl = "<img src=\'/uploads/in-js.webp\'>";</script>',
+      '<p><a href="/uploads/blogs/full-size.webp">Full</a> <a href="/egames/slots">Slots</a></p>',
+    ].join('\n')
+
+    const resolved = resolveBlogContentImageUrls(inputHtml, 'https://cms.bybet.com/')
+    assert.ok(resolved.includes("url('https://cms.bybet.com/uploads/blogs/hero-bg.webp')"))
+    assert.ok(resolved.includes('<img src="https://cms.bybet.com/uploads/blogs/65fc9a581640286a821e59a448ce1381.webp"'))
+    assert.ok(resolved.includes('<img src="https://cms.bybet.com/uploads/blogs/no-slash.png" data-src="https://cms.bybet.com/uploads/blogs/lazy.webp"'))
+    assert.ok(resolved.includes('srcset="https://cms.bybet.com/uploads/blogs/sm.webp 480w, https://cms.bybet.com/uploads/blogs/lg.webp 1200w"'))
+    assert.ok(resolved.includes('<source srcset="https://cms.bybet.com/uploads/blogs/pic.avif 1x, https://cdn.example.com/pic.avif 2x">'))
+    assert.ok(resolved.includes('<video poster="https://cms.bybet.com/uploads/blogs/poster.jpg" src="https://cms.bybet.com/uploads/blogs/clip.mp4">'))
+    assert.ok(resolved.includes("url('https://cms.bybet.com/uploads/blogs/inline-bg.webp')"))
+    assert.ok(resolved.includes('<img src="https://cdn.example.com/external.webp" alt="Ext">'))
+    assert.ok(resolved.includes('<img src="data:image/png;base64,iVBORw0KGgo=" alt="Data">'))
+    assert.ok(resolved.includes('<img alt="Use src=\'/uploads/not-real.webp\'" src="https://cms.bybet.com/uploads/blogs/real.webp" width="1200" height="675">'))
+    assert.ok(resolved.includes('<script>const tmpl = "<img src=\'/uploads/in-js.webp\'>";</script>'))
+    assert.ok(resolved.includes('<a href="https://cms.bybet.com/uploads/blogs/full-size.webp">Full</a>'))
+    assert.ok(resolved.includes('<a href="/egames/slots">Slots</a>'))
+
+    // Idempotent if called a second time (server + client)
+    assert.equal(resolveBlogContentImageUrls(resolved, 'https://cms.bybet.com/'), resolved)
+
+    const normalizedPayload = normalizeBlogDetailResponse({
+      ok: true,
+      blog: {
+        id: 'test',
+        slug: 'test',
+        title: 'Test',
+        content_html: '<img src="/uploads/blogs/sample.webp">',
+      },
+    }, 'http://localhost:8082')
+    assert.equal(normalizedPayload.blog?.content_html, '<img src="http://localhost:8082/uploads/blogs/sample.webp">')
+
+    const postApi = fs.readFileSync(path.join(rootDir, 'server/api/blogs/post.get.ts'), 'utf8')
+    assert.ok(postApi.includes('normalizeBlogDetailResponse'), 'server/api/blogs/post.get.ts must normalize content image URLs')
+  })
+
   await t.test('Case 3: Categories are strictly filtered so only categories with postCount > 0 are displayed', () => {
     // Sample raw categories matching Bloggerist api/blog-category-list.php
     const mockCategories = [
@@ -111,7 +160,8 @@ test('Blogs Page & Bloggerist Integration Test Suite', async (t) => {
   await t.test('Case 6: Single blog post page supports content HTML, countdown, and SEO schema', () => {
     const blogDetail = fs.readFileSync(path.join(rootDir, 'pages/blog/[id].vue'), 'utf8')
 
-    assert.ok(blogDetail.includes('v-html="blog.content_html"'), 'Blog detail must render content_html')
+    assert.ok(blogDetail.includes('v-html="processedBlogContentHtml"') && blogDetail.includes('blog.value?.content_html'), 'Blog detail must render processed content_html')
+    assert.ok(blogDetail.includes('resolveContentImages'), 'Blog detail must resolve inner blog content images against BLOGGERIST_URL')
     assert.ok(blogDetail.includes('blog-countdown'), 'Blog detail must render countdown section')
     assert.ok(blogDetail.includes('useAppSeo'), 'Blog detail must register SEO')
     assert.ok(blogDetail.includes('breadcrumbs'), 'Blog detail must provide breadcrumbs')

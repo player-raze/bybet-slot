@@ -33,7 +33,7 @@ const SPORT_CATEGORIES: Record<string, Omit<SportCategory, 'events'>> = {
 const SPORT_ORDER = ['basketball', 'soccer', 'tennis', 'baseball']
 
 const sportsRouteBase = useSportsRouteBase()
-const isPopular = computed(() => ['/sports/popular', '/explore/sports/popular'].includes(sportsRouteBase.value))
+const isPopular = computed(() => sportsRouteBase.value === '/sports/popular')
 const collapsed = ref<string[]>([])
 const selectedOutcomes = ref<Record<string, string>>({})
 const sportType = (event: SportsEvent) => (event.sport || event.sport_key.split('_')[0] || '').toLowerCase()

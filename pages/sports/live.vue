@@ -6,6 +6,7 @@ import {
   buildBybetRedirectUrl,
   resolveSportsTabRedirectUrl,
 } from '~/utils/sportsRedirect'
+import { EXTERNAL_LINK_REL, isExternalHref } from '~/utils/externalLinkRel'
 
 const route = useRoute()
 
@@ -101,6 +102,7 @@ const mobileModePath = (key: string): string => {
           :key="tab.key"
           :to="mobileModePath(tab.key)"
           :external="tab.key === 'smart-pick' || tab.key === 'outright'"
+          :rel="isExternalModeTab(tab.key) ? EXTERNAL_LINK_REL : undefined"
           :class="{ selected: tab.key === 'inplay' }"
           :aria-current="tab.key === 'inplay' ? 'page' : undefined"
         >
@@ -115,7 +117,8 @@ const mobileModePath = (key: string): string => {
           v-for="tab in liveTabs"
           :key="tab.key"
           :to="tab.to"
-          :external="Boolean(tab.external)"
+          :external="Boolean(tab.external || isExternalHref(tab.to))"
+          :rel="(tab.external || isExternalHref(tab.to)) ? EXTERNAL_LINK_REL : undefined"
           :class="{ selected: currentSport === tab.key }"
           :aria-current="currentSport === tab.key ? 'page' : undefined"
         >

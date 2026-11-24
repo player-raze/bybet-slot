@@ -42,7 +42,7 @@ describe('Sports TV Play Button Redirect Suite', () => {
     const playAnchor = anchorMatch[0]
     assert.match(playAnchor, /:href="bybetRedirectUrl"/, 'Play preview anchor must bind :href="bybetRedirectUrl"')
     assert.match(playAnchor, /target="_blank"/, 'Play preview anchor must open in a new tab')
-    assert.match(playAnchor, /rel="noopener noreferrer"/, 'Play preview anchor must set rel="noopener noreferrer"')
+    assert.match(playAnchor, /rel="nofollow noopener noreferrer"/, 'Play preview anchor must set rel="nofollow noopener noreferrer"')
     assert.match(playAnchor, /data-section="SportsTV"/, 'Play preview anchor must expose data-section="SportsTV" for Playnow tracker')
     assert.match(playAnchor, /<Play\b/, 'Play preview anchor must wrap the Play icon')
     assert.doesNotMatch(playAnchor, /<button\b/, 'Play preview anchor must not nest <button> inside <a>')
