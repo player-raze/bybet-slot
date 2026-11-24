@@ -82,6 +82,13 @@ export const resolveSortCriteria = (
 ): { field: string; order: GameRailSortOrder } | null => {
   if (!options) return null
 
+  if (typeof options.sort === 'string') {
+    const cleanSort = options.sort.trim().toLowerCase()
+    if (cleanSort === 'none' || cleanSort === 'preserve') {
+      return null
+    }
+  }
+
   // 1. Explicit sortBy prop
   if (options.sortBy) {
     const rawClean = options.sortBy.toLowerCase().replace(/[-_\s]/g, '')
@@ -241,4 +248,82 @@ export const sortRailGames = <T extends Record<string, any>>(
     const strB = String(valB)
     return order === 'asc' ? strA.localeCompare(strB) : strB.localeCompare(strA)
   })
+}
+
+const RANDOMIZED_SLOT_CATEGORIES = new Set([
+  'bonus',
+  'bonuses',
+  'top-pick',
+  'top-picks',
+  'toppick',
+  'new',
+])
+
+/**
+ * Returns true when a slots category uses randomized ordering instead of metric sorting.
+ */
+export const isRandomizedSlotCategory = (category?: string | null): boolean => {
+  if (!category) return false
+  return RANDOMIZED_SLOT_CATEGORIES.has(category.toLowerCase().trim())
+}
+
+/**
+ * Generates a positive 32-bit random seed for per-visit shuffling.
+ */
+export const createRandomSeed = (): number => {
+  if (typeof globalThis.crypto?.getRandomValues === 'function') {
+    const buf = new Uint32Array(1)
+    globalThis.crypto.getRandomValues(buf)
+    if (buf[0] > 0) return buf[0]
+  }
+  return Math.max(1, Math.floor(Math.random() * 0xffffffff))
+}
+
+/**
+ * Derives an independent deterministic 32-bit seed per category from a page-level seed.
+ */
+export const deriveCategorySeed = (baseSeed: number, key: string): number => {
+  let hash = (baseSeed >>> 0) || 0x9e3779b9
+  const cleanKey = key.toLowerCase().trim()
+  for (let i = 0; i < cleanKey.length; i += 1) {
+    hash ^= cleanKey.charCodeAt(i)
+    hash = Math.imul(hash, 0x01000193) >>> 0
+  }
+  return hash || 1
+}
+
+/**
+ * Performs a pure, deterministic Fisher-Yates shuffle for a given 32-bit seed.
+ */
+export const shuffleWithSeed = <T>(items: readonly T[], seed: number): T[] => {
+  const result = [...items]
+  let state = (seed >>> 0) || 1
+  const nextFloat = (): number => {
+    state = (state + 0x6d2b79f5) >>> 0
+    let t = Math.imul(state ^ (state >>> 15), 1 | state)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(nextFloat() * (i + 1))
+    const tmp = result[i]
+    result[i] = result[j]
+    result[j] = tmp
+  }
+  return result
+}
+
+/**
+ * Shuffles randomized slot categories (Bonuses, Top Pick, New) using a derived seed,
+ * and falls back to sortRailGames for metric-sorted categories (Top, Hot, Cold, Max RTP).
+ */
+export const sortOrRandomizeSlotGames = <T extends Record<string, any>>(
+  games: T[],
+  options: { category: string; label?: string; randomSeed: number },
+): T[] => {
+  if (isRandomizedSlotCategory(options.category)) {
+    return shuffleWithSeed(games, deriveCategorySeed(options.randomSeed, options.category))
+  }
+  return sortRailGames(games, { category: options.category, label: options.label })
 }
