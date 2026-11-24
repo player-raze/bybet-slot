@@ -35,13 +35,20 @@ import {
 import GameCard from '~/components/game-cards/GameCard.vue'
 import GameRail from '~/components/game-cards/GameRail.vue'
 import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
-import { sortRailGames } from '~/utils/gameSort'
+import {
+  deriveCategorySeed,
+  isRandomizedSlotCategory,
+  shuffleWithSeed,
+  sortOrRandomizeSlotGames,
+} from '~/utils/gameSort'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
 import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
 import { trackEnvClick } from '~/utils/playnowTracker'
+import { useSlotRandomSeed } from '~/composables/useSlotRandomSeed'
 
 const { effectiveTheme } = useSiteTheme()
+const slotRandomSeed = useSlotRandomSeed()
 
 useAppSeo({
   title: 'Online Slots — Real Money Slots & Jackpots | ByBet',
@@ -435,16 +442,43 @@ const filteredSections = computed<SlotSectionDisplay[]>(() => {
     }
 
     if (allMatchingGames.length < 15) {
+      const backfill: SlotGame[] = []
       for (const game of availableSlots) {
         if (!seenIds.has(game.id)) {
           seenIds.add(game.id)
-          allMatchingGames.push(game)
-          if (allMatchingGames.length >= 15) break
+          backfill.push(game)
+          if (allMatchingGames.length + backfill.length >= 15) break
         }
       }
+
+      if (isRandomizedSlotCategory(cfg.id)) {
+        const sortedDirect = sortOrRandomizeSlotGames(allMatchingGames, {
+          category: cfg.id,
+          label: cfg.title,
+          randomSeed: slotRandomSeed.value,
+        })
+        const shuffledBackfill = shuffleWithSeed(
+          backfill,
+          deriveCategorySeed(slotRandomSeed.value, `${cfg.id}:backfill`),
+        )
+        const combinedGames = [...sortedDirect, ...shuffledBackfill]
+
+        return {
+          ...cfg,
+          count: combinedGames.length,
+          games: combinedGames.slice(0, GAMES_PER_SECTION),
+          allMatchingGames: combinedGames,
+        }
+      }
+
+      allMatchingGames.push(...backfill)
     }
 
-    const sortedGames = sortRailGames(allMatchingGames, { category: cfg.id, label: cfg.title })
+    const sortedGames = sortOrRandomizeSlotGames(allMatchingGames, {
+      category: cfg.id,
+      label: cfg.title,
+      randomSeed: slotRandomSeed.value,
+    })
 
     return {
       ...cfg,
@@ -729,6 +763,7 @@ const resetFilters = (): void => {
         <GameRail
           :label="section.title"
           :category="section.id"
+          :sort="isRandomizedSlotCategory(section.id) ? 'none' : undefined"
           :games="section.games"
           v-slot="{ games }"
         >

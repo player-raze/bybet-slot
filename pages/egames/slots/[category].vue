@@ -34,13 +34,15 @@ import {
 } from '~/data/slots'
 import GameCard from '~/components/game-cards/GameCard.vue'
 import GameEmptyState from '~/components/game-cards/GameEmptyState.vue'
-import { sortRailGames } from '~/utils/gameSort'
+import { sortOrRandomizeSlotGames } from '~/utils/gameSort'
 import SlotFilterModal from '~/components/slots/SlotFilterModal.vue'
 import { getProviderLogoForTheme } from '~/utils/providerLogo'
 import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
 import { trackEnvClick } from '~/utils/playnowTracker'
+import { useSlotRandomSeed } from '~/composables/useSlotRandomSeed'
 
 const { effectiveTheme } = useSiteTheme()
+const slotRandomSeed = useSlotRandomSeed()
 
 const categoryIcons: Record<string, Component> = {
   House,
@@ -398,9 +400,10 @@ const allCategoryGames = computed<SlotGame[]>(() => {
     games.push(game)
   }
 
-  return sortRailGames(games, {
+  return sortOrRandomizeSlotGames(games, {
     category: activeCategory.value,
     label: categoryLabel.value,
+    randomSeed: slotRandomSeed.value,
   })
 })
 

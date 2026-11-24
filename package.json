@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
+    "update": "git fetch --all && git merge upstream/lanie-work",
     "build": "nuxt build && node scripts/generate-sitemap.mjs && node scripts/generate-llms.mjs",
     "start": "node scripts/start-server.mjs",
     "preview": "nuxt preview",
