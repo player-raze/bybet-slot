@@ -97,8 +97,9 @@ const { translate } = useSiteLocale()
         <h3 id="recent-spin-title">{{ translate('Sign in to track your wins') }}</h3>
         <p>{{ translate('Log in or create an account to save spins, claim prizes, and view your win history.') }}</p>
         <div class="auth-actions">
-          <a :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer" class="auth-primary">
+          <a :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer" class="auth-primary homepage-glare homepage-glare--cta">
             <LogIn :size="14" /> {{ translate('Login') }}
+            <span class="homepage-glare__shine" aria-hidden="true" />
           </a>
           <a :href="externalSiteUrl" target="_blank" rel="nofollow noopener noreferrer" class="auth-secondary">
             <UserPlus :size="14" /> {{ translate('Sign Up') }}

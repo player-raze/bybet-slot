@@ -239,10 +239,11 @@ onBeforeUnmount(() => {
                 slides[activeSlideIndex].primaryTo,
                 slides[activeSlideIndex].primaryExternal,
               )"
-              class="hero-primary"
+              class="hero-primary homepage-glare homepage-glare--cta homepage-glare--delay-1"
             >
               {{ translate(slides[activeSlideIndex].primaryAction) }}
               <ChevronRight :size="11" :stroke-width="2.6" aria-hidden="true" />
+              <span class="homepage-glare__shine" aria-hidden="true" />
             </component>
             <component
               :is="slides[activeSlideIndex].secondaryExternal ? 'a' : nuxtLinkComponent"
@@ -250,9 +251,10 @@ onBeforeUnmount(() => {
                 slides[activeSlideIndex].secondaryTo,
                 slides[activeSlideIndex].secondaryExternal,
               )"
-              class="hero-secondary"
+              class="hero-secondary homepage-glare homepage-glare--cta homepage-glare--delay-2"
             >
               {{ translate(slides[activeSlideIndex].secondaryAction) }}
+              <span class="homepage-glare__shine" aria-hidden="true" />
             </component>
           </div>
         </div>

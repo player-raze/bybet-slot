@@ -41,11 +41,12 @@ const toggleFaq = (index: number): void => {
           <p class="app-promotion-description">
             {{ translate('Your favorite slots, live casino games, and sports bets all in one place. Take ByBet with you wherever you go.') }}
           </p>
-          <NuxtLink class="app-promotion-cta" to="/download-app">  
+          <NuxtLink class="app-promotion-cta homepage-glare homepage-glare--cta homepage-glare--delay-1" to="/download-app">
             <Download class="app-promotion-cta-icon" :size="14" aria-hidden="true" />
             <span class="app-promotion-cta-label">{{ translate('Download App') }}</span>
             <ChevronRight class="app-promotion-cta-chevron" :size="16" stroke-width="3" aria-hidden="true" />
-          </NuxtLink>            
+            <span class="homepage-glare__shine" aria-hidden="true" />
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -57,9 +58,10 @@ const toggleFaq = (index: number): void => {
         <h2>{{ translate('Discover ByBet Slots') }}</h2>
         <p>{{ translate('At ByBet, we bring you an exceptional slots experience with thousands of games from the world’s top providers. From classic fruit machines to the latest video slots with blockbuster features, there’s always something new to explore.') }}</p>
         <p>{{ translate('Enjoy exciting jackpots, innovative gameplay and generous rewards — all in one place. Whether you’re a casual player or a high roller, ByBet is your home for bigger wins.') }}</p>
-        <a class="about-panel-cta" :href="externalSiteUrl" rel="nofollow noopener noreferrer">
+        <a class="about-panel-cta homepage-glare homepage-glare--cta homepage-glare--delay-3" :href="externalSiteUrl" rel="nofollow noopener noreferrer">
           {{ translate('Play Now') }}
           <ChevronRight :size="12" aria-hidden="true" />
+          <span class="homepage-glare__shine" aria-hidden="true" />
         </a>
         <!-- <NuxtLink class="about-panel-cta" to="/egames/slots">
           {{ translate('Play Now') }}

@@ -147,13 +147,14 @@ watch(
       <a
         v-for="game in games"
         :key="game.id ?? game.title"
-        class="reference-game"
+        class="reference-game homepage-glare homepage-glare--card"
         :class="{ 'reference-game--fallback': game.image === '/brand/bybet-logo.webp' }"
         :href="externalSiteUrl"
         target="_blank"
         rel="nofollow noopener noreferrer"
         :aria-label="`${translate('Play Real')} — ${game.title} by ${game.provider} on ByBet`"
       >
+        <span class="homepage-glare__shine" aria-hidden="true" />
         <h3 class="sr-only">{{ game.title }}</h3>
         <picture>
           <source

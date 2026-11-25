@@ -7,10 +7,14 @@ import {
   recommendedGames,
 } from '~/data/homepage'
 
+import { useHomepageGlare } from '~/composables/useHomepageGlare'
+
 const config = useRuntimeConfig()
 const siteName = computed(() => String(config.public.siteName || 'ByBet').trim())
 const siteUrl = computed(() => String(config.public.siteUrl || 'https://bybet.com').replace(/\/+$/, ''))
 const { translate } = useSiteLocale()
+const homePageElement = ref<HTMLElement | null>(null)
+useHomepageGlare(homePageElement)
 
 useAppSeo({
   title: 'ByBet Casino PH Slots – Big Spins, Endless Entertainment',
@@ -58,7 +62,7 @@ useAppSeo({
 </script>
 
 <template>
-  <div class="home-page ">
+  <div ref="homePageElement" class="home-page">
     <ReferenceHero />
     <ReferenceCategoryTabs />
     <ReferenceGameSection

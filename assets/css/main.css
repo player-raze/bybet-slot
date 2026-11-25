@@ -656,4 +656,111 @@ border: none;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+
+  .home-page .homepage-glare__shine {
+    display: none;
+  }
+}
+
+.home-page .homepage-glare {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.home-page .homepage-glare__shine {
+  position: absolute;
+  z-index: 2;
+  top: -45%;
+  bottom: -45%;
+  left: -90%;
+  width: 52%;
+  opacity: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 8%,
+    rgba(255, 255, 255, 0.14) 28%,
+    rgba(255, 255, 255, 0.68) 50%,
+    rgba(255, 255, 255, 0.18) 72%,
+    transparent 92%
+  );
+  transform: translateX(0) skewX(-18deg);
+  pointer-events: none;
+}
+
+.home-page .reference-game .homepage-glare__shine {
+  z-index: 4;
+}
+
+@keyframes homepage-glare-sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(0) skewX(-18deg);
+  }
+
+  16%,
+  72% {
+    opacity: 0.85;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(500%) skewX(-18deg);
+  }
+}
+
+@keyframes homepage-glare-idle {
+  0% {
+    opacity: 0;
+    transform: translateX(0) skewX(-18deg);
+  }
+
+  4%,
+  16% {
+    opacity: 0.78;
+  }
+
+  23%,
+  100% {
+    opacity: 0;
+    transform: translateX(500%) skewX(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-page .homepage-glare--cta .homepage-glare__shine {
+    animation: homepage-glare-idle 4.4s cubic-bezier(0.2, 0.65, 0.3, 1) var(--homepage-glare-delay, 0.6s) infinite;
+  }
+
+  .home-page .homepage-glare--delay-1 .homepage-glare__shine {
+    --homepage-glare-delay: 0.9s;
+  }
+
+  .home-page .homepage-glare--delay-2 .homepage-glare__shine {
+    --homepage-glare-delay: 2.1s;
+  }
+
+  .home-page .homepage-glare--delay-3 .homepage-glare__shine {
+    --homepage-glare-delay: 1.5s;
+  }
+
+  .home-page .homepage-glare__shine--auto {
+    animation: homepage-glare-sweep 900ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  }
+
+  .home-page .homepage-glare:focus-visible .homepage-glare__shine {
+    animation: homepage-glare-sweep 850ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home-page .homepage-glare:hover .homepage-glare__shine {
+    animation: homepage-glare-sweep 850ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  }
+}
+
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .home-page .homepage-glare:active .homepage-glare__shine {
+    animation: homepage-glare-sweep 340ms ease-out both;
+  }
 }
