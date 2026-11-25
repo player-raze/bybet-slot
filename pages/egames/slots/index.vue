@@ -46,6 +46,11 @@ import { getProviderLogoForTheme } from '~/utils/providerLogo'
 import { resolveDemoRedirectUrl } from '~/utils/egamesRedirect'
 import { trackEnvClick } from '~/utils/playnowTracker'
 import { useSlotRandomSeed } from '~/composables/useSlotRandomSeed'
+import {
+  getVisibleSlotSectionGames,
+  hasMoreSlotSectionGames,
+  incrementMobileSectionLimit,
+} from '~/utils/slotSectionPagination'
 
 const { effectiveTheme } = useSiteTheme()
 const slotRandomSeed = useSlotRandomSeed()
@@ -260,8 +265,20 @@ const handleDocumentClick = (event: MouseEvent): void => {
   }
 }
 
+const isMobileViewport = ref(false)
+const mobileSectionLimits = ref<Record<string, number>>({})
+let mobileViewportQuery: MediaQueryList | undefined
+
+const syncMobileViewport = (): void => {
+  isMobileViewport.value = Boolean(mobileViewportQuery?.matches)
+}
+
 onMounted(() => {
   if (import.meta.client) {
+    mobileViewportQuery = window.matchMedia('(max-width: 1023px)')
+    syncMobileViewport()
+    mobileViewportQuery.addEventListener('change', syncMobileViewport)
+
     document.addEventListener('click', handleDocumentClick)
     window.addEventListener('scroll', handleScroll, { passive: true })
 
@@ -279,6 +296,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (import.meta.client) {
+    mobileViewportQuery?.removeEventListener('change', syncMobileViewport)
+    mobileViewportQuery = undefined
     document.removeEventListener('click', handleDocumentClick)
     window.removeEventListener('scroll', handleScroll)
     loadMoreObserver?.disconnect()
@@ -297,6 +316,10 @@ watch([searchQuery, activeProviders], () => {
   activeGameId.value = null
   displayedSearchCount.value = INITIAL_SLOT_COUNT
 })
+
+watch([activeProviders, filterState], () => {
+  mobileSectionLimits.value = {}
+}, { deep: true })
 
 const allSearchResults = computed<SlotGame[]>(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -488,6 +511,35 @@ const filteredSections = computed<SlotSectionDisplay[]>(() => {
     }
   }).filter((section) => section.games.length > 0)
 })
+
+const displayedSectionGames = (section: SlotSectionDisplay): SlotGame[] => {
+  return getVisibleSlotSectionGames(
+    section.games,
+    section.allMatchingGames,
+    isMobileViewport.value,
+    mobileSectionLimits.value,
+    section.id,
+  )
+}
+
+const hasMoreMobileSectionGames = (section: SlotSectionDisplay): boolean => {
+  const totalCount = section.allMatchingGames?.length ?? section.games.length
+  return hasMoreSlotSectionGames(
+    totalCount,
+    isMobileViewport.value,
+    mobileSectionLimits.value,
+    section.id,
+  )
+}
+
+const loadMoreMobileSectionGames = (section: SlotSectionDisplay): void => {
+  const totalCount = section.allMatchingGames?.length ?? section.games.length
+  mobileSectionLimits.value = incrementMobileSectionLimit(
+    mobileSectionLimits.value,
+    section.id,
+    totalCount,
+  )
+}
 
 const resetFilters = (): void => {
   activeProviders.value = ['all']
@@ -759,16 +811,17 @@ const resetFilters = (): void => {
           </NuxtLink>
         </div>
 
-        <!-- Swipeable section preview -->
+        <!-- Swipeable section preview on desktop; paginated grid on mobile -->
         <GameRail
           :label="section.title"
           :category="section.id"
+          :layout="isMobileViewport ? 'grid' : 'slider'"
           :sort="isRandomizedSlotCategory(section.id) ? 'none' : undefined"
-          :games="section.games"
+          :games="displayedSectionGames(section)"
           v-slot="{ games }"
         >
           <GameCard
-            v-for="game in (games && games.length ? games : section.games)"
+            v-for="game in (games && games.length ? games : displayedSectionGames(section))"
             :key="game.id"
             :game="game"
             :activeId="activeGameId"
@@ -779,6 +832,20 @@ const resetFilters = (): void => {
             @demo="handleDemo"
           />
         </GameRail>
+
+        <div
+          v-if="hasMoreMobileSectionGames(section)"
+          class="mt-3 flex justify-center lg:hidden"
+        >
+          <button
+            type="button"
+            class="slot-load-more-btn inline-flex items-center justify-center min-h-[44px] w-full sm:w-auto px-6 py-2.5 rounded-lg border border-[#2b6a4f] bg-[#14261d] text-[#bfead4] text-[12px] font-bold transition-colors hover:bg-[#1b3528] cursor-pointer light:bg-white light:text-[#036242] light:border-[#036242]/25 light:shadow-sm light:hover:bg-[#edf6f1]"
+            :aria-label="`Load more games (${section.title})`"
+            @click="loadMoreMobileSectionGames(section)"
+          >
+            Load more games
+          </button>
+        </div>
       </section>
     </template>
 
@@ -823,6 +890,21 @@ const resetFilters = (): void => {
   .slot-nav-svg {
     width: 1.5rem;
     height: 1.5rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  div.slots-page :deep(.game-rail.game-rail) {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  div.slots-page :deep(.game-rail.game-rail) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 </style>
