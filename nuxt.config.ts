@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config'
+import { resolveViteAllowedHosts } from './utils/viteAllowedHosts'
 
 const environment = (
   globalThis as typeof globalThis & {
@@ -21,6 +22,8 @@ const environment = (
         HOST?: string
         NITRO_HOST?: string
         NUXT_HOST?: string
+        ALLOWED_HOSTS?: string
+        VITE_ALLOWED_HOSTS?: string
       }
     }
   }
@@ -30,6 +33,7 @@ const isIndexFollow = environment?.INDEX_FOLLOW === 'true'
 const rawDevPort = environment?.NUXT_PORT || environment?.NITRO_PORT || environment?.PORT
 const parsedDevPort = rawDevPort ? Number.parseInt(rawDevPort, 10) : NaN
 const devHost = (environment?.NUXT_HOST || environment?.NITRO_HOST || environment?.HOST || '').trim()
+const viteAllowedHosts = resolveViteAllowedHosts(environment)
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -43,6 +47,14 @@ export default defineNuxtConfig({
         },
       }
     : {}),
+  vite: {
+    server: {
+      allowedHosts: viteAllowedHosts,
+    },
+    preview: {
+      allowedHosts: viteAllowedHosts,
+    },
+  },
   runtimeConfig: {
     bloggeristUrl: environment?.BLOGGERIST_URL || 'http://localhost:8082',
     oddsApi: environment?.SPORTS_API || 'https://api.the-odds-api.com/v4',
