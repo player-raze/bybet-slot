@@ -1,10 +1,10 @@
 import type { H3Event } from 'h3'
 import type { BlogPostListResponse } from '~/types/blog'
+import { resolveServerBloggeristUrl } from '~/server/utils/bloggerist'
 
 export default defineEventHandler(async (event: H3Event): Promise<BlogPostListResponse> => {
   const query = getQuery(event)
-  const config = useRuntimeConfig(event)
-  const bloggeristUrl = (config.bloggeristUrl || config.public?.bloggeristUrl || 'http://localhost:8082').replace(/\/+$/, '')
+  const bloggeristUrl = resolveServerBloggeristUrl(event)
 
   const params = new URLSearchParams()
   if (query.count) params.set('count', String(query.count))

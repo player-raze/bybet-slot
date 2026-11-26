@@ -1,9 +1,9 @@
 import type { H3Event } from 'h3'
 import type { BlogSeoSettingsResponse } from '~/types/blog'
+import { resolveServerBloggeristUrl } from '~/server/utils/bloggerist'
 
 export default defineEventHandler(async (event: H3Event): Promise<BlogSeoSettingsResponse> => {
-  const config = useRuntimeConfig(event)
-  const bloggeristUrl = (config.bloggeristUrl || config.public?.bloggeristUrl || 'http://localhost:8082').replace(/\/+$/, '')
+  const bloggeristUrl = resolveServerBloggeristUrl(event)
 
   try {
     const res = await $fetch<BlogSeoSettingsResponse>(`${bloggeristUrl}/api/settings/seo.php`, { timeout: 3000 })
