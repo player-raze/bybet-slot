@@ -58,6 +58,23 @@ describe('aaPanel Editable Env Port Configuration Suite', () => {
     }
   })
 
+  test('Case 2b: loadEnvIntoProcess normalizes scheme-less BLOGGERIST_URL and bridges NUXT_* vars', () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bybet-bloggerist-env-'))
+    const envFile = path.join(tmpRoot, '.env')
+    fs.writeFileSync(envFile, 'PORT=3005\nBLOGGERIST_URL=bybet-all-bloggerist.chickenkiller.com\n', 'utf8')
+
+    try {
+      const target = {}
+      const loaded = loadEnvIntoProcess({ envPath: envFile, targetEnv: target })
+      assert.equal(loaded.bloggeristUrl, 'http://bybet-all-bloggerist.chickenkiller.com')
+      assert.equal(target.BLOGGERIST_URL, 'http://bybet-all-bloggerist.chickenkiller.com')
+      assert.equal(target.NUXT_BLOGGERIST_URL, 'http://bybet-all-bloggerist.chickenkiller.com')
+      assert.equal(target.NUXT_PUBLIC_BLOGGERIST_URL, 'http://bybet-all-bloggerist.chickenkiller.com')
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
   test('Case 3: Project config, scripts, Nitro plugin, and env files expose editable PORT', () => {
     const envExample = fs.readFileSync(path.join(rootDir, '.env.example'), 'utf8')
     assert.match(envExample, /^PORT=3000$/m, '.env.example must define default PORT=3000')

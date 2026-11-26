@@ -1,5 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import { resolveViteAllowedHosts } from './utils/viteAllowedHosts'
+import { normalizeBloggeristUrl } from './utils/bloggeristUrl'
 
 const environment = (
   globalThis as typeof globalThis & {
@@ -56,12 +57,12 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    bloggeristUrl: environment?.BLOGGERIST_URL || 'http://localhost:8082',
+    bloggeristUrl: normalizeBloggeristUrl(environment?.BLOGGERIST_URL),
     oddsApi: environment?.SPORTS_API || 'https://api.the-odds-api.com/v4',
     oddsApiKey: environment?.SPORTS_API_KEY || '',
     useOddsApi: environment?.USE_ODDS_API === 'true',
     public: {
-      bloggeristUrl: environment?.BLOGGERIST_URL || 'http://localhost:8082',
+      bloggeristUrl: normalizeBloggeristUrl(environment?.BLOGGERIST_URL),
       useOddsApi: environment?.USE_ODDS_API === 'true',
       bybetRedirectUrl: environment?.BYBET_REDIRECT_URL || 'https://bybet.com',
       bybetRedirectCode: environment?.BYBET_REDIRECT_CODE || 'xjSD',

@@ -1,10 +1,10 @@
 import { getRequestHeader, getRequestIP, type H3Event } from 'h3'
 import type { PlaynowClickResponse } from '~/utils/playnowTracker'
+import { resolveServerBloggeristUrl } from '~/server/utils/bloggerist'
 
 export default defineEventHandler(async (event: H3Event): Promise<PlaynowClickResponse> => {
   const body = await readBody(event).catch(() => ({}))
-  const config = useRuntimeConfig(event)
-  const bloggeristUrl = (config.bloggeristUrl || config.public?.bloggeristUrl || 'http://localhost:8082').replace(/\/+$/, '')
+  const bloggeristUrl = resolveServerBloggeristUrl(event)
 
   const forwardedIp = (
     getRequestHeader(event, 'cf-connecting-ip')

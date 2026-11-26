@@ -36,6 +36,38 @@ test('Blogs Page & Bloggerist Integration Test Suite', async (t) => {
     assert.equal(fallback, '/brand/bybet-logo.webp')
   })
 
+  await t.test('Case 2c: Scheme-less BLOGGERIST_URL domains normalize to http:// instead of relative site-prefixed URLs', async () => {
+    const { DEFAULT_BLOGGERIST_URL, normalizeBloggeristUrl } = await import('../utils/bloggeristUrl.ts')
+    const { resolveBlogContentImageUrls, resolveBlogImageUrl } = await import('../composables/useBloggerist.ts')
+
+    assert.equal(normalizeBloggeristUrl('bybet-all-bloggerist.chickenkiller.com'), 'http://bybet-all-bloggerist.chickenkiller.com')
+    assert.equal(normalizeBloggeristUrl('bybet-all-bloggerist.chickenkiller.com/'), 'http://bybet-all-bloggerist.chickenkiller.com')
+    assert.equal(normalizeBloggeristUrl('//bybet-all-bloggerist.chickenkiller.com/'), 'http://bybet-all-bloggerist.chickenkiller.com')
+    assert.equal(normalizeBloggeristUrl('/bybet-all-bloggerist.chickenkiller.com'), 'http://bybet-all-bloggerist.chickenkiller.com')
+    assert.equal(normalizeBloggeristUrl('https://cms.bybet.com/'), 'https://cms.bybet.com')
+    assert.equal(normalizeBloggeristUrl(''), DEFAULT_BLOGGERIST_URL)
+
+    assert.equal(
+      resolveBlogImageUrl('/uploads/blogs/a.webp', 'bybet-all-bloggerist.chickenkiller.com'),
+      'http://bybet-all-bloggerist.chickenkiller.com/uploads/blogs/a.webp',
+    )
+    assert.equal(
+      resolveBlogContentImageUrls('<img src="/uploads/blogs/a.webp">', 'bybet-all-bloggerist.chickenkiller.com'),
+      '<img src="http://bybet-all-bloggerist.chickenkiller.com/uploads/blogs/a.webp">',
+    )
+
+    for (const relRoute of [
+      'server/api/blogs/posts.get.ts',
+      'server/api/blogs/categories.get.ts',
+      'server/api/blogs/post.get.ts',
+      'server/api/blogs/seo.get.ts',
+      'server/api/playnow/click.post.ts',
+    ]) {
+      const src = fs.readFileSync(path.join(rootDir, relRoute), 'utf8')
+      assert.match(src, /resolveServerBloggeristUrl\(event\)/, `${relRoute} must use resolveServerBloggeristUrl(event)`)
+    }
+  })
+
   await t.test('Case 2b: Inner blog content images resolve relative upload paths to BLOGGERIST_URL', async () => {
     const { normalizeBlogDetailResponse, resolveBlogContentImageUrls } = await import('../composables/useBloggerist.ts')
 

@@ -7,8 +7,8 @@ import type {
   BlogDetailResponse,
   BlogSeoSettingsResponse,
 } from '~/types/blog'
+import { DEFAULT_BLOGGERIST_URL, normalizeBloggeristUrl } from '../utils/bloggeristUrl.ts'
 
-const DEFAULT_BLOGGERIST_URL = 'http://localhost:8082'
 const NON_RELATIVE_MEDIA_URL_RE = /^(?:https?:\/\/|\/\/|data:|blob:|mailto:|tel:|javascript:|#)/i
 const UPLOAD_PATH_RE = /^(?:\.\/|\/)?uploads\//i
 
@@ -30,7 +30,7 @@ export const resolveBloggeristBaseUrl = (baseUrl?: string): string => {
       ? process.env.BLOGGERIST_URL
       : DEFAULT_BLOGGERIST_URL
   }
-  return base.replace(/\/+$/, '')
+  return normalizeBloggeristUrl(base)
 }
 
 const resolveRelativeBlogUrl = (rawUrl: string, normalizedBase: string): string => {
@@ -243,7 +243,9 @@ export const normalizeBlogDetailResponse = (
 export const useBloggerist = () => {
   const config = useRuntimeConfig()
   const bloggeristUrl = computed(() => {
-    return (config.public?.bloggeristUrl || config.bloggeristUrl || DEFAULT_BLOGGERIST_URL).replace(/\/+$/, '')
+    return normalizeBloggeristUrl(
+      String(config.public?.bloggeristUrl || config.bloggeristUrl || DEFAULT_BLOGGERIST_URL),
+    )
   })
 
   const resolveImage = (imagePath?: string): string => {

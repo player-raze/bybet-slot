@@ -5,6 +5,7 @@ import net from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { normalizeEnvOriginUrl } from './env-loader.mjs'
 
 const ROOT = process.cwd()
 const OUTPUT_DIR = path.join(ROOT, 'public', 'og-image')
@@ -237,11 +238,12 @@ async function discoverRoutes(baseUrl, envFromDotEnv) {
   }
 
   // 5. Bloggerist live API routes (best-effort)
-  const bloggeristBase =
+  const bloggeristBase = normalizeEnvOriginUrl(
     process.env.BLOGGERIST_URL ||
     envFromDotEnv.BLOGGERIST_URL ||
     envFromDotEnv.NUXT_PUBLIC_BLOGGERIST_API_URL ||
-    'http://localhost:8082'
+    'http://localhost:8082',
+  )
   for (const r of await fetchBloggeristRoutes(bloggeristBase)) {
     candidateSet.add(r)
   }

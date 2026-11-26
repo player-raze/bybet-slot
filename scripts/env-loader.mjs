@@ -61,8 +61,29 @@ export function findDotEnvPath(candidateDirs) {
 }
 
 /**
+ * Normalizes an HTTP origin loaded from .env (adds http:// when protocol is omitted).
+ */
+export function normalizeEnvOriginUrl(rawValue) {
+  let clean = String(rawValue || '').trim()
+  if (
+    (clean.startsWith('"') && clean.endsWith('"') && clean.length >= 2) ||
+    (clean.startsWith("'") && clean.endsWith("'") && clean.length >= 2)
+  ) {
+    clean = clean.slice(1, -1).trim()
+  }
+  if (!clean) return ''
+  if (/^https?:\/\//i.test(clean)) return clean.replace(/\/+$/, '')
+  if (clean.startsWith('//')) {
+    const rest = clean.slice(2).replace(/\/+$/, '')
+    return rest ? `http://${rest}` : ''
+  }
+  const rest = clean.replace(/^\/+/, '').replace(/\/+$/, '')
+  return rest ? `http://${rest}` : ''
+}
+
+/**
  * Loads variables from .env into targetEnv without overwriting already-set shell/aaPanel variables,
- * and bridges PORT / NITRO_PORT / NUXT_PORT and HOST / NITRO_HOST / NUXT_HOST cleanly.
+ * and bridges PORT / NITRO_PORT / NUXT_PORT, HOST / NITRO_HOST / NUXT_HOST, and BLOGGERIST_URL cleanly.
  */
 export function loadEnvIntoProcess(options = {}) {
   const targetEnv = options.targetEnv || process.env
@@ -70,6 +91,12 @@ export function loadEnvIntoProcess(options = {}) {
 
   const preExistingPort = (targetEnv.NITRO_PORT || targetEnv.PORT || targetEnv.NUXT_PORT || '').trim()
   const preExistingHost = (targetEnv.NITRO_HOST || targetEnv.HOST || targetEnv.NUXT_HOST || '').trim()
+  const preExistingBloggerist = (
+    targetEnv.NUXT_BLOGGERIST_URL ||
+    targetEnv.NUXT_PUBLIC_BLOGGERIST_URL ||
+    targetEnv.BLOGGERIST_URL ||
+    ''
+  ).trim()
 
   const loadedKeys = []
   if (envFilePath && fs.existsSync(envFilePath)) {
@@ -96,5 +123,24 @@ export function loadEnvIntoProcess(options = {}) {
     if (!targetEnv.NUXT_HOST) targetEnv.NUXT_HOST = effectiveHost
   }
 
-  return { envFilePath, loadedKeys, port: effectivePort || undefined, host: effectiveHost || undefined }
+  const rawBloggerist = preExistingBloggerist || (
+    targetEnv.NUXT_BLOGGERIST_URL ||
+    targetEnv.NUXT_PUBLIC_BLOGGERIST_URL ||
+    targetEnv.BLOGGERIST_URL ||
+    ''
+  ).trim()
+  const normalizedBloggerist = normalizeEnvOriginUrl(rawBloggerist)
+  if (normalizedBloggerist) {
+    targetEnv.BLOGGERIST_URL = normalizedBloggerist
+    if (!targetEnv.NUXT_BLOGGERIST_URL) targetEnv.NUXT_BLOGGERIST_URL = normalizedBloggerist
+    if (!targetEnv.NUXT_PUBLIC_BLOGGERIST_URL) targetEnv.NUXT_PUBLIC_BLOGGERIST_URL = normalizedBloggerist
+  }
+
+  return {
+    envFilePath,
+    loadedKeys,
+    port: effectivePort || undefined,
+    host: effectiveHost || undefined,
+    bloggeristUrl: normalizedBloggerist || undefined,
+  }
 }
